@@ -31,10 +31,10 @@ export default function BookingForm({
     key: "selection",
   });
   const [guests, setGuests] = useState<Record<Guests, number>>({
-    adults: Number(guestParams.adults) || 1,
-    children: Number(guestParams.children) || 0,
-    infant: Number(guestParams.infant) || 0,
-    pets: Number(guestParams.pets) || 0,
+    adults: Math.min(listing.guestLimits["adults"].max, Number(guestParams.adults)) || 1,
+    children: Math.min(listing.guestLimits["children"].max, Number(guestParams.children)) || 0,
+    infant: Math.min(listing.guestLimits["infant"].max, Number(guestParams.infant)) || 0,
+    pets: Math.min(listing.guestLimits["pets"].max, Number(guestParams.pets)) || 0,
   });
 
   const updateGuestParamsInUrl = useCallback(
