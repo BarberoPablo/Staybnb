@@ -28,6 +28,12 @@ export const listings = [
       beds: 1,
       bathrooms: 1,
     },
+    guestLimits: {
+      adults: { min: 1, max: 4 },
+      children: { min: 0, max: 3 },
+      infant: { min: 0, max: 1 },
+      pets: { min: 0, max: 2 },
+    },
     score: {
       value: 4.7,
       reviews: [
@@ -60,6 +66,12 @@ export const listings = [
       bedrooms: 1,
       beds: 2,
       bathrooms: 1,
+    },
+    guestLimits: {
+      adults: { min: 1, max: 2 },
+      children: { min: 0, max: 2 },
+      infant: { min: 0, max: 0 },
+      pets: { min: 0, max: 0 },
     },
     score: {
       value: 3.9,
@@ -102,6 +114,12 @@ export const listings = [
       bedrooms: 2,
       beds: 3,
       bathrooms: 2,
+    },
+    guestLimits: {
+      adults: { min: 1, max: 1 },
+      children: { min: 0, max: 0 },
+      infant: { min: 0, max: 0 },
+      pets: { min: 0, max: 0 },
     },
     score: {
       value: 4.2,
