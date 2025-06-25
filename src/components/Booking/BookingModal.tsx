@@ -18,12 +18,11 @@ export default function BookingModal({ isOpen, listing, onClose }: { isOpen: boo
         <DialogPanel className="flex flex-col items-center bg-white rounded-lg py-2 sm:py-4 max-w-sm w-full">
           <DialogTitle className="text-xl font-semibold text-myGreen">Select your dates</DialogTitle>
           <div className="w-full px-6">
-            <BookingForm listing={listing} onConfirm={handleConfirm} />
-          </div>
-          <div className="mt-6 flex justify-end gap-2">
-            <button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">
-              Cancel
-            </button>
+            <BookingForm listing={listing} onConfirm={handleConfirm}>
+              <button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded-4xl">
+                Cancel
+              </button>
+            </BookingForm>
           </div>
         </DialogPanel>
       </div>

@@ -1,9 +1,9 @@
-import BookingForm from "@/components/Booking/BookingForm";
 import BookingModalTrigger from "@/components/Booking/BookingButton";
 import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
 import { ListBadges } from "@/components/ListBadges";
 import { listings } from "@/lib/mockListings";
+import type { Host, Listing } from "@/lib/types";
 import Image from "next/image";
 
 interface ListingDetailsProps {
@@ -23,50 +23,54 @@ export default function ListingDetailsPage({ params }: ListingDetailsProps) {
   return (
     <div className="flex flex-col">
       <h1 className="text-[26px] font-bold">{listingDetails.title}</h1>
-      {/* Desktop */}
+
       <div className="hidden sm:block">
         <ImagesLayout images={listingDetails.images} />
       </div>
-      {/* Mobile */}
       <div className="block sm:hidden">
         <ImagesSlider images={listingDetails.images} />
       </div>
 
-      <h2 className="text-[22px] font-medium">
-        {listingDetails.type} in {listingDetails.location}
-      </h2>
-
-      <ListBadges badges={listingDetails.structure} className="text-[16px]" />
-
-      <div>
-        <span className="text-[17px] font-medium">⭐{listingDetails.score.value} ·</span>
-        <span className="text-[16px] font-medium underline ">{listingDetails.score.reviews.length} reviews</span>
-      </div>
-
       <div className="grid grid-cols-12">
         <div className="col-span-7 sm:mr-30">
+          <ListingSubtitle listingDetails={listingDetails} />
+
           <hr className="text-gray-300 my-8" />
 
-          {/* Reserve button and modal for small screens */}
-          <div className="block sm:hidden">
-            <BookingModalTrigger listing={listingDetails} />
-          </div>
-
-          <div className="flex items-center">
-            <Image src={listingDetails.host.avatarUrl} alt="Rounded avatar" height={40} width={40} className="rounded-full" />
-            <h3>Hosted by {listingDetails.host.name}</h3>
-          </div>
+          <HostInformation host={listingDetails.host} />
 
           <hr className="text-gray-300 my-8" />
 
           <p>{listingDetails.description}</p>
+
           <hr className="text-gray-300 my-8" />
         </div>
 
-        {/* Reserve calendar for big screens */}
-        <div className="hidden sm:flex justify-end lg:justify-center col-span-5">
-          <BookingForm listing={listingDetails} />
-        </div>
+        <BookingModalTrigger listing={listingDetails} />
+      </div>
+    </div>
+  );
+}
+
+function HostInformation({ host }: { host: Host }) {
+  return (
+    <div className="flex items-center">
+      <Image src={host.avatarUrl} alt="Rounded avatar" height={40} width={40} className="rounded-full" />
+      <h3>Hosted by {host.name}</h3>
+    </div>
+  );
+}
+
+function ListingSubtitle({ listingDetails }: { listingDetails: Listing }) {
+  return (
+    <div>
+      <h2 className="text-[22px] font-medium">
+        {listingDetails.type} in {listingDetails.location}
+      </h2>
+      <ListBadges badges={listingDetails.structure} className="text-[16px]" />
+      <div>
+        <span className="text-[17px] font-medium">⭐{listingDetails.score.value} ·</span>
+        <span className="text-[16px] font-medium underline ">{listingDetails.score.reviews.length} reviews</span>
       </div>
     </div>
   );
