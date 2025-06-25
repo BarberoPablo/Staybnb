@@ -2,12 +2,10 @@
 
 import { Listing } from "@/lib/types";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { Range } from "react-date-range";
 import BookingForm from "./BookingForm";
 
 export default function BookingModal({ isOpen, listing, onClose }: { isOpen: boolean; listing: Listing; onClose: () => void }) {
-  const handleConfirm = (range: Range) => {
-    console.log("Confirmed date range:", range);
+  const handleConfirm = () => {
     onClose();
   };
 

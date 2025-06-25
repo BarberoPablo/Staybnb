@@ -1,14 +1,13 @@
 "use client";
 
-import { useQueryParams } from "@/hooks/useQueryParams";
 import { Guests, Listing } from "@/lib/types";
 import { listingGuests } from "@/lib/utils";
-import { useRouter, useSearchParams } from "next/navigation";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
 import { DateRange, Range } from "react-date-range";
-import "react-date-range/dist/styles.css"; // estilos base
-import "react-date-range/dist/theme/default.css"; // tema por defecto
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import Tooltip from "@/components/Tooltip";
 
 export default function BookingForm({
   listing,
@@ -19,84 +18,78 @@ export default function BookingForm({
   listing: Listing;
   priceFirst?: boolean;
   children?: ReactNode;
-  onConfirm?: (range: Range) => void;
+  onConfirm?: () => void;
 }) {
-  const guestParams = useQueryParams<Guests>(listingGuests);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
   const [dateRange, setDateRange] = useState<Range>({
     startDate: new Date(),
     endDate: new Date(),
     key: "selection",
   });
   const [guests, setGuests] = useState<Record<Guests, number>>({
-    adults: Math.min(listing.guestLimits["adults"].max, Number(guestParams.adults)) || 1,
-    children: Math.min(listing.guestLimits["children"].max, Number(guestParams.children)) || 0,
-    infant: Math.min(listing.guestLimits["infant"].max, Number(guestParams.infant)) || 0,
-    pets: Math.min(listing.guestLimits["pets"].max, Number(guestParams.pets)) || 0,
+    adults: 1,
+    children: 0,
+    infant: 0,
+    pets: 0,
   });
-
-  const updateGuestParamsInUrl = useCallback(
-    (updatedGuests: Record<string, number>) => {
-      const params = new URLSearchParams(searchParams.toString());
-
-      Object.entries(updatedGuests).forEach(([key, value]) => {
-        if (value > 0) {
-          params.set(key, value.toString());
-        } else {
-          params.delete(key);
-        }
-
-        router.replace(`?${params.toString()}`);
-      });
-    },
-    [router, searchParams]
-  );
-
-  useEffect(() => {
-    updateGuestParamsInUrl(guests);
-  }, [guests, updateGuestParamsInUrl]);
+  const [errors, setErrors] = useState<Partial<Record<Guests | "dateRange", string>>>({});
 
   const handleChangeDateRange = (ranges: RangeKeyDict) => {
     const selection = ranges["selection"];
     if (selection?.startDate && selection?.endDate) {
       setDateRange(selection);
+      setErrors({});
     }
   };
 
   const handleGuest = (type: Guests, amount: number) => {
-    setGuests((prevState) => ({
-      ...prevState,
-      [type]: prevState[type] + amount,
-    }));
+    setGuests((prevState) => ({ ...prevState, [type]: prevState[type] + amount }));
+    setErrors({});
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    //Validate form data
+    const validationErrors = validateFormData(dateRange, guests, listing);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+    onConfirm?.();
   };
 
   return (
     <form onSubmit={handleSubmit}>
       {!priceFirst && (
-        <DateRange ranges={[dateRange]} onChange={handleChangeDateRange} minDate={new Date()} rangeColors={["#3ecf8e"]} showDateDisplay={false} />
+        <DateRange
+          ranges={[dateRange]}
+          onChange={handleChangeDateRange}
+          minDate={new Date()}
+          rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
+          showDateDisplay={false}
+        />
       )}
       <div className="flex sm:mt-4">
         <ListingPrice dateRange={dateRange} listing={listing} />
         <div>
           {listingGuests.map((type) => (
             <div key={type} className="flex gap-5">
-              <span className="capitalize">{type}</span>
+              <div className="relative">
+                <label className="capitalize">{type}</label>
+                {errors[type] && <Tooltip text={errors[type]} />}
+              </div>
               <button
+                type="button"
                 disabled={guests[type] === listing.guestLimits[type].min}
                 className="bg-myGreen rounded-full w-6 h-6 hover:cursor-pointer"
                 onClick={() => handleGuest(type, -1)}
               >
                 -
               </button>
-              <span>{guests[type]}</span>
+              <label>{guests[type]}</label>
               <button
+                type="button"
                 disabled={guests[type] === listing.guestLimits[type].max}
                 className="bg-myGreen rounded-full w-6 h-6 hover:cursor-pointer"
                 onClick={() => handleGuest(type, 1)}
@@ -107,17 +100,27 @@ export default function BookingForm({
           ))}
         </div>
       </div>
+
       {priceFirst && (
-        <DateRange ranges={[dateRange]} onChange={handleChangeDateRange} minDate={new Date()} rangeColors={["#3ecf8e"]} showDateDisplay={false} />
+        <div className="relative">
+          {errors.dateRange && <Tooltip text={errors.dateRange} containerStyle="top-[-4px]" arrow={false} />}
+
+          <DateRange
+            ranges={[dateRange]}
+            onChange={handleChangeDateRange}
+            minDate={new Date()}
+            rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
+            showDateDisplay={false}
+          />
+        </div>
       )}
 
       <div className="flex justify-center gap-10">
         {children}
-        {onConfirm && (
-          <button type="submit" onClick={() => onConfirm(dateRange)} className="px-4 py-2 bg-myGreen text-white rounded-4xl">
-            Reserve
-          </button>
-        )}
+
+        <button type="submit" className="px-4 py-2 bg-myGreen text-white rounded-4xl">
+          Reserve
+        </button>
       </div>
     </form>
   );
@@ -155,4 +158,30 @@ function calculateTotal(dateRange: Range, listing: Listing) {
   }
 
   return { nights, baseTotal, total: baseTotal };
+}
+
+type FormErrors = Partial<Record<Guests | "dateRange", string>>;
+
+function validateFormData(dateRange: Range, guests: Record<Guests, number>, listing: Listing): FormErrors {
+  const errors: FormErrors = {};
+
+  if (!dateRange.startDate || !dateRange.endDate) {
+    errors.dateRange = "Select a valid date range.";
+    return errors;
+  }
+  if (dateRange.startDate.getTime() === dateRange.endDate.getTime()) {
+    errors.dateRange = "Check-in and check-out can't be the same day";
+    return errors;
+  }
+
+  for (const key of listingGuests) {
+    const value = guests[key];
+    const { max, min } = listing.guestLimits[key];
+    if (value > max || value < min) {
+      errors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} must be between ${min} and ${max}.`;
+      return errors;
+    }
+  }
+
+  return errors;
 }
