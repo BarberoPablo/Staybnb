@@ -2,13 +2,20 @@
 
 import Tooltip from "@/components/Tooltip";
 import { Guests, Listing } from "@/lib/types";
-import { listingGuests } from "@/lib/utils";
+import { buildListingParams, listingGuests } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
-import { DateRange, Range } from "react-date-range";
+import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import ListingPrice from "../ListingPrice";
+import ListingPrice from "../Checkout/ListingPrice";
+
+type DateRangeKey = {
+  startDate: Date;
+  endDate: Date;
+  key: string | undefined;
+};
 
 export default function BookingForm({
   listing,
@@ -21,7 +28,7 @@ export default function BookingForm({
   children?: ReactNode;
   onConfirm?: () => void;
 }) {
-  const [dateRange, setDateRange] = useState<Range>({
+  const [dateRange, setDateRange] = useState<DateRangeKey>({
     startDate: new Date(),
     endDate: new Date(),
     key: "selection",
@@ -33,11 +40,14 @@ export default function BookingForm({
     pets: 0,
   });
   const [errors, setErrors] = useState<Partial<Record<Guests | "dateRange", string>>>({});
+  const router = useRouter();
 
   const handleChangeDateRange = (ranges: RangeKeyDict) => {
     const selection = ranges["selection"];
+
     if (selection?.startDate && selection?.endDate) {
-      setDateRange(selection);
+      const { startDate, endDate, key } = selection;
+      setDateRange({ startDate, endDate, key });
       setErrors({});
     }
   };
@@ -49,7 +59,7 @@ export default function BookingForm({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    const validationErrors = validateFormData(dateRange, guests, listing);
+    const validationErrors = validateFormData(dateRange.startDate, dateRange.endDate, guests, listing);
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -58,6 +68,9 @@ export default function BookingForm({
 
     setErrors({});
     onConfirm?.();
+
+    const query = buildListingParams(guests, dateRange.startDate, dateRange.endDate);
+    router.push(`/checkout/${listing.id}?${query}`);
   };
 
   return (
@@ -129,14 +142,14 @@ export default function BookingForm({
 
 type FormErrors = Partial<Record<Guests | "dateRange", string>>;
 
-function validateFormData(dateRange: Range, guests: Record<Guests, number>, listing: Listing): FormErrors {
+function validateFormData(startDate: Date, endDate: Date, guests: Record<Guests, number>, listing: Listing): FormErrors {
   const errors: FormErrors = {};
 
-  if (!dateRange.startDate || !dateRange.endDate) {
+  if (!startDate || !endDate) {
     errors.dateRange = "Select a valid date range.";
     return errors;
   }
-  if (dateRange.startDate.getTime() === dateRange.endDate.getTime()) {
+  if (startDate.getTime() === endDate.getTime()) {
     errors.dateRange = "Check-in and check-out can't be the same day";
     return errors;
   }
