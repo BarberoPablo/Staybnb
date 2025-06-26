@@ -1,4 +1,4 @@
-export const listings = [
+export const mockListings = [
   {
     id: 1,
     title: "Bright Apartment in Palermo",

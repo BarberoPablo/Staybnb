@@ -1,7 +1,7 @@
 "use client";
 
 import ListingCard from "@/components/ListingCard";
-import { listings } from "@/lib/mockListings";
+import { mockListings } from "@/lib/mockListings";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 
@@ -9,7 +9,7 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
   const city = searchParams.get("city");
 
-  const filteredListings = listings.filter((place) => place.location.toLowerCase().includes(city?.toLowerCase() || ""));
+  const filteredListings = mockListings.filter((place) => place.location.toLowerCase().includes(city?.toLowerCase() || ""));
 
   if (filteredListings.length === 0) return <div>No listings found in {city}</div>;
 

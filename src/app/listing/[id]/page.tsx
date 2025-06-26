@@ -2,7 +2,7 @@ import BookingModalTrigger from "@/components/Booking/BookingButton";
 import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
 import { ListBadges } from "@/components/ListBadges";
-import { listings } from "@/lib/mockListings";
+import { mockListings } from "@/lib/mockListings";
 import type { Host, Listing } from "@/lib/types";
 import Image from "next/image";
 
@@ -14,7 +14,7 @@ interface ListingDetailsProps {
 
 export default function ListingDetailsPage({ params }: ListingDetailsProps) {
   const { id } = params;
-  const listingDetails = listings.find((listing) => listing.id === parseInt(id));
+  const listingDetails = mockListings.find((listing) => listing.id === parseInt(id));
 
   if (!listingDetails) {
     return <div className="text-[26px] font-bold">Listing not found</div>;
