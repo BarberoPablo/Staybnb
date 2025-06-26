@@ -1,5 +1,6 @@
 "use client";
 
+import Tooltip from "@/components/Tooltip";
 import { Guests, Listing } from "@/lib/types";
 import { listingGuests } from "@/lib/utils";
 import { ReactNode, useState } from "react";
@@ -7,7 +8,7 @@ import type { RangeKeyDict } from "react-date-range";
 import { DateRange, Range } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import Tooltip from "@/components/Tooltip";
+import ListingPrice from "../ListingPrice";
 
 export default function BookingForm({
   listing,
@@ -71,7 +72,7 @@ export default function BookingForm({
         />
       )}
       <div className="flex sm:mt-4">
-        <ListingPrice dateRange={dateRange} listing={listing} />
+        <ListingPrice startDate={dateRange.startDate} endDate={dateRange.endDate} listing={listing} />
         <div>
           {listingGuests.map((type) => (
             <div key={type} className="flex gap-5">
@@ -124,40 +125,6 @@ export default function BookingForm({
       </div>
     </form>
   );
-}
-
-function ListingPrice({ dateRange, listing }: { dateRange: Range; listing: Listing }) {
-  const summary = calculateTotal(dateRange, listing);
-
-  return (
-    <div className="text-sm">
-      <p>
-        {summary.nights} night{summary.nights > 1 ? "s" : ""} x ${listing.price} = <b>${summary.baseTotal.toFixed(2)}</b>
-      </p>
-      {summary.discount && (
-        <p className="text-green-600">
-          {listing.promotions?.[0].discountPercentage}% discount applied: -${summary.discount.toFixed(2)}
-        </p>
-      )}
-      <p className="font-bold mt-2">Total: ${summary.total.toFixed(2)}</p>
-    </div>
-  );
-}
-
-function calculateTotal(dateRange: Range, listing: Listing) {
-  const { startDate, endDate } = dateRange;
-  if (!startDate || !endDate) return { nights: 0, baseTotal: 0, total: 0 };
-
-  const nights = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
-  const baseTotal = nights * listing.price;
-
-  const promotion = listing.promotions?.find((promo) => nights >= promo.minNights);
-  if (promotion) {
-    const discount = (promotion.discountPercentage / 100) * baseTotal;
-    return { nights, baseTotal, discount, total: baseTotal - discount };
-  }
-
-  return { nights, baseTotal, total: baseTotal };
 }
 
 type FormErrors = Partial<Record<Guests | "dateRange", string>>;
