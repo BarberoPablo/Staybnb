@@ -1,4 +1,4 @@
-import BookingModalTrigger from "@/components/Booking/BookingButton";
+import BookingButton from "@/components/Booking/BookingButton";
 import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
 import { ListBadges } from "@/components/ListBadges";
@@ -46,7 +46,7 @@ export default function ListingDetailsPage({ params }: ListingDetailsProps) {
           <hr className="text-gray-300 my-8" />
         </div>
 
-        <BookingModalTrigger listing={listingDetails} />
+        <BookingButton listing={listingDetails} />
       </div>
     </div>
   );
