@@ -31,5 +31,4 @@ body {
 
 button {
   @apply hover:cursor-pointer;
-
 }
