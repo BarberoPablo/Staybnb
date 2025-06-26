@@ -12,7 +12,7 @@ export default function ListingResume({ listing, params }: { listing: Listing; p
   const guests = Object.entries(params).filter(([key, value]) => listingGuests.includes(key as Guests) && value !== "0");
 
   return (
-    <div className="w-full h-full p-8">
+    <div className="w-full h-full p-8 border border-gray-300">
       <div className="flex gap-4">
         <Image
           src={listing.images[0]}

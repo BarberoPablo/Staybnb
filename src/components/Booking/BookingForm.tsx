@@ -9,7 +9,7 @@ import type { RangeKeyDict } from "react-date-range";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import ListingPrice from "../Checkout/ListingPrice";
+import ListingPrice from "../../app/checkout/[listingId]/components/ListingPrice";
 
 type DateRangeKey = {
   startDate: Date;

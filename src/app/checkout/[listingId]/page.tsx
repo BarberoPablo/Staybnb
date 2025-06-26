@@ -1,10 +1,11 @@
 "use client";
 
-import ListingResume from "@/components/Checkout/ListingResume";
+import ListingResume from "@/app/checkout/[listingId]/components/ListingResume";
 import { useQueryParams } from "@/hooks/useQueryParams";
 import { mockListings } from "@/lib/mockListings";
 import { listingQueryParams } from "@/lib/utils";
 import { useParams } from "next/navigation";
+import PaymentSection from "./components/PaymentSection";
 
 export default function Checkout() {
   const { listingId } = useParams<{ listingId: string }>();
@@ -29,15 +30,12 @@ export default function Checkout() {
   }
 
   return (
-    <div className="grid grid-cols-2">
+    <div className="grid grid-cols-2 relative">
       <div className="flex justify-center col-span-2 sm:col-span-1">
-        <h1>Select Payment method</h1>
-        <button>Pay</button>
+        <PaymentSection />
       </div>
       <div className="flex justify-center col-span-2 sm:col-span-1">
-        <div className="border border-gray-300 w-full h-full">
-          <ListingResume listing={listing} params={params} />
-        </div>
+        <ListingResume listing={listing} params={params} />
       </div>
     </div>
   );
