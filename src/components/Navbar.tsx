@@ -22,7 +22,7 @@ export default function Navbar() {
         <input
           type="text"
           placeholder="Where do you want to go?"
-          className="rounded-full p-2 hover:cursor-pointer hover:bg-amber-300 transition-colors duration-300"
+          className="rounded-full p-2 hover:bg-amber-300 transition-colors duration-300"
           value={searchCity}
           name="searchCity"
           onChange={handleSearchCityInput}
@@ -30,15 +30,11 @@ export default function Navbar() {
             if (e.key === "Enter") handleSearchCity();
           }}
         />
-        <button
-          className="rounded-full p-2 hover:cursor-pointer hover:bg-amber-300 transition-colors duration-300"
-          disabled={searchCity === ""}
-          onClick={handleSearchCity}
-        >
+        <button className="rounded-full p-2 hover:bg-amber-300 transition-colors duration-300" disabled={searchCity === ""} onClick={handleSearchCity}>
           Search
         </button>
       </div>
-      <button className="text-sm sm:text-xl hover:cursor-pointer hover:bg-amber-300 transition-colors duration-300 px-4 py-2 rounded-full">Login</button>
+      <button className="text-sm sm:text-xl hover:bg-amber-300 transition-colors duration-300 px-4 py-2 rounded-full">Login</button>
     </nav>
   );
 }
