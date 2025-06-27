@@ -15,6 +15,11 @@ export default function Navbar() {
     router.push(`/search?city=${encodeURIComponent(searchCity.trim())}`);
     setSearchCity("");
   };
+
+  const handleLogin = () => {
+    router.push("/login");
+  };
+
   return (
     <nav className="flex items-center justify-center sm:justify-between py-4 px-2 border-b border-b-gray-200">
       <span className="hidden sm:block sm:text-2xl font-bold">Staybnb</span>
@@ -34,7 +39,9 @@ export default function Navbar() {
           Search
         </button>
       </div>
-      <button className="text-sm sm:text-xl hover:bg-amber-300 transition-colors duration-300 px-4 py-2 rounded-full">Login</button>
+      <button className="text-sm sm:text-xl hover:bg-amber-300 transition-colors duration-300 px-4 py-2 rounded-full" onClick={handleLogin}>
+        Login
+      </button>
     </nav>
   );
 }
