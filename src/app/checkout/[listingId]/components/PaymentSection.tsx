@@ -4,6 +4,7 @@ import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { ListingData } from "./Checkout";
 
 const reserve = {
   title: {
@@ -23,10 +24,12 @@ const reserve = {
   },
 };
 
-export default function PaymentSection() {
+export default function PaymentSection({ listingData }: { listingData: ListingData }) {
   const [isOpen, setIsOpen] = useState(false);
   const [confirmationState, setConfirmationState] = useState<"loading" | "confirmed" | "error">("loading");
   const router = useRouter();
+
+  //If no user -> login and back to here
 
   useEffect(() => {
     if (!isOpen) return;
@@ -34,7 +37,7 @@ export default function PaymentSection() {
     return () => clearTimeout(timeoutId);
   }, [isOpen]);
 
-  const handleConfirmPayment = () => {
+  const handleConfirmPayment = async () => {
     setIsOpen(true);
   };
 

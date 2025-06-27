@@ -1,21 +1,15 @@
 "use client";
 
 import Tooltip from "@/components/Tooltip";
-import { Guests, Listing } from "@/lib/types";
-import { buildListingParams, listingGuests } from "@/lib/utils";
+import { DateRangeKey, Guests, Listing } from "@/lib/types";
+import { buildListingParams, calculateTotal, listingGuests } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import ListingPrice from "../../app/checkout/[listingId]/components/ListingPrice";
-
-type DateRangeKey = {
-  startDate: Date;
-  endDate: Date;
-  key: string | undefined;
-};
+import ListingPrice from "../ListingPrice";
 
 export default function BookingForm({
   listing,
@@ -76,16 +70,19 @@ export default function BookingForm({
   return (
     <form onSubmit={handleSubmit}>
       {!priceFirst && (
-        <DateRange
-          ranges={[dateRange]}
-          onChange={handleChangeDateRange}
-          minDate={new Date()}
-          rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
-          showDateDisplay={false}
-        />
+        <div className="relative">
+          <DateRange
+            ranges={[dateRange]}
+            onChange={handleChangeDateRange}
+            minDate={new Date()}
+            rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
+            showDateDisplay={false}
+          />
+          {errors.dateRange && <Tooltip text={errors.dateRange} arrow={false} containerStyle={"top-[-6px]"} />}
+        </div>
       )}
       <div className="flex sm:mt-4">
-        <ListingPrice startDate={dateRange.startDate} endDate={dateRange.endDate} listing={listing} />
+        <ListingPrice summary={calculateTotal(dateRange.startDate, dateRange.endDate, listing)} listing={listing} />
         <div>
           {listingGuests.map((type) => (
             <div key={type} className="flex gap-5">
@@ -93,12 +90,7 @@ export default function BookingForm({
                 <label className="capitalize">{type}</label>
                 {errors[type] && <Tooltip text={errors[type]} />}
               </div>
-              <button
-                type="button"
-                disabled={guests[type] === listing.guestLimits[type].min}
-                className="bg-myGreen rounded-full w-6 h-6 hover:cursor-pointer"
-                onClick={() => handleGuest(type, -1)}
-              >
+              <button type="button" className="bg-myGreen rounded-full w-6 h-6 hover:cursor-pointer" onClick={() => handleGuest(type, -1)}>
                 -
               </button>
               <label>{guests[type]}</label>
@@ -117,7 +109,7 @@ export default function BookingForm({
 
       {priceFirst && (
         <div className="relative">
-          {errors.dateRange && <Tooltip text={errors.dateRange} containerStyle="top-[-4px]" arrow={false} />}
+          {errors.dateRange && <Tooltip text={errors.dateRange} containerStyle="top-[-6px]" arrow={false} />}
 
           <DateRange
             ranges={[dateRange]}

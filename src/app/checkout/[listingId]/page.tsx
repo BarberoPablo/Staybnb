@@ -1,42 +1,35 @@
 "use client";
 
-import ListingResume from "@/app/checkout/[listingId]/components/ListingResume";
 import { useQueryParams } from "@/hooks/useQueryParams";
 import { mockListings } from "@/lib/mockListings";
 import { listingQueryParams } from "@/lib/utils";
-import { useParams } from "next/navigation";
-import PaymentSection from "./components/PaymentSection";
+import { useParams, useRouter } from "next/navigation";
+import Checkout from "./components/Checkout";
 
-export default function Checkout() {
+export default function CheckoutPage() {
   const { listingId } = useParams<{ listingId: string }>();
-  const params = useQueryParams(listingQueryParams);
+  const router = useRouter();
+  const params: Partial<Record<(typeof listingQueryParams)[number], string>> = useQueryParams(listingQueryParams);
+  const numericId = parseInt(listingId ?? "");
 
-  if (!listingId || !params.startDate || !params.endDate || !params.adults) {
+  const listing = mockListings.find((listing) => listing.id === numericId);
+
+  const handleGoBackHome = () => {
+    router.push("/");
+  };
+
+  if (!listingId || !params.startDate || !params.endDate || !params.adults || !listing) {
     return (
       <div>
         <h1>Invalid information (check dates, guests and listing)</h1>
-      </div>
-    );
-  }
-
-  const listing = mockListings.find((listing) => listing.id === parseInt(listingId.toString()));
-
-  if (!listing) {
-    return (
-      <div>
-        <h1>Listing not found</h1>
+        <button onClick={handleGoBackHome}>Go back home</button>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 relative">
-      <div className="flex justify-center col-span-2 sm:col-span-1">
-        <PaymentSection />
-      </div>
-      <div className="flex justify-center col-span-2 sm:col-span-1">
-        <ListingResume listing={listing} params={params} />
-      </div>
+    <div>
+      <Checkout listing={listing} params={params} />
     </div>
   );
 }

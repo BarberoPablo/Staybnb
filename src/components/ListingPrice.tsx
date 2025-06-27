@@ -1,10 +1,6 @@
-import { Listing } from "@/lib/types";
-import { calculateTotal } from "@/lib/utils";
-import React from "react";
+import { Listing, ListingSummary } from "@/lib/types";
 
-export default function ListingPrice({ startDate, endDate, listing }: { startDate: Date | undefined; endDate: Date | undefined; listing: Listing }) {
-  const summary = calculateTotal(startDate, endDate, listing);
-
+export default function ListingPrice({ summary, listing }: { summary: ListingSummary; listing: Listing }) {
   return (
     <div className="text-sm">
       <p>
