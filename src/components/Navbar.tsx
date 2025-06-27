@@ -1,11 +1,14 @@
 "use client";
 
+import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import LogoutButton from "./LogoutButton";
 
 export default function Navbar() {
   const [searchCity, setSearchCity] = useState("");
   const router = useRouter();
+  const { user } = useUser();
 
   const handleSearchCityInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchCity(event.target.value);
@@ -17,7 +20,7 @@ export default function Navbar() {
   };
 
   const handleLogin = () => {
-    router.push("/login");
+    router.push("/auth");
   };
 
   return (
@@ -39,9 +42,13 @@ export default function Navbar() {
           Search
         </button>
       </div>
-      <button className="text-sm sm:text-xl hover:bg-amber-300 transition-colors duration-300 px-4 py-2 rounded-full" onClick={handleLogin}>
-        Login
-      </button>
+      {user ? (
+        <LogoutButton />
+      ) : (
+        <button className="text-sm sm:text-xl hover:bg-amber-300 transition-colors duration-300 px-4 py-2 rounded-full" onClick={handleLogin}>
+          Login
+        </button>
+      )}
     </nav>
   );
 }
