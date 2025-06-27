@@ -5,7 +5,7 @@ import { useState } from "react";
 import BookingModal from "./BookingModal";
 import BookingForm from "./BookingForm";
 
-export default function BookingButton({ listing }: { listing: Listing }) {
+export default function BookingCalendarContainer({ listing }: { listing: Listing }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

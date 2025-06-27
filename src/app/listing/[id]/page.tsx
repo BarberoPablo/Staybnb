@@ -1,4 +1,4 @@
-import BookingButton from "@/components/Booking/BookingButton";
+import BookingCalendarContainer from "@/components/Booking/BookingCalendarContainer";
 import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
 import { ListBadges } from "@/components/ListBadges";
@@ -46,7 +46,7 @@ export default function ListingDetailsPage({ params }: ListingDetailsProps) {
           <hr className="text-gray-300 my-8" />
         </div>
 
-        <BookingButton listing={listingDetails} />
+        <BookingCalendarContainer listing={listingDetails} />
       </div>
     </div>
   );
