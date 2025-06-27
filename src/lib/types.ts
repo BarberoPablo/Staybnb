@@ -39,3 +39,16 @@ export type Host = {
 };
 
 export type Guests = "adults" | "children" | "infant" | "pets";
+
+export type ListingSummary = {
+  nights: number;
+  baseTotal: number;
+  total: number;
+  discount?: number;
+};
+
+export type DateRangeKey = {
+  startDate: Date;
+  endDate: Date;
+  key: string | undefined;
+};

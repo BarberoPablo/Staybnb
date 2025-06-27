@@ -18,5 +18,9 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
-  return <div>Hola {user.email}, esta es tu página protegida.</div>;
+  return (
+    <div>
+      User email: {user.email}, User id; {user.id}
+    </div>
+  );
 }
