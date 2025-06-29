@@ -63,3 +63,14 @@ export function createListingData(params: Partial<Record<string, string>>, listi
 
   return { guests, startDate, endDate, summary };
 }
+
+export function validateDateRange(startDate: Date, endDate: Date) {
+  if (startDate.getTime() === endDate.getTime()) {
+    return "Check-in and check-out can't be the same day";
+  }
+
+  if (startDate.getTime() > endDate.getTime()) {
+    return "Check-in should be prior to check-out";
+  }
+  return "";
+}

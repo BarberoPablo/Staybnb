@@ -2,7 +2,7 @@
 
 import Tooltip from "@/components/Tooltip";
 import { DateRangeKey, Guests, Listing } from "@/lib/types";
-import { buildListingParams, calculateTotal, listingGuests } from "@/lib/utils";
+import { buildListingParams, calculateTotal, listingGuests, validateDateRange } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
@@ -53,6 +53,12 @@ export default function BookingForm({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (!dateRange.startDate || !dateRange.endDate) {
+      setErrors({ dateRange: "Select a valid date range." });
+      return;
+    }
+
     const validationErrors = validateFormData(dateRange.startDate, dateRange.endDate, guests, listing);
 
     if (Object.keys(validationErrors).length > 0) {
@@ -141,14 +147,10 @@ type FormErrors = Partial<Record<Guests | "dateRange", string>>;
 
 function validateFormData(startDate: Date, endDate: Date, guests: Record<Guests, number>, listing: Listing): FormErrors {
   const errors: FormErrors = {};
+  const dateError = validateDateRange(startDate, endDate);
 
-  if (!startDate || !endDate) {
-    errors.dateRange = "Select a valid date range.";
-    return errors;
-  }
-  if (startDate.getTime() === endDate.getTime()) {
-    errors.dateRange = "Check-in and check-out can't be the same day";
-    return errors;
+  if (dateError) {
+    errors.dateRange = dateError;
   }
 
   for (const key of listingGuests) {
