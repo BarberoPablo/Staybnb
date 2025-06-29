@@ -1,8 +1,12 @@
+"use client";
+
 import { Guests } from "@/lib/types";
 import { displayGuestLabel } from "@/lib/utils";
 import Image from "next/image";
 import { ListingData } from "./Checkout";
 import ListingPrice from "@/components/ListingPrice";
+import { useState } from "react";
+import DateRangeSelector from "./DateRangeSelector";
 
 export default function ListingResume({
   listingData,
@@ -11,8 +15,10 @@ export default function ListingResume({
   listingData: ListingData;
   setListingData: React.Dispatch<React.SetStateAction<ListingData>>;
 }) {
-  const handleChangeDates = () => {
-    //open a modal component and keep this as server component
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openDateSelector = () => {
+    setIsOpen(true);
   };
 
   return (
@@ -36,14 +42,16 @@ export default function ListingResume({
 
       <hr className="text-gray-300 my-4" />
 
-      <div className="flex flex-col">
+      <div className="flex flex-col justify-center w-fit">
         <h2>Trip information</h2>
-        <div className="flex">
+        <div className="flex items-center justify-center gap-4 bg-myGreen text-white py-2 px-4 rounded w-fit">
           <span>
             {listingData.startDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })} -{" "}
             {listingData.endDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
           </span>
-          <button onClick={handleChangeDates}>Change</button>
+          <button className="text-sm w-10 bg-white text-myGreenDark py-2 rounded" onClick={openDateSelector}>
+            Edit
+          </button>
         </div>
         {Object.entries(listingData.guests).map(([guest, value]) => (
           <span key={guest}>{displayGuestLabel(guest as Guests, Number(value))}</span>
@@ -56,6 +64,16 @@ export default function ListingResume({
         <h2>Price details</h2>
         <ListingPrice summary={listingData.summary} listing={listingData.listing} />
       </div>
+
+      <DateRangeSelector
+        isOpen={isOpen}
+        startDate={listingData.startDate}
+        endDate={listingData.endDate}
+        setListingData={setListingData}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+      />
     </div>
   );
 }

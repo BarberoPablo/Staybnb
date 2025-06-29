@@ -23,7 +23,7 @@ export default function Checkout({ listing, params }: { listing: Listing; params
       <div className="flex justify-center col-span-2 sm:col-span-1">
         <PaymentSection listingData={listingData} />
       </div>
-      <div className="flex justify-center col-span-2 sm:col-span-1">
+      <div className="flex justify-center items-center col-span-2 sm:col-span-1">
         <ListingResume listingData={listingData} setListingData={setListingData} />
       </div>
     </div>
