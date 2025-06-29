@@ -90,7 +90,12 @@ export default function BookingForm({
                 <label className="capitalize">{type}</label>
                 {errors[type] && <Tooltip text={errors[type]} />}
               </div>
-              <button type="button" className="bg-myGreen rounded-full w-6 h-6 hover:cursor-pointer" onClick={() => handleGuest(type, -1)}>
+              <button
+                type="button"
+                disabled={guests[type] === listing.guestLimits[type].min}
+                className="bg-myGreen rounded-full w-6 h-6 hover:cursor-pointer"
+                onClick={() => handleGuest(type, -1)}
+              >
                 -
               </button>
               <label>{guests[type]}</label>
