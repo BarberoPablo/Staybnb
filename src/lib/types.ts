@@ -74,3 +74,10 @@ export type ReservationWithListing = Reservation & {
 };
 
 export type CreateReservation = Omit<Reservation, "id" | "createdAt">;
+
+export type ReservedDates = {
+  id: string;
+  listingId: number;
+  startDate: Date;
+  endDate: Date;
+};

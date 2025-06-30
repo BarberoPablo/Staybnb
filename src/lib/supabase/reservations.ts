@@ -1,5 +1,6 @@
+import { mockReservations } from "../mockReservations";
 import { parseCreateReservationToDB, parseReservationFromDB } from "../parser";
-import { CreateReservation, ReservationWithListing } from "../types";
+import { CreateReservation, ReservedDates, ReservationWithListing } from "../types";
 import { supabase } from "./client";
 import { getListing } from "./listings";
 
@@ -54,3 +55,16 @@ export async function getUserReservations({ user_id }: { user_id: string }): Pro
   }
   return reservations;
 } */
+
+export async function getReservedDates(listingId: number): Promise<ReservedDates[]> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const reservedDates = mockReservations.filter((r) => r.listingId === listingId);
+      if (reservedDates) {
+        resolve(reservedDates);
+      } else {
+        reject(new Error("No reservations found"));
+      }
+    }, 100);
+  });
+}
