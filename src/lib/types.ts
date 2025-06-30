@@ -10,7 +10,7 @@ export type Listing = {
     description: string;
   }[];
   type: string;
-  host: Host;
+  hostId: string;
   structure: {
     guests: number;
     bedrooms: number;
@@ -33,18 +33,19 @@ export type Listing = {
   images: string[];
 };
 
-export type Host = {
+/* export type Host = {
   name: string;
   avatarUrl: string;
 };
-
+ */
 export type Guests = "adults" | "children" | "infant" | "pets";
 
 export type ListingSummary = {
   nights: number;
   baseTotal: number;
   total: number;
-  discount?: number;
+  discount: number;
+  discountPercentage: number;
 };
 
 export type DateRangeKey = {
@@ -52,3 +53,24 @@ export type DateRangeKey = {
   endDate: Date;
   key: string | undefined;
 };
+
+export type Reservation = {
+  id: string;
+  userId: string;
+  listingId: number;
+  startDate: Date;
+  endDate: Date;
+  guests: Record<Guests, number>;
+  totalPrice: number;
+  totalNights: number;
+  nightPrice: number;
+  discount: number;
+  discountPercentage: number;
+  createdAt: Date;
+};
+
+export type ReservationWithListing = Reservation & {
+  listing: Listing;
+};
+
+export type CreateReservation = Omit<Reservation, "id" | "createdAt">;
