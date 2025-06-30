@@ -12,7 +12,7 @@ export default function ReservationsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const userReservations = async () => {
+    const fetchReservations = async () => {
       try {
         const reservations = await getUserReservations(user?.id ?? "");
         setUserReservations(reservations);
@@ -25,20 +25,24 @@ export default function ReservationsPage() {
       }
     };
     if (!loading && user) {
-      userReservations();
+      fetchReservations();
     }
   }, [user, loading]);
+
+  if (loading) {
+    return <div>Loading reservations...</div>;
+  }
 
   return (
     <div>
       <h1>Reservations</h1>
 
       <div className="border border-gray-300 rounded-2xl">
-        {error && <p>{error}</p>}
+        {error && <p className="text-red-600 font-semibold my-4">{error}</p>}
         {userReservations.length > 0 &&
           userReservations.map((reservation, index) => (
-            <div key={reservation.listingId + "item" + index}>
-              <ListingReservation listing={reservation} />
+            <div key={`${reservation.listingId}-${reservation.createdAt}`}>
+              <ListingReservation reservation={reservation} />
               {index !== userReservations.length - 1 && <hr className="text-gray-300 mt-2" />}
             </div>
           ))}

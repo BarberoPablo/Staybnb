@@ -1,10 +1,6 @@
 import { Listing, ListingSummary } from "@/lib/types";
 
 export default function ListingPrice({ summary, listing }: { summary: ListingSummary; listing: Listing }) {
-  console.log({ summary });
-  console.log("disc", summary.discount);
-  console.log("disc%", summary.discountPercentage);
-  console.log("baseTotal", summary.baseTotal);
   return (
     <div className="text-sm">
       <p>

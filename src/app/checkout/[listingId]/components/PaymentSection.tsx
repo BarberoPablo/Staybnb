@@ -62,7 +62,6 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
       await createReservation(reservationData);
       setConfirmationState("confirmed");
     } catch (error) {
-      console.log({ error });
       if (error instanceof Error) {
         console.error(error.message);
         setConfirmationState("error");
