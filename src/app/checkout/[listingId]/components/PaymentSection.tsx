@@ -1,10 +1,15 @@
 "use client";
 
+import { useUser } from "@/hooks/useUser";
+import { createReservation, Reservation } from "@/lib/supabase/reservations";
+import { calculateTotal } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { ListingData } from "./Checkout";
+
+type ConfirmationState = "loading" | "confirmed" | "error";
 
 const reserve = {
   title: {
@@ -15,7 +20,7 @@ const reserve = {
   message: {
     loading: "Please wait while we make the reservation",
     confirmed: "A confirmation email has been sent to your inbox.",
-    error: "Something went wrong, refresh page and try again",
+    error: "Something went wrong. Please try again.",
   },
   button: {
     loading: <AiOutlineLoading3Quarters className="animate-spin" />,
@@ -26,19 +31,35 @@ const reserve = {
 
 export default function PaymentSection({ listingData }: { listingData: ListingData }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [confirmationState, setConfirmationState] = useState<"loading" | "confirmed" | "error">("loading");
+  const [confirmationState, setConfirmationState] = useState<ConfirmationState>("loading");
   const router = useRouter();
-
-  //If no user -> login and back to here
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const timeoutId = setTimeout(() => setConfirmationState("confirmed"), 3000);
-    return () => clearTimeout(timeoutId);
-  }, [isOpen]);
+  const { user } = useUser();
 
   const handleConfirmPayment = async () => {
+    if (!user) {
+      return;
+    }
+
     setIsOpen(true);
+
+    const reservationData: Reservation = {
+      user_id: user.id,
+      listing_id: listingData.listing.id,
+      start_date: listingData.startDate,
+      end_date: listingData.endDate,
+      guests: listingData.guests,
+      total_price: calculateTotal(listingData.startDate, listingData.endDate, listingData.listing).total,
+    };
+
+    try {
+      await createReservation(reservationData);
+      setConfirmationState("confirmed");
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error.message);
+        setConfirmationState("error");
+      }
+    }
   };
 
   const handleCloseModal = () => {
@@ -56,10 +77,35 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
   };
 
   return (
-    <div>
+    <div className="flex flex-col">
       <h1>Select Payment method</h1>
-      <button onClick={handleConfirmPayment}>Confirm & Pay</button>
-
+      <div>
+        <h2>Dates:</h2>
+        <div className="flex flex-col">
+          <h3>
+            Start:
+            {listingData.startDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </h3>
+          <h3>
+            End:
+            {listingData.endDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </h3>
+        </div>
+      </div>
+      <button
+        className="bg-myGreen hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mt-4 transition-colors disabled:opacity-50"
+        onClick={handleConfirmPayment}
+      >
+        Confirm & Pay
+      </button>
       <Dialog open={isOpen} onClose={handleCloseModal} className="relative z-50">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center">

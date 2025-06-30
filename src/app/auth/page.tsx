@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AuthForm() {
   const [email, setEmail] = useState("");
@@ -12,6 +12,8 @@ export default function AuthForm() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,16 +24,31 @@ export default function AuthForm() {
     try {
       if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        setTimeout(() => {
-          router.replace("/");
-        }, 2000);
+        if (error) {
+          throw error;
+        }
+
         setSuccessMsg("Logged in successfully!");
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
-        if (error) throw error;
-        setSuccessMsg("Registration successful! Please check your email to confirm.");
+        const { error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: "http://localhost:3000/auth/callback",
+          },
+        });
+        if (signUpError) throw signUpError;
+
+        const { error: loginError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (loginError) throw loginError;
+
+        setSuccessMsg("Account created and logged in!");
       }
+
+      router.replace(redirectTo);
     } catch (error) {
       setErrorMsg((error as Error).message);
     } finally {
