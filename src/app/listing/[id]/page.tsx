@@ -1,10 +1,11 @@
+// app/listing/[id]/page.tsx
+
 import BookingCalendarContainer from "@/components/Booking/BookingCalendarContainer";
 import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
 import { ListBadges } from "@/components/ListBadges";
-import { mockListings } from "@/lib/mockListings";
-import type { Host, Listing } from "@/lib/types";
-import Image from "next/image";
+import { getListing } from "@/lib/supabase/listings";
+import type { Listing } from "@/lib/types";
 
 interface ListingDetailsProps {
   params: {
@@ -12,9 +13,9 @@ interface ListingDetailsProps {
   };
 }
 
-export default function ListingDetailsPage({ params }: ListingDetailsProps) {
+export default async function ListingDetailsPage({ params }: ListingDetailsProps) {
   const { id } = params;
-  const listingDetails = mockListings.find((listing) => listing.id === parseInt(id));
+  const listingDetails: Listing | null = await getListing(Number(id));
 
   if (!listingDetails) {
     return <div className="text-[26px] font-bold">Listing not found</div>;
@@ -37,7 +38,7 @@ export default function ListingDetailsPage({ params }: ListingDetailsProps) {
 
           <hr className="text-gray-300 my-8" />
 
-          <HostInformation host={listingDetails.host} />
+          {/* <HostInformation host={listingDetails.host} /> */}
 
           <hr className="text-gray-300 my-8" />
 
@@ -52,14 +53,14 @@ export default function ListingDetailsPage({ params }: ListingDetailsProps) {
   );
 }
 
-function HostInformation({ host }: { host: Host }) {
+/* function HostInformation({ host }: { host: Host }) {
   return (
     <div className="flex items-center">
       <Image src={host.avatarUrl} alt="Rounded avatar" height={40} width={40} className="rounded-full" />
       <h3>Hosted by {host.name}</h3>
     </div>
   );
-}
+} */
 
 function ListingSubtitle({ listingDetails }: { listingDetails: Listing }) {
   return (

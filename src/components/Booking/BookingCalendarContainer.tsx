@@ -20,7 +20,7 @@ export default function BookingCalendarContainer({ listing }: { listing: Listing
       </div>
 
       <div className="hidden sm:flex justify-end lg:justify-center col-span-5">
-        <BookingForm listing={listing} priceFirst={true} onConfirm={() => console.log("Testing")} />
+        <BookingForm listing={listing} priceFirst={true} />
       </div>
     </>
   );

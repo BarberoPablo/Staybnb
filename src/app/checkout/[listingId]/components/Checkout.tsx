@@ -16,7 +16,7 @@ export type ListingData = {
 
 export default function Checkout({ listing, params }: { listing: Listing; params: Partial<Record<(typeof listingQueryParams)[number], string>> }) {
   const { guests, startDate, endDate, summary } = createListingData(params, listing);
-  const [listingData, setListingData] = useState({ listing, guests, startDate, endDate, summary });
+  const [listingData, setListingData] = useState<ListingData>({ listing, guests, startDate, endDate, summary });
 
   return (
     <div className="grid grid-cols-2 relative">

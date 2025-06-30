@@ -1,17 +1,35 @@
 "use client";
 
 import ListingCard from "@/components/ListingCard";
-import { mockListings } from "@/lib/mockListings";
+import { getListings } from "@/lib/supabase/listings";
+import { Listing } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const city = searchParams.get("city");
+  const [filteredListings, setFilteredListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const filteredListings = mockListings.filter((place) => place.location.toLowerCase().includes(city?.toLowerCase() || ""));
+  useEffect(() => {
+    if (city) {
+      const fetchListings = async () => {
+        try {
+          const data = await getListings(city);
+          setFilteredListings(data);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-  if (filteredListings.length === 0) return <div>No listings found in {city}</div>;
+      fetchListings();
+    }
+  }, [city]);
+
+  if (filteredListings.length === 0 && !loading) return <div>No listings found in {city}</div>;
 
   return (
     <div className="grid lg:grid-cols-2 gap-x-8">

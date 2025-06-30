@@ -1,4 +1,4 @@
-import { Guests, Listing } from "./types";
+import { Guests, Listing, ListingSummary } from "./types";
 
 export function pluralize(count: number, singular: string, plural: string) {
   return count === 1 ? singular : plural;
@@ -6,19 +6,18 @@ export function pluralize(count: number, singular: string, plural: string) {
 
 export const listingGuests: Guests[] = ["adults", "children", "infant", "pets"];
 
-export function calculateTotal(startDate: Date | undefined, endDate: Date | undefined, listing: Listing) {
-  if (!startDate || !endDate) return { nights: 0, baseTotal: 0, total: 0 };
-
+export function calculateTotal(startDate: Date, endDate: Date, listing: Listing): ListingSummary {
   const nights = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
   const baseTotal = nights * listing.price;
 
   const promotion = listing.promotions?.find((promo) => nights >= promo.minNights);
   if (promotion) {
-    const discount = (promotion.discountPercentage / 100) * baseTotal;
-    return { nights, baseTotal, discount, total: baseTotal - discount };
+    const discountPercentage = promotion.discountPercentage;
+    const discount = (discountPercentage / 100) * baseTotal;
+    return { nights, baseTotal, discount, discountPercentage, total: baseTotal - discount };
   }
 
-  return { nights, baseTotal, total: baseTotal };
+  return { nights, baseTotal, total: baseTotal, discount: 0, discountPercentage: 0 };
 }
 
 export const displayGuestLabel = (type: Guests, value: number) => {

@@ -1,11 +1,12 @@
 "use client";
 
+import DateRange from "@/components/DateRange";
+import ListingPrice from "@/components/ListingPrice";
 import { Guests } from "@/lib/types";
 import { displayGuestLabel } from "@/lib/utils";
 import Image from "next/image";
-import { ListingData } from "./Checkout";
-import ListingPrice from "@/components/ListingPrice";
 import { useState } from "react";
+import { ListingData } from "./Checkout";
 import DateRangeSelector from "./DateRangeSelector";
 
 export default function ListingResume({
@@ -27,6 +28,7 @@ export default function ListingResume({
         <Image
           src={listingData.listing.images[0]}
           alt="listing main image"
+          priority
           className="object-cover w-[200px] h-[200px] sm:w-[100px] sm:h-[100px] rounded-xl"
           width={200}
           height={200}
@@ -45,10 +47,7 @@ export default function ListingResume({
       <div className="flex flex-col justify-center w-fit">
         <h2>Trip information</h2>
         <div className="flex items-center justify-center gap-4 bg-myGreen text-white py-2 px-4 rounded w-fit">
-          <span>
-            {listingData.startDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })} -{" "}
-            {listingData.endDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-          </span>
+          <DateRange startDate={listingData.startDate} endDate={listingData.endDate} />
           <button className="text-sm w-10 bg-white text-myGreenDark py-2 rounded" onClick={openDateSelector}>
             Edit
           </button>

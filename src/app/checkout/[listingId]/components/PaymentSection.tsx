@@ -1,13 +1,14 @@
 "use client";
 
 import { useUser } from "@/hooks/useUser";
-import { createReservation, Reservation } from "@/lib/supabase/reservations";
+import { createReservation } from "@/lib/supabase/reservations";
 import { calculateTotal } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { ListingData } from "./Checkout";
+import { CreateReservation } from "@/lib/types";
 
 type ConfirmationState = "loading" | "confirmed" | "error";
 
@@ -42,19 +43,26 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
 
     setIsOpen(true);
 
-    const reservationData: Reservation = {
-      user_id: user.id,
-      listing_id: listingData.listing.id,
-      start_date: listingData.startDate,
-      end_date: listingData.endDate,
+    const summary = calculateTotal(listingData.startDate, listingData.endDate, listingData.listing);
+
+    const reservationData: CreateReservation = {
+      userId: user.id,
+      listingId: listingData.listing.id,
+      startDate: listingData.startDate,
+      endDate: listingData.endDate,
       guests: listingData.guests,
-      total_price: calculateTotal(listingData.startDate, listingData.endDate, listingData.listing).total,
+      totalPrice: summary.total,
+      totalNights: summary.nights,
+      nightPrice: listingData.listing.price,
+      discount: summary.discount || 0,
+      discountPercentage: summary.discountPercentage || 0,
     };
 
     try {
       await createReservation(reservationData);
       setConfirmationState("confirmed");
     } catch (error) {
+      console.log({ error });
       if (error instanceof Error) {
         console.error(error.message);
         setConfirmationState("error");
@@ -72,7 +80,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
     if (confirmationState === "error") {
       window.location.reload();
     } else {
-      router.push("/");
+      router.push("/reservations");
     }
   };
 

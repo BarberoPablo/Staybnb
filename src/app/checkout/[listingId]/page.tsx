@@ -1,46 +1,38 @@
-"use client";
-
-import { useQueryParams } from "@/hooks/useQueryParams";
-import { useUser } from "@/hooks/useUser";
-import { mockListings } from "@/lib/mockListings";
-import { listingQueryParams } from "@/lib/utils";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { getListing } from "@/lib/supabase/listings";
+import Link from "next/link";
 import Checkout from "./components/Checkout";
 
-export default function CheckoutPage() {
-  const { listingId } = useParams<{ listingId: string }>();
-  const router = useRouter();
-  const { user, loading } = useUser();
-  const params: Partial<Record<(typeof listingQueryParams)[number], string>> = useQueryParams(listingQueryParams);
-  const numericId = parseInt(listingId ?? "");
+export default async function CheckoutPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ listingId: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
 
-  const listing = mockListings.find((listing) => listing.id === numericId);
-  const isInvalid = !listingId || !params.startDate || !params.endDate || !params.adults || !listing;
+  const listingId = parseInt(resolvedParams.listingId ?? "");
+  const { startDate, endDate, adults } = resolvedSearchParams;
 
-  useEffect(() => {
-    if (!loading && !user) {
-      const fullPath = window.location.pathname + window.location.search;
-      router.push(`/auth?redirectTo=${encodeURIComponent(fullPath)}`);
-    }
-  }, [user, router, loading]);
+  const listing = await getListing(listingId);
 
-  const handleGoBackHome = () => {
-    router.push("/");
-  };
+  const isInvalid = !listingId || !startDate || !endDate || !adults || !listing;
 
   if (isInvalid) {
     return (
       <div>
         <h1>Invalid information (check dates, guests and listing)</h1>
-        <button onClick={handleGoBackHome}>Go back home</button>
+        <Link href={"/"}>
+          <button>Go back home</button>
+        </Link>
       </div>
     );
   }
 
   return (
     <div>
-      <Checkout listing={listing} params={params} />
+      <Checkout listing={listing} params={resolvedParams} />
     </div>
   );
 }
