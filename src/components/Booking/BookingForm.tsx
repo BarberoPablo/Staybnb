@@ -3,7 +3,7 @@
 import Tooltip from "@/components/Tooltip";
 import { getReservedDates } from "@/lib/supabase/reservations";
 import { DateRangeKey, Guests, Listing, UnavailableDates } from "@/lib/types";
-import { buildListingParams, calculateTotal, getDisabledDates, listingGuests, validateDateRange } from "@/lib/utils";
+import { buildListingParams, calculateTotal, getDisabledDates, listingGuests } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
@@ -11,6 +11,8 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import ListingPrice from "../ListingPrice";
+import { excludeDate, getCustomDayContent, validateFormData } from "./bookingFormUtils";
+import { CalendarLegend } from "./CalendarLegend";
 
 export default function BookingForm({
   listing,
@@ -72,13 +74,9 @@ export default function BookingForm({
         const filteredDates = { ...prevState };
 
         if (userSelectedCheckOut) {
-          filteredDates.unavailableCheckOutDates.filtered = [
-            ...filteredDates.unavailableCheckOutDates.all.filter((date) => date.getTime() !== startDate.getTime()),
-          ];
+          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, startDate);
         } else {
-          filteredDates.unavailableCheckInDates.filtered = [
-            ...filteredDates.unavailableCheckInDates.all.filter((date) => date.getTime() !== endDate.getTime()),
-          ];
+          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, endDate);
         }
         return filteredDates;
       });
@@ -114,12 +112,11 @@ export default function BookingForm({
     router.push(`/checkout/${listing.id}?${query}`);
   };
 
-  console.log({ disabledDates });
-
   return (
     <form onSubmit={handleSubmit}>
       {!priceFirst && (
         <div className="relative">
+          <CalendarLegend />
           <DateRange
             ranges={[dateRange]}
             onChange={handleChangeDateRange}
@@ -127,6 +124,7 @@ export default function BookingForm({
             rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
             showDateDisplay={false}
             disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
+            dayContentRenderer={getCustomDayContent(disabledDates)}
           />
           {errors.dateRange && <Tooltip text={errors.dateRange} arrow={false} containerStyle={"top-[-6px]"} />}
         </div>
@@ -166,6 +164,8 @@ export default function BookingForm({
         <div className="relative">
           {errors.dateRange && <Tooltip text={errors.dateRange} containerStyle="top-[-6px]" arrow={false} />}
 
+          <CalendarLegend />
+
           <DateRange
             ranges={[dateRange]}
             onChange={handleChangeDateRange}
@@ -173,6 +173,7 @@ export default function BookingForm({
             rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
             showDateDisplay={false}
             disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
+            dayContentRenderer={getCustomDayContent(disabledDates)}
           />
         </div>
       )}
@@ -186,26 +187,4 @@ export default function BookingForm({
       </div>
     </form>
   );
-}
-
-type FormErrors = Partial<Record<Guests | "dateRange", string>>;
-
-function validateFormData(startDate: Date, endDate: Date, guests: Record<Guests, number>, listing: Listing): FormErrors {
-  const errors: FormErrors = {};
-  const dateError = validateDateRange(startDate, endDate);
-
-  if (dateError) {
-    errors.dateRange = dateError;
-  }
-
-  for (const key of listingGuests) {
-    const value = guests[key];
-    const { max, min } = listing.guestLimits[key];
-    if (value > max || value < min) {
-      errors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} must be between ${min} and ${max}.`;
-      return errors;
-    }
-  }
-
-  return errors;
 }

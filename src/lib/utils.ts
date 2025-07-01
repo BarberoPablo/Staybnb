@@ -87,10 +87,8 @@ export function getDisabledDates(reservedDates: ReservedDates[]): { unavailableC
 
     // Add all checkin dates to unavailable unavailableCheckInDates
     unavailableCheckInDates.push(normalizeDate(reservation.startDate));
-    console.log("Start date", reservation.startDate);
     // Add all checkout dates to unavailable unavailableCheckOutDates
     unavailableCheckOutDates.push(normalizeDate(reservation.endDate));
-    console.log("End date", reservation.endDate);
 
     if (start <= end) {
       // Block all days in between the dates
