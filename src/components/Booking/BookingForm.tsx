@@ -122,7 +122,7 @@ export default function BookingForm({
             onChange={handleChangeDateRange}
             minDate={new Date()}
             rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
-            showDateDisplay={false}
+            showDateDisplay={true}
             disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
             dayContentRenderer={getCustomDayContent(disabledDates)}
           />
@@ -171,7 +171,7 @@ export default function BookingForm({
             onChange={handleChangeDateRange}
             minDate={new Date()}
             rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
-            showDateDisplay={false}
+            showDateDisplay={true}
             disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
             dayContentRenderer={getCustomDayContent(disabledDates)}
           />
