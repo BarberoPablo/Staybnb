@@ -181,7 +181,11 @@ export default function BookingForm({
       <div className="flex justify-center gap-10">
         {children}
 
-        <button type="submit" className="px-4 py-2 bg-myGreen text-white rounded-4xl">
+        <button
+          type="submit"
+          disabled={dateRange.startDate.getTime() >= dateRange.endDate.getTime() || Object.keys(errors).length > 0}
+          className="px-4 py-2 bg-myGreen text-white rounded-4xl"
+        >
           Reserve
         </button>
       </div>

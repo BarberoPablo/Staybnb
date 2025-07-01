@@ -117,7 +117,7 @@ export default function DateRangeSelector({
             />
             {error && <Tooltip text={error} arrow={false} containerStyle={"top-[-6px]"} />}
 
-            <button className="w-25 bg-myGreen text-white py-2 rounded" onClick={handleConfirm}>
+            <button className="w-25 bg-myGreen text-white py-2 rounded" disabled={dateRange.startDate === dateRange.endDate} onClick={handleConfirm}>
               Confirm
             </button>
           </div>

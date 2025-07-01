@@ -108,6 +108,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
         </div>
       </div>
       <button
+        disabled={listingData.startDate.getTime() >= listingData.endDate.getTime()}
         className="bg-myGreen hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mt-4 transition-colors disabled:opacity-50"
         onClick={handleConfirmPayment}
       >
