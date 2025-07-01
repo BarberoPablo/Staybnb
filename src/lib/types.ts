@@ -92,3 +92,7 @@ export type UnavailableDates = {
     all: Date[];
   };
 };
+
+export type RequiredParams = "adults" | "startDate" | "endDate";
+export type OptionalParams = "children" | "infant" | "pets";
+export type ListingSearchParams = Record<RequiredParams, string> & Partial<Record<OptionalParams, string>>;

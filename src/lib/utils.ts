@@ -1,5 +1,5 @@
 import { addDays, eachDayOfInterval, subDays } from "date-fns";
-import { Guests, Listing, ListingSummary, ReservedDates } from "./types";
+import { Guests, Listing, ListingSearchParams, ListingSummary, ReservedDates } from "./types";
 
 export function pluralize(count: number, singular: string, plural: string) {
   return count === 1 ? singular : plural;
@@ -49,16 +49,17 @@ export function buildListingParams(guests: Record<Guests, number>, startDate: Da
   return query;
 }
 
-export const listingQueryParams = ["startDate", "endDate", "adults", "children", "infant", "pets"];
+export const listingQueryParams = ["startDate", "endDate", "adults"] as const;
+export const listingOptionalQueryParams = ["children", "infant", "pets"] as const;
 
-export function createListingData(params: Partial<Record<string, string>>, listing: Listing) {
+export function createListingData(params: ListingSearchParams, listing: Listing) {
   const guests = Object.fromEntries(
     Object.entries(params)
       .filter(([key, value]) => listingGuests.includes(key as Guests) && value !== "0")
       .map(([key, value]) => [key, Number(value)])
   ) as Record<Guests, number>;
-  const startDate = params.startDate ? new Date(params.startDate) : new Date();
-  const endDate = params.endDate ? new Date(params.endDate) : new Date();
+  const startDate = new Date(params.startDate);
+  const endDate = new Date(params.endDate);
   const summary = calculateTotal(startDate, endDate, listing);
 
   return { guests, startDate, endDate, summary };

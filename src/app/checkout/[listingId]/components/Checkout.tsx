@@ -2,8 +2,8 @@
 
 import ListingResume from "@/app/checkout/[listingId]/components/ListingResume";
 import PaymentSection from "@/app/checkout/[listingId]/components/PaymentSection";
-import { Guests, Listing, ListingSummary } from "@/lib/types";
-import { createListingData, listingQueryParams } from "@/lib/utils";
+import { Guests, Listing, ListingSearchParams, ListingSummary } from "@/lib/types";
+import { createListingData } from "@/lib/utils";
 import { useState } from "react";
 
 export type ListingData = {
@@ -14,8 +14,8 @@ export type ListingData = {
   summary: ListingSummary;
 };
 
-export default function Checkout({ listing, params }: { listing: Listing; params: Partial<Record<(typeof listingQueryParams)[number], string>> }) {
-  const { guests, startDate, endDate, summary } = createListingData(params, listing);
+export default function Checkout({ listing, searchParams }: { listing: Listing; searchParams: ListingSearchParams }) {
+  const { guests, startDate, endDate, summary } = createListingData(searchParams, listing);
   const [listingData, setListingData] = useState<ListingData>({ listing, guests, startDate, endDate, summary });
 
   return (

@@ -1,4 +1,5 @@
 import { getListing } from "@/lib/supabase/listings";
+import { ListingSearchParams } from "@/lib/types";
 import Link from "next/link";
 import Checkout from "./components/Checkout";
 
@@ -10,7 +11,7 @@ export default async function CheckoutPage({
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const resolvedParams = await params;
-  const resolvedSearchParams = await searchParams;
+  const resolvedSearchParams = (await searchParams) as ListingSearchParams;
 
   const listingId = parseInt(resolvedParams.listingId ?? "");
   const { startDate, endDate, adults } = resolvedSearchParams;
@@ -32,7 +33,7 @@ export default async function CheckoutPage({
 
   return (
     <div>
-      <Checkout listing={listing} params={resolvedParams} />
+      <Checkout listing={listing} searchParams={resolvedSearchParams} />
     </div>
   );
 }
