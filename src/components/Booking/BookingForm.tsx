@@ -1,10 +1,11 @@
 "use client";
 
 import Tooltip from "@/components/Tooltip";
-import { DateRangeKey, Guests, Listing } from "@/lib/types";
-import { buildListingParams, calculateTotal, listingGuests, validateDateRange } from "@/lib/utils";
+import { getReservedDates } from "@/lib/supabase/reservations";
+import { DateRangeKey, Guests, Listing, UnavailableDates } from "@/lib/types";
+import { buildListingParams, calculateTotal, getDisabledDates, listingGuests, validateDateRange } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -13,6 +14,7 @@ import ListingPrice from "../ListingPrice";
 
 export default function BookingForm({
   listing,
+
   priceFirst = false,
   children,
   onConfirm,
@@ -27,21 +29,60 @@ export default function BookingForm({
     endDate: new Date(),
     key: "selection",
   });
+  const [disabledDates, setDisabledDates] = useState<UnavailableDates>({
+    unavailableCheckInDates: { filtered: [], all: [] },
+    unavailableCheckOutDates: { filtered: [], all: [] },
+  });
   const [guests, setGuests] = useState<Record<Guests, number>>({
     adults: 1,
     children: 0,
     infant: 0,
     pets: 0,
   });
+  const [isSelectingCheckOut, setIsSelectingCheckOut] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<Guests | "dateRange", string>>>({});
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchReservedDates = async () => {
+      try {
+        const response = await getReservedDates(listing.id);
+        const { unavailableCheckInDates: disabledCheckInDates, unavailableCheckOutDates: disabledCheckOutDates } = getDisabledDates(response);
+        setDisabledDates({
+          unavailableCheckInDates: { filtered: disabledCheckInDates, all: disabledCheckInDates },
+          unavailableCheckOutDates: { filtered: disabledCheckOutDates, all: disabledCheckOutDates },
+        });
+      } catch (error) {
+        console.error("Error fetching reserved dates:", error);
+      }
+    };
+
+    fetchReservedDates();
+  }, [listing.id]);
 
   const handleChangeDateRange = (ranges: RangeKeyDict) => {
     const selection = ranges["selection"];
 
     if (selection?.startDate && selection?.endDate) {
       const { startDate, endDate, key } = selection;
+      const userSelectedCheckOut = !isSelectingCheckOut;
+
       setDateRange({ startDate, endDate, key });
+      setDisabledDates((prevState) => {
+        const filteredDates = { ...prevState };
+
+        if (userSelectedCheckOut) {
+          filteredDates.unavailableCheckOutDates.filtered = [
+            ...filteredDates.unavailableCheckOutDates.all.filter((date) => date.getTime() !== startDate.getTime()),
+          ];
+        } else {
+          filteredDates.unavailableCheckInDates.filtered = [
+            ...filteredDates.unavailableCheckInDates.all.filter((date) => date.getTime() !== endDate.getTime()),
+          ];
+        }
+        return filteredDates;
+      });
+      setIsSelectingCheckOut(userSelectedCheckOut);
       setErrors({});
     }
   };
@@ -73,6 +114,8 @@ export default function BookingForm({
     router.push(`/checkout/${listing.id}?${query}`);
   };
 
+  console.log({ disabledDates });
+
   return (
     <form onSubmit={handleSubmit}>
       {!priceFirst && (
@@ -83,6 +126,7 @@ export default function BookingForm({
             minDate={new Date()}
             rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
             showDateDisplay={false}
+            disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
           />
           {errors.dateRange && <Tooltip text={errors.dateRange} arrow={false} containerStyle={"top-[-6px]"} />}
         </div>
@@ -128,6 +172,7 @@ export default function BookingForm({
             minDate={new Date()}
             rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
             showDateDisplay={false}
+            disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
           />
         </div>
       )}

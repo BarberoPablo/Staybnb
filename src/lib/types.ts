@@ -81,3 +81,14 @@ export type ReservedDates = {
   startDate: Date;
   endDate: Date;
 };
+
+export type UnavailableDates = {
+  unavailableCheckInDates: {
+    filtered: Date[];
+    all: Date[];
+  };
+  unavailableCheckOutDates: {
+    filtered: Date[];
+    all: Date[];
+  };
+};

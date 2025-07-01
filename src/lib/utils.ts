@@ -1,4 +1,5 @@
-import { Guests, Listing, ListingSummary } from "./types";
+import { addDays, eachDayOfInterval, subDays } from "date-fns";
+import { Guests, Listing, ListingSummary, ReservedDates } from "./types";
 
 export function pluralize(count: number, singular: string, plural: string) {
   return count === 1 ? singular : plural;
@@ -72,4 +73,34 @@ export function validateDateRange(startDate: Date, endDate: Date) {
     return "Check-in should be prior to check-out";
   }
   return "";
+}
+
+export function getDisabledDates(reservedDates: ReservedDates[]): { unavailableCheckInDates: Date[]; unavailableCheckOutDates: Date[] } {
+  // Block all days in between the dates
+  const unavailableCheckInDates: Date[] = [];
+  const unavailableCheckOutDates: Date[] = [];
+
+  reservedDates.forEach((reservation) => {
+    const start = normalizeDate(addDays(reservation.startDate, 1));
+    const end = normalizeDate(subDays(reservation.endDate, 1));
+
+    // Add all checkin dates to unavailable unavailableCheckInDates
+    unavailableCheckInDates.push(normalizeDate(reservation.startDate));
+    console.log("Start date", reservation.startDate);
+    // Add all checkout dates to unavailable unavailableCheckOutDates
+    unavailableCheckOutDates.push(normalizeDate(reservation.endDate));
+    console.log("End date", reservation.endDate);
+
+    if (start <= end) {
+      // Block all days in between the dates
+      unavailableCheckInDates.push(...eachDayOfInterval({ start, end }));
+      unavailableCheckOutDates.push(...eachDayOfInterval({ start, end }));
+    }
+  });
+
+  return { unavailableCheckInDates, unavailableCheckOutDates };
+}
+
+export function normalizeDate(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }

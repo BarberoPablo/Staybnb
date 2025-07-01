@@ -2,8 +2,8 @@
 
 import { Listing } from "@/lib/types";
 import { useState } from "react";
-import BookingModal from "./BookingModal";
 import BookingForm from "./BookingForm";
+import BookingModal from "./BookingModal";
 
 export default function BookingCalendarContainer({ listing }: { listing: Listing }) {
   const [isOpen, setIsOpen] = useState(false);
