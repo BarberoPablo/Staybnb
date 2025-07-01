@@ -1,10 +1,13 @@
 "use client";
 
+import { CalendarLegend } from "@/components/Booking/CalendarLegend";
+import { excludeDate, getCustomDayContent } from "@/components/Booking/bookingFormUtils";
 import Tooltip from "@/components/Tooltip";
-import { DateRangeKey } from "@/lib/types";
-import { validateDateRange } from "@/lib/utils";
+import { getReservedDates } from "@/lib/supabase/reservations";
+import { DateRangeKey, UnavailableDates } from "@/lib/types";
+import { getDisabledDates, validateDateRange } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DateRange, RangeKeyDict } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -14,12 +17,14 @@ export default function DateRangeSelector({
   isOpen,
   startDate,
   endDate,
+  listingId,
   setListingData,
   onClose,
 }: {
   isOpen: boolean;
   startDate: Date;
   endDate: Date;
+  listingId: number;
   setListingData: React.Dispatch<React.SetStateAction<ListingData>>;
   onClose: () => void;
 }) {
@@ -29,23 +34,47 @@ export default function DateRangeSelector({
     endDate: endDate,
     key: "selection",
   });
+  const [isSelectingCheckOut, setIsSelectingCheckOut] = useState(false);
+  const [disabledDates, setDisabledDates] = useState<UnavailableDates>({
+    unavailableCheckInDates: { filtered: [], all: [] },
+    unavailableCheckOutDates: { filtered: [], all: [] },
+  });
 
-  /* 
-  In the future, to keep the calendar synchronized if startDate or endDate can change from the parent component while this modal is closed
   useEffect(() => {
-    setDateRange({
-      startDate,
-      endDate,
-      key: "selection",
-    });
-  }, [startDate, endDate]); */
+    const fetchReservedDates = async () => {
+      try {
+        const response = await getReservedDates(listingId);
+        const { unavailableCheckInDates: disabledCheckInDates, unavailableCheckOutDates: disabledCheckOutDates } = getDisabledDates(response);
+        setDisabledDates({
+          unavailableCheckInDates: { filtered: disabledCheckInDates, all: disabledCheckInDates },
+          unavailableCheckOutDates: { filtered: disabledCheckOutDates, all: disabledCheckOutDates },
+        });
+      } catch (error) {
+        console.error("Error fetching reserved dates:", error);
+      }
+    };
+
+    fetchReservedDates();
+  }, [listingId]);
 
   const handleChangeDateRange = (ranges: RangeKeyDict) => {
     const selection = ranges["selection"];
     const { startDate, endDate, key } = selection;
+    const userSelectedCheckOut = !isSelectingCheckOut;
 
     if (startDate && endDate) {
       setDateRange({ startDate, endDate, key });
+      setDisabledDates((prevState) => {
+        const filteredDates = { ...prevState };
+
+        if (userSelectedCheckOut) {
+          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, startDate);
+        } else {
+          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, endDate);
+        }
+        return filteredDates;
+      });
+      setIsSelectingCheckOut(userSelectedCheckOut);
       setError("");
     }
   };
@@ -73,6 +102,9 @@ export default function DateRangeSelector({
           <DialogTitle id="dialog-title" className="text-xl font-semibold text-myGreen">
             Select your dates
           </DialogTitle>
+
+          <CalendarLegend />
+
           <div id="dialog-description" className="flex flex-col justify-center items-center w-full px-6 relative">
             <DateRange
               ranges={[dateRange]}
@@ -80,6 +112,8 @@ export default function DateRangeSelector({
               minDate={new Date()}
               rangeColors={[error ? "#fb2c36" : "#3ecf8e"]}
               showDateDisplay={true}
+              disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
+              dayContentRenderer={getCustomDayContent(disabledDates)}
             />
             {error && <Tooltip text={error} arrow={false} containerStyle={"top-[-6px]"} />}
 

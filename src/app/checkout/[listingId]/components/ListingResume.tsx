@@ -68,6 +68,7 @@ export default function ListingResume({
         isOpen={isOpen}
         startDate={listingData.startDate}
         endDate={listingData.endDate}
+        listingId={listingData.listing.id}
         setListingData={setListingData}
         onClose={() => {
           setIsOpen(false);
