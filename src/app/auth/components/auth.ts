@@ -15,3 +15,8 @@ export async function signUp(email: string, password: string) {
     },
   });
 }
+
+export async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { logout } from "@/lib/supabase/auth";
+import { logout } from "@/app/auth/components/auth";
 import { useRouter } from "next/navigation";
 
 export default function LogoutButton() {
