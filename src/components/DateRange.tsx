@@ -6,7 +6,8 @@ export default function DateRange({ startDate, endDate }: { startDate: Date; end
 
   return (
     <span>
-      {start.toLocaleDateString("en-US", { month: "short", day: "numeric" })} - {end.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+      {start.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} -{" "}
+      {end.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
     </span>
   );
 }
