@@ -1,10 +1,10 @@
 "use client";
 
 import ListingCard from "@/components/ListingCard";
-import { getListings } from "@/lib/supabase/listings";
+import { api } from "@/lib/api/api";
 import { Listing } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -16,8 +16,12 @@ export default function SearchPage() {
     if (city) {
       const fetchListings = async () => {
         try {
-          const data = await getListings(city);
-          setFilteredListings(data);
+          const { success, data, error } = await api.getListings(city);
+          if (success) {
+            setFilteredListings(data);
+          } else {
+            throw error;
+          }
         } catch (error) {
           console.error(error);
         } finally {
@@ -30,6 +34,8 @@ export default function SearchPage() {
   }, [city]);
 
   if (filteredListings.length === 0 && !loading) return <div>No listings found in {city}</div>;
+
+  if (loading) return <div>Searching listings from: {city}</div>;
 
   return (
     <div className="grid lg:grid-cols-2 gap-x-8">
