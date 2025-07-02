@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { signIn, signUp } from "./components/auth";
+
+const supabase = createClient();
 
 export default function AuthForm() {
   const [email, setEmail] = useState("");
@@ -23,20 +26,14 @@ export default function AuthForm() {
 
     try {
       if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await signIn(email, password);
         if (error) {
           throw error;
         }
 
         setSuccessMsg("Logged in successfully!");
       } else {
-        const { error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: "http://localhost:3000/auth/callback",
-          },
-        });
+        const { error: signUpError } = await signUp(email, password);
         if (signUpError) throw signUpError;
 
         const { error: loginError } = await supabase.auth.signInWithPassword({
