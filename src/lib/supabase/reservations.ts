@@ -1,21 +1,10 @@
 import { mockReservations } from "../mockReservations";
-import { parseCreateReservationToDB, parseReservationFromDB } from "../parser";
-import { CreateReservation, ReservedDates, ReservationWithListing } from "../types";
-import { supabase } from "./client";
+import { parseReservationFromDB } from "../parser";
+import { ReservationWithListing, ReservedDates } from "../types";
+import { createClient } from "./client";
 import { getListing } from "./listings";
 
-export async function createReservation(data: CreateReservation) {
-  const reservation = parseCreateReservationToDB(data);
-
-  const { error, data: insertedData } = await supabase.from("reservations").insert(reservation).select();
-
-  if (error) {
-    console.error(error);
-    throw new Error("Could not create reservation");
-  }
-
-  return insertedData;
-}
+const supabase = createClient();
 
 export async function getUserReservations(user_id: string): Promise<ReservationWithListing[]> {
   const { data: reservations, error } = await supabase.from("reservations").select("*").eq("user_id", user_id).order("start_date", { ascending: false });

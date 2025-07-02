@@ -1,14 +1,14 @@
 "use client";
 
 import { useUser } from "@/hooks/useUser";
-import { createReservation } from "@/lib/supabase/reservations";
+import { api } from "@/lib/api/api";
+import { CreateReservation } from "@/lib/types";
 import { calculateTotal } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { ListingData } from "./Checkout";
-import { CreateReservation } from "@/lib/types";
 
 type ConfirmationState = "loading" | "confirmed" | "error";
 
@@ -59,13 +59,19 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
     };
 
     try {
-      await createReservation(reservationData);
-      setConfirmationState("confirmed");
+      const response = await api.createReservation(reservationData);
+
+      if (response.success) {
+        setConfirmationState("confirmed");
+      } else {
+        throw new Error(response.statusText);
+      }
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
         setConfirmationState("error");
       }
+      setConfirmationState("error");
     }
   };
 
