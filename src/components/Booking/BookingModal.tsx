@@ -1,6 +1,6 @@
 "use client";
 
-import { Listing } from "@/lib/types";
+import { Listing } from "@/lib/types/listing";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import BookingForm from "./BookingForm";
 

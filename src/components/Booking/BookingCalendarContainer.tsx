@@ -1,6 +1,6 @@
 "use client";
 
-import { Listing } from "@/lib/types";
+import { Listing } from "@/lib/types/listing";
 import { useState } from "react";
 import BookingForm from "./BookingForm";
 import BookingModal from "./BookingModal";

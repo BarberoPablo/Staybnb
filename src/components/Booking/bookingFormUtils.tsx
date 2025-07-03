@@ -1,4 +1,5 @@
-import { Guests, Listing, UnavailableDates } from "@/lib/types";
+import { Guests, UnavailableDates } from "@/lib/types";
+import { Listing } from "@/lib/types/listing";
 import { listingGuests, validateDateRange } from "@/lib/utils";
 import { format, isSameDay } from "date-fns";
 

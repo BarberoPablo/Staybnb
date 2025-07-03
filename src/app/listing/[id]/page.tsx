@@ -5,7 +5,7 @@ import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
 import { ListBadges } from "@/components/ListBadges";
 import { getListing } from "@/lib/supabase/listings";
-import type { Listing } from "@/lib/types";
+import { Listing } from "@/lib/types/listing";
 
 interface ListingDetailsProps {
   params: {

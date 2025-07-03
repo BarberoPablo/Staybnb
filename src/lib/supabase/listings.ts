@@ -1,17 +1,6 @@
 import { mockListings } from "../mockListings";
 import { parseListingFromDB } from "../parser";
-import { Listing } from "../types";
-
-export async function getListings(location: string): Promise<Listing[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const filteredListings = mockListings.filter((place) => place.location.toLowerCase().includes(location?.toLowerCase() || ""));
-      const parsedListings = filteredListings.map((listing) => parseListingFromDB(listing));
-
-      resolve(parsedListings);
-    }, 100);
-  });
-}
+import { Listing } from "../types/listing";
 
 export async function getListing(id: number): Promise<Listing> {
   return new Promise((resolve, reject) => {

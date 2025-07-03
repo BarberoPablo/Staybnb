@@ -1,6 +1,5 @@
-import { Listing } from "@/lib/types";
+import { Listing } from "@/lib/types/listing";
 import Link from "next/link";
-import React from "react";
 
 export default function ListingCard({ listing }: { listing: Listing }) {
   return (

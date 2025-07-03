@@ -2,8 +2,9 @@
 
 import Tooltip from "@/components/Tooltip";
 import { getReservedDates } from "@/lib/supabase/reservations";
-import { DateRangeKey, Guests, Listing, UnavailableDates } from "@/lib/types";
-import { buildListingParams, calculateTotal, getDisabledDates, listingGuests } from "@/lib/utils";
+import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
+import { Listing } from "@/lib/types/listing";
+import { buildListingParams, calculateNights, getDisabledDates, getListingPromotion, listingGuests } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
@@ -31,6 +32,12 @@ export default function BookingForm({
     endDate: new Date(),
     key: "selection",
   });
+  const nights = calculateNights(dateRange.startDate, dateRange.endDate);
+  const discountPercentage = getListingPromotion(listing, nights)?.discountPercentage || 0;
+
+  console.log({ nights });
+  console.log({ discountPercentage });
+
   const [disabledDates, setDisabledDates] = useState<UnavailableDates>({
     unavailableCheckInDates: { filtered: [], all: [] },
     unavailableCheckOutDates: { filtered: [], all: [] },
@@ -130,7 +137,7 @@ export default function BookingForm({
         </div>
       )}
       <div className="flex sm:mt-4">
-        <ListingPrice summary={calculateTotal(dateRange.startDate, dateRange.endDate, listing)} listing={listing} />
+        {<ListingPrice nightPrice={listing.price} nights={nights} discountPercentage={discountPercentage} promotions={listing.promotions} />}
         <div>
           {listingGuests.map((type) => (
             <div key={type} className="flex gap-5">

@@ -2,7 +2,7 @@
 
 import ListingCard from "@/components/ListingCard";
 import { api } from "@/lib/api/api";
-import { Listing } from "@/lib/types";
+import { Listing } from "@/lib/types/listing";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 

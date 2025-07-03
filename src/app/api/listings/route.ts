@@ -14,8 +14,6 @@ export async function GET(req: Request) {
       throw error;
     }
 
-    console.log("API", params.get("city"));
-
     if (!listings) {
       return NextResponse.json({ success: true, data: [] }, { status: 200 });
     }

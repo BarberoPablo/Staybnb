@@ -2,8 +2,7 @@
 
 import { useUser } from "@/hooks/useUser";
 import { api } from "@/lib/api/api";
-import { CreateReservation } from "@/lib/types";
-import { calculateTotal } from "@/lib/utils";
+import { CreateReservation } from "@/lib/types/reservation";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -43,19 +42,12 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
 
     setIsOpen(true);
 
-    const summary = calculateTotal(listingData.startDate, listingData.endDate, listingData.listing);
-
     const reservationData: CreateReservation = {
       userId: user.id,
       listingId: listingData.listing.id,
       startDate: listingData.startDate,
       endDate: listingData.endDate,
       guests: listingData.guests,
-      totalPrice: summary.total,
-      totalNights: summary.nights,
-      nightPrice: listingData.listing.price,
-      discount: summary.discount || 0,
-      discountPercentage: summary.discountPercentage || 0,
     };
 
     try {
