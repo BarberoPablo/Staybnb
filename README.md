@@ -85,3 +85,7 @@ components/
     BookingModal.tsx
     BookingButton.tsx
 ```
+
+To configure Supabase for getting DB types run:
+export SUPABASE_ACCESS_TOKEN=<token>
+$ npx supabase gen types typescript --project-id <project-id> > database.types.ts
