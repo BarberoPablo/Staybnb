@@ -1,25 +1,12 @@
 import { addDays, eachDayOfInterval, subDays } from "date-fns";
-import { Guests, Listing, ListingSearchParams, ListingSummary, ReservedDates } from "./types";
+import { Guests, ListingSearchParams, ReservedDates } from "./types";
+import { Listing, ResumedListing } from "./types/listing";
 
 export function pluralize(count: number, singular: string, plural: string) {
   return count === 1 ? singular : plural;
 }
 
 export const listingGuests: Guests[] = ["adults", "children", "infant", "pets"];
-
-export function calculateTotal(startDate: Date, endDate: Date, listing: Listing): ListingSummary {
-  const nights = Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
-  const baseTotal = nights * listing.price;
-
-  const promotion = listing.promotions?.find((promo) => nights >= promo.minNights);
-  if (promotion) {
-    const discountPercentage = promotion.discountPercentage;
-    const discount = (discountPercentage / 100) * baseTotal;
-    return { nights, baseTotal, discount, discountPercentage, total: baseTotal - discount };
-  }
-
-  return { nights, baseTotal, total: baseTotal, discount: 0, discountPercentage: 0 };
-}
 
 export const displayGuestLabel = (type: Guests, value: number) => {
   const singular = {
@@ -50,19 +37,17 @@ export function buildListingParams(guests: Record<Guests, number>, startDate: Da
 }
 
 export const listingQueryParams = ["startDate", "endDate", "adults"] as const;
+
 export const listingOptionalQueryParams = ["children", "infant", "pets"] as const;
 
-export function createListingData(params: ListingSearchParams, listing: Listing) {
+export function getGuestsFromParams(params: ListingSearchParams) {
   const guests = Object.fromEntries(
     Object.entries(params)
       .filter(([key, value]) => listingGuests.includes(key as Guests) && value !== "0")
       .map(([key, value]) => [key, Number(value)])
   ) as Record<Guests, number>;
-  const startDate = new Date(params.startDate);
-  const endDate = new Date(params.endDate);
-  const summary = calculateTotal(startDate, endDate, listing);
 
-  return { guests, startDate, endDate, summary };
+  return guests;
 }
 
 export function validateDateRange(startDate: Date, endDate: Date) {
@@ -102,4 +87,16 @@ export function getDisabledDates(reservedDates: ReservedDates[]): { unavailableC
 
 export function normalizeDate(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+export function calculateNights(startDate: Date, endDate: Date) {
+  return Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
+}
+
+export function getListingPromotion(listing: Listing | ResumedListing, nights: number) {
+  return listing.promotions?.filter((promo) => promo.minNights <= nights)[0];
+}
+
+export function twoDecimals(data: number): number {
+  return Number(data.toFixed(2));
 }

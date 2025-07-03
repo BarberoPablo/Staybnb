@@ -2,8 +2,9 @@
 
 import ListingResume from "@/app/checkout/[listingId]/components/ListingResume";
 import PaymentSection from "@/app/checkout/[listingId]/components/PaymentSection";
-import { Guests, Listing, ListingSearchParams, ListingSummary } from "@/lib/types";
-import { createListingData } from "@/lib/utils";
+import { Guests, ListingSearchParams } from "@/lib/types";
+import { Listing, Promotion } from "@/lib/types/listing";
+import { calculateNights, getGuestsFromParams, getListingPromotion } from "@/lib/utils";
 import { useState } from "react";
 
 export type ListingData = {
@@ -11,12 +12,22 @@ export type ListingData = {
   guests: Record<Guests, number>;
   startDate: Date;
   endDate: Date;
-  summary: ListingSummary;
+  nights: number;
+  promo: Promotion;
 };
 
 export default function Checkout({ listing, searchParams }: { listing: Listing; searchParams: ListingSearchParams }) {
-  const { guests, startDate, endDate, summary } = createListingData(searchParams, listing);
-  const [listingData, setListingData] = useState<ListingData>({ listing, guests, startDate, endDate, summary });
+  const startDate = new Date(searchParams.startDate);
+  const endDate = new Date(searchParams.endDate);
+  const nights = calculateNights(startDate, endDate);
+  const [listingData, setListingData] = useState<ListingData>({
+    listing,
+    guests: getGuestsFromParams(searchParams),
+    startDate,
+    endDate,
+    nights,
+    promo: getListingPromotion(listing, nights),
+  });
 
   return (
     <div className="grid grid-cols-2 relative">
