@@ -13,7 +13,7 @@ export type ListingData = {
   startDate: Date;
   endDate: Date;
   nights: number;
-  promo: Promotion;
+  promo: Promotion | null;
 };
 
 export default function Checkout({ listing, searchParams }: { listing: Listing; searchParams: ListingSearchParams }) {

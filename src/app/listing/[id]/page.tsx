@@ -1,5 +1,3 @@
-// app/listing/[id]/page.tsx
-
 import BookingCalendarContainer from "@/components/Booking/BookingCalendarContainer";
 import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
@@ -8,13 +6,11 @@ import { getListing } from "@/lib/supabase/listings";
 import { Listing } from "@/lib/types/listing";
 
 interface ListingDetailsProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function ListingDetailsPage({ params }: ListingDetailsProps) {
-  const { id } = params;
+  const { id } = await params;
   const listingDetails: Listing | null = await getListing(Number(id));
 
   if (!listingDetails) {

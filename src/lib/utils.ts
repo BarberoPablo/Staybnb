@@ -1,6 +1,6 @@
 import { addDays, eachDayOfInterval, subDays } from "date-fns";
 import { Guests, ListingSearchParams, ReservedDates } from "./types";
-import { Listing, ResumedListing } from "./types/listing";
+import { Listing, Promotion, ResumedListing } from "./types/listing";
 
 export function pluralize(count: number, singular: string, plural: string) {
   return count === 1 ? singular : plural;
@@ -93,8 +93,9 @@ export function calculateNights(startDate: Date, endDate: Date) {
   return Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
-export function getListingPromotion(listing: Listing | ResumedListing, nights: number) {
-  return listing.promotions?.filter((promo) => promo.minNights <= nights)[0];
+export function getListingPromotion(listing: Listing | ResumedListing, nights: number): Promotion | null {
+  const promos = listing.promotions?.filter((promo) => promo.minNights <= nights);
+  return promos.length > 0 ? promos[promos.length - 1] : null;
 }
 
 export function twoDecimals(data: number): number {

@@ -10,12 +10,11 @@ export default function ListingPrice({
   nights: number;
   nightPrice: number;
   discountPercentage?: number;
-  promotions?: Promotion[]; // ahora opcional
+  promotions?: Promotion[];
 }) {
   const discount = discountPercentage ? twoDecimals((discountPercentage / 100) * nights * nightPrice) : 0;
   const total = twoDecimals(nights * nightPrice - discount);
 
-  // Si no hay promociones, no mostramos promos aplicadas ni futuras
   const appliedPromo = promotions?.find((promo) => promo.discountPercentage === discountPercentage);
   const futurePromos = promotions ? promotions.filter((promo) => promo.minNights > nights).sort((a, b) => a.minNights - b.minNights) : [];
 

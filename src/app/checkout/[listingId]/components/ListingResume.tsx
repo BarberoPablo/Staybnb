@@ -64,7 +64,7 @@ export default function ListingResume({
         <ListingPrice
           nightPrice={listingData.listing.price}
           nights={listingData.nights}
-          discountPercentage={listingData.promo.discountPercentage}
+          discountPercentage={listingData.promo?.discountPercentage}
           promotions={listingData.listing.promotions}
         />
       </div>
