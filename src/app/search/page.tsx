@@ -16,12 +16,8 @@ export default function SearchPage() {
     if (city) {
       const fetchListings = async () => {
         try {
-          const { success, data, error } = await api.getListings(city);
-          if (success) {
-            setFilteredListings(data);
-          } else {
-            throw error;
-          }
+          const listings = await api.getListings(city);
+          setFilteredListings(listings);
         } catch (error) {
           console.error(error);
         } finally {

@@ -56,7 +56,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
       if (response.success) {
         setConfirmationState("confirmed");
       } else {
-        throw new Error(response.statusText);
+        throw new Error(response.message);
       }
     } catch (error) {
       if (error instanceof Error) {

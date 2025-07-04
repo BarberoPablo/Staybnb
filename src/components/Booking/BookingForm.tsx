@@ -1,9 +1,8 @@
 "use client";
 
 import Tooltip from "@/components/Tooltip";
-import { getReservedDates } from "@/lib/supabase/reservations";
 import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
-import { Listing } from "@/lib/types/listing";
+import { ListingWithReservations } from "@/lib/types/listing";
 import { buildListingParams, calculateNights, getDisabledDates, getListingPromotion, listingGuests } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
@@ -17,12 +16,11 @@ import { CalendarLegend } from "./CalendarLegend";
 
 export default function BookingForm({
   listing,
-
   priceFirst = false,
   children,
   onConfirm,
 }: {
-  listing: Listing;
+  listing: ListingWithReservations;
   priceFirst?: boolean;
   children?: ReactNode;
   onConfirm?: () => void;
@@ -34,10 +32,6 @@ export default function BookingForm({
   });
   const nights = calculateNights(dateRange.startDate, dateRange.endDate);
   const discountPercentage = getListingPromotion(listing, nights)?.discountPercentage || 0;
-
-  console.log({ nights });
-  console.log({ discountPercentage });
-
   const [disabledDates, setDisabledDates] = useState<UnavailableDates>({
     unavailableCheckInDates: { filtered: [], all: [] },
     unavailableCheckOutDates: { filtered: [], all: [] },
@@ -55,8 +49,7 @@ export default function BookingForm({
   useEffect(() => {
     const fetchReservedDates = async () => {
       try {
-        const response = await getReservedDates(listing.id);
-        const { unavailableCheckInDates: disabledCheckInDates, unavailableCheckOutDates: disabledCheckOutDates } = getDisabledDates(response);
+        const { unavailableCheckInDates: disabledCheckInDates, unavailableCheckOutDates: disabledCheckOutDates } = getDisabledDates(listing.reservations);
         setDisabledDates({
           unavailableCheckInDates: { filtered: disabledCheckInDates, all: disabledCheckInDates },
           unavailableCheckOutDates: { filtered: disabledCheckOutDates, all: disabledCheckOutDates },
@@ -67,7 +60,7 @@ export default function BookingForm({
     };
 
     fetchReservedDates();
-  }, [listing.id]);
+  }, [listing]);
 
   const handleChangeDateRange = (ranges: RangeKeyDict) => {
     const selection = ranges["selection"];
@@ -136,6 +129,10 @@ export default function BookingForm({
           {errors.dateRange && <Tooltip text={errors.dateRange} arrow={false} containerStyle={"top-[-6px]"} />}
         </div>
       )}
+      <div className="flex flex-col">
+        <span>nights: {nights}</span>
+        <span>discountPercentage: {discountPercentage}</span>
+      </div>
       <div className="flex sm:mt-4">
         {<ListingPrice nightPrice={listing.price} nights={nights} discountPercentage={discountPercentage} promotions={listing.promotions} />}
         <div>

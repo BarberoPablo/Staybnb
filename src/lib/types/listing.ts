@@ -1,4 +1,5 @@
 import { Guests } from "../types";
+import { ReservationDate, ReservationDateDB } from "./reservation";
 
 export type ListingDB = {
   id: number;
@@ -32,8 +33,6 @@ export type ListingDB = {
   };
 };
 
-export type ResumedListingDB = Pick<Listing, "id" | "title" | "images" | "location" | "type" | "promotions">;
-
 export type Listing = {
   id: number;
   title: string;
@@ -65,6 +64,18 @@ export type Listing = {
   images: string[];
 };
 
+export type ListingWithReservationsDB = ListingDB & {
+  reservations: ReservationDateDB[] | [];
+};
+
+export type ListingWithReservations = Listing & {
+  reservations: ReservationDate[] | [];
+};
+
+export type ResumedListingDB = Pick<Listing, "id" | "title" | "images" | "location" | "type" | "promotions">;
+
+export type ResumedListing = Pick<Listing, "id" | "title" | "images" | "location" | "type" | "promotions">;
+
 export type PromotionDB = {
   min_nights: number;
   discount_percentage: number;
@@ -76,5 +87,3 @@ export type Promotion = {
   discountPercentage: number;
   description: string;
 };
-
-export type ResumedListing = Pick<Listing, "id" | "title" | "images" | "location" | "type" | "promotions">;

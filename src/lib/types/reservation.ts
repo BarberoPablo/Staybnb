@@ -63,3 +63,13 @@ export type ReservationWithListingDB = Omit<Reservation, "listingId"> &
 export type ReservationWithListing = Reservation & {
   listing: Listing;
 };
+
+export type ReservationDateDB = {
+  start_date: Date;
+  end_date: Date;
+};
+
+export type ReservationDate = {
+  startDate: Date;
+  endDate: Date;
+};

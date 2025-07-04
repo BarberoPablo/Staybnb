@@ -2,35 +2,35 @@ import BookingCalendarContainer from "@/components/Booking/BookingCalendarContai
 import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
 import { ListBadges } from "@/components/ListBadges";
-import { getListing } from "@/lib/supabase/listings";
+import { api } from "@/lib/api/api";
 import { Listing } from "@/lib/types/listing";
 
-interface ListingDetailsProps {
-  params: Promise<{ id: string }>;
-}
+type ListingDetailsProps = {
+  params: { id: string };
+};
 
 export default async function ListingDetailsPage({ params }: ListingDetailsProps) {
   const { id } = await params;
-  const listingDetails: Listing | null = await getListing(Number(id));
+  const listing = await api.getListing(Number(id));
 
-  if (!listingDetails) {
+  if (!listing) {
     return <div className="text-[26px] font-bold">Listing not found</div>;
   }
 
   return (
     <div className="flex flex-col">
-      <h1 className="text-[26px] font-bold">{listingDetails.title}</h1>
+      <h1 className="text-[26px] font-bold">{listing.title}</h1>
 
       <div className="hidden sm:block">
-        <ImagesLayout images={listingDetails.images} />
+        <ImagesLayout images={listing.images} />
       </div>
       <div className="block sm:hidden">
-        <ImagesSlider images={listingDetails.images} />
+        <ImagesSlider images={listing.images} />
       </div>
 
       <div className="grid grid-cols-12">
         <div className="col-span-7 sm:mr-30">
-          <ListingSubtitle listingDetails={listingDetails} />
+          <ListingSubtitle listingDetails={listing} />
 
           <hr className="text-gray-300 my-8" />
 
@@ -38,12 +38,12 @@ export default async function ListingDetailsPage({ params }: ListingDetailsProps
 
           <hr className="text-gray-300 my-8" />
 
-          <p>{listingDetails.description}</p>
+          <p>{listing.description}</p>
 
           <hr className="text-gray-300 my-8" />
         </div>
 
-        <BookingCalendarContainer listing={listingDetails} />
+        <BookingCalendarContainer listing={listing} />
       </div>
     </div>
   );

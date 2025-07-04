@@ -1,5 +1,5 @@
 import { mockListings } from "../mockListings";
-import { parseListingFromDB } from "../parser";
+import { parseListingFromDB } from "../parsers/listing";
 import { Listing } from "../types/listing";
 
 export async function getListing(id: number): Promise<Listing> {

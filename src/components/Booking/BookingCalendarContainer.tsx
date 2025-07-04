@@ -1,11 +1,11 @@
 "use client";
 
-import { Listing } from "@/lib/types/listing";
+import { ListingWithReservations } from "@/lib/types/listing";
 import { useState } from "react";
 import BookingForm from "./BookingForm";
 import BookingModal from "./BookingModal";
 
-export default function BookingCalendarContainer({ listing }: { listing: Listing }) {
+export default function BookingCalendarContainer({ listing }: { listing: ListingWithReservations }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

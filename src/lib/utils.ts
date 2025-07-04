@@ -1,6 +1,7 @@
 import { addDays, eachDayOfInterval, subDays } from "date-fns";
-import { Guests, ListingSearchParams, ReservedDates } from "./types";
+import { Guests, ListingSearchParams } from "./types";
 import { Listing, Promotion, ResumedListing } from "./types/listing";
+import { ReservationDate } from "./types/reservation";
 
 export function pluralize(count: number, singular: string, plural: string) {
   return count === 1 ? singular : plural;
@@ -61,7 +62,7 @@ export function validateDateRange(startDate: Date, endDate: Date) {
   return "";
 }
 
-export function getDisabledDates(reservedDates: ReservedDates[]): { unavailableCheckInDates: Date[]; unavailableCheckOutDates: Date[] } {
+export function getDisabledDates(reservedDates: ReservationDate[]): { unavailableCheckInDates: Date[]; unavailableCheckOutDates: Date[] } {
   // Block all days in between the dates
   const unavailableCheckInDates: Date[] = [];
   const unavailableCheckOutDates: Date[] = [];

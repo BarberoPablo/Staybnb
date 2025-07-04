@@ -1,10 +1,10 @@
 "use client";
 
-import { Listing } from "@/lib/types/listing";
+import { ListingWithReservations } from "@/lib/types/listing";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import BookingForm from "./BookingForm";
 
-export default function BookingModal({ isOpen, listing, onClose }: { isOpen: boolean; listing: Listing; onClose: () => void }) {
+export default function BookingModal({ isOpen, listing, onClose }: { isOpen: boolean; listing: ListingWithReservations; onClose: () => void }) {
   const handleConfirm = () => {
     onClose();
   };
