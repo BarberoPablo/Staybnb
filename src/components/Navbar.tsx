@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from "@/hooks/useUser";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import LogoutButton from "./LogoutButton";
 
@@ -9,6 +9,8 @@ export default function Navbar() {
   const [searchCity, setSearchCity] = useState("");
   const router = useRouter();
   const { user, loading } = useUser();
+  const pathname = usePathname();
+  const mode = pathname.includes("hosting") ? "hosting" : "traveling";
 
   const handleSearchCityInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchCity(event.target.value);
@@ -21,6 +23,14 @@ export default function Navbar() {
 
   const handleLogin = () => {
     router.push("/auth");
+  };
+
+  const handleChangeMode = () => {
+    if (mode === "hosting") {
+      router.push("/");
+    } else {
+      router.push("/hosting");
+    }
   };
 
   return (
@@ -42,15 +52,17 @@ export default function Navbar() {
           Search
         </button>
       </div>
-      <div>
-        {loading ? null : user ? (
+
+      {!loading && user ? (
+        <div>
+          <button onClick={handleChangeMode}>Switch to {mode === "hosting" ? "traveling" : "hosting"}</button>
           <LogoutButton />
-        ) : (
-          <button className="text-sm sm:text-xl hover:bg-amber-300 transition-colors duration-300 px-4 py-2 rounded-full" onClick={handleLogin}>
-            Login
-          </button>
-        )}
-      </div>
+        </div>
+      ) : (
+        <button className="text-sm sm:text-xl hover:bg-amber-300 transition-colors duration-300 px-4 py-2 rounded-full" onClick={handleLogin}>
+          Login
+        </button>
+      )}
     </nav>
   );
 }
