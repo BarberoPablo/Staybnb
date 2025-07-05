@@ -1,12 +1,14 @@
-import { create } from "zustand";
 import { Listing } from "@/lib/types/listing";
+import { create } from "zustand";
 
 export type PropertyType = "House" | "Apartment" | "Cabin" | "Boat";
+
+export type PrivacyType = "entire" | "private" | "shared";
 
 type ListingForm = {
   propertyType: PropertyType;
   structure: Listing["structure"];
-  privacyType: "entire" | "private" | "shared";
+  privacyType: PrivacyType;
   location: Listing["location"];
   timezone: string;
   guestLimits: Listing["guestLimits"];

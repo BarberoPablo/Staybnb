@@ -3,12 +3,13 @@
 import { PropertyType, useListingForm } from "@/store/useListingForm";
 import { MdCabin } from "react-icons/md";
 import { PiBuildingApartmentLight, PiHouseLineLight, PiSailboatLight } from "react-icons/pi";
+import Title from "./components/Title";
 
-const propertyTypes: { image: React.JSX.Element; name: PropertyType }[] = [
-  { image: <PiHouseLineLight />, name: "House" },
-  { image: <PiBuildingApartmentLight />, name: "Apartment" },
-  { image: <PiSailboatLight />, name: "Boat" },
-  { image: <MdCabin />, name: "Cabin" },
+const propertyTypes: { icon: React.JSX.Element; name: PropertyType }[] = [
+  { icon: <PiHouseLineLight />, name: "House" },
+  { icon: <PiBuildingApartmentLight />, name: "Apartment" },
+  { icon: <PiSailboatLight />, name: "Boat" },
+  { icon: <MdCabin />, name: "Cabin" },
 ];
 
 export default function PropertyTypeStep() {
@@ -21,8 +22,8 @@ export default function PropertyTypeStep() {
   };
 
   return (
-    <div className="flex flex-col gap-8">
-      <h1 className="text-3xl font-bold">Which of these best describes your place?</h1>
+    <div className="flex flex-col gap-8 w-full">
+      <Title>Which of these best describes your place?</Title>
       <div className="grid grid-cols-3 gap-4 w-full">
         {propertyTypes.map((property) => (
           <button
@@ -32,7 +33,7 @@ export default function PropertyTypeStep() {
             }  rounded-lg`}
             onClick={() => handleSelectStructure(property.name)}
           >
-            <div className="w-11 h-11 text-4xl font-medium">{property.image}</div>
+            <div className="w-11 h-11 text-4xl font-medium">{property.icon}</div>
             <p className="text-sm font-medium">{property.name}</p>
           </button>
         ))}
