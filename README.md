@@ -1,3 +1,32 @@
+# Hosting file structure
+
+src/
+├── app/
+│ └── hosting/
+│ └── create/
+│ ├── layout.tsx # Layout exclusivo para el flow de creación
+│ ├── page.tsx # Redirect automático al primer paso
+│ ├── property-type/ # 🆕 Paso 1 - Tipo de propiedad
+│ │ └── page.tsx
+│ ├── privacy-type/ # Paso 2 - Nivel de privacidad
+│ │ └── page.tsx
+│ ├── location/ # Paso 3 - Ubicación + mapa
+│ │ └── page.tsx
+│ ├── basics/ # Paso 4 - Guests, beds, baños
+│ │ └── page.tsx
+│ ├── amenities/ # Paso 5 - Amenidades + seguridad
+│ │ └── page.tsx
+│ ├── photos/ # Paso 6 - Subida de imágenes
+│ │ └── page.tsx
+│ └── description/ # Paso 7 - Título + descripción + precio
+│ └── page.tsx
+
+---
+
+# Technical information
+
+---
+
 # 🔐 Supabase Auth & Session Management with @supabase/ssr
 
 This project uses Supabase for authentication and session handling via the official `@supabase/ssr package`. This replaces the now-deprecated `@supabase/auth-helpers-nextjs`.

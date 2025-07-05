@@ -1,7 +1,7 @@
 "use client";
 
-import ListingResume from "@/app/checkout/[listingId]/components/ListingResume";
-import PaymentSection from "@/app/checkout/[listingId]/components/PaymentSection";
+import ListingResume from "@/app/(site)/checkout/[listingId]/components/ListingResume";
+import PaymentSection from "@/app/(site)/checkout/[listingId]/components/PaymentSection";
 import { Guests, ListingSearchParams } from "@/lib/types";
 import { Listing, Promotion } from "@/lib/types/listing";
 import { calculateNights, getGuestsFromParams, getListingPromotion } from "@/lib/utils";

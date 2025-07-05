@@ -3,7 +3,7 @@
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { usePathname, useRouter } from "next/navigation";
 
-export default function HostingFlowLayout({ children }: { children: React.ReactNode }) {
+export default function HostingCreateListingLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -20,8 +20,8 @@ export default function HostingFlowLayout({ children }: { children: React.ReactN
   };
 
   return (
-    <div className="relative flex flex-col justify-center items-center min-h-screen max-w-2xl">
-      <main className="flex-1 flex items-center justify-center px-4 py-8">{children}</main>
+    <div className="relative flex flex-col items-center justify-center min-h-screen">
+      <main className="flex-1 flex justify-center px-4 py-8 w-full max-w-2xl">{children}</main>
 
       <div className="fixed bottom-0 left-0 w-full border-t border-gray-200 px-4 py-3 flex justify-center">
         <div className="flex w-full justify-between items-center max-w-2xl">

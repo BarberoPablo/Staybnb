@@ -1,7 +1,6 @@
 "use client";
 
 import { PropertyType, useListingForm } from "@/store/useListingForm";
-import { useRouter } from "next/navigation";
 import { MdCabin } from "react-icons/md";
 import { PiBuildingApartmentLight, PiHouseLineLight, PiSailboatLight } from "react-icons/pi";
 
@@ -13,14 +12,12 @@ const propertyTypes: { image: React.JSX.Element; name: PropertyType }[] = [
 ];
 
 export default function PropertyTypeStep() {
-  const router = useRouter();
   // Specifying each prop to prevent re-renders
   const selected = useListingForm((state) => state.propertyType);
   const setField = useListingForm((state) => state.setField);
 
   const handleSelectStructure = (propertyType: PropertyType) => {
     setField("propertyType", propertyType);
-    router.push("/hosting/create/privacy-type");
   };
 
   return (
