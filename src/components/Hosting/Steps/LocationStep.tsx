@@ -7,7 +7,7 @@ const MapLocationNoSSR = dynamic(() => import("./components/MapLocation"), { ssr
 
 export default function LocationStep() {
   return (
-    <div>
+    <div className="flex flex-col gap-8 w-full">
       <Title>
         <h1>Where´s your place located?</h1>
       </Title>

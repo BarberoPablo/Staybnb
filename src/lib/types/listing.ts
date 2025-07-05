@@ -6,6 +6,8 @@ export type ListingDB = {
   title: string;
   description: string;
   location: string;
+  lat: number;
+  lng: number;
   night_price: number;
   promotions: PromotionDB[];
   type: string;
@@ -38,6 +40,8 @@ export type Listing = {
   title: string;
   description: string;
   location: string;
+  lat: number;
+  lng: number;
   price: number;
   promotions: Promotion[];
   type: string;
