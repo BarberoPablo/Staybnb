@@ -8,8 +8,6 @@ import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
 import { DateRange } from "react-date-range";
-import "react-date-range/dist/styles.css";
-import "react-date-range/dist/theme/default.css";
 import ListingPrice from "../ListingPrice";
 import { excludeDate, getCustomDayContent, validateFormData } from "./bookingFormUtils";
 import { CalendarLegend } from "./CalendarLegend";

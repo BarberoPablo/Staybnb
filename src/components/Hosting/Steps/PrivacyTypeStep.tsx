@@ -34,12 +34,7 @@ export default function PrivacyTypeStep() {
       </Title>
       <div className="flex flex-col gap-3">
         {privacyTypes.map((privacy) => (
-          <PrivacyTypeButton
-            key={privacy.type}
-            privacy={privacy}
-            selected={selected === privacy.type}
-            onClick={(privacy: PrivacyType) => handleSelectPrivacy(privacy)}
-          />
+          <PrivacyTypeButton key={privacy.type} privacy={privacy} selected={selected === privacy.type} onClick={handleSelectPrivacy} />
         ))}
       </div>
     </div>
