@@ -5,11 +5,13 @@ export type PropertyType = "House" | "Apartment" | "Cabin" | "Boat";
 
 export type PrivacyType = "entire" | "private" | "shared";
 
-type ListingForm = {
+export type Structure = "guests" | "bedrooms" | "beds" | "bathrooms";
+
+export type ListingForm = {
   propertyType: PropertyType;
-  structure: Listing["structure"];
   privacyType: PrivacyType;
   location: Listing["location"];
+  structure: { [key in Structure]: number };
   lat: number;
   lng: number;
   timezone: string;
@@ -25,7 +27,7 @@ type ListingForm = {
 function getInitialListingForm(): ListingForm {
   return {
     propertyType: "House",
-    structure: { guests: 1, bedrooms: 1, beds: 1, bathrooms: 1 },
+    structure: { guests: 1, bedrooms: 0, beds: 0, bathrooms: 0 },
     privacyType: "entire",
     location: "",
     lat: 0,
