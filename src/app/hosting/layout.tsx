@@ -12,5 +12,5 @@ export default async function layout({ children }: { children: React.ReactNode }
     redirect("/auth");
   }
 
-  return <section>{children}</section>;
+  return <section className="min-h-screen flex flex-col items-center justify-between">{children}</section>;
 }
