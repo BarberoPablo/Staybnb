@@ -16,22 +16,25 @@ export default function MapLocation() {
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const handleMove = useCallback(async (lat: number, lng: number) => {
-    setMarkerPosition([lat, lng]);
-    setField("lat", lat);
-    setField("lng", lng);
+  const handleMove = useCallback(
+    async (lat: number, lng: number) => {
+      setMarkerPosition([lat, lng]);
+      setField("lat", lat);
+      setField("lng", lng);
 
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
-    }
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
 
-    debounceTimeout.current = setTimeout(async () => {
-      const address = await reverseGeocode(lat, lng);
-      setField("location", address);
-      console.log("Update location", address);
-    }, 800);
-    console.log("Update coords", lat, lng);
-  }, []);
+      debounceTimeout.current = setTimeout(async () => {
+        const address = await reverseGeocode(lat, lng);
+        setField("location", address);
+        console.log("Update location", address);
+      }, 800);
+      console.log("Update coords", lat, lng);
+    },
+    [setField]
+  );
 
   useEffect(() => {
     if (!markerPosition && typeof window !== "undefined" && navigator.geolocation) {
