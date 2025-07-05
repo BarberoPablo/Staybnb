@@ -10,6 +10,8 @@ type ListingForm = {
   structure: Listing["structure"];
   privacyType: PrivacyType;
   location: Listing["location"];
+  lat: number;
+  lng: number;
   timezone: string;
   guestLimits: Listing["guestLimits"];
   amenities: string[];
@@ -26,6 +28,8 @@ function getInitialListingForm(): ListingForm {
     structure: { guests: 1, bedrooms: 1, beds: 1, bathrooms: 1 },
     privacyType: "entire",
     location: "",
+    lat: 0,
+    lng: 0,
     timezone: "",
     guestLimits: {
       adults: { min: 1, max: 2 },

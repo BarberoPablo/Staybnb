@@ -13,7 +13,6 @@ const propertyTypes: { icon: React.JSX.Element; name: PropertyType }[] = [
 ];
 
 export default function PropertyTypeStep() {
-  // Specifying each prop to prevent re-renders
   const selected = useListingForm((state) => state.propertyType);
   const setField = useListingForm((state) => state.setField);
 

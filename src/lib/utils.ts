@@ -102,3 +102,18 @@ export function getListingPromotion(listing: Listing | ResumedListing, nights: n
 export function twoDecimals(data: number): number {
   return Number(data.toFixed(2));
 }
+
+export async function reverseGeocode(lat: number, lng: number): Promise<string> {
+  try {
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
+      headers: {
+        "User-Agent": "Staybnb/1.0 (pablobarbero220@gmail.com)", // reemplazalo
+      },
+    });
+    const data = await response.json();
+    return data.display_name || "Unknown location";
+  } catch (error) {
+    console.error("Reverse geocoding error:", error);
+    return "Unknown location";
+  }
+}
