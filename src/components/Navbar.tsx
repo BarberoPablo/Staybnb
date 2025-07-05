@@ -1,16 +1,12 @@
 "use client";
 
-import { useUser } from "@/hooks/useUser";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import LogoutButton from "./LogoutButton";
+import { SignButton } from "./SignButton";
 
-export default function Navbar() {
+export default function Navbar({ search = true }: { search?: boolean }) {
   const [searchCity, setSearchCity] = useState("");
   const router = useRouter();
-  const { user, loading } = useUser();
-  const pathname = usePathname();
-  const mode = pathname.includes("hosting") ? "hosting" : "traveling";
 
   const handleSearchCityInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchCity(event.target.value);
@@ -21,48 +17,29 @@ export default function Navbar() {
     setSearchCity("");
   };
 
-  const handleLogin = () => {
-    router.push("/auth");
-  };
-
-  const handleChangeMode = () => {
-    if (mode === "hosting") {
-      router.push("/");
-    } else {
-      router.push("/hosting");
-    }
-  };
-
   return (
     <nav className="flex items-center justify-center sm:justify-between py-4 px-2 border-b border-b-gray-200">
       <span className="hidden sm:block sm:text-2xl font-bold">Staybnb</span>
-      <div>
-        <input
-          type="text"
-          placeholder="Where do you want to go?"
-          className="rounded-full p-2 hover:bg-amber-300 transition-colors duration-300"
-          value={searchCity}
-          name="searchCity"
-          onChange={handleSearchCityInput}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearchCity();
-          }}
-        />
-        <button className="rounded-full p-2 hover:bg-amber-300 transition-colors duration-300" disabled={searchCity === ""} onClick={handleSearchCity}>
-          Search
-        </button>
-      </div>
-
-      {!loading && user ? (
+      {search && (
         <div>
-          <button onClick={handleChangeMode}>Switch to {mode === "hosting" ? "traveling" : "hosting"}</button>
-          <LogoutButton />
+          <input
+            type="text"
+            placeholder="Where do you want to go?"
+            className="rounded-full p-2 hover:bg-amber-300 transition-colors duration-300"
+            value={searchCity}
+            name="searchCity"
+            onChange={handleSearchCityInput}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSearchCity();
+            }}
+          />
+          <button className="rounded-full p-2 hover:bg-amber-300 transition-colors duration-300" disabled={searchCity === ""} onClick={handleSearchCity}>
+            Search
+          </button>
         </div>
-      ) : (
-        <button className="text-sm sm:text-xl hover:bg-amber-300 transition-colors duration-300 px-4 py-2 rounded-full" onClick={handleLogin}>
-          Login
-        </button>
       )}
+
+      <SignButton />
     </nav>
   );
 }
