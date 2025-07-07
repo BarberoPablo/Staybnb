@@ -5,6 +5,7 @@ import Title from "./components/Title";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 
 const structures: Structure[] = ["guests", "bedrooms", "beds", "bathrooms"];
+const MAX_QUANTITY = 20;
 
 export default function StructureStep() {
   const structure = useListingForm((state) => state.structure);
@@ -26,10 +27,10 @@ export default function StructureStep() {
 
       <div>
         {structures.map((structureItem) => (
-          <>
-            <QuantitySelector key={structureItem} text={structureItem} quantity={structure[structureItem]} onClick={handleClick} />
+          <div key={structureItem}>
+            <QuantitySelector text={structureItem} quantity={structure[structureItem]} onClick={handleClick} />
             <hr className="my-6 text-gray-200" />
-          </>
+          </div>
         ))}
       </div>
     </div>
@@ -60,6 +61,7 @@ function QuantitySelector({
         <span>{quantity}</span>
         <button
           className="h-9 w-9 text-[#B0B0B0] cursor-pointer hover:text-foreground disabled:opacity-20 disabled:cursor-not-allowed"
+          disabled={quantity >= MAX_QUANTITY}
           style={{ backgroundColor: "transparent" }}
           onClick={() => onClick(text, quantity + 1)}
         >
