@@ -2,9 +2,5 @@ import TitleStep from "@/components/Hosting/Steps/TitleStep";
 import React from "react";
 
 export default function TitlePage() {
-  return (
-    <div>
-      <TitleStep />
-    </div>
-  );
+  return <TitleStep />;
 }

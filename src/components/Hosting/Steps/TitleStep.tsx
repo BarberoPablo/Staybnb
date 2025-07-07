@@ -18,7 +18,7 @@ export default function TitleStep() {
     <div className="flex flex-col gap-8 w-full">
       <Title className="flex flex-col gap-2">
         Now, let´s give your house a title
-        <p className="text-[18px] font-medium text-gray-500">Short titles work best. Have fun with it, you can always change it later.</p>
+        <p className="text-lg font-medium text-gray-500">Short titles work best. Have fun with it, you can always change it later.</p>
       </Title>
 
       <div className="">

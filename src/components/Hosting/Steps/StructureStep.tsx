@@ -22,7 +22,7 @@ export default function StructureStep() {
     <div className="flex flex-col gap-8 w-full">
       <Title className="flex flex-col gap-2">
         <h1>Share some basics about your place</h1>
-        <p className="text-[18px] font-medium text-gray-500">You´ll add more details later, like bed types..</p>
+        <p className="text-lg font-medium text-gray-500">You´ll add more details later, like bed types..</p>
       </Title>
 
       <div>
