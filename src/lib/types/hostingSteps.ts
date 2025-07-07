@@ -5,9 +5,9 @@ export const hostingSteps = [
   "structure",
   "title",
   "description",
-  "amenities",
+  /* "amenities", */
+  "price",
   "photos",
-  "description",
 ] as const;
 
 export type HostingStep = (typeof hostingSteps)[number];
