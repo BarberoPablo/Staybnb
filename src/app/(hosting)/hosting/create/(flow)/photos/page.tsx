@@ -1,5 +1,5 @@
-import React from "react";
+import PhotosStep from "@/components/Hosting/Steps/PhotosStep";
 
 export default function PhotosPage() {
-  return <div>PhotosPage</div>;
+  return <PhotosStep />;
 }

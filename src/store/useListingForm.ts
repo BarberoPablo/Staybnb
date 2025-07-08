@@ -7,6 +7,11 @@ export type PrivacyType = "entire" | "private" | "shared";
 
 export type Structure = "guests" | "bedrooms" | "beds" | "bathrooms";
 
+export type PreviewImage = {
+  file: File;
+  url: string;
+};
+
 export type ListingForm = {
   propertyType: PropertyType;
   privacyType: PrivacyType;
@@ -18,7 +23,7 @@ export type ListingForm = {
   guestLimits: Listing["guestLimits"];
   amenities: string[];
   safetyItems: string[];
-  images: Listing["images"];
+  images: PreviewImage[];
   title: Listing["title"];
   description: Listing["description"];
   nightPrice: number;
@@ -41,7 +46,7 @@ function getInitialListingForm(): ListingForm {
     },
     amenities: [],
     safetyItems: [],
-    images: [],
+    images: [] as PreviewImage[],
     title: "",
     description: "",
     nightPrice: 0,

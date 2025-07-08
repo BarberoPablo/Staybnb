@@ -3,11 +3,11 @@ export const hostingSteps = [
   "privacy-type",
   "location",
   "structure",
+  "photos",
   "title",
   "description",
   /* "amenities", */
   "price",
-  "photos",
 ] as const;
 
 export type HostingStep = (typeof hostingSteps)[number];
