@@ -13,7 +13,6 @@ export default function PhotosUploadModal({ isOpen, onClose }: { isOpen: boolean
   const images = useListingForm((state) => state.images);
   const setField = useListingForm((state) => state.setField);
 
-  console.log({ previews });
   //headlessui does not unmount the Dialog, it hids it so to clear the previews:
   useEffect(() => {
     setPreviews([]);
@@ -38,7 +37,6 @@ export default function PhotosUploadModal({ isOpen, onClose }: { isOpen: boolean
   });
 
   const handleUpload = () => {
-    console.log(previews);
     setField("images", [...images, ...previews]);
     onClose();
   };
