@@ -1,22 +1,19 @@
 "use client";
 
-import { PreviewImage, useListingForm } from "@/store/useListingForm";
+import { uploadFiles } from "@/lib/uploadthing";
+import { useListingForm } from "@/store/useListingForm";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FaTrashAlt } from "react-icons/fa";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
+import { PreviewImage } from "../PhotosStep";
 
 export default function PhotosUploadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [previews, setPreviews] = useState<PreviewImage[]>([]);
-  const images = useListingForm((state) => state.images);
   const setField = useListingForm((state) => state.setField);
-
-  //headlessui does not unmount the Dialog, it hids it so to clear the previews:
-  useEffect(() => {
-    setPreviews([]);
-  }, [isOpen]);
+  const [isUploading, setIsUploading] = useState(false);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -36,13 +33,39 @@ export default function PhotosUploadModal({ isOpen, onClose }: { isOpen: boolean
     accept: { "image/*": [] },
   });
 
-  const handleUpload = () => {
-    setField("images", [...images, ...previews]);
-    onClose();
+  const handleUpload = async () => {
+    if (previews.length === 0) {
+      alert("Please add images first.");
+      return;
+    }
+    try {
+      setIsUploading(true);
+      const filesToUpload = previews.map((img) => img.file).filter(Boolean) as File[];
+      if (filesToUpload.length === 0) {
+        alert("No files to upload.");
+        return;
+      }
+
+      const response = await uploadFiles("imagesUploader", { files: filesToUpload });
+
+      if (response) {
+        const newImages = response.map((image) => image.ufsUrl);
+        setField("images", newImages);
+        setPreviews([]);
+        alert("Upload completed!");
+      }
+
+      onClose();
+    } catch (error) {
+      console.error("Upload failed", error);
+      alert("Upload failed, try again.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleRemove = (url: string) => {
-    setPreviews((prev) => prev.filter((p) => p.url !== url));
+    setPreviews((prevState) => prevState.filter((prev) => prev.url !== url));
   };
 
   return (
@@ -98,8 +121,12 @@ export default function PhotosUploadModal({ isOpen, onClose }: { isOpen: boolean
             <button onClick={onClose} className="px-4 py-2 rounded-md hover:bg-gray-100">
               Cancel
             </button>
-            <button onClick={handleUpload} className="px-6 py-2 h-12 w-28 rounded-md bg-foreground text-white opacity-90 hover:opacity-100">
-              Upload
+            <button
+              onClick={handleUpload}
+              disabled={isUploading}
+              className="px-6 py-2 h-12 w-28 rounded-md bg-foreground text-white opacity-90 hover:opacity-100 disabled:opacity-50"
+            >
+              {isUploading ? "Uploading..." : "Upload"}
             </button>
           </footer>
         </DialogPanel>

@@ -1,16 +1,12 @@
 import { Listing } from "@/lib/types/listing";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export type PropertyType = "House" | "Apartment" | "Cabin" | "Boat";
 
 export type PrivacyType = "entire" | "private" | "shared";
 
 export type Structure = "guests" | "bedrooms" | "beds" | "bathrooms";
-
-export type PreviewImage = {
-  file: File;
-  url: string;
-};
 
 export type ListingForm = {
   propertyType: PropertyType;
@@ -23,7 +19,7 @@ export type ListingForm = {
   guestLimits: Listing["guestLimits"];
   amenities: string[];
   safetyItems: string[];
-  images: PreviewImage[];
+  images: string[];
   title: Listing["title"];
   description: Listing["description"];
   nightPrice: number;
@@ -46,7 +42,7 @@ function getInitialListingForm(): ListingForm {
     },
     amenities: [],
     safetyItems: [],
-    images: [] as PreviewImage[],
+    images: [],
     title: "",
     description: "",
     nightPrice: 0,
@@ -58,8 +54,15 @@ type ListingFormState = ListingForm & {
   reset: () => void;
 };
 
-export const useListingForm = create<ListingFormState>((set) => ({
-  ...getInitialListingForm(),
-  setField: (key, value) => set(() => ({ [key]: value })),
-  reset: () => set(() => getInitialListingForm()),
-}));
+export const useListingForm = create<ListingFormState>()(
+  persist(
+    (set) => ({
+      ...getInitialListingForm(),
+      setField: (key, value) => set(() => ({ [key]: value })),
+      reset: () => set(() => getInitialListingForm()),
+    }),
+    {
+      name: "listing-form-storage",
+    }
+  )
+);

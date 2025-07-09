@@ -22,8 +22,8 @@ export function SortableImageGrid({ setIsOpen }: { setIsOpen: React.Dispatch<Rea
     const { active, over } = event;
 
     if (over && active.id !== over?.id) {
-      const oldIndex = images.findIndex((img) => img.url === active.id);
-      const newIndex = images.findIndex((img) => img.url === over?.id);
+      const oldIndex = images.findIndex((img) => img === active.id);
+      const newIndex = images.findIndex((img) => img === over?.id);
       const newArray = arrayMove(images, oldIndex, newIndex);
       setField("images", newArray);
     }
@@ -32,25 +32,25 @@ export function SortableImageGrid({ setIsOpen }: { setIsOpen: React.Dispatch<Rea
   const handleRemove = (url: string) => {
     setField(
       "images",
-      images.filter((image) => image.url !== url)
+      images.filter((image) => image !== url)
     );
   };
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={images.map((img) => img.url)} strategy={rectSortingStrategy}>
+      <SortableContext items={images.map((img) => img)} strategy={rectSortingStrategy}>
         <div className="relative grid grid-cols-2 gap-4 w-full h-full">
           <div className="absolute top-4 left-4 z-10 px-2 py-0.5 bg-background rounded-md">
             <span className="text-sm">Cover photo</span>
           </div>
 
           {images.map((img, index) => (
-            <div key={img.url} className={`relative group ${index === 0 ? "h-[300px] col-span-2" : "h-[200px] col-span-1"}`}>
-              <SortableImage url={img.url} />
+            <div key={img} className={`relative group ${index === 0 ? "h-[300px] col-span-2" : "h-[200px] col-span-1"}`}>
+              <SortableImage url={img} />
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleRemove(img.url);
+                  handleRemove(img);
                 }}
                 className="absolute top-1 right-1 z-10 bg-foreground text-background rounded-full px-2 py-2 text-xs shadow hover:bg-gray-900 transition"
               >

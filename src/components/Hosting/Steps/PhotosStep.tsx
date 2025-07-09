@@ -8,6 +8,11 @@ import PhotosUploadModal from "./components/PhotosUploadModal";
 import { SortableImageGrid } from "./components/SortableImageGrid";
 import Title from "./components/Title";
 
+export type PreviewImage = {
+  file: File;
+  url: string;
+};
+
 export default function PhotosStep() {
   const [isOpen, setIsOpen] = useState(false);
   const images = useListingForm((state) => state.images);
