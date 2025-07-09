@@ -9,9 +9,12 @@ import { useDropzone } from "react-dropzone";
 import { FaTrashAlt } from "react-icons/fa";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { PreviewImage } from "../PhotosStep";
+import { toast } from "react-hot-toast";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function PhotosUploadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [previews, setPreviews] = useState<PreviewImage[]>([]);
+  const images = useListingForm((state) => state.images);
   const setField = useListingForm((state) => state.setField);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -35,14 +38,14 @@ export default function PhotosUploadModal({ isOpen, onClose }: { isOpen: boolean
 
   const handleUpload = async () => {
     if (previews.length === 0) {
-      alert("Please add images first.");
+      toast.error("Please add images first.");
       return;
     }
     try {
       setIsUploading(true);
       const filesToUpload = previews.map((img) => img.file).filter(Boolean) as File[];
       if (filesToUpload.length === 0) {
-        alert("No files to upload.");
+        toast.error("No files to upload.");
         return;
       }
 
@@ -50,15 +53,15 @@ export default function PhotosUploadModal({ isOpen, onClose }: { isOpen: boolean
 
       if (response) {
         const newImages = response.map((image) => image.ufsUrl);
-        setField("images", newImages);
+        setField("images", [...images, ...newImages]);
         setPreviews([]);
-        alert("Upload completed!");
+        toast.success("Upload completed!");
       }
 
       onClose();
     } catch (error) {
       console.error("Upload failed", error);
-      alert("Upload failed, try again.");
+      toast.error("Upload failed, try again.");
     } finally {
       setIsUploading(false);
     }
@@ -124,9 +127,9 @@ export default function PhotosUploadModal({ isOpen, onClose }: { isOpen: boolean
             <button
               onClick={handleUpload}
               disabled={isUploading}
-              className="px-6 py-2 h-12 w-28 rounded-md bg-foreground text-white opacity-90 hover:opacity-100 disabled:opacity-50"
+              className="flex items-center justify-center px-6 py-2 h-12 w-28 rounded-md bg-foreground text-white opacity-90 hover:opacity-100"
             >
-              {isUploading ? "Uploading..." : "Upload"}
+              {isUploading ? <AiOutlineLoading3Quarters className="w-5 h-5 animate-spin" /> : "Upload"}
             </button>
           </footer>
         </DialogPanel>
