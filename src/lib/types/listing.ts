@@ -42,7 +42,7 @@ export type Listing = {
   location: string;
   lat: number;
   lng: number;
-  price: number;
+  nightPrice: number;
   promotions: Promotion[];
   type: string;
   hostId: string;

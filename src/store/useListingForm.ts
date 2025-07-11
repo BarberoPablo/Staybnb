@@ -1,4 +1,4 @@
-import { Listing } from "@/lib/types/listing";
+import { Listing, Promotion } from "@/lib/types/listing";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -23,6 +23,7 @@ export type ListingForm = {
   title: Listing["title"];
   description: Listing["description"];
   nightPrice: number;
+  promotions: Promotion[];
 };
 
 function getInitialListingForm(): ListingForm {
@@ -46,6 +47,7 @@ function getInitialListingForm(): ListingForm {
     title: "",
     description: "",
     nightPrice: 0,
+    promotions: [],
   };
 }
 

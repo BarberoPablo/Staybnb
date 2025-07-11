@@ -62,7 +62,7 @@ export default function ListingResume({
       <div className="flex flex-col">
         <h2>Price details</h2>
         <ListingPrice
-          nightPrice={listingData.listing.price}
+          nightPrice={listingData.listing.nightPrice}
           nights={listingData.nights}
           discountPercentage={listingData.promo?.discountPercentage}
           promotions={listingData.listing.promotions}

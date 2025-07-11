@@ -132,7 +132,7 @@ export default function BookingForm({
         <span>discountPercentage: {discountPercentage}</span>
       </div>
       <div className="flex sm:mt-4">
-        {<ListingPrice nightPrice={listing.price} nights={nights} discountPercentage={discountPercentage} promotions={listing.promotions} />}
+        {<ListingPrice nightPrice={listing.nightPrice} nights={nights} discountPercentage={discountPercentage} promotions={listing.promotions} />}
         <div>
           {listingGuests.map((type) => (
             <div key={type} className="flex gap-5">

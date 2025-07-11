@@ -7,7 +7,7 @@ export function parseListingFromDB(reservationDB: ListingDB): Listing {
     title: reservationDB.title,
     description: reservationDB.description,
     location: reservationDB.location,
-    price: reservationDB.night_price,
+    nightPrice: reservationDB.night_price,
     promotions: reservationDB.promotions?.map((promo) => ({
       minNights: promo.min_nights,
       discountPercentage: promo.discount_percentage,
@@ -19,6 +19,8 @@ export function parseListingFromDB(reservationDB: ListingDB): Listing {
     guestLimits: reservationDB.guest_limits,
     score: reservationDB.score,
     images: reservationDB.images,
+    lat: reservationDB.lat,
+    lng: reservationDB.lng,
   };
 }
 
