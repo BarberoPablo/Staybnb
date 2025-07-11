@@ -1,6 +1,7 @@
 "use client";
 
-import { PropertyType, useListingForm } from "@/store/useListingForm";
+import { PropertyType } from "@/lib/types/listing";
+import { useListingForm } from "@/store/useListingForm";
 import { MdCabin } from "react-icons/md";
 import { PiBuildingApartmentLight, PiHouseLineLight, PiSailboatLight } from "react-icons/pi";
 import Title from "./components/Title";

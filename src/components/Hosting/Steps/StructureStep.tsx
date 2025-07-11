@@ -1,17 +1,18 @@
 "use client";
 
-import { ListingForm, Structure, useListingForm } from "@/store/useListingForm";
-import Title from "./components/Title";
+import { Structure } from "@/lib/types/listing";
+import { ListingForm, useListingForm } from "@/store/useListingForm";
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
+import Title from "./components/Title";
 
-const structures: Structure[] = ["guests", "bedrooms", "beds", "bathrooms"];
+const structures: (keyof Structure)[] = ["guests", "bedrooms", "beds", "bathrooms"];
 const MAX_QUANTITY = 20;
 
 export default function StructureStep() {
   const structure = useListingForm((state) => state.structure);
   const setField = useListingForm((state) => state.setField);
 
-  const handleClick = (key: Structure, value: ListingForm[keyof ListingForm]) => {
+  const handleClick = (key: keyof Structure, value: ListingForm[keyof ListingForm]) => {
     setField("structure", {
       ...structure,
       [key]: value,
@@ -42,9 +43,9 @@ function QuantitySelector({
   quantity,
   onClick,
 }: {
-  text: Structure;
+  text: keyof Structure;
   quantity: number;
-  onClick: (key: Structure, value: ListingForm[keyof ListingForm]) => void;
+  onClick: (key: keyof Structure, value: ListingForm[keyof ListingForm]) => void;
 }) {
   return (
     <div className="flex items-center justify-between gap-4 text-lg">

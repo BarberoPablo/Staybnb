@@ -1,7 +1,10 @@
 "use client";
 
+import { api } from "@/lib/api/api";
 import { hostingSteps } from "@/lib/types/hostingSteps";
+import { useListingForm } from "@/store/useListingForm";
 import { usePathname, useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function HostingCreateListingLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -11,12 +14,35 @@ export default function HostingCreateListingLayout({ children }: { children: Rea
   const canGoBack = currentStepIndex > 0;
   const canGoNext = currentStepIndex < hostingSteps.length - 1;
 
+  const listingData = useListingForm((state) => state);
+  const resetForm = useListingForm((state) => state.reset);
+
   const goBack = () => {
     if (canGoBack) router.push(`/hosting/create/${hostingSteps[currentStepIndex - 1]}`);
   };
 
   const goNext = () => {
     if (canGoNext) router.push(`/hosting/create/${hostingSteps[currentStepIndex + 1]}`);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await api.createListing(listingData);
+
+      if (!response.success) {
+        toast.error("Failed to create listing");
+        throw new Error("Failed to create listing");
+      }
+
+      toast.success("Listing created");
+      setTimeout(() => {
+        resetForm();
+        router.push("/hosting");
+      }, 2000);
+    } catch (error) {
+      toast.error("Failed to create listing");
+      console.error("Error submitting listing:", error);
+    }
   };
 
   return (
@@ -33,11 +59,10 @@ export default function HostingCreateListingLayout({ children }: { children: Rea
             Back
           </button>
           <button
-            onClick={goNext}
-            disabled={!canGoNext}
+            onClick={canGoNext ? goNext : handleSubmit}
             className="font-medium px-8 py-3.5 border rounded-lg bg-black opacity-80 text-white disabled:opacity-30 hover:opacity-100"
           >
-            Next
+            {canGoNext ? "Next" : "Submit"}
           </button>
         </div>
       </div>

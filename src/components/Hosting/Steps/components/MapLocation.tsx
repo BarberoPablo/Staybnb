@@ -29,9 +29,7 @@ export default function MapLocation() {
       debounceTimeout.current = setTimeout(async () => {
         const address = await reverseGeocode(lat, lng);
         setField("location", address);
-        console.log("Update location", address);
       }, 800);
-      console.log("Update coords", lat, lng);
     },
     [setField]
   );

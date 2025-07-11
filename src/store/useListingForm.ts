@@ -1,36 +1,31 @@
-import { Listing, Promotion } from "@/lib/types/listing";
+import { Listing, PrivacyType, Promotion, PropertyType, Score, Structure } from "@/lib/types/listing";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export type PropertyType = "House" | "Apartment" | "Cabin" | "Boat";
-
-export type PrivacyType = "entire" | "private" | "shared";
-
-export type Structure = "guests" | "bedrooms" | "beds" | "bathrooms";
 
 export type ListingForm = {
   propertyType: PropertyType;
   privacyType: PrivacyType;
-  location: Listing["location"];
-  structure: { [key in Structure]: number };
+  location: string;
   lat: number;
   lng: number;
   timezone: string;
+  title: string;
+  description: string;
+  nightPrice: number;
+  promotions: Promotion[];
+  structure: Structure;
   guestLimits: Listing["guestLimits"];
   amenities: string[];
   safetyItems: string[];
   images: string[];
-  title: Listing["title"];
-  description: Listing["description"];
-  nightPrice: number;
-  promotions: Promotion[];
+  score: Score;
 };
 
 function getInitialListingForm(): ListingForm {
   return {
     propertyType: "House",
+    privacyType: "Entire",
     structure: { guests: 1, bedrooms: 0, beds: 0, bathrooms: 0 },
-    privacyType: "entire",
     location: "",
     lat: 0,
     lng: 0,
@@ -48,6 +43,10 @@ function getInitialListingForm(): ListingForm {
     description: "",
     nightPrice: 0,
     promotions: [],
+    score: {
+      value: 0,
+      reviews: [],
+    },
   };
 }
 

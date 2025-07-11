@@ -1,4 +1,5 @@
-import { Listing, ListingDB, ListingWithReservations, ListingWithReservationsDB } from "../types/listing";
+import { ListingForm } from "@/store/useListingForm";
+import { CreateListingDB, Listing, ListingDB, ListingWithReservations, ListingWithReservationsDB } from "../types/listing";
 import { ReservationDate } from "../types/reservation";
 
 export function parseListingFromDB(reservationDB: ListingDB): Listing {
@@ -41,4 +42,29 @@ export function parseListingWithReservationsFromDB(listingWithReservationDB: Lis
   };
 
   return listingWithReservation;
+}
+
+export function parseListingFormData(listingForm: ListingForm): CreateListingDB {
+  return {
+    property_type: listingForm.propertyType,
+    privacy_type: listingForm.privacyType,
+    location: listingForm.location,
+    lat: listingForm.lat,
+    lng: listingForm.lng,
+    timezone: listingForm.timezone,
+    title: listingForm.title,
+    description: listingForm.description,
+    night_price: listingForm.nightPrice,
+    promotions: listingForm.promotions.map((p) => ({
+      min_nights: p.minNights,
+      discount_percentage: p.discountPercentage,
+      description: p.description,
+    })),
+    images: listingForm.images,
+    structure: listingForm.structure,
+    guest_limits: listingForm.guestLimits,
+    amenities: listingForm.amenities,
+    safety_items: listingForm.safetyItems,
+    score: listingForm.score,
+  };
 }

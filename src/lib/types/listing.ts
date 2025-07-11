@@ -91,3 +91,44 @@ export type Promotion = {
   discountPercentage: number;
   description: string;
 };
+
+export type PropertyType = "House" | "Apartment" | "Cabin" | "Boat";
+
+export type PrivacyType = "Entire" | "Private" | "Shared";
+
+export type Structure = {
+  [key in "guests" | "bedrooms" | "beds" | "bathrooms"]: number;
+};
+
+export type Score = {
+  value: number;
+  reviews: {
+    score: number;
+    message: string;
+    guest: string;
+  }[];
+};
+
+export type CreateListingDB = {
+  property_type: PropertyType;
+  privacy_type: PrivacyType;
+  location: string;
+  lat: number;
+  lng: number;
+  timezone: string;
+  title: string;
+  description: string;
+  night_price: number;
+  promotions: PromotionDB[];
+  images: string[];
+  structure: Structure;
+  guest_limits: {
+    adults: { min: number; max: number };
+    children: { min: number; max: number };
+    infant: { min: number; max: number };
+    pets: { min: number; max: number };
+  };
+  amenities: string[];
+  safety_items: string[];
+  score: Score;
+};

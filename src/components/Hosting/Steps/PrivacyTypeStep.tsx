@@ -1,6 +1,7 @@
 "use client";
 
-import { PrivacyType, useListingForm } from "@/store/useListingForm";
+import { PrivacyType } from "@/lib/types/listing";
+import { useListingForm } from "@/store/useListingForm";
 import React from "react";
 import { FaPeopleRoof } from "react-icons/fa6";
 import { PiDoorOpenLight, PiHouseLineLight } from "react-icons/pi";
@@ -11,19 +12,19 @@ type Privacy = { type: PrivacyType; title: string; subtitle: string; icon: React
 
 const privacyTypes: Privacy[] = [
   {
-    type: "entire",
+    type: "Entire",
     title: "An entire place",
     subtitle: "Guests have the whole place to themselves.",
     icon: <PiHouseLineLight className="w-11 h-11 text-4xl font-medium" />,
   },
   {
-    type: "private",
+    type: "Private",
     title: "A room",
     subtitle: "Guests have their own room in a home, plus access to shared spaces.",
     icon: <PiDoorOpenLight className="w-11 h-11 text-4xl font-medium" />,
   },
   {
-    type: "shared",
+    type: "Shared",
     title: "A shared room in a hostel",
     subtitle: "Guests sleep in a shared room in a professionally managed hostel with staff onsite 24/7.",
     icon: <FaPeopleRoof className="w-11 h-11 text-4xl font-medium" />,
