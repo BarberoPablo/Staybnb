@@ -17,6 +17,7 @@
     "@supabase/supabase-js": "^2.50.2",
     "@uploadthing/react": "^7.3.2",
     "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "keen-slider": "^6.8.6",
     "leaflet": "^1.9.4",
     "next": "15.3.4",
@@ -27,6 +28,7 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "react-leaflet": "^5.0.0-rc.2",
+    "rsuite": "^5.83.1",
     "tailwindcss": "^4.1.10",
     "uploadthing": "^7.7.3",
     "zustand": "^5.0.6"
