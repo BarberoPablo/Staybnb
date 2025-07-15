@@ -9,7 +9,7 @@ export async function GET(req: Request) {
     const { data: listings, error } = await supabase
       .from("listings")
       .select()
-      .ilike("location", `%${params.get("city")}%`);
+      .ilike("location->>city", `%${params.get("city")}%`);
 
     if (error) {
       throw error;

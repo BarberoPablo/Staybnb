@@ -9,7 +9,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
 
         <div className="flex justify-between px-1">
           <h2 className="text-nowrap overflow-hidden overflow-ellipsis max-w-[200px]">
-            {listing.type} in {listing.location}
+            {listing.propertyType} in {listing.location.city}
           </h2>
           <h2>
             ⭐ {listing.score.value} ({listing.score.reviews.length})

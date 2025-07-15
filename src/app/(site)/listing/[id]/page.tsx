@@ -62,7 +62,7 @@ function ListingSubtitle({ listingDetails }: { listingDetails: Listing }) {
   return (
     <div>
       <h2 className="text-[22px] font-medium">
-        {listingDetails.type} in {listingDetails.location}
+        {listingDetails.propertyType} in {listingDetails.location.city}
       </h2>
       <ListBadges badges={listingDetails.structure} className="text-[16px]" />
       <div>

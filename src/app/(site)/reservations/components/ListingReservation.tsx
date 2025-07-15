@@ -12,8 +12,8 @@ export default function ListingReservation({ reservation }: { reservation: Resum
           <Image src={reservation.listing.images[0]} alt="listing main image" priority fill className="object-cover" sizes="100%" />
         </div>
         <div className="flex flex-col">
-          <h3>{reservation.listing.location}</h3>
-          <h3>{reservation.listing.type}</h3>
+          <h3>{reservation.listing.location.city}</h3>
+          <h3>{reservation.listing.privacyType}</h3>
           <DateRange startDate={reservation.startDate} endDate={reservation.endDate} />
           <ListingPrice nightPrice={reservation.nightPrice} nights={reservation.totalNights} discountPercentage={reservation.discountPercentage} />
         </div>
