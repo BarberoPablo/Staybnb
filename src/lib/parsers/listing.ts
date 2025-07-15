@@ -2,26 +2,26 @@ import { ListingForm } from "@/store/useListingForm";
 import { CreateListingDB, Listing, ListingDB, ListingWithReservations, ListingWithReservationsDB } from "../types/listing";
 import { ReservationDate } from "../types/reservation";
 
-export function parseListingFromDB(reservationDB: ListingDB): Listing {
+export function parseListingFromDB(listingDB: ListingDB): Listing {
   return {
-    id: reservationDB.id,
-    title: reservationDB.title,
-    description: reservationDB.description,
-    location: reservationDB.location,
-    nightPrice: reservationDB.night_price,
-    promotions: reservationDB.promotions?.map((promo) => ({
+    id: listingDB.id,
+    hostId: listingDB.host_id,
+    createdAt: listingDB.created_at,
+    propertyType: listingDB.property_type,
+    privacyType: listingDB.privacy_type,
+    title: listingDB.title,
+    description: listingDB.description,
+    location: listingDB.location,
+    nightPrice: listingDB.night_price,
+    promotions: listingDB.promotions?.map((promo) => ({
       minNights: promo.min_nights,
       discountPercentage: promo.discount_percentage,
       description: promo.description,
     })),
-    type: reservationDB.type,
-    hostId: reservationDB.host_id,
-    structure: reservationDB.structure,
-    guestLimits: reservationDB.guest_limits,
-    score: reservationDB.score,
-    images: reservationDB.images,
-    lat: reservationDB.lat,
-    lng: reservationDB.lng,
+    structure: listingDB.structure,
+    guestLimits: listingDB.guest_limits,
+    score: listingDB.score,
+    images: listingDB.images,
   };
 }
 

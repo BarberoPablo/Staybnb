@@ -1,70 +1,31 @@
 import { Guests } from "../types";
 import { ReservationDate, ReservationDateDB } from "./reservation";
 
-export type ListingDB = {
+export type ListingDB = CreateListingDB & {
   id: number;
-  title: string;
-  description: string;
-  location: string;
-  lat: number;
-  lng: number;
-  night_price: number;
-  promotions: PromotionDB[];
-  type: string;
   host_id: string;
-  created_at: string; // ISO date string
-  images: string[];
-  structure: {
-    guests: number;
-    bedrooms: number;
-    beds: number;
-    bathrooms: number;
-  };
-  guest_limits: {
-    adults: { min: number; max: number };
-    children: { min: number; max: number };
-    infant: { min: number; max: number };
-    pets: { min: number; max: number };
-  };
-  score: {
-    value: number;
-    reviews: {
-      message: string;
-      score: number;
-    }[];
-  };
+  created_at: string;
 };
 
 export type Listing = {
   id: number;
+  hostId: string;
+  createdAt: string;
+  propertyType: PropertyType;
+  privacyType: PrivacyType;
   title: string;
   description: string;
-  location: string;
-  lat: number;
-  lng: number;
+  location: Location;
   nightPrice: number;
   promotions: Promotion[];
-  type: string;
-  hostId: string;
-  structure: {
-    guests: number;
-    bedrooms: number;
-    beds: number;
-    bathrooms: number;
-  };
+  structure: Structure;
   guestLimits: {
     [key in Guests]: {
       min: number;
       max: number;
     };
   };
-  score: {
-    value: number;
-    reviews: {
-      message: string;
-      score: number;
-    }[];
-  };
+  score: Score;
   images: string[];
 };
 
@@ -76,9 +37,9 @@ export type ListingWithReservations = Listing & {
   reservations: ReservationDate[] | [];
 };
 
-export type ResumedListingDB = Pick<Listing, "id" | "title" | "images" | "location" | "type" | "promotions">;
+export type ResumedListingDB = Pick<ListingDB, "id" | "title" | "images" | "location" | "property_type" | "privacy_type" | "promotions">;
 
-export type ResumedListing = Pick<Listing, "id" | "title" | "images" | "location" | "type" | "promotions">;
+export type ResumedListing = Pick<Listing, "id" | "title" | "images" | "location" | "propertyType" | "privacyType" | "promotions">;
 
 export type PromotionDB = {
   min_nights: number;
@@ -112,18 +73,18 @@ export type Score = {
 export type CreateListingDB = {
   property_type: PropertyType;
   privacy_type: PrivacyType;
-  location: Location;
   title: string;
   description: string;
+  location: Location;
   night_price: number;
   promotions: PromotionDB[];
   images: string[];
   structure: Structure;
   guest_limits: {
-    adults: { min: number; max: number };
-    children: { min: number; max: number };
-    infant: { min: number; max: number };
-    pets: { min: number; max: number };
+    [key in Guests]: {
+      min: number;
+      max: number;
+    };
   };
   amenities: string[];
   safety_items: string[];

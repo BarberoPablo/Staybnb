@@ -1,7 +1,7 @@
 import { ListingForm } from "@/store/useListingForm";
-import { parseListingFormData, parseListingWithReservationsFromDB } from "../parsers/listing";
+import { parseListingFormData, parseListingFromDB, parseListingWithReservationsFromDB } from "../parsers/listing";
 import { parseResumedReservationWithListingFromDB } from "../parsers/reservation";
-import { Listing, ListingWithReservationsDB } from "../types/listing";
+import { ListingDB, ListingWithReservationsDB } from "../types/listing";
 import { CreateReservation, ResumedReservationWithListingDB } from "../types/reservation";
 import customFetch from "./fetch";
 
@@ -25,8 +25,9 @@ export const api = {
     return await customFetch.post(endpoint.createReservation, { ...data });
   },
   async getListings(city: string) {
-    const { data } = await customFetch.get<Listing[]>(endpoint.getListings(`city=${city}`));
-    return data;
+    const { data } = await customFetch.get<ListingDB[]>(endpoint.getListings(`city=${city}`));
+    const parsedListings = data.map((listing) => parseListingFromDB(listing));
+    return parsedListings;
   },
   async getListing(id: number) {
     const { data } = await customFetch.get<ListingWithReservationsDB>(endpoint.getListing(id));
