@@ -1,6 +1,6 @@
 import { addDays, eachDayOfInterval, subDays } from "date-fns";
 import { Guests, ListingSearchParams } from "./types";
-import { Listing, Promotion, ResumedListing } from "./types/listing";
+import { Listing, Location, Promotion, ResumedListing } from "./types/listing";
 import { ReservationDate } from "./types/reservation";
 
 export function pluralize(count: number, singular: string, plural: string) {
@@ -103,15 +103,31 @@ export function twoDecimals(data: number): number {
   return Number(data.toFixed(2));
 }
 
-export async function reverseGeocode(lat: number, lng: number): Promise<string> {
+export async function reverseGeocode(lat: number, lng: number): Promise<Location | string> {
   try {
-    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`, {
-      headers: {
-        "User-Agent": "Staybnb/1.0 (pablobarbero220@gmail.com)", // reemplazalo
-      },
-    });
+    const api_key = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY;
+    const response = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&apiKey=${api_key}`);
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
     const data = await response.json();
-    return data.display_name || "Unknown location";
+
+    const locationInfo = {
+      lat: data.features[0].properties.lat,
+      lng: data.features[0].properties.lon,
+      formatted: data.features[0].properties.formatted,
+      housenumber: data.features[0].properties.housenumber,
+      street: data.features[0].properties.street,
+      city: data.features[0].properties.city,
+      postcode: data.features[0].properties.state_code + " " + data.features[0].properties.postcode,
+      country: data.features[0].properties.country,
+      state: data.features[0].properties.state,
+      timezone: data.features[0].properties.timezone.name,
+    };
+
+    return locationInfo;
   } catch (error) {
     console.error("Reverse geocoding error:", error);
     return "Unknown location";

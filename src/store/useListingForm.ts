@@ -1,14 +1,11 @@
-import { Listing, PrivacyType, Promotion, PropertyType, Score, Structure } from "@/lib/types/listing";
+import { Listing, Location, PrivacyType, Promotion, PropertyType, Score, Structure } from "@/lib/types/listing";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 export type ListingForm = {
   propertyType: PropertyType;
   privacyType: PrivacyType;
-  location: string;
-  lat: number;
-  lng: number;
-  timezone: string;
+  location: Location;
   title: string;
   description: string;
   nightPrice: number;
@@ -26,10 +23,18 @@ function getInitialListingForm(): ListingForm {
     propertyType: "House",
     privacyType: "Entire",
     structure: { guests: 1, bedrooms: 0, beds: 0, bathrooms: 0 },
-    location: "",
-    lat: 0,
-    lng: 0,
-    timezone: "",
+    location: {
+      formatted: "",
+      housenumber: "",
+      street: "",
+      city: "",
+      postcode: "",
+      country: "",
+      state: "",
+      lat: 0,
+      lng: 0,
+      timezone: "",
+    },
     guestLimits: {
       adults: { min: 1, max: 2 },
       children: { min: 0, max: 0 },

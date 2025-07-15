@@ -23,9 +23,7 @@ export type Database = {
           host_id: string
           id: number
           images: string[]
-          lat: number
-          lng: number
-          location: string
+          location: Json
           night_price: number
           privacy_type: string
           promotions: Json
@@ -33,7 +31,6 @@ export type Database = {
           safety_items: string[]
           score: Json
           structure: Json
-          timezone: string
           title: string
         }
         Insert: {
@@ -44,9 +41,7 @@ export type Database = {
           host_id: string
           id?: number
           images: string[]
-          lat?: number
-          lng?: number
-          location: string
+          location?: Json
           night_price: number
           privacy_type?: string
           promotions: Json
@@ -54,7 +49,6 @@ export type Database = {
           safety_items?: string[]
           score: Json
           structure: Json
-          timezone?: string
           title: string
         }
         Update: {
@@ -65,9 +59,7 @@ export type Database = {
           host_id?: string
           id?: number
           images?: string[]
-          lat?: number
-          lng?: number
-          location?: string
+          location?: Json
           night_price?: number
           privacy_type?: string
           promotions?: Json
@@ -75,7 +67,6 @@ export type Database = {
           safety_items?: string[]
           score?: Json
           structure?: Json
-          timezone?: string
           title?: string
         }
         Relationships: []

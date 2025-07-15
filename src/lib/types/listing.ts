@@ -112,10 +112,7 @@ export type Score = {
 export type CreateListingDB = {
   property_type: PropertyType;
   privacy_type: PrivacyType;
-  location: string;
-  lat: number;
-  lng: number;
-  timezone: string;
+  location: Location;
   title: string;
   description: string;
   night_price: number;
@@ -131,4 +128,17 @@ export type CreateListingDB = {
   amenities: string[];
   safety_items: string[];
   score: Score;
+};
+
+export type Location = {
+  formatted: string;
+  housenumber: string;
+  street: string;
+  city: string;
+  postcode: string;
+  country: string;
+  state: string;
+  lat: number;
+  lng: number;
+  timezone: string;
 };

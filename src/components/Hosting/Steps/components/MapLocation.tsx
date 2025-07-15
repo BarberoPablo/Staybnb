@@ -5,12 +5,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import "./leaflet";
 import { reverseGeocode } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 export default function MapLocation() {
-  const lat = useListingForm((s) => s.lat);
-  const lng = useListingForm((s) => s.lng);
-  const location = useListingForm((s) => s.location);
-  const setField = useListingForm((s) => s.setField);
+  const lat = useListingForm((store) => store.location.lat);
+  const lng = useListingForm((store) => store.location.lng);
+  const formattedLocation = useListingForm((store) => store.location.formatted);
+  const setField = useListingForm((store) => store.setField);
 
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(lat && lng ? [lat, lng] : null);
 
@@ -19,8 +20,6 @@ export default function MapLocation() {
   const handleMove = useCallback(
     async (lat: number, lng: number) => {
       setMarkerPosition([lat, lng]);
-      setField("lat", lat);
-      setField("lng", lng);
 
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
@@ -28,6 +27,10 @@ export default function MapLocation() {
 
       debounceTimeout.current = setTimeout(async () => {
         const address = await reverseGeocode(lat, lng);
+        if (typeof address === "string") {
+          toast.error(address);
+          return;
+        }
         setField("location", address);
       }, 800);
     },
@@ -44,7 +47,6 @@ export default function MapLocation() {
         },
         (error) => {
           console.warn("Geolocation error:", error);
-          // If fails use Buenos Aires
           handleMove(-34.6037, -58.3816);
         }
       );
@@ -78,7 +80,9 @@ export default function MapLocation() {
         />
         <DraggableMarker onMove={handleMove} />
       </MapContainer>
-      <p className="text-sm text-gray-500 mt-2">Current location: {location || `${markerPosition[0].toFixed(4)}, ${markerPosition[1].toFixed(4)}`}</p>{" "}
+      <p className="text-sm text-gray-500 mt-2">
+        Current location: {formattedLocation || `${markerPosition[0].toFixed(4)}, ${markerPosition[1].toFixed(4)}`}
+      </p>
     </div>
   );
 }

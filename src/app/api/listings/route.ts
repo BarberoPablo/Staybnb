@@ -40,7 +40,6 @@ export async function POST(req: NextRequest) {
     }
 
     const body: CreateListingDB = await req.json();
-    //TIME ZONE
     const { error: insertError } = await supabase.from("listings").insert({
       ...body,
       host_id: user.id,
