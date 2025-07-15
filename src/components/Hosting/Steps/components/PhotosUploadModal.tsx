@@ -77,7 +77,7 @@ export default function PhotosUploadModal({ isOpen, onClose }: { isOpen: boolean
       <div className="fixed inset-0 flex items-center justify-center">
         <DialogPanel className="relative flex flex-col items-center text-center bg-white rounded-4xl sm:py-4 max-w-sm md:max-w-xl w-full max-h-[527px]">
           <DialogTitle className="flex items-center justify-between w-full px-4">
-            <button className="flex items-center justify-center w-11 h-11 rounded-full hover:bg-gray-100" onClick={open}>
+            <button className="flex items-center justify-center w-11 h-11 rounded-full hover:bg-gray-100" onClick={onClose}>
               <IoMdClose className="w-5 h-5 text-gray-700" />
             </button>
             <div>
