@@ -1,5 +1,5 @@
-import DateRange from "@/components/DateRange";
 import ListingPrice from "@/components/ListingPrice";
+import ReservationDate from "@/components/ReservationDate";
 import { ResumedReservationWithListing } from "@/lib/types/reservation";
 import Image from "next/image";
 
@@ -14,7 +14,7 @@ export default function ListingReservation({ reservation }: { reservation: Resum
         <div className="flex flex-col">
           <h3>{reservation.listing.location.city}</h3>
           <h3>{reservation.listing.privacyType}</h3>
-          <DateRange startDate={reservation.startDate} endDate={reservation.endDate} />
+          <ReservationDate startDate={reservation.startDate} endDate={reservation.endDate} timezone={reservation.listing.location.timezone} />
           <ListingPrice nightPrice={reservation.nightPrice} nights={reservation.totalNights} discountPercentage={reservation.discountPercentage} />
         </div>
       </div>

@@ -47,7 +47,7 @@ export type CreateReservation = {
   guests: Record<Guests, number>;
 };
 
-export type ResumedReservationWithListingDB = Omit<Reservation, "listingId"> &
+export type ResumedReservationWithListingDB = Omit<ReservationDB, "listingId"> &
   ReservationDB & {
     listing: ResumedListingDB;
   };

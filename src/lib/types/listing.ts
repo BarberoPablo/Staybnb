@@ -16,6 +16,8 @@ export type Listing = {
   title: string;
   description: string;
   location: Location;
+  checkInTime: string;
+  checkOutTime: string;
   nightPrice: number;
   promotions: Promotion[];
   structure: Structure;
@@ -37,9 +39,15 @@ export type ListingWithReservations = Listing & {
   reservations: ReservationDate[] | [];
 };
 
-export type ResumedListingDB = Pick<ListingDB, "id" | "title" | "images" | "location" | "property_type" | "privacy_type" | "promotions">;
+export type ResumedListingDB = Pick<
+  ListingDB,
+  "id" | "title" | "images" | "location" | "night_price" | "property_type" | "privacy_type" | "check_in_time" | "check_out_time"
+>;
 
-export type ResumedListing = Pick<Listing, "id" | "title" | "images" | "location" | "propertyType" | "privacyType" | "promotions">;
+export type ResumedListing = Pick<
+  Listing,
+  "id" | "title" | "images" | "location" | "nightPrice" | "propertyType" | "privacyType" | "checkInTime" | "checkOutTime"
+>;
 
 export type PromotionDB = {
   min_nights: number;
@@ -76,6 +84,8 @@ export type CreateListingDB = {
   title: string;
   description: string;
   location: Location;
+  check_in_time: string;
+  check_out_time: string;
   night_price: number;
   promotions: PromotionDB[];
   images: string[];

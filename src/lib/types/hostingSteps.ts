@@ -2,11 +2,11 @@ export const hostingSteps = [
   "property-type",
   "privacy-type",
   "location",
+  "checkin-checkout",
   "structure",
   "photos",
   "title",
   "description",
-  /* "amenities", */
   "price",
   "promotions",
 ] as const;

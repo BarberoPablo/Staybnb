@@ -6,6 +6,8 @@ export type ListingForm = {
   propertyType: PropertyType;
   privacyType: PrivacyType;
   location: Location;
+  checkInTime: string;
+  checkOutTime: string;
   title: string;
   description: string;
   nightPrice: number;
@@ -35,6 +37,8 @@ function getInitialListingForm(): ListingForm {
       lng: 0,
       timezone: "",
     },
+    checkInTime: "15:00",
+    checkOutTime: "11:00",
     guestLimits: {
       adults: { min: 1, max: 2 },
       children: { min: 0, max: 0 },

@@ -45,8 +45,6 @@ export async function POST(req: NextRequest) {
       host_id: user.id,
     });
 
-    console.log({ body });
-
     if (insertError) {
       console.error("Insert error:", insertError);
       return NextResponse.json({ success: false, error: "Failed to create listing" }, { status: 500 });

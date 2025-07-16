@@ -1,6 +1,7 @@
 import { addDays, eachDayOfInterval, subDays } from "date-fns";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { Guests, ListingSearchParams } from "./types";
-import { Listing, Location, Promotion, ResumedListing } from "./types/listing";
+import { Listing, Location, Promotion } from "./types/listing";
 import { ReservationDate } from "./types/reservation";
 
 export function pluralize(count: number, singular: string, plural: string) {
@@ -83,6 +84,8 @@ export function getDisabledDates(reservedDates: ReservationDate[]): { unavailabl
     }
   });
 
+  console.log({ unavailableCheckInDates, unavailableCheckOutDates });
+
   return { unavailableCheckInDates, unavailableCheckOutDates };
 }
 
@@ -94,7 +97,7 @@ export function calculateNights(startDate: Date, endDate: Date) {
   return Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
-export function getListingPromotion(listing: Listing | ResumedListing, nights: number): Promotion | null {
+export function getListingPromotion(listing: Listing, nights: number): Promotion | null {
   const promos = listing.promotions?.filter((promo) => promo.minNights <= nights);
   return promos.length > 0 ? promos[promos.length - 1] : null;
 }
@@ -132,4 +135,17 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Location
     console.error("Reverse geocoding error:", error);
     return "Unknown location";
   }
+}
+
+// Converts local date and time strings in a given timezone to a UTC Date object
+export function createLocalDate(date: string, time: string, timezone: string) {
+  const dateTimeString = `${date}T${time}:00`;
+  const dateInZone = fromZonedTime(dateTimeString, timezone);
+  return dateInZone;
+}
+
+// Converts a UTC Date to a Date object adjusted to the given timezone for display
+export function dateInLocalTime(date: Date, timezone: string) {
+  const dateInZone = toZonedTime(date, timezone);
+  return dateInZone;
 }

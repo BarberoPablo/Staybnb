@@ -1,7 +1,7 @@
 "use client";
 
-import DateRange from "@/components/DateRange";
 import ListingPrice from "@/components/ListingPrice";
+import ReservationDate from "@/components/ReservationDate";
 import { Guests } from "@/lib/types";
 import { displayGuestLabel } from "@/lib/utils";
 import Image from "next/image";
@@ -46,9 +46,17 @@ export default function ListingResume({
 
       <div className="flex flex-col justify-center w-fit">
         <h2>Trip information</h2>
-        <div className="flex items-center justify-center gap-4 bg-myGreen text-white py-2 px-4 rounded w-fit">
-          <DateRange startDate={listingData.startDate} endDate={listingData.endDate} />
-          <button className="text-sm w-10 bg-white text-myGreenDark py-2 rounded" onClick={openDateSelector}>
+        <div className="relative flex items-center justify-center gap-4 py-2">
+          <ReservationDate
+            startDate={listingData.startDate}
+            endDate={listingData.endDate}
+            timezone={listingData.listing.location.timezone}
+            className="bg-myGreen text-white"
+          />
+          <button
+            className="absolute top-2 right-0 text-sm w-10 text-white bg-myGreenDark py-2 rounded-tr-xl border-t border-r border-gray-300"
+            onClick={openDateSelector}
+          >
             Edit
           </button>
         </div>

@@ -31,7 +31,11 @@ export async function GET() {
         title,
         location,
         night_price,
-        images
+        images,
+        property_type,
+        privacy_type,
+        check_in_time,
+        check_out_time
       )
     `
       )

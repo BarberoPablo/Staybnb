@@ -6,14 +6,13 @@ import {
   ResumedReservationWithListing,
   ResumedReservationWithListingDB,
 } from "../types/reservation";
+import { createLocalDate } from "../utils";
 
-export function parseReservationFromDB(reservations: ReservationDB[]): Reservation[] {
+function parseReservationFromDB(reservations: ReservationDB[]): Omit<Reservation, "startDate" | "endDate">[] {
   const response = reservations.map((reservation) => ({
     id: reservation.id,
     userId: reservation.user_id,
     listingId: reservation.listing_id,
-    startDate: new Date(reservation.start_date),
-    endDate: new Date(reservation.end_date),
     guests: reservation.guests,
     totalPrice: reservation.total_price,
     totalNights: reservation.total_nights,
@@ -27,17 +26,27 @@ export function parseReservationFromDB(reservations: ReservationDB[]): Reservati
 }
 
 export function parseResumedReservationWithListingFromDB(reservations: ResumedReservationWithListingDB[]): ResumedReservationWithListing[] {
-  const response = reservations.map((reservation) => ({
-    ...parseReservationFromDB([reservation])[0],
-    listing: {
-      id: reservation.listing.id,
-      title: reservation.listing.title,
-      images: reservation.listing.images,
-      location: reservation.listing.location,
-      type: reservation.listing.type,
-      promotions: reservation.listing.promotions,
-    },
-  }));
+  const response = reservations.map((reservation) => {
+    const localStartDate = createLocalDate(reservation.start_date, reservation.listing.check_in_time, reservation.listing.location.timezone);
+    const localEndDate = createLocalDate(reservation.end_date, reservation.listing.check_out_time, reservation.listing.location.timezone);
+
+    return {
+      ...parseReservationFromDB([reservation])[0],
+      startDate: localStartDate,
+      endDate: localEndDate,
+      listing: {
+        id: reservation.listing.id,
+        title: reservation.listing.title,
+        images: reservation.listing.images,
+        location: reservation.listing.location,
+        propertyType: reservation.listing.property_type,
+        privacyType: reservation.listing.privacy_type,
+        nightPrice: reservation.listing.night_price,
+        checkInTime: reservation.listing.check_in_time,
+        checkOutTime: reservation.listing.check_out_time,
+      },
+    };
+  });
 
   return response;
 }

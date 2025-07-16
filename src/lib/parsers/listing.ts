@@ -12,6 +12,8 @@ export function parseListingFromDB(listingDB: ListingDB): Listing {
     title: listingDB.title,
     description: listingDB.description,
     location: listingDB.location,
+    checkInTime: listingDB.check_in_time,
+    checkOutTime: listingDB.check_out_time,
     nightPrice: listingDB.night_price,
     promotions: listingDB.promotions?.map((promo) => ({
       minNights: promo.min_nights,
@@ -49,6 +51,8 @@ export function parseListingFormData(listingForm: ListingForm): CreateListingDB 
     property_type: listingForm.propertyType,
     privacy_type: listingForm.privacyType,
     location: listingForm.location,
+    check_in_time: listingForm.checkInTime,
+    check_out_time: listingForm.checkOutTime,
     title: listingForm.title,
     description: listingForm.description,
     night_price: listingForm.nightPrice,

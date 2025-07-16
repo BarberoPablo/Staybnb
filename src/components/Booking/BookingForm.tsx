@@ -4,6 +4,7 @@ import Tooltip from "@/components/Tooltip";
 import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
 import { ListingWithReservations } from "@/lib/types/listing";
 import { buildListingParams, calculateNights, getDisabledDates, getListingPromotion, listingGuests } from "@/lib/utils";
+import { enUS } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
@@ -169,6 +170,7 @@ export default function BookingForm({
           <CalendarLegend />
 
           <DateRange
+            locale={enUS}
             ranges={[dateRange]}
             onChange={handleChangeDateRange}
             minDate={new Date()}
