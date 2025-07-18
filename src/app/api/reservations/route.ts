@@ -1,10 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
-import { PromotionDB } from "@/lib/types/listing";
-import { calculateNights, twoDecimals } from "@/lib/utils";
+import { Location, PromotionDB } from "@/lib/types/listing";
+import { calculateNights, createUTCDate, twoDecimals } from "@/lib/utils";
 import { NextResponse } from "next/server";
 import { Database } from "../../../../database.types";
 
 type ReservationInsert = Database["public"]["Tables"]["reservations"]["Insert"];
+type ListingWithLocation = Omit<Database["public"]["Tables"]["listings"]["Row"], "location" | "promotions"> & {
+  location: Location;
+  promotions: PromotionDB[];
+};
 
 // To get user reservations
 export async function GET() {
@@ -70,7 +74,11 @@ export async function POST(req: Request) {
     }
 
     const { listingId, startDate, endDate, guests } = await req.json();
-    const { error: listingFromDBError, data: listingFromDB } = await supabase.from("listings").select("*").eq("id", listingId).single();
+    const { error: listingFromDBError, data: listingFromDB } = await supabase
+      .from("listings")
+      .select("*")
+      .eq("id", listingId)
+      .single<ListingWithLocation>();
 
     if (listingFromDBError || !listingFromDB) {
       console.error("Listing does not exist:");
@@ -81,8 +89,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Guests are required" }, { status: 400 });
     }
 
-    const totalNights = calculateNights(new Date(startDate), new Date(endDate));
-    const promotion = listingFromDB.promotions && (listingFromDB.promotions as PromotionDB[]).filter((promo) => promo.min_nights <= totalNights)[0];
+    const fullCheckin = createUTCDate(startDate.toISOString().substring(0, 10), listingFromDB.check_in_time, listingFromDB.location.timezone);
+    const fullCheckout = createUTCDate(endDate.toISOString().substring(0, 10), listingFromDB.check_out_time, listingFromDB.location.timezone);
+
+    const totalNights = calculateNights(fullCheckin, fullCheckout);
+    const promotion = listingFromDB.promotions && listingFromDB.promotions.filter((promo) => promo.min_nights <= totalNights)[0];
     const total_price = listingFromDB.night_price * totalNights;
     const discount = twoDecimals(promotion ? (promotion.discount_percentage / 100) * total_price : 0);
     const discount_percentage = twoDecimals(promotion ? promotion.discount_percentage : 0);
@@ -90,8 +101,8 @@ export async function POST(req: Request) {
     const newReservation: ReservationInsert = {
       user_id: user.id,
       listing_id: listingId,
-      start_date: startDate,
-      end_date: endDate,
+      start_date: fullCheckin.toISOString(),
+      end_date: fullCheckout.toISOString(),
       guests,
       total_price,
       total_nights: totalNights,

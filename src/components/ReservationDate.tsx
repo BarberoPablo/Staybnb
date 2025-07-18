@@ -1,6 +1,6 @@
 "use client";
 
-import { dateInLocalTime } from "@/lib/utils";
+import { createTimezoneDate } from "@/lib/utils";
 import { format } from "date-fns-tz";
 
 export default function ReservationDate({
@@ -14,8 +14,8 @@ export default function ReservationDate({
   timezone: string;
   className?: string;
 }) {
-  const checkIn = dateInLocalTime(startDate, timezone);
-  const checkOut = dateInLocalTime(endDate, timezone);
+  const checkIn = createTimezoneDate(startDate, timezone);
+  const checkOut = createTimezoneDate(endDate, timezone);
 
   return (
     <div className={`flex gap-4 border border-gray-300 rounded-xl p-4 text-cen ${className}`}>

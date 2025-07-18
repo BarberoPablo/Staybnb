@@ -64,12 +64,22 @@ export type ReservationWithListing = Reservation & {
   listing: Listing;
 };
 
-export type ReservationDateDB = {
+export type ReservedDateDB = {
   start_date: Date;
   end_date: Date;
 };
 
-export type ReservationDate = {
+export type ReservedDate = {
   startDate: Date;
   endDate: Date;
+};
+
+export type ListingReservedDatesDB = {
+  reservations: { start_date: Date; end_date: Date }[] | [];
+  listing: { check_in_time: string; check_out_time: string; timezone: string };
+};
+
+export type ListingReservedDates = {
+  reservations: { startDate: Date; endDate: Date }[] | [];
+  listing: { checkInTime: string; checkOutTime: string; timezone: string };
 };

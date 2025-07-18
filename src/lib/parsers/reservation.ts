@@ -1,12 +1,14 @@
 import {
   CreateReservation,
   CreateReservationDB,
+  ListingReservedDates,
+  ListingReservedDatesDB,
   Reservation,
   ReservationDB,
   ResumedReservationWithListing,
   ResumedReservationWithListingDB,
 } from "../types/reservation";
-import { createLocalDate } from "../utils";
+import { createUTCDate } from "../utils";
 
 function parseReservationFromDB(reservations: ReservationDB[]): Omit<Reservation, "startDate" | "endDate">[] {
   const response = reservations.map((reservation) => ({
@@ -27,8 +29,8 @@ function parseReservationFromDB(reservations: ReservationDB[]): Omit<Reservation
 
 export function parseResumedReservationWithListingFromDB(reservations: ResumedReservationWithListingDB[]): ResumedReservationWithListing[] {
   const response = reservations.map((reservation) => {
-    const localStartDate = createLocalDate(reservation.start_date, reservation.listing.check_in_time, reservation.listing.location.timezone);
-    const localEndDate = createLocalDate(reservation.end_date, reservation.listing.check_out_time, reservation.listing.location.timezone);
+    const localStartDate = createUTCDate(reservation.start_date, reservation.listing.check_in_time, reservation.listing.location.timezone);
+    const localEndDate = createUTCDate(reservation.end_date, reservation.listing.check_out_time, reservation.listing.location.timezone);
 
     return {
       ...parseReservationFromDB([reservation])[0],
@@ -61,4 +63,24 @@ export function parseCreateReservationToDB(reservation: CreateReservation): Crea
   };
 
   return reservationDB;
+}
+
+export function parseListingReservedDatesDB(listingReservedDatesDB: ListingReservedDatesDB): ListingReservedDates {
+  console.log({ listingReservedDatesDB });
+  const reservedDates: ListingReservedDates = {
+    reservations: [],
+    listing: {
+      checkInTime: listingReservedDatesDB.listing.check_in_time,
+      checkOutTime: listingReservedDatesDB.listing.check_out_time,
+      timezone: listingReservedDatesDB.listing.timezone,
+    },
+  };
+  if (listingReservedDatesDB.reservations.length !== 0) {
+    reservedDates.reservations = listingReservedDatesDB.reservations.map((reservation) => ({
+      startDate: reservation.start_date,
+      endDate: reservation.end_date,
+    }));
+  }
+
+  return reservedDates;
 }

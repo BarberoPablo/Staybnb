@@ -15,7 +15,7 @@ export default function ReservationsPage() {
     if (!loading && user) {
       const fetchReservations = async () => {
         try {
-          const reservations = await api.getReservations();
+          const reservations = await api.getUserReservations();
 
           setUserReservations(reservations);
         } catch (error) {

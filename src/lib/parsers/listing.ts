@@ -1,6 +1,6 @@
 import { ListingForm } from "@/store/useListingForm";
 import { CreateListingDB, Listing, ListingDB, ListingWithReservations, ListingWithReservationsDB } from "../types/listing";
-import { ReservationDate } from "../types/reservation";
+import { ReservedDate } from "../types/reservation";
 
 export function parseListingFromDB(listingDB: ListingDB): Listing {
   return {
@@ -29,12 +29,12 @@ export function parseListingFromDB(listingDB: ListingDB): Listing {
 
 export function parseListingWithReservationsFromDB(listingWithReservationDB: ListingWithReservationsDB): ListingWithReservations {
   const listing = parseListingFromDB(listingWithReservationDB);
-  let reservations: ReservationDate[] = [];
+  let reservations: ReservedDate[] = [];
 
   if (listingWithReservationDB.reservations?.length > 0) {
     reservations = listingWithReservationDB.reservations.map((reservation) => ({
-      startDate: new Date(reservation.start_date),
-      endDate: new Date(reservation.end_date),
+      startDate: reservation.start_date,
+      endDate: reservation.end_date,
     }));
   }
 

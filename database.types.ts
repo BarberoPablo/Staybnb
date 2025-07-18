@@ -17,6 +17,8 @@ export type Database = {
       listings: {
         Row: {
           amenities: string[]
+          check_in_time: string
+          check_out_time: string
           created_at: string | null
           description: string
           guest_limits: Json
@@ -35,13 +37,15 @@ export type Database = {
         }
         Insert: {
           amenities?: string[]
+          check_in_time?: string
+          check_out_time?: string
           created_at?: string | null
           description: string
           guest_limits: Json
           host_id: string
           id?: number
           images: string[]
-          location?: Json
+          location: Json
           night_price: number
           privacy_type?: string
           promotions: Json
@@ -53,6 +57,8 @@ export type Database = {
         }
         Update: {
           amenities?: string[]
+          check_in_time?: string
+          check_out_time?: string
           created_at?: string | null
           description?: string
           guest_limits?: Json

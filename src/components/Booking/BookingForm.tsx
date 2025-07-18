@@ -3,7 +3,7 @@
 import Tooltip from "@/components/Tooltip";
 import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
 import { ListingWithReservations } from "@/lib/types/listing";
-import { buildListingParams, calculateNights, getDisabledDates, getListingPromotion, listingGuests } from "@/lib/utils";
+import { buildListingParams, calculateNights, createUTCDate, getDisabledDates, getListingPromotion, listingGuests } from "@/lib/utils";
 import { enUS } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
@@ -68,14 +68,18 @@ export default function BookingForm({
       const { startDate, endDate, key } = selection;
       const userSelectedCheckOut = !isSelectingCheckOut;
 
-      setDateRange({ startDate, endDate, key });
+      const newStartDate = createUTCDate(startDate.toISOString().substring(0, 10), listing.checkInTime, listing.location.timezone);
+      const newEndDate = createUTCDate(endDate.toISOString().substring(0, 10), listing.checkOutTime, listing.location.timezone);
+
+      setDateRange({ startDate: newStartDate, endDate: newEndDate, key });
+
       setDisabledDates((prevState) => {
         const filteredDates = { ...prevState };
 
         if (userSelectedCheckOut) {
-          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, startDate);
+          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, newStartDate);
         } else {
-          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, endDate);
+          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, newEndDate);
         }
         return filteredDates;
       });

@@ -2,7 +2,7 @@ import { addDays, eachDayOfInterval, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { Guests, ListingSearchParams } from "./types";
 import { Listing, Location, Promotion } from "./types/listing";
-import { ReservationDate } from "./types/reservation";
+import { ReservedDate } from "./types/reservation";
 
 export function pluralize(count: number, singular: string, plural: string) {
   return count === 1 ? singular : plural;
@@ -63,7 +63,7 @@ export function validateDateRange(startDate: Date, endDate: Date) {
   return "";
 }
 
-export function getDisabledDates(reservedDates: ReservationDate[]): { unavailableCheckInDates: Date[]; unavailableCheckOutDates: Date[] } {
+export function getDisabledDates(reservedDates: ReservedDate[]): { unavailableCheckInDates: Date[]; unavailableCheckOutDates: Date[] } {
   // Block all days in between the dates
   const unavailableCheckInDates: Date[] = [];
   const unavailableCheckOutDates: Date[] = [];
@@ -83,8 +83,6 @@ export function getDisabledDates(reservedDates: ReservationDate[]): { unavailabl
       unavailableCheckOutDates.push(...eachDayOfInterval({ start, end }));
     }
   });
-
-  console.log({ unavailableCheckInDates, unavailableCheckOutDates });
 
   return { unavailableCheckInDates, unavailableCheckOutDates };
 }
@@ -138,14 +136,14 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Location
 }
 
 // Converts local date and time strings in a given timezone to a UTC Date object
-export function createLocalDate(date: string, time: string, timezone: string) {
+export function createUTCDate(date: string, time: string, timezone: string) {
   const dateTimeString = `${date}T${time}:00`;
   const dateInZone = fromZonedTime(dateTimeString, timezone);
   return dateInZone;
 }
 
 // Converts a UTC Date to a Date object adjusted to the given timezone for display
-export function dateInLocalTime(date: Date, timezone: string) {
+export function createTimezoneDate(date: Date, timezone: string) {
   const dateInZone = toZonedTime(date, timezone);
   return dateInZone;
 }
