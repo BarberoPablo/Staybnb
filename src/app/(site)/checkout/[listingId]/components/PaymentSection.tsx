@@ -88,7 +88,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
         <h2>Dates:</h2>
         <div className="flex flex-col">
           <h3>
-            Start:
+            Check-in:
             {listingData.startDate.toLocaleDateString("en-US", {
               year: "numeric",
               month: "short",
@@ -96,7 +96,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
             })}
           </h3>
           <h3>
-            End:
+            Check-out:
             {listingData.endDate.toLocaleDateString("en-US", {
               year: "numeric",
               month: "short",
