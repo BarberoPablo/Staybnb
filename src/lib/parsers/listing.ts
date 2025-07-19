@@ -33,8 +33,8 @@ export function parseListingWithReservationsFromDB(listingWithReservationDB: Lis
 
   if (listingWithReservationDB.reservations?.length > 0) {
     reservations = listingWithReservationDB.reservations.map((reservation) => ({
-      startDate: reservation.start_date,
-      endDate: reservation.end_date,
+      startDate: new Date(reservation.start_date),
+      endDate: new Date(reservation.end_date),
     }));
   }
 

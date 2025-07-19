@@ -13,7 +13,7 @@ export type ReservationDB = {
   night_price: number;
   discount: number;
   discount_percentage: number;
-  created_at?: string;
+  created_at: string;
 };
 
 export type Reservation = {

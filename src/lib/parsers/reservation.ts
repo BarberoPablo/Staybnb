@@ -8,7 +8,6 @@ import {
   ResumedReservationWithListing,
   ResumedReservationWithListingDB,
 } from "../types/reservation";
-import { createUTCDate } from "../utils";
 
 function parseReservationFromDB(reservations: ReservationDB[]): Omit<Reservation, "startDate" | "endDate">[] {
   const response = reservations.map((reservation) => ({
@@ -21,7 +20,7 @@ function parseReservationFromDB(reservations: ReservationDB[]): Omit<Reservation
     nightPrice: reservation.night_price,
     discount: reservation.discount || 0,
     discountPercentage: reservation.discount_percentage || 0,
-    createdAt: new Date(reservation.created_at || "") || "",
+    createdAt: new Date(reservation.created_at),
   }));
 
   return response;
@@ -29,13 +28,10 @@ function parseReservationFromDB(reservations: ReservationDB[]): Omit<Reservation
 
 export function parseResumedReservationWithListingFromDB(reservations: ResumedReservationWithListingDB[]): ResumedReservationWithListing[] {
   const response = reservations.map((reservation) => {
-    const localStartDate = createUTCDate(reservation.start_date, reservation.listing.check_in_time, reservation.listing.location.timezone);
-    const localEndDate = createUTCDate(reservation.end_date, reservation.listing.check_out_time, reservation.listing.location.timezone);
-
     return {
       ...parseReservationFromDB([reservation])[0],
-      startDate: localStartDate,
-      endDate: localEndDate,
+      startDate: new Date(reservation.start_date),
+      endDate: new Date(reservation.end_date),
       listing: {
         id: reservation.listing.id,
         title: reservation.listing.title,
@@ -76,8 +72,8 @@ export function parseListingReservedDatesDB(listingReservedDatesDB: ListingReser
   };
   if (listingReservedDatesDB.reservations.length !== 0) {
     reservedDates.reservations = listingReservedDatesDB.reservations.map((reservation) => ({
-      startDate: reservation.start_date,
-      endDate: reservation.end_date,
+      startDate: new Date(reservation.start_date),
+      endDate: new Date(reservation.end_date),
     }));
   }
 
