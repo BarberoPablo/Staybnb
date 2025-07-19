@@ -89,8 +89,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Guests are required" }, { status: 400 });
     }
 
-    const fullCheckin = createUTCDate(startDate.toISOString().substring(0, 10), listingFromDB.check_in_time, listingFromDB.location.timezone);
-    const fullCheckout = createUTCDate(endDate.toISOString().substring(0, 10), listingFromDB.check_out_time, listingFromDB.location.timezone);
+    const fullCheckin = createUTCDate(startDate.substring(0, 10), listingFromDB.check_in_time, listingFromDB.location.timezone);
+    const fullCheckout = createUTCDate(endDate.substring(0, 10), listingFromDB.check_out_time, listingFromDB.location.timezone);
 
     const totalNights = calculateNights(fullCheckin, fullCheckout);
     const promotion = listingFromDB.promotions && listingFromDB.promotions.filter((promo) => promo.min_nights <= totalNights)[0];

@@ -50,11 +50,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
       const parsedLocation = parseLocation(listingData.location);
 
-      console.log({
-        success: true,
-        reservations: [],
-        listing: { timezone: parsedLocation.timezone, check_in_time: listingData.check_in_time, check_out_time: listingData.check_out_time },
-      });
       return NextResponse.json(
         {
           success: true,

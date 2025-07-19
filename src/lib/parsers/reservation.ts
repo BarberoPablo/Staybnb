@@ -66,7 +66,6 @@ export function parseCreateReservationToDB(reservation: CreateReservation): Crea
 }
 
 export function parseListingReservedDatesDB(listingReservedDatesDB: ListingReservedDatesDB): ListingReservedDates {
-  console.log({ listingReservedDatesDB });
   const reservedDates: ListingReservedDates = {
     reservations: [],
     listing: {

@@ -24,7 +24,6 @@ export const api = {
   },
   async getListingReservations(listingId: number) {
     const { data } = await customFetch.get<ListingReservedDatesDB>(endpoint.getListingReservations(listingId));
-    console.log({ data });
     const parsedData = parseListingReservedDatesDB(data);
     return parsedData;
   },
