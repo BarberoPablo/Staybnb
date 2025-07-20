@@ -9,23 +9,26 @@ import { useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { ListingData } from "./Checkout";
 
-type ConfirmationState = "loading" | "confirmed" | "error";
+type ConfirmationState = "loading" | "confirmed" | "error" | "serverError";
 
 const reserve = {
   title: {
     loading: "Reserving...",
     confirmed: "Your reservation is confirmed!",
-    error: "Whops...",
+    error: "Unavailable dates",
+    serverError: "Whops...",
   },
   message: {
     loading: "Please wait while we make the reservation",
     confirmed: "A confirmation email has been sent to your inbox.",
-    error: "Something went wrong. Please try again.",
+    error: "Selected dates are not available.",
+    serverError: "Something went wrong. Please try again.",
   },
   button: {
     loading: <AiOutlineLoading3Quarters className="animate-spin" />,
     confirmed: "My reservations",
     error: "Refresh",
+    serverError: "Refresh",
   },
 };
 
@@ -59,11 +62,8 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
         throw new Error(response.message);
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-        setConfirmationState("error");
-      }
-      setConfirmationState("error");
+      const errorMessage = (error as Error).message;
+      setConfirmationState(errorMessage.includes("available") ? "error" : "serverError");
     }
   };
 
