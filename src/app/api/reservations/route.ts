@@ -109,6 +109,7 @@ export async function POST(req: Request) {
       night_price: listingFromDB.night_price,
       discount,
       discount_percentage,
+      status: "active",
     };
 
     const { error: insertError } = await supabase.from("reservations").insert(newReservation);

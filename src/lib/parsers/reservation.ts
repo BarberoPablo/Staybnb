@@ -5,9 +5,18 @@ import {
   ListingReservedDatesDB,
   Reservation,
   ReservationDB,
+  ReservationStatus,
+  ReservationStatusDB,
   ResumedReservationWithListing,
   ResumedReservationWithListingDB,
 } from "../types/reservation";
+
+const reservationStatus: Record<ReservationStatusDB, ReservationStatus> = {
+  canceled_by_host: "canceledByHost",
+  active: "active",
+  completed: "completed",
+  canceled: "canceled",
+};
 
 function parseReservationFromDB(reservations: ReservationDB[]): Omit<Reservation, "startDate" | "endDate">[] {
   const response = reservations.map((reservation) => ({
@@ -21,6 +30,7 @@ function parseReservationFromDB(reservations: ReservationDB[]): Omit<Reservation
     discount: reservation.discount || 0,
     discountPercentage: reservation.discount_percentage || 0,
     createdAt: new Date(reservation.created_at),
+    status: reservationStatus[reservation.status],
   }));
 
   return response;

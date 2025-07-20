@@ -29,7 +29,11 @@ export type Listing = {
   };
   score: Score;
   images: string[];
+  minCancelDays: number;
+  status: ListingStatus;
 };
+
+export type ListingStatus = "draft" | "published" | "paused" | "pending";
 
 export type ListingWithReservationsDB = ListingDB & {
   reservations: ReservedDateDB[] | [];
@@ -99,6 +103,8 @@ export type CreateListingDB = {
   amenities: string[];
   safety_items: string[];
   score: Score;
+  min_cancel_days: number;
+  status: ListingStatus;
 };
 
 export type Location = {

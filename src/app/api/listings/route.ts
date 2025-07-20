@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
     const { error: insertError } = await supabase.from("listings").insert({
       ...body,
       host_id: user.id,
+      status: "pending",
     });
 
     if (insertError) {

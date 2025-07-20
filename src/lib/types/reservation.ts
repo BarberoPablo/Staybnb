@@ -14,6 +14,7 @@ export type ReservationDB = {
   discount: number;
   discount_percentage: number;
   created_at: string;
+  status: ReservationStatusDB;
 };
 
 export type Reservation = {
@@ -29,7 +30,12 @@ export type Reservation = {
   discount: number;
   discountPercentage: number;
   createdAt: Date;
+  status: ReservationStatus;
 };
+
+export type ReservationStatusDB = "active" | "completed" | "canceled" | "canceled_by_host";
+
+export type ReservationStatus = "active" | "completed" | "canceled" | "canceledByHost";
 
 export type CreateReservationDB = {
   user_id: string;

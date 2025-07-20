@@ -26,12 +26,14 @@ export type Database = {
           id: number
           images: string[]
           location: Json
+          min_cancel_days: number
           night_price: number
           privacy_type: string
           promotions: Json
           property_type: string
           safety_items: string[]
           score: Json
+          status: Database["public"]["Enums"]["listing_status"]
           structure: Json
           title: string
         }
@@ -46,12 +48,14 @@ export type Database = {
           id?: number
           images: string[]
           location: Json
+          min_cancel_days?: number
           night_price: number
           privacy_type?: string
           promotions: Json
           property_type: string
           safety_items?: string[]
           score: Json
+          status?: Database["public"]["Enums"]["listing_status"]
           structure: Json
           title: string
         }
@@ -66,12 +70,14 @@ export type Database = {
           id?: number
           images?: string[]
           location?: Json
+          min_cancel_days?: number
           night_price?: number
           privacy_type?: string
           promotions?: Json
           property_type?: string
           safety_items?: string[]
           score?: Json
+          status?: Database["public"]["Enums"]["listing_status"]
           structure?: Json
           title?: string
         }
@@ -79,6 +85,7 @@ export type Database = {
       }
       reservations: {
         Row: {
+          canceled_at: string | null
           created_at: string | null
           discount: number | null
           discount_percentage: number | null
@@ -88,11 +95,13 @@ export type Database = {
           listing_id: number
           night_price: number
           start_date: string
+          status: Database["public"]["Enums"]["reservation_status"]
           total_nights: number
           total_price: number
           user_id: string
         }
         Insert: {
+          canceled_at?: string | null
           created_at?: string | null
           discount?: number | null
           discount_percentage?: number | null
@@ -102,11 +111,13 @@ export type Database = {
           listing_id: number
           night_price: number
           start_date: string
+          status?: Database["public"]["Enums"]["reservation_status"]
           total_nights: number
           total_price: number
           user_id: string
         }
         Update: {
+          canceled_at?: string | null
           created_at?: string | null
           discount?: number | null
           discount_percentage?: number | null
@@ -116,6 +127,7 @@ export type Database = {
           listing_id?: number
           night_price?: number
           start_date?: string
+          status?: Database["public"]["Enums"]["reservation_status"]
           total_nights?: number
           total_price?: number
           user_id?: string
@@ -138,7 +150,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      listing_status: "draft" | "published" | "paused" | "pending"
+      reservation_status:
+        | "active"
+        | "completed"
+        | "canceled"
+        | "canceled_by_host"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -265,6 +282,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      listing_status: ["draft", "published", "paused", "pending"],
+      reservation_status: [
+        "active",
+        "completed",
+        "canceled",
+        "canceled_by_host",
+      ],
+    },
   },
 } as const

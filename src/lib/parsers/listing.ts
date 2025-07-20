@@ -24,6 +24,8 @@ export function parseListingFromDB(listingDB: ListingDB): Listing {
     guestLimits: listingDB.guest_limits,
     score: listingDB.score,
     images: listingDB.images,
+    minCancelDays: listingDB.min_cancel_days,
+    status: listingDB.status,
   };
 }
 
@@ -67,5 +69,7 @@ export function parseListingFormData(listingForm: ListingForm): CreateListingDB 
     amenities: listingForm.amenities,
     safety_items: listingForm.safetyItems,
     score: listingForm.score,
+    min_cancel_days: listingForm.minCancelDays,
+    status: "pending",
   };
 }

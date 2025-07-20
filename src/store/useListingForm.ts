@@ -18,6 +18,8 @@ export type ListingForm = {
   safetyItems: string[];
   images: string[];
   score: Score;
+  minCancelDays: number;
+  status: Listing["status"];
 };
 
 function getInitialListingForm(): ListingForm {
@@ -56,6 +58,8 @@ function getInitialListingForm(): ListingForm {
       value: 0,
       reviews: [],
     },
+    minCancelDays: 3,
+    status: "draft",
   };
 }
 
