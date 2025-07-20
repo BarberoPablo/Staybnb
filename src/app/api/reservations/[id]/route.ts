@@ -14,15 +14,15 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       .from("reservations")
       .select(
         `
-    start_date,
-    end_date,
-    listing:listing_id (
-      id,
-      location,
-      check_in_time,
-      check_out_time
-    )
-  `
+        start_date,
+        end_date,
+        listing:listing_id (
+          id,
+          location,
+          check_in_time,
+          check_out_time
+        )
+        `
       )
       .eq("listing_id", Number(id))
       .order("start_date", { ascending: false });
@@ -63,7 +63,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
 
     //  Avoid extra data
-    const reservations = reservationsData.map((reservation) => [reservation.start_date, reservation.end_date]);
+    const reservations = reservationsData.map((reservation) => ({ start_date: reservation.start_date, end_date: reservation.end_date }));
     //  Take the listing information from the first reservation (all reservations share have the same listing)
     const { location, check_in_time, check_out_time } = reservationsData[0].listing;
     const parsedLocation = parseLocation(location);
