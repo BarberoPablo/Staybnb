@@ -89,20 +89,54 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Guests are required" }, { status: 400 });
     }
 
-    const fullCheckin = createUTCDate(startDate.substring(0, 10), listingFromDB.check_in_time, listingFromDB.location.timezone);
-    const fullCheckout = createUTCDate(endDate.substring(0, 10), listingFromDB.check_out_time, listingFromDB.location.timezone);
+    const userSelectedCheckIn = createUTCDate(startDate.substring(0, 10), listingFromDB.check_in_time, listingFromDB.location.timezone);
+    const userSelectedCheckOut = createUTCDate(endDate.substring(0, 10), listingFromDB.check_out_time, listingFromDB.location.timezone);
 
-    const totalNights = calculateNights(fullCheckin, fullCheckout);
+    if (userSelectedCheckIn > userSelectedCheckOut) {
+      console.error("Error, checkin date must be before checkout date");
+      return NextResponse.json({ error: "Check-in date must be before check-out date" }, { status: 400 });
+    }
+
+    const totalNights = calculateNights(userSelectedCheckIn, userSelectedCheckOut);
     const promotion = listingFromDB.promotions && listingFromDB.promotions.filter((promo) => promo.min_nights <= totalNights)[0];
     const total_price = listingFromDB.night_price * totalNights;
     const discount = twoDecimals(promotion ? (promotion.discount_percentage / 100) * total_price : 0);
     const discount_percentage = twoDecimals(promotion ? promotion.discount_percentage : 0);
 
+    //  Checking dates
+    const { data: existingReservations, error: reservationFetchError } = await supabase
+      .from("reservations")
+      .select("start_date, end_date")
+      .eq("listing_id", listingId)
+      .eq("status", "active");
+
+    if (reservationFetchError) {
+      console.error("Error fetching existing reservations:", reservationFetchError);
+      return NextResponse.json({ error: "Could not verify availability" }, { status: 500 });
+    }
+
+    const existingDateRanges = existingReservations.map((res) => ({
+      start: createUTCDate(res.start_date.substring(0, 10), listingFromDB.check_in_time, listingFromDB.location.timezone),
+      end: createUTCDate(res.end_date.substring(0, 10), listingFromDB.check_out_time, listingFromDB.location.timezone),
+    }));
+
+    const isOverlapping = existingDateRanges.some(({ start, end }) => {
+      return (
+        (userSelectedCheckIn >= start && userSelectedCheckIn < end) || // nuevo checkin dentro de una reserva
+        (userSelectedCheckOut > start && userSelectedCheckOut <= end) || // nuevo checkout dentro de una reserva
+        (userSelectedCheckIn <= start && userSelectedCheckOut >= end) // nueva reserva cubre toda una existente
+      );
+    });
+
+    if (isOverlapping) {
+      return NextResponse.json({ error: "Selected dates are not available" }, { status: 400 });
+    }
+
     const newReservation: ReservationInsert = {
       user_id: user.id,
       listing_id: listingId,
-      start_date: fullCheckin.toISOString(),
-      end_date: fullCheckout.toISOString(),
+      start_date: userSelectedCheckIn.toISOString(),
+      end_date: userSelectedCheckOut.toISOString(),
       guests,
       total_price,
       total_nights: totalNights,
