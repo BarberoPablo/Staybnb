@@ -21,19 +21,28 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { error } = await supabase.from("reservations").update({ status: "canceled" }).eq("user_id", user.id).eq("id", id).single();
+    const { data: reservation, error: fetchError } = await supabase.from("reservations").select("id, user_id, status").eq("id", id).single();
 
-    if (error) {
-      console.error("Error canceling reservation:", error);
+    if (fetchError || !reservation) {
+      return NextResponse.json({ error: "Reservation not found" }, { status: 404 });
+    }
+
+    if (reservation.user_id !== user.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    if (reservation.status !== "active") {
+      return NextResponse.json({ error: "Cannot cancel this reservation" }, { status: 400 });
+    }
+
+    const { error: cancelError } = await supabase.from("reservations").update({ status: "canceled" }).match({ id, user_id: user.id }).single();
+
+    if (cancelError) {
+      console.error("Error canceling reservation:", cancelError);
       return NextResponse.json({ success: false, error: "Error canceling reservation" }, { status: 500 });
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
     console.error("Server error:", err);
     return NextResponse.json({ success: false, error: "Unexpected error occurred" }, { status: 500 });
