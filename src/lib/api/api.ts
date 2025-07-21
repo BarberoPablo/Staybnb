@@ -14,6 +14,7 @@ export const endpoint = {
   getListings: (params: string) => `${baseUrl}/api/listings?${params}`,
   getListing: (id: number) => `${baseUrl}/api/listings/${id}`,
   createListing: `${baseUrl}/api/listings`,
+  cancelReservation: (id: string) => `${baseUrl}/api/reservations/${id}/cancel`,
 };
 
 export const api = {
@@ -43,5 +44,8 @@ export const api = {
   async createListing(data: ListingForm) {
     const parsedListingFormData = parseListingFormData(data);
     return await customFetch.post(endpoint.createListing, { ...parsedListingFormData });
+  },
+  async cancelReservation(id: string) {
+    return await customFetch.patch(endpoint.cancelReservation(id));
   },
 };

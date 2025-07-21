@@ -1,11 +1,17 @@
+"use client";
+
 import ListingPrice from "@/components/ListingPrice";
 import ReservationDate from "@/components/ReservationDate";
 import { ResumedReservationWithListing } from "@/lib/types/reservation";
 import Image from "next/image";
+import { useState } from "react";
 import { LuCalendarX2, LuReceiptText } from "react-icons/lu";
 import { MdOutlineMessage } from "react-icons/md";
+import { CancelReservationDialog } from "./CancelReservationDialog";
 
 export default function ListingReservation({ reservation }: { reservation: ResumedReservationWithListing }) {
+  const [openCancelResevationDialog, setOpenCancelResevationDialog] = useState(false);
+
   return (
     <div className="flex flex-col p-4">
       <div className="flex align-center justify-around">
@@ -25,7 +31,7 @@ export default function ListingReservation({ reservation }: { reservation: Resum
         </div>
 
         <div className="flex flex-col pt-5 gap-2">
-          <button className="basic-button text-red-900 bg-red-400 hover:bg-red-500">
+          <button className="basic-button text-red-900 bg-red-400 hover:bg-red-500" onClick={() => setOpenCancelResevationDialog(true)}>
             <LuCalendarX2 className="w-5 h-5" />
             <h3 className="ml-2">Cancel Reservation</h3>
           </button>
@@ -39,6 +45,7 @@ export default function ListingReservation({ reservation }: { reservation: Resum
           </button>
         </div>
       </div>
+      <CancelReservationDialog reservationId={reservation.id} isOpen={openCancelResevationDialog} setIsOpen={setOpenCancelResevationDialog} />
     </div>
   );
 }
