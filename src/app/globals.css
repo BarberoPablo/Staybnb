@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
 @import "keen-slider/keen-slider.min.css";
 @import "react-date-range/dist/styles.css";
@@ -13,12 +14,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
   --color-myGreen: #3ecf8e;
   --color-myGreenDark: #37ba7f;
-  /* --breakpoint-*: initial;
-  --breakpoint-xsm: 375px; */
 }
 
 @media (prefers-color-scheme: light) {
@@ -31,7 +28,12 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: var(--font-roboto), sans-serif;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-style: normal;
+
 }
 
 button {
@@ -52,4 +54,8 @@ button {
 .no-spinner {
   appearance: textfield;
   -moz-appearance: textfield;
+}
+
+.basic-button {
+  @apply border border-gray-300 p-2 rounded-md hover:cursor-pointer text-sm;
 }
