@@ -57,5 +57,5 @@ button {
 }
 
 .basic-button {
-  @apply border border-gray-300 p-2 rounded-md hover:cursor-pointer text-sm;
+  @apply flex items-center border border-gray-300 p-2 rounded-md hover:cursor-pointer text-sm;
 }
