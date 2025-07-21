@@ -122,9 +122,9 @@ export async function POST(req: Request) {
 
     const isOverlapping = existingDateRanges.some(({ start, end }) => {
       return (
-        (userSelectedCheckIn >= start && userSelectedCheckIn < end) || // nuevo checkin dentro de una reserva
-        (userSelectedCheckOut > start && userSelectedCheckOut <= end) || // nuevo checkout dentro de una reserva
-        (userSelectedCheckIn <= start && userSelectedCheckOut >= end) // nueva reserva cubre toda una existente
+        (userSelectedCheckIn >= start && userSelectedCheckIn < end) ||
+        (userSelectedCheckOut > start && userSelectedCheckOut <= end) ||
+        (userSelectedCheckIn <= start && userSelectedCheckOut >= end)
       );
     });
 

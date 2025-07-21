@@ -25,6 +25,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         `
       )
       .eq("listing_id", Number(id))
+      .eq("status", "active")
       .order("start_date", { ascending: false });
 
     if (reservationsError) {
