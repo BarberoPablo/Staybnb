@@ -44,11 +44,14 @@ export function getCustomDayContent(disabledDates: UnavailableDates) {
 
     let dot = null;
 
-    if (isCheckInOnly) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (isCheckInOnly && day >= today) {
       dot = <div className={`absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-[50%] ${bookingColors.checkIn}`} />;
     }
 
-    if (isCheckOutOnly) {
+    if (isCheckOutOnly && day >= today) {
       dot = <div className={`absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-[50%] ${bookingColors.checkOut}`} />;
     }
 
