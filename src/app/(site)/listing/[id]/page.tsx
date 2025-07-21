@@ -6,7 +6,7 @@ import { api } from "@/lib/api/api";
 import { Listing } from "@/lib/types/listing";
 
 type ListingDetailsProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function ListingDetailsPage({ params }: ListingDetailsProps) {
