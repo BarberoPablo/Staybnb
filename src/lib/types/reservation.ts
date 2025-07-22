@@ -38,7 +38,6 @@ export type ReservationStatusDB = "active" | "completed" | "canceled" | "cancele
 export type ReservationStatus = "active" | "completed" | "canceled" | "canceledByHost";
 
 export type CreateReservationDB = {
-  user_id: string;
   listing_id: number;
   start_date: Date;
   end_date: Date;
@@ -46,7 +45,6 @@ export type CreateReservationDB = {
 };
 
 export type CreateReservation = {
-  userId: string;
   listingId: number;
   startDate: Date;
   endDate: Date;

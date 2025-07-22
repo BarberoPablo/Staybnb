@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "@/hooks/useUser";
 import { api } from "@/lib/api/api";
 import { ResumedReservationWithListing } from "@/lib/types/reservation";
 import { useEffect, useState } from "react";
@@ -16,9 +15,8 @@ type userReservations = {
 };
 
 export function ReservationTabs() {
-  const { user, loading } = useUser();
   const [userReservations, setUserReservations] = useState<userReservations>({
-    total: 0,
+    total: -1,
     active: [],
     canceled: [],
     history: [],
@@ -32,37 +30,35 @@ export function ReservationTabs() {
   ];
 
   useEffect(() => {
-    if (!loading && user) {
-      setLoadingReservations(true);
-      const fetchReservations = async () => {
-        try {
-          const reservations = await api.getUserReservations();
-          const now = new Date();
-          setUserReservations({
-            total: reservations.length,
-            active: reservations.filter((r) => r.status === "active" && new Date(r.endDate) >= now),
-            canceled: reservations.filter((r) => r.status === "canceled"),
-            history: reservations.filter((r) => r.status === "active" && new Date(r.endDate) < now),
-          });
-        } catch (error) {
-          if (error instanceof Error) {
-            setError(error.message);
-          } else {
-            setError("Something went wrong");
-          }
-        } finally {
-          setLoadingReservations(false);
+    setLoadingReservations(true);
+    const fetchReservations = async () => {
+      try {
+        const reservations = await api.getUserReservations();
+        const now = new Date();
+        setUserReservations({
+          total: reservations.length,
+          active: reservations.filter((r) => r.status === "active" && new Date(r.endDate) >= now),
+          canceled: reservations.filter((r) => r.status === "canceled"),
+          history: reservations.filter((r) => r.status === "active" && new Date(r.endDate) < now),
+        });
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Something went wrong");
         }
-      };
-      fetchReservations();
-    }
-  }, [user, loading]);
+      } finally {
+        setLoadingReservations(false);
+      }
+    };
+    fetchReservations();
+  }, []);
 
-  if (loading || loadingReservations) {
+  if (loadingReservations) {
     return <div>Loading reservations...</div>;
   }
 
-  if (!loading && !loadingReservations && userReservations.total === 0) {
+  if (!loadingReservations && userReservations.total === 0) {
     return <div>No reservations found</div>;
   }
   if (error) {

@@ -61,7 +61,6 @@ export function parseResumedReservationWithListingFromDB(reservations: ResumedRe
 
 export function parseCreateReservationToDB(reservation: CreateReservation): CreateReservationDB {
   const reservationDB: CreateReservationDB = {
-    user_id: reservation.userId,
     listing_id: reservation.listingId,
     start_date: reservation.startDate,
     end_date: reservation.endDate,

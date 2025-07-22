@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "@/hooks/useUser";
 import { api } from "@/lib/api/api";
 import { CreateReservation } from "@/lib/types/reservation";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -36,17 +35,11 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
   const [isOpen, setIsOpen] = useState(false);
   const [confirmationState, setConfirmationState] = useState<ConfirmationState>("loading");
   const router = useRouter();
-  const { user } = useUser();
 
   const handleConfirmPayment = async () => {
-    if (!user) {
-      return;
-    }
-
     setIsOpen(true);
 
     const reservationData: CreateReservation = {
-      userId: user.id,
       listingId: listingData.listing.id,
       startDate: listingData.startDate,
       endDate: listingData.endDate,

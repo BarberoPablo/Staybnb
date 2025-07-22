@@ -6,7 +6,7 @@ import { ResumedReservationWithListing } from "@/lib/types/reservation";
 import Image from "next/image";
 import { useState } from "react";
 import { LuCalendarX2, LuReceiptText } from "react-icons/lu";
-import { MdOutlineMessage } from "react-icons/md";
+import { MdOutlineMessage, MdOutlineRateReview } from "react-icons/md";
 import { CancelReservationDialog } from "./CancelReservationDialog";
 
 export default function ListingReservation({ reservation, eventKey }: { reservation: ResumedReservationWithListing; eventKey: string }) {
@@ -43,6 +43,12 @@ export default function ListingReservation({ reservation, eventKey }: { reservat
             <button className="basic-button text-red-900 bg-red-400 hover:bg-red-500" onClick={() => setOpenCancelResevationDialog(true)}>
               <LuCalendarX2 className="w-5 h-5" />
               <h3 className="ml-2">Cancel Reservation</h3>
+            </button>
+          )}
+          {eventKey === "history" && (
+            <button className="basic-button text-yellow-900 bg-yellow-400 hover:bg-yellow-500" onClick={() => setOpenCancelResevationDialog(true)}>
+              <MdOutlineRateReview className="w-5 h-5" />
+              <h3 className="ml-2">Review this listing</h3>
             </button>
           )}
         </div>

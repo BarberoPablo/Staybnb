@@ -1,5 +1,3 @@
-"use client";
-
 import "rsuite/Tabs/styles/index.css";
 import { ReservationTabs } from "./components/ReservationTabs";
 

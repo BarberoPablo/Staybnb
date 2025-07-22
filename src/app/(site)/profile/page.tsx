@@ -1,26 +1,3 @@
-"use client";
-
-import { useUser } from "@/hooks/useUser";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
 export default function ProfilePage() {
-  const { user, loading } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/auth");
-    }
-  }, [user, loading, router]);
-
-  if (loading) return <p>Loading...</p>;
-
-  if (!user) return null;
-
-  return (
-    <div>
-      User email: {user.email}, User id; {user.id}
-    </div>
-  );
+  return <div>Route handler for user info.</div>;
 }
