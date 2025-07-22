@@ -36,15 +36,6 @@ body {
 
 }
 
-button {
-  @apply hover:cursor-pointer;
-
-  &:disabled {
-    cursor: default;
-    background-color: var(--color-gray-400)
-  }
-}
-
 .no-spinner::-webkit-inner-spin-button,
 .no-spinner::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -58,4 +49,16 @@ button {
 
 .basic-button {
   @apply flex items-center border border-gray-300 p-2 rounded-md hover:cursor-pointer text-sm;
+}
+
+.rs-tabs {
+  gap: 0 !important;
+
+}
+
+.rs-nav-bar {
+  width: calc(100%) !important;
+  top: 40px !important;
+  height: 10px !important;
+  border-top-right-radius: 40px !important;
 }
