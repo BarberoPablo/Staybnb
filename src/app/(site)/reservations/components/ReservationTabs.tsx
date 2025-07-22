@@ -77,19 +77,19 @@ export function ReservationTabs() {
     <Tabs defaultActiveKey="active" appearance="tabs">
       {tabs.map((tab) => (
         <Tabs.Tab key={tab.eventKey} eventKey={tab.eventKey} title={tab.title} disabled={tab.reservations.length === 0}>
-          <ReservationTab title={tab.title} reservations={tab.reservations} />
+          <ReservationTab reservations={tab.reservations} eventKey={tab.eventKey} />
         </Tabs.Tab>
       ))}
     </Tabs>
   );
 }
 
-function ReservationTab({ reservations }: { title: string; reservations: ResumedReservationWithListing[] }) {
+function ReservationTab({ reservations, eventKey }: { reservations: ResumedReservationWithListing[]; eventKey: string }) {
   return (
     <div className="flex flex-col border-x border-b border-gray-300 rounded-tr-lg rounded-b-lg">
       {reservations.map((reservation, index) => (
         <div key={`${reservation.listingId}-${reservation.createdAt}`}>
-          <ListingReservation reservation={reservation} key={`${reservation.listingId}-${reservation.createdAt}`} />
+          <ListingReservation key={`${reservation.listingId}-${reservation.createdAt}`} reservation={reservation} eventKey={eventKey} />
           {index !== reservations.length - 1 && <hr className="text-gray-300 mt-2" />}
         </div>
       ))}

@@ -9,7 +9,7 @@ import { LuCalendarX2, LuReceiptText } from "react-icons/lu";
 import { MdOutlineMessage } from "react-icons/md";
 import { CancelReservationDialog } from "./CancelReservationDialog";
 
-export default function ListingReservation({ reservation }: { reservation: ResumedReservationWithListing }) {
+export default function ListingReservation({ reservation, eventKey }: { reservation: ResumedReservationWithListing; eventKey: string }) {
   const [openCancelResevationDialog, setOpenCancelResevationDialog] = useState(false);
 
   return (
@@ -30,11 +30,7 @@ export default function ListingReservation({ reservation }: { reservation: Resum
           </div>
         </div>
 
-        <div className="flex flex-col pt-5 gap-2">
-          <button className="basic-button text-red-900 bg-red-400 hover:bg-red-500" onClick={() => setOpenCancelResevationDialog(true)}>
-            <LuCalendarX2 className="w-5 h-5" />
-            <h3 className="ml-2">Cancel Reservation</h3>
-          </button>
+        <div className="flex flex-col pt-5 gap-2 w-[170px]">
           <button className="basic-button text-[#13422d] bg-myGreen hover:bg-myGreenDark">
             <LuReceiptText className="w-5 h-5" />
             <h3 className="ml-2">See receipt</h3>
@@ -43,6 +39,12 @@ export default function ListingReservation({ reservation }: { reservation: Resum
             <MdOutlineMessage className="w-5 h-5" />
             <h3 className="ml-2">Chat with host</h3>
           </button>
+          {eventKey === "active" && (
+            <button className="basic-button text-red-900 bg-red-400 hover:bg-red-500" onClick={() => setOpenCancelResevationDialog(true)}>
+              <LuCalendarX2 className="w-5 h-5" />
+              <h3 className="ml-2">Cancel Reservation</h3>
+            </button>
+          )}
         </div>
       </div>
       <CancelReservationDialog reservationId={reservation.id} isOpen={openCancelResevationDialog} setIsOpen={setOpenCancelResevationDialog} />
