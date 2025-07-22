@@ -16,7 +16,7 @@ type userReservations = {
 
 export function ReservationTabs() {
   const [userReservations, setUserReservations] = useState<userReservations>({
-    total: -1,
+    total: 0,
     active: [],
     canceled: [],
     history: [],
@@ -70,7 +70,7 @@ export function ReservationTabs() {
   }
 
   return (
-    <Tabs defaultActiveKey="active" appearance="tabs">
+    <Tabs defaultActiveKey={tabs.find((tab) => tab.reservations.length > 0)?.eventKey} appearance="tabs">
       {tabs.map((tab) => (
         <Tabs.Tab key={tab.eventKey} eventKey={tab.eventKey} title={tab.title} disabled={tab.reservations.length === 0}>
           <ReservationTab reservations={tab.reservations} eventKey={tab.eventKey} />

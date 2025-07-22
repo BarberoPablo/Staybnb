@@ -44,7 +44,7 @@ export async function GET() {
     `
       )
       .eq("user_id", user.id)
-      .order("start_date", { ascending: false });
+      .order("start_date", { ascending: true });
 
     if (error) {
       console.error("Getting reservations error:", error);

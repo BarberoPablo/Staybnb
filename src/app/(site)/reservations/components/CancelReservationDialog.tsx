@@ -1,6 +1,5 @@
 import { api } from "@/lib/api/api";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -14,7 +13,7 @@ export function CancelReservationDialog({
   setIsOpen: (isOpen: boolean) => void;
 }) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [reloading, setReloading] = useState(false);
 
   const onClose = () => {
     setIsOpen(false);
@@ -26,15 +25,20 @@ export function CancelReservationDialog({
       const response = await api.cancelReservation(reservationId);
 
       if (response.success) {
-        toast.success("Reservation canceled", { duration: 4000 });
+        toast.success("Reservation canceled", { duration: 2000 });
+        setLoading(false);
+        setReloading(true);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       } else {
         toast.error(response.message || "Error");
+        setIsOpen(false);
+        setLoading(false);
       }
-      router.refresh();
     } catch (error) {
       console.error("Error al cancelar", error);
       toast.error("Error", { duration: 4000 });
-    } finally {
       setLoading(false);
       setIsOpen(false);
     }
@@ -54,19 +58,21 @@ export function CancelReservationDialog({
           </DialogTitle>
 
           <div id="dialog-description" className="w-full px-6">
-            <p>Are you sure you want to cancel this reservation?</p>
+            {reloading && <p className="opacity-80">Refreshing page...</p>}
+            {loading && <p className="opacity-30">Canceling reservation...</p>}
+            {!loading && !reloading && <p className="">Are you sure you want to cancel this reservation?</p>}
           </div>
 
           <div id="dialog-description" className="flex items-center justify-around w-full px-6 relative">
             <button
-              disabled={loading}
+              disabled={loading || reloading}
               className="w-25 bg-foreground text-background py-2 rounded opacity-80 disabled:opacity-30 hover:opacity-100"
               onClick={() => setIsOpen(false)}
             >
               Go Back
             </button>
             <button
-              disabled={loading}
+              disabled={loading || reloading}
               className="w-25 text-background bg-red-500 py-2 rounded opacity-80 disabled:opacity-30 hover:opacity-100"
               onClick={handleCancelReservation}
             >
