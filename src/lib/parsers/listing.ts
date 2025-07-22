@@ -1,6 +1,15 @@
 import { ListingForm } from "@/store/useListingForm";
-import { CreateListingDB, Listing, ListingDB, ListingWithReservations, ListingWithReservationsDB } from "../types/listing";
+import {
+  CreateListingDB,
+  HostListingsWithReservations,
+  HostListingsWithReservationsDB,
+  Listing,
+  ListingDB,
+  ListingWithReservations,
+  ListingWithReservationsDB,
+} from "../types/listing";
 import { ReservedDate } from "../types/reservation";
+import { parseReservationFromDB } from "./reservation";
 
 export function parseListingFromDB(listingDB: ListingDB): Listing {
   return {
@@ -72,4 +81,13 @@ export function parseListingFormData(listingForm: ListingForm): CreateListingDB 
     min_cancel_days: listingForm.minCancelDays,
     status: "pending",
   };
+}
+
+export function parseHostListingsWithReservations(listings: HostListingsWithReservationsDB[]): HostListingsWithReservations[] {
+  const parsedListings = listings.map((listing) => ({
+    ...parseListingFromDB(listing),
+    reservations: [...parseReservationFromDB(listing.reservations)],
+  }));
+
+  return parsedListings;
 }

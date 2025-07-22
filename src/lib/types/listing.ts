@@ -1,5 +1,5 @@
 import { Guests } from "../types";
-import { ReservedDate, ReservedDateDB } from "./reservation";
+import { Reservation, ReservationDB, ReservedDate, ReservedDateDB } from "./reservation";
 
 export type ListingDB = CreateListingDB & {
   id: number;
@@ -118,4 +118,12 @@ export type Location = {
   lat: number;
   lng: number;
   timezone: string;
+};
+
+export type HostListingsWithReservationsDB = ListingDB & {
+  reservations: ReservationDB[] | [];
+};
+
+export type HostListingsWithReservations = Listing & {
+  reservations: Reservation[] | [];
 };

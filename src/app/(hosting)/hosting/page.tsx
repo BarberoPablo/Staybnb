@@ -1,11 +1,16 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default function page() {
+export default function Hosting() {
+  const router = useRouter();
+  const handleMyListings = () => {
+    router.push("/hosting/listings");
+  };
+
   const handleCreateListing = () => {
-    redirect("/hosting/create");
+    router.push("/hosting/create");
   };
 
   return (
@@ -14,9 +19,13 @@ export default function page() {
         <Navbar search={false} />
       </header>
       <main className="w-full mt-2 flex-grow px-5">
-        <div className="flex flex-col">
-          Hosting
-          <button onClick={handleCreateListing}>Create Listing</button>
+        <div className="flex items-center justify-center gap-20">
+          <button className="basic-button justify-center w-50 h-50" onClick={handleMyListings}>
+            My listings
+          </button>
+          <button className="basic-button justify-center w-50 h-50" onClick={handleCreateListing}>
+            Create Listing
+          </button>
         </div>
       </main>
     </>

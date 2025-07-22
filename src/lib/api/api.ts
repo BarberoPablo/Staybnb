@@ -1,7 +1,7 @@
 import { ListingForm } from "@/store/useListingForm";
-import { parseListingFormData, parseListingFromDB, parseListingWithReservationsFromDB } from "../parsers/listing";
+import { parseHostListingsWithReservations, parseListingFormData, parseListingFromDB, parseListingWithReservationsFromDB } from "../parsers/listing";
 import { parseListingReservedDatesDB, parseResumedReservationWithListingFromDB } from "../parsers/reservation";
-import { ListingDB, ListingWithReservationsDB } from "../types/listing";
+import { HostListingsWithReservationsDB, ListingDB, ListingWithReservationsDB } from "../types/listing";
 import { CreateReservation, ListingReservedDatesDB, ResumedReservationWithListingDB } from "../types/reservation";
 import customFetch from "./fetch";
 
@@ -15,6 +15,7 @@ export const endpoint = {
   getListing: (id: number) => `${baseUrl}/api/listings/${id}`,
   createListing: `${baseUrl}/api/listings`,
   cancelReservation: (id: string) => `${baseUrl}/api/reservations/${id}/cancel`,
+  getHostListingsWithReservations: () => `${baseUrl}/api/host/listings-with-reservations`,
 };
 
 export const api = {
@@ -47,5 +48,10 @@ export const api = {
   },
   async cancelReservation(id: string) {
     return await customFetch.patch(endpoint.cancelReservation(id));
+  },
+  async getHostListingsWithReservations() {
+    const { data } = await customFetch.get<HostListingsWithReservationsDB[]>(endpoint.getHostListingsWithReservations());
+    const parsedListingsWithReservations = parseHostListingsWithReservations(data);
+    return parsedListingsWithReservations;
   },
 };

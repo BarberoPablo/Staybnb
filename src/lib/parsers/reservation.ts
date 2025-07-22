@@ -18,20 +18,24 @@ const reservationStatus: Record<ReservationStatusDB, ReservationStatus> = {
   canceled: "canceled",
 };
 
-function parseReservationFromDB(reservations: ReservationDB[]): Omit<Reservation, "startDate" | "endDate">[] {
-  const response = reservations.map((reservation) => ({
-    id: reservation.id,
-    userId: reservation.user_id,
-    listingId: reservation.listing_id,
-    guests: reservation.guests,
-    totalPrice: reservation.total_price,
-    totalNights: reservation.total_nights,
-    nightPrice: reservation.night_price,
-    discount: reservation.discount || 0,
-    discountPercentage: reservation.discount_percentage || 0,
-    createdAt: new Date(reservation.created_at),
-    status: reservationStatus[reservation.status],
-  }));
+export function parseReservationFromDB(reservations: ReservationDB[]): Reservation[] {
+  const response = reservations.map((reservation) => {
+    return {
+      id: reservation.id,
+      userId: reservation.user_id,
+      listingId: reservation.listing_id,
+      guests: reservation.guests,
+      totalPrice: reservation.total_price,
+      totalNights: reservation.total_nights,
+      nightPrice: reservation.night_price,
+      discount: reservation.discount || 0,
+      discountPercentage: reservation.discount_percentage || 0,
+      createdAt: new Date(reservation.created_at),
+      status: reservationStatus[reservation.status],
+      startDate: new Date(reservation.start_date),
+      endDate: new Date(reservation.end_date),
+    };
+  });
 
   return response;
 }
@@ -40,8 +44,6 @@ export function parseResumedReservationWithListingFromDB(reservations: ResumedRe
   const response = reservations.map((reservation) => {
     return {
       ...parseReservationFromDB([reservation])[0],
-      startDate: new Date(reservation.start_date),
-      endDate: new Date(reservation.end_date),
       listing: {
         id: reservation.listing.id,
         title: reservation.listing.title,
@@ -62,8 +64,8 @@ export function parseResumedReservationWithListingFromDB(reservations: ResumedRe
 export function parseCreateReservationToDB(reservation: CreateReservation): CreateReservationDB {
   const reservationDB: CreateReservationDB = {
     listing_id: reservation.listingId,
-    start_date: reservation.startDate,
-    end_date: reservation.endDate,
+    start_date: new Date(reservation.startDate),
+    end_date: new Date(reservation.endDate),
     guests: reservation.guests,
   };
 

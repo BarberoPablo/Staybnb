@@ -5,8 +5,8 @@ export type ReservationDB = {
   id: string;
   user_id: string;
   listing_id: number;
-  start_date: string;
-  end_date: string;
+  start_date: string; //timestamptz
+  end_date: string; //timestamptz
   guests: Record<Guests, number>;
   total_price: number;
   total_nights: number;
