@@ -1,15 +1,11 @@
 "use client";
 
 import { CancelReservationDialog } from "@/app/(site)/reservations/components/CancelReservationDialog";
-import { ParseGuests } from "@/components/ParseGuests";
 import { api } from "@/lib/api/api";
 import { Reservation } from "@/lib/types/reservation";
-import { showUTCDate } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MdOutlineCancelPresentation } from "react-icons/md";
-
-const tableHeaders = ["Check-in", "Check-out", "Guests", "Total Price", "Reserved on", "Total nights", "Discount", "Cancel"];
+import { ReservationsTable } from "./components/ReservationsTable";
 
 export default function ReservationsPage() {
   const params = useParams<{ id: string }>();
@@ -44,39 +40,11 @@ export default function ReservationsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-center w-full">
-        <table className="flex-1 text-center">
-          <thead className="flex-1 border-2 border-myGreenDark bg-myGreen">
-            <tr>
-              {tableHeaders.map((header) => (
-                <th key={"table-head-" + header} className="border-r border-gray-300">
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="flex-1 border-2 border-myGreenDark">
-            {reservations.map((reservation, index) => (
-              <tr key={reservation.id} className={`${index % 2 === 0 ? "bg-gray-300" : "bg-gray-200"}`}>
-                <td>{showUTCDate(reservation.startDate)}</td>
-                <td>{showUTCDate(reservation.endDate)}</td>
-                <td>{ParseGuests(reservation.guests, reservation.id)}</td>
-                <td>{reservation.totalPrice}</td>
-                <td>{showUTCDate(reservation.createdAt)}</td>
-                <td>{reservation.totalNights}</td>
-                <td>{reservation.discount}</td>
-                <td>
-                  <button
-                    onClick={() => handleCancelReservation(reservation.id)}
-                    className="flex p-1 w-full items-center justify-center hover:cursor-pointer"
-                  >
-                    <MdOutlineCancelPresentation className="w-8 h-6" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="flex flex-col items-center justify-center w-full gap-4">
+        <h2 className="text-2xl font-semibold">Active reservations</h2>
+        <ReservationsTable reservations={reservations} status={["active"]} onClick={handleCancelReservation} />
+        <h2 className="text-2xl font-semibold">Canceled reservations</h2>
+        <ReservationsTable reservations={reservations} status={["canceled", "canceledByHost"]} />
       </div>
       <CancelReservationDialog isOpen={openCancelDialog} setIsOpen={setOpenCancelDialog} reservationId={selectedReservation} />
     </div>
