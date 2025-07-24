@@ -1,8 +1,10 @@
 "use client";
 
 import { CancelReservationDialog } from "@/app/(site)/reservations/components/CancelReservationDialog";
+import { SkeletonReservationsPage } from "@/components/Skeleton/SkeletonReservationsPage";
 import { api } from "@/lib/api/api";
 import { Reservation } from "@/lib/types/reservation";
+import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ReservationsTable } from "./components/ReservationsTable";
@@ -34,12 +36,12 @@ export default function ReservationsPage() {
     setOpenCancelDialog(true);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <SkeletonReservationsPage />;
 
   if (reservations.length === 0) return <div>No reservations found</div>;
 
   return (
-    <div>
+    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: "easeOut" }}>
       <div className="flex flex-col items-center justify-center w-full gap-4">
         <h2 className="text-2xl font-semibold">Active reservations</h2>
         <ReservationsTable reservations={reservations} status={["active"]} onClick={handleCancelReservation} />
@@ -47,6 +49,6 @@ export default function ReservationsPage() {
         <ReservationsTable reservations={reservations} status={["canceled", "canceledByHost"]} />
       </div>
       <CancelReservationDialog isOpen={openCancelDialog} setIsOpen={setOpenCancelDialog} reservationId={selectedReservation} />
-    </div>
+    </motion.div>
   );
 }

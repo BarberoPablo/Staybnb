@@ -6,7 +6,7 @@ import { MdOutlineCancelPresentation } from "react-icons/md";
 const activeReservationsTableHeaders = ["Check-in", "Check-out", "Guests", "Total Price", "Reserved on", "Total nights", "Discount", "Cancel"];
 const canceledReservationsTableHeaders = ["Check-in", "Check-out", "Guests", "Total Price", "Reserved on", "Total nights", "Discount", "Status"];
 
-const tableHeaders = {
+export const tableHeaders = {
   active: activeReservationsTableHeaders,
   canceled: canceledReservationsTableHeaders,
   canceledByHost: canceledReservationsTableHeaders,
@@ -37,7 +37,7 @@ export function ReservationsTable({
       <thead className="flex-1 border-2 border-myGreenDark bg-myGreen">
         <tr>
           {tableHeaders[status[0]].map((header) => (
-            <th key={"table-head-" + header} className="border-r border-gray-300">
+            <th key={"table-head-" + header} className="border-r border-gray-300 py-1">
               {header}
             </th>
           ))}
