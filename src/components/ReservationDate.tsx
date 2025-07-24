@@ -1,7 +1,6 @@
 "use client";
 
-import { createTimezoneDate } from "@/lib/utils";
-import { format } from "date-fns-tz";
+import { createTimezoneDate, showUTCDate } from "@/lib/utils";
 
 export default function ReservationDate({
   startDate,
@@ -21,12 +20,12 @@ export default function ReservationDate({
     <div className={`flex gap-4 border border-gray-300 rounded-xl p-4 text-cen ${className}`}>
       <div>
         <h2>Check-in</h2>
-        <span>{format(checkIn, "MMM d, yyyy HH:mm")}</span>
+        <span>{showUTCDate(checkIn)}</span>
       </div>
       <div className="border-r border-gray-300 h-full" />
       <div>
         <h2>Check-out</h2>
-        <span>{format(checkOut, "MMM d, yyyy HH:mm")}</span>
+        <span>{showUTCDate(checkOut)}</span>
       </div>
     </div>
   );

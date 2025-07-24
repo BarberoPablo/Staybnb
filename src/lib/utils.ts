@@ -1,4 +1,4 @@
-import { addDays, eachDayOfInterval, subDays } from "date-fns";
+import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { Guests, ListingSearchParams } from "./types";
 import { Listing, Location, Promotion } from "./types/listing";
@@ -146,4 +146,8 @@ export function createUTCDate(date: string, time: string, timezone: string) {
 export function createTimezoneDate(date: Date, timezone: string) {
   const dateInZone = toZonedTime(date, timezone);
   return dateInZone;
+}
+
+export function showUTCDate(date: Date) {
+  return format(date, "MMM d, yyyy HH:mm");
 }
