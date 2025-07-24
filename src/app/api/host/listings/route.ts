@@ -1,8 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const includeReservationsParam = req.nextUrl.searchParams.get("includeReservations");
+    const selectClause = includeReservationsParam === "true" ? "*, reservations(*)" : "*";
+
     const supabase = await createClient();
 
     const {
@@ -15,7 +18,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: listingsWithReservations, error } = await supabase.from("listings").select("*, reservations(*)").eq("host_id", user.id);
+    const { data: listingsWithReservations, error } = await supabase.from("listings").select(selectClause).eq("host_id", user.id);
 
     if (error) {
       throw error;

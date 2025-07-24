@@ -1,18 +1,10 @@
-import { HostListingsWithReservations } from "@/lib/types/listing";
+import { Listing } from "@/lib/types/listing";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { MdOutlineEdit } from "react-icons/md";
 
-export function HostListingCard({
-  listing,
-  setSelectedListing,
-  className,
-}: {
-  listing: HostListingsWithReservations;
-  setSelectedListing: () => void;
-  className?: string;
-}) {
+export function HostListingCard({ listing, setSelectedListing, className }: { listing: Listing; setSelectedListing: () => void; className?: string }) {
   const router = useRouter();
 
   const handleSelectListing = (path: string) => {

@@ -15,7 +15,8 @@ export const endpoint = {
   getListing: (id: number) => `${baseUrl}/api/listings/${id}`,
   createListing: `${baseUrl}/api/listings`,
   cancelReservation: (id: string) => `${baseUrl}/api/reservations/${id}/cancel`,
-  getHostListingsWithReservations: () => `${baseUrl}/api/host/listings-with-reservations`,
+  getHostListings: () => `${baseUrl}/api/host/listings?includeReservations=false`,
+  getHostListingsWithReservations: () => `${baseUrl}/api/host/listings?includeReservations=true`,
 };
 
 export const api = {
@@ -53,5 +54,10 @@ export const api = {
     const { data } = await customFetch.get<HostListingsWithReservationsDB[]>(endpoint.getHostListingsWithReservations());
     const parsedListingsWithReservations = parseHostListingsWithReservations(data);
     return parsedListingsWithReservations;
+  },
+  async getHostListings() {
+    const { data } = await customFetch.get<ListingDB[]>(endpoint.getHostListings());
+    const parsedHostListings = data.map((listing) => parseListingFromDB(listing));
+    return parsedHostListings;
   },
 };

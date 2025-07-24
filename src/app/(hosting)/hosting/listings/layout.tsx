@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import { api } from "@/lib/api/api";
-import { HostListingsWithReservations } from "@/lib/types/listing";
+import { Listing } from "@/lib/types/listing";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { HostListingCard } from "./components/HostListingCard";
@@ -10,14 +10,14 @@ import { HostListingCard } from "./components/HostListingCard";
 export default function HostListingLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
-  const [listings, setListings] = useState<HostListingsWithReservations[]>([]);
+  const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedListing, setSelectedListing] = useState<number>();
 
   useEffect(() => {
     const getListingsWithReservations = async () => {
       setLoading(true);
-      const listingsWithReservations = await api.getHostListingsWithReservations();
+      const listingsWithReservations = await api.getHostListings();
       console.log({ listingsWithReservations });
       setLoading(false);
       setListings(listingsWithReservations);
