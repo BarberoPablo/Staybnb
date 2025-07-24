@@ -12,7 +12,6 @@ export default function HostListingLayout({ children }: { children: React.ReactN
 
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedListing, setSelectedListing] = useState<number>();
 
   useEffect(() => {
     const getListingsWithReservations = async () => {
@@ -25,7 +24,7 @@ export default function HostListingLayout({ children }: { children: React.ReactN
   }, []);
 
   const handleGoBack = () => {
-    router.back();
+    router.replace("/hosting");
   };
 
   return (
@@ -42,12 +41,7 @@ export default function HostListingLayout({ children }: { children: React.ReactN
             <div className="flex items-center justify-center gap-30">
               {loading && <div>Loading listings...</div>}
               {listings.map((listing) => (
-                <HostListingCard
-                  key={listing.id}
-                  listing={listing}
-                  className={`${selectedListing === listing.id && "border-2"}`}
-                  setSelectedListing={() => setSelectedListing(listing.id)}
-                />
+                <HostListingCard key={listing.id} listing={listing} />
               ))}
             </div>
             {children}
