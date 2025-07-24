@@ -37,8 +37,11 @@ export function CancelReservationDialog({
         setLoading(false);
       }
     } catch (error) {
-      console.error("Error al cancelar", error);
-      toast.error("Error", { duration: 4000 });
+      if (error instanceof Error) {
+        toast.error(error.message, { duration: 4000 });
+      } else {
+        toast.error("Error at canceling", { duration: 4000 });
+      }
       setLoading(false);
       setIsOpen(false);
     }

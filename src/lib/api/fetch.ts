@@ -1,3 +1,14 @@
+class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+    this.name = "ApiError";
+    Object.setPrototypeOf(this, ApiError.prototype);
+  }
+}
+
 const validateResponse = async <T>(response: Response): Promise<CustomFetchResponse<T>> => {
   const isJson = response.headers.get("Content-Type")?.includes("application/json");
   const body = isJson ? await response.json() : await response.text();
@@ -10,10 +21,8 @@ const validateResponse = async <T>(response: Response): Promise<CustomFetchRespo
     };
   }
 
-  throw {
-    status: response.status,
-    message: typeof body === "string" ? body : body?.error || "Unexpected error",
-  };
+  const message = typeof body === "string" ? body : body?.error || "Unexpected error";
+  throw new ApiError(message, response.status);
 };
 
 const request = async <T>(method: string, input: RequestInfo, data?: unknown, init?: RequestInit): Promise<CustomFetchResponse<T>> => {

@@ -22,8 +22,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       ascending: true,
     });
 
-    console.log({ reservationsData });
-
     if (reservationsError) {
       console.error("Error fetching reservations:", reservationsError);
       return NextResponse.json({ success: false, error: "Error fetching reservations" }, { status: 500 });
