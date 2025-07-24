@@ -6,16 +6,16 @@ import { Listing } from "@/lib/types/listing";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { HostListingCard } from "./components/HostListingCard";
+import { SkeletonListingCard } from "@/components/Skeleton/SkeletonListingCard";
 
 export default function HostListingLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   const [listings, setListings] = useState<Listing[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getListingsWithReservations = async () => {
-      setLoading(true);
       const listingsWithReservations = await api.getHostListings();
       setLoading(false);
       setListings(listingsWithReservations);
@@ -39,10 +39,9 @@ export default function HostListingLayout({ children }: { children: React.ReactN
           </button>
           <div className="flex flex-col gap-10">
             <div className="flex items-center justify-center gap-30">
-              {loading && <div>Loading listings...</div>}
-              {listings.map((listing) => (
-                <HostListingCard key={listing.id} listing={listing} />
-              ))}
+              {loading
+                ? Array.from({ length: 2 }).map((_, i) => <SkeletonListingCard key={i} />)
+                : listings.map((listing) => <HostListingCard key={listing.id} listing={listing} />)}
             </div>
             {children}
           </div>

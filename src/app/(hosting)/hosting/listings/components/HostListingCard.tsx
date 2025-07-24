@@ -1,4 +1,5 @@
 import { Listing } from "@/lib/types/listing";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { FaRegCalendarAlt } from "react-icons/fa";
@@ -14,7 +15,13 @@ export function HostListingCard({ listing }: { listing: Listing }) {
   };
 
   return (
-    <div className={`flex relative justify-center w-60 h-60 rounded-4xl overflow-hidden ${listingId === listing.id ? "border-2" : ""}`}>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      whileHover={{ scale: 1.03 }}
+      className={`flex relative justify-center w-60 h-60 rounded-4xl overflow-hidden ${listingId === listing.id ? "border-2" : ""}`}
+    >
       <Image src={listing.images[0]} alt="listing main image" priority fill className="object-cover" sizes="100%" />
       <div className="absolute flex flex-col gap-2 top-2 right-2">
         <button
@@ -30,6 +37,6 @@ export function HostListingCard({ listing }: { listing: Listing }) {
           <FaRegCalendarAlt className="w-6 h-6" />
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }

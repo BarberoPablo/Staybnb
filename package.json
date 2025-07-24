@@ -18,6 +18,7 @@
     "@uploadthing/react": "^7.3.2",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
+    "framer-motion": "^12.23.9",
     "keen-slider": "^6.8.6",
     "leaflet": "^1.9.4",
     "next": "15.3.4",
