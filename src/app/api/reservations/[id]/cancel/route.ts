@@ -21,21 +21,32 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: reservation, error: fetchError } = await supabase.from("reservations").select("id, user_id, status").eq("id", id).single();
+    const { data: reservation, error: fetchError } = await supabase
+      .from("reservations")
+      .select("id, user_id, status, listing_id(host_id)")
+      .eq("id", id)
+      .single();
 
     if (fetchError || !reservation) {
       return NextResponse.json({ error: "Reservation not found" }, { status: 404 });
     }
 
-    if (reservation.user_id !== user.id) {
+    const isGuest = reservation.user_id === user.id;
+    const isHost = reservation.listing_id?.host_id === user.id;
+
+    if (!isGuest && !isHost) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     if (reservation.status !== "active") {
-      return NextResponse.json({ error: "Cannot cancel this reservation" }, { status: 400 });
+      return NextResponse.json({ error: "Can only cancel active reservations" }, { status: 400 });
     }
 
-    const { error: cancelError } = await supabase.from("reservations").update({ status: "canceled" }).match({ id, user_id: user.id }).single();
+    const { error: cancelError } = await supabase
+      .from("reservations")
+      .update({ status: isGuest ? "canceled" : "canceled_by_host" })
+      .eq("id", id)
+      .single();
 
     if (cancelError) {
       console.error("Error canceling reservation:", cancelError);

@@ -1,26 +1,30 @@
 "use client";
 
+import { CancelReservationDialog } from "@/app/(site)/reservations/components/CancelReservationDialog";
 import { ParseGuests } from "@/components/ParseGuests";
 import { api } from "@/lib/api/api";
 import { Reservation } from "@/lib/types/reservation";
 import { showUTCDate } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-//import toast from "react-hot-toast";
+import { MdOutlineCancelPresentation } from "react-icons/md";
 
 const tableHeaders = ["Check-in", "Check-out", "Guests", "Total Price", "Reserved on", "Total nights", "Discount", "Cancel"];
 
 export default function ReservationsPage() {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
-  console.log({ id });
   const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState("");
 
   useEffect(() => {
     const fetchReservations = async () => {
       try {
         const reservations = await api.getHostListingReservations(id);
         setReservations(reservations);
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -30,19 +34,11 @@ export default function ReservationsPage() {
   }, [id]);
 
   const handleCancelReservation = async (reservationId: string) => {
-    /* try {
-      const response = await api.cancelReservation(reservationId);
-      if (response.success) {
-        const updatedReservations = reservations.filter((reservation) => reservation.id !== reservationId);
-        setReservations(updatedReservations);
-        toast.success("Reservation canceled");
-      }
-    } catch (error) {
-      toast.error("Failed to cancel reservation");
-      console.error(error);
-    } */
-    console.log(reservationId);
+    setSelectedReservation(reservationId);
+    setOpenCancelDialog(true);
   };
+
+  if (loading) return <div>Loading...</div>;
 
   if (reservations.length === 0) return <div>No reservations found</div>;
 
@@ -50,7 +46,7 @@ export default function ReservationsPage() {
     <div>
       <div className="flex items-center justify-center w-full">
         <table className="flex-1 text-center">
-          <thead className="flex-1 border-2 border-myGreenDark bg-myGreen rounded-lg">
+          <thead className="flex-1 border-2 border-myGreenDark bg-myGreen">
             <tr>
               {tableHeaders.map((header) => (
                 <th key={"table-head-" + header} className="border-r border-gray-300">
@@ -59,9 +55,9 @@ export default function ReservationsPage() {
               ))}
             </tr>
           </thead>
-          <tbody className="flex-1 border-2 border-myGreenDark rounded-lg">
+          <tbody className="flex-1 border-2 border-myGreenDark">
             {reservations.map((reservation, index) => (
-              <tr key={reservation.id} className={`flex-1 ${index % 2 === 0 ? "bg-gray-300" : "bg-gray-200"}`}>
+              <tr key={reservation.id} className={`${index % 2 === 0 ? "bg-gray-300" : "bg-gray-200"}`}>
                 <td>{showUTCDate(reservation.startDate)}</td>
                 <td>{showUTCDate(reservation.endDate)}</td>
                 <td>{ParseGuests(reservation.guests, reservation.id)}</td>
@@ -70,13 +66,19 @@ export default function ReservationsPage() {
                 <td>{reservation.totalNights}</td>
                 <td>{reservation.discount}</td>
                 <td>
-                  <button onClick={() => handleCancelReservation(reservation.id)}>Cancel</button>
+                  <button
+                    onClick={() => handleCancelReservation(reservation.id)}
+                    className="flex p-1 w-full items-center justify-center hover:cursor-pointer"
+                  >
+                    <MdOutlineCancelPresentation className="w-8 h-6" />
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      <CancelReservationDialog isOpen={openCancelDialog} setIsOpen={setOpenCancelDialog} reservationId={selectedReservation} />
     </div>
   );
 }
