@@ -18,7 +18,6 @@ export default function HostListingLayout({ children }: { children: React.ReactN
     const getListingsWithReservations = async () => {
       setLoading(true);
       const listingsWithReservations = await api.getHostListings();
-      console.log({ listingsWithReservations });
       setLoading(false);
       setListings(listingsWithReservations);
     };
@@ -39,7 +38,7 @@ export default function HostListingLayout({ children }: { children: React.ReactN
           <button className="hover:cursor-pointer" onClick={handleGoBack}>
             Back
           </button>
-          <div>
+          <div className="flex flex-col gap-10">
             <div className="flex items-center justify-center gap-30">
               {loading && <div>Loading listings...</div>}
               {listings.map((listing) => (
