@@ -9,7 +9,7 @@ import {
   ListingWithReservationsDB,
 } from "../types/listing";
 import { ReservedDate } from "../types/reservation";
-import { parseReservationFromDB } from "./reservation";
+import { parseReservationsFromDB } from "./reservation";
 
 export function parseListingFromDB(listingDB: ListingDB): Listing {
   return {
@@ -86,7 +86,7 @@ export function parseListingFormData(listingForm: ListingForm): CreateListingDB 
 export function parseHostListingsWithReservations(listings: HostListingsWithReservationsDB[]): HostListingsWithReservations[] {
   const parsedListings = listings.map((listing) => ({
     ...parseListingFromDB(listing),
-    reservations: [...parseReservationFromDB(listing.reservations)],
+    reservations: [...parseReservationsFromDB(listing.reservations)],
   }));
 
   return parsedListings;

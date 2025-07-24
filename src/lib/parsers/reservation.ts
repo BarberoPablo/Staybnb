@@ -18,24 +18,22 @@ const reservationStatus: Record<ReservationStatusDB, ReservationStatus> = {
   canceled: "canceled",
 };
 
-export function parseReservationFromDB(reservations: ReservationDB[]): Reservation[] {
-  const response = reservations.map((reservation) => {
-    return {
-      id: reservation.id,
-      userId: reservation.user_id,
-      listingId: reservation.listing_id,
-      guests: reservation.guests,
-      totalPrice: reservation.total_price,
-      totalNights: reservation.total_nights,
-      nightPrice: reservation.night_price,
-      discount: reservation.discount || 0,
-      discountPercentage: reservation.discount_percentage || 0,
-      createdAt: new Date(reservation.created_at),
-      status: reservationStatus[reservation.status],
-      startDate: new Date(reservation.start_date),
-      endDate: new Date(reservation.end_date),
-    };
-  });
+export function parseReservationsFromDB(reservations: ReservationDB[]): Reservation[] {
+  const response = reservations.map((reservation) => ({
+    id: reservation.id,
+    userId: reservation.user_id,
+    listingId: reservation.listing_id,
+    guests: reservation.guests,
+    totalPrice: reservation.total_price,
+    totalNights: reservation.total_nights,
+    nightPrice: reservation.night_price,
+    discount: reservation.discount || 0,
+    discountPercentage: reservation.discount_percentage || 0,
+    createdAt: new Date(reservation.created_at),
+    status: reservationStatus[reservation.status],
+    startDate: new Date(reservation.start_date),
+    endDate: new Date(reservation.end_date),
+  }));
 
   return response;
 }
@@ -43,7 +41,7 @@ export function parseReservationFromDB(reservations: ReservationDB[]): Reservati
 export function parseResumedReservationWithListingFromDB(reservations: ResumedReservationWithListingDB[]): ResumedReservationWithListing[] {
   const response = reservations.map((reservation) => {
     return {
-      ...parseReservationFromDB([reservation])[0],
+      ...parseReservationsFromDB([reservation])[0],
       listing: {
         id: reservation.listing.id,
         title: reservation.listing.title,

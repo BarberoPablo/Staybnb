@@ -1,15 +1,15 @@
 import { ListingForm } from "@/store/useListingForm";
 import { parseHostListingsWithReservations, parseListingFormData, parseListingFromDB, parseListingWithReservationsFromDB } from "../parsers/listing";
-import { parseListingReservedDatesDB, parseResumedReservationWithListingFromDB } from "../parsers/reservation";
+import { parseListingReservedDatesDB, parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../parsers/reservation";
 import { HostListingsWithReservationsDB, ListingDB, ListingWithReservationsDB } from "../types/listing";
-import { CreateReservation, ListingReservedDatesDB, ResumedReservationWithListingDB } from "../types/reservation";
+import { CreateReservation, ListingReservedDatesDB, ReservationDB, ResumedReservationWithListingDB } from "../types/reservation";
 import customFetch from "./fetch";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export const endpoint = {
   getUserReservations: () => `${baseUrl}/api/reservations`,
-  getListingReservations: (listingId: number) => `${baseUrl}/api/reservations/${listingId}`,
+  getListingReservations: (listingId: number) => `${baseUrl}/api/reservations/${listingId}`, // clients not included
   createReservation: `${baseUrl}/api/reservations`,
   getListings: (params: string) => `${baseUrl}/api/listings?${params}`,
   getListing: (id: number) => `${baseUrl}/api/listings/${id}`,
@@ -17,6 +17,7 @@ export const endpoint = {
   cancelReservation: (id: string) => `${baseUrl}/api/reservations/${id}/cancel`,
   getHostListings: () => `${baseUrl}/api/host/listings?includeReservations=false`,
   getHostListingsWithReservations: () => `${baseUrl}/api/host/listings?includeReservations=true`,
+  getHostListingReservations: (id: number) => `${baseUrl}/api/host/listings/${id}/reservations`,
 };
 
 export const api = {
@@ -58,6 +59,11 @@ export const api = {
   async getHostListings() {
     const { data } = await customFetch.get<ListingDB[]>(endpoint.getHostListings());
     const parsedHostListings = data.map((listing) => parseListingFromDB(listing));
+    return parsedHostListings;
+  },
+  async getHostListingReservations(ListingId: number) {
+    const { data } = await customFetch.get<ReservationDB[]>(endpoint.getHostListingReservations(ListingId));
+    const parsedHostListings = parseReservationsFromDB(data);
     return parsedHostListings;
   },
 };
