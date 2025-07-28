@@ -4,6 +4,13 @@ import { Guests, ListingSearchParams } from "./types";
 import { Listing, Location, Promotion } from "./types/listing";
 import { ReservedDate } from "./types/reservation";
 
+export const logoUrl = "https://i.postimg.cc/152jT0ZW/logo80x63.png";
+export const windowWidth = {
+  full: 1920,
+  short: 1280,
+  shortPath: (path: string) => path !== "/" && ["/listing/", "checkout"].some((shortPath) => path.includes(shortPath)),
+};
+
 export function pluralize(count: number, singular: string, plural: string) {
   return count === 1 ? singular : plural;
 }

@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
+import { Container } from "./components/Container";
 
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -10,7 +11,9 @@ export default function SiteLayout({
       <header>
         <Navbar />
       </header>
-      <main className="w-full mt-2 flex-grow px-5">{children}</main>
+      <main className="flex flex-col items-center justify-center w-full flex-grow">
+        <Container>{children}</Container>
+      </main>
     </>
   );
 }
