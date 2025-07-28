@@ -3,8 +3,11 @@
 import ListingCard from "@/components/ListingCard";
 import { api } from "@/lib/api/api";
 import { Listing } from "@/lib/types/listing";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
+const ListingsMapNoSSR = dynamic(() => import("./components/ListingsMap"), { ssr: false });
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -45,7 +48,9 @@ export default function SearchPage() {
         </div>
       </div>
       {/* Map */}
-      <div className="bg-blue-500"></div>
+      <div className="bg-blue-500">
+        <ListingsMapNoSSR listings={filteredListings} />
+      </div>
     </div>
   );
 }

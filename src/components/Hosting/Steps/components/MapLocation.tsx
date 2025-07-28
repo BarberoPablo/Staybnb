@@ -1,11 +1,11 @@
 "use client";
 
+import "@/components/Leaflet/markerStyle";
+import { reverseGeocode } from "@/lib/utils";
 import { useListingForm } from "@/store/useListingForm";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
-import "./leaflet";
-import { reverseGeocode } from "@/lib/utils";
 import toast from "react-hot-toast";
+import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
 export default function MapLocation() {
   const lat = useListingForm((store) => store.location.lat);
