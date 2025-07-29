@@ -29,7 +29,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   return (
     <nav className="flex items-center justify-center py-4 border-b border-b-gray-100 bg-myGreenComplement">
       <motion.div
-        className="flex items-center justify-center sm:justify-between w-full px-12"
+        className="flex items-center justify-center sticky top-0 sm:justify-between w-full px-12"
         initial={{ maxWidth: fullWidth ? windowWidth.full : windowWidth.short }}
         animate={{ maxWidth: fullWidth ? windowWidth.full : windowWidth.short }}
         transition={{ type: "spring", stiffness: 250, damping: 20 }}

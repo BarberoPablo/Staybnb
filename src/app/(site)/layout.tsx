@@ -7,13 +7,13 @@ export default async function SiteLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="flex flex-col h-screen">
       <header>
         <Navbar />
       </header>
-      <main className="flex flex-col items-center justify-center w-full flex-grow">
+      <main className="flex-grow overflow-auto flex flex-col items-center w-full">
         <Container>{children}</Container>
       </main>
-    </>
+    </div>
   );
 }

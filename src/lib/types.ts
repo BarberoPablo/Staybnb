@@ -1,3 +1,5 @@
+import { LatLng } from "leaflet";
+
 export type Guests = "adults" | "children" | "infant" | "pets";
 
 export type DateRangeKey = {
@@ -22,3 +24,10 @@ export type RequiredParams = "adults" | "startDate" | "endDate";
 export type OptionalParams = "children" | "infant" | "pets";
 
 export type ListingSearchParams = Record<RequiredParams, string> & Partial<Record<OptionalParams, string>>;
+
+export type MapCoordinates = {
+  center: LatLng;
+  zoom: number;
+  northEast: LatLng;
+  southWest: LatLng;
+};

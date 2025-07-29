@@ -1,6 +1,7 @@
 import { ListingForm } from "@/store/useListingForm";
 import { parseHostListingsWithReservations, parseListingFormData, parseListingFromDB, parseListingWithReservationsFromDB } from "../parsers/listing";
 import { parseListingReservedDatesDB, parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../parsers/reservation";
+import { MapCoordinates } from "../types";
 import { HostListingsWithReservationsDB, ListingDB, ListingWithReservationsDB } from "../types/listing";
 import { CreateReservation, ListingReservedDatesDB, ReservationDB, ResumedReservationWithListingDB } from "../types/reservation";
 import customFetch from "./fetch";
@@ -34,8 +35,18 @@ export const api = {
   async createReservation(data: CreateReservation) {
     return await customFetch.post(endpoint.createReservation, { ...data });
   },
-  async getListings(city: string) {
-    const { data } = await customFetch.get<ListingDB[]>(endpoint.getListings(`city=${city}`));
+  async getListings(params: { city?: string } & Partial<MapCoordinates>) {
+    const query = new URLSearchParams();
+
+    if (params.city) query.append("city", params.city);
+
+    if (params.zoom && params.northEast && params.southWest) {
+      query.append("northEast", `${params.northEast.lat},${params.northEast.lng}`);
+      query.append("southWest", `${params.southWest.lat},${params.southWest.lng}`);
+      query.append("zoom", `${params.zoom}`);
+    }
+
+    const { data } = await customFetch.get<ListingDB[]>(endpoint.getListings(query.toString()));
     const parsedListings = data.map((listing) => parseListingFromDB(listing));
     return parsedListings;
   },

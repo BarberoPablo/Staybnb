@@ -6,20 +6,35 @@ export async function GET(req: Request) {
   try {
     const params = new URL(req.url).searchParams;
     const supabase = await createClient();
-    const { data: listings, error } = await supabase
-      .from("listings")
-      .select()
-      .ilike("location->>city", `%${params.get("city")}%`);
+
+    const city = params.get("city");
+    const northEast = params.get("northEast")?.split(",").map(Number);
+    const southWest = params.get("southWest")?.split(",").map(Number);
+
+    const baseQuery = supabase.from("listings").select();
+
+    if (city) {
+      baseQuery.ilike("location->>city", `%${city}%`);
+    }
+
+    if (northEast && southWest && northEast.length === 2 && southWest.length === 2) {
+      const [neLat, neLng] = northEast;
+      const [swLat, swLng] = southWest;
+
+      baseQuery
+        .gte("location->lat", swLat.toString())
+        .lte("location->lat", neLat.toString())
+        .gte("location->lng", swLng.toString())
+        .lte("location->lng", neLng.toString());
+    }
+
+    const { data: listings, error } = await baseQuery;
 
     if (error) {
       throw error;
     }
 
-    if (!listings) {
-      return NextResponse.json({ success: true, data: [] }, { status: 200 });
-    }
-
-    return NextResponse.json({ success: true, data: listings }, { status: 200 });
+    return NextResponse.json({ success: true, data: listings ?? [] }, { status: 200 });
   } catch (err) {
     console.error("Server error:", err);
     return NextResponse.json({ success: false, error: "Unexpected error occurred" }, { status: 500 });
