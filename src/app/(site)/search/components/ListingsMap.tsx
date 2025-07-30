@@ -1,11 +1,12 @@
-import MapEventsHandler from "@/components/Leaflet/MapEventsHandler";
+import MapEventsHandler from "@/app/(site)/search/components/MapEventsHandler";
 import "@/components/Leaflet/markerStyle";
+import { api } from "@/lib/api/api";
 import { MapCoordinates } from "@/lib/types";
 import { Listing } from "@/lib/types/listing";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
-export default function ListingsMap({ listings, onMapMove }: { listings: Listing[]; onMapMove?: (coords: MapCoordinates) => void }) {
+export default function ListingsMap({ listings, setListings }: { listings: Listing[]; setListings: (listings: Listing[]) => void }) {
   const [center, setCenter] = useState<[number, number]>([-34.6037, -58.3816]);
 
   useEffect(() => {
@@ -15,6 +16,16 @@ export default function ListingsMap({ listings, onMapMove }: { listings: Listing
     }
   }, [listings]);
 
+  const handleMapMove = async ({ zoom, northEast, southWest }: MapCoordinates) => {
+    try {
+      const listings = await api.getListings({ zoom, northEast, southWest });
+
+      setListings(listings);
+    } catch (error) {
+      console.error("Error fetching listings by moving the map", error);
+    }
+  };
+
   return (
     <MapContainer center={center} zoom={12} style={{ width: "100%", height: "100%" }} scrollWheelZoom={true} className="rounded-xl">
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -23,7 +34,7 @@ export default function ListingsMap({ listings, onMapMove }: { listings: Listing
           <Popup>{listing.title}</Popup>
         </Marker>
       ))}
-      {onMapMove && <MapEventsHandler onMoveEnd={onMapMove} />}
+      <MapEventsHandler onMoveEnd={handleMapMove} />
     </MapContainer>
   );
 }
