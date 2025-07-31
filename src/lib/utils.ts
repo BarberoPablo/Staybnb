@@ -111,6 +111,10 @@ export function twoDecimals(data: number): number {
   return Number(data.toFixed(2));
 }
 
+export function twoDecimalsString(data: number): string {
+  return data.toFixed(2);
+}
+
 export async function reverseGeocode(lat: number, lng: number): Promise<Location | string> {
   try {
     const api_key = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY;
