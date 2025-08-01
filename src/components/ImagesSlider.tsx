@@ -2,7 +2,7 @@
 
 import { useKeenSlider } from "keen-slider/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { RoundButton } from "./Button/RoundButton";
 
@@ -19,6 +19,34 @@ export default function ImagesSlider({ images, containerClassName }: { images: s
     },
   });
 
+  useEffect(() => {
+    console.log("re render");
+    if (instanceRef.current) {
+      instanceRef.current.update();
+      instanceRef.current.moveToIdx(0);
+    }
+  }, [images.length, instanceRef]);
+
+  const handlePrev = () => {
+    if (instanceRef.current) {
+      if (currentSlide === 0) {
+        instanceRef.current.moveToIdx(images.length - 1);
+      } else {
+        instanceRef.current.prev();
+      }
+    }
+  };
+
+  const handleNext = () => {
+    if (instanceRef.current) {
+      if (currentSlide === images.length - 1) {
+        instanceRef.current.moveToIdx(0);
+      } else {
+        instanceRef.current.next();
+      }
+    }
+  };
+
   return (
     <>
       <div className={`relative overflow-hidden rounded-xl ${containerClassName}`}>
@@ -30,7 +58,7 @@ export default function ImagesSlider({ images, containerClassName }: { images: s
           ))}
           {loaded && instanceRef.current && (
             <div className="dots w-full absolute bottom-4 flex justify-center">
-              {[...Array(instanceRef.current.track.details.slides.length).keys()].map((idx) => {
+              {[...Array(images.length).keys()].map((idx) => {
                 return (
                   <button
                     key={idx}
@@ -46,25 +74,11 @@ export default function ImagesSlider({ images, containerClassName }: { images: s
         </div>
         {loaded && instanceRef.current && (
           <>
-            <RoundButton
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 text-2xl"
-              onClick={(event) => {
-                event.stopPropagation();
-                instanceRef.current?.prev();
-              }}
-              disabled={currentSlide === 0}
-            >
+            <RoundButton className="absolute left-2 top-1/2 transform -translate-y-1/2 text-2xl" onClick={handlePrev}>
               <MdKeyboardArrowLeft />
             </RoundButton>
 
-            <RoundButton
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-2xl"
-              onClick={(event) => {
-                event.stopPropagation();
-                instanceRef.current?.next();
-              }}
-              disabled={currentSlide === instanceRef.current.track.details.slides.length - 1}
-            >
+            <RoundButton className="absolute right-2 top-1/2 transform -translate-y-1/2 text-2xl" onClick={handleNext}>
               <MdKeyboardArrowRight />
             </RoundButton>
           </>
