@@ -24,7 +24,7 @@ export default function ImagesSlider({ images, containerClassName }: { images: s
       <div className={`relative overflow-hidden rounded-xl ${containerClassName}`}>
         <div ref={sliderRef} className="keen-slider h-full w-full">
           {images.map((image, index) => (
-            <div key={image} className={`keen-slider__slide number-slide${index + 1} relative h-[300px]`}>
+            <div key={image} className={`keen-slider__slide number-slide${index + 1} relative h-[300px] min-w-full`}>
               <Image src={image} alt={`listing secondary image`} priority fill className="object-cover" sizes="100%" />
             </div>
           ))}
