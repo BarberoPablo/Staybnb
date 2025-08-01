@@ -11,11 +11,30 @@ import { Listing } from "@/lib/types/listing";
 import { twoDecimalsString } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { IoIosClose, IoIosStar } from "react-icons/io";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 
 export default function ListingsMap({ listings, setListings }: { listings: Listing[]; setListings: (listings: Listing[]) => void }) {
   const [center, setCenter] = useState<[number, number]>([-34.6037, -58.3816]);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const [mapEnabled, setMapEnabled] = useState(true);
+
+  function MapController({ mapEnabled }: { mapEnabled: boolean }) {
+    const map = useMap();
+
+    useEffect(() => {
+      if (mapEnabled) {
+        map.dragging.enable();
+        map.scrollWheelZoom.enable();
+        map.doubleClickZoom.enable();
+      } else {
+        map.dragging.disable();
+        map.scrollWheelZoom.disable();
+        map.doubleClickZoom.disable();
+      }
+    }, [mapEnabled, map]);
+
+    return null;
+  }
 
   useEffect(() => {
     if (listings.length > 0) {
@@ -48,13 +67,22 @@ export default function ListingsMap({ listings, setListings }: { listings: Listi
           }}
         />
       ))}
-      <MarkerPopup listing={selectedListing} onClose={() => setSelectedListing(null)} />
+      <MarkerPopup listing={selectedListing} onInteractionChange={setMapEnabled} onClose={() => setSelectedListing(null)} />
       <MapEventsHandler onMoveEnd={handleMapMove} />
+      <MapController mapEnabled={mapEnabled} />
     </MapContainer>
   );
 }
 
-function MarkerPopup({ listing, onClose }: { listing: Listing | null; onClose: () => void }) {
+function MarkerPopup({
+  listing,
+  onInteractionChange,
+  onClose,
+}: {
+  listing: Listing | null;
+  onInteractionChange: (active: boolean) => void;
+  onClose: () => void;
+}) {
   if (!listing) return null;
 
   return (
@@ -62,9 +90,8 @@ function MarkerPopup({ listing, onClose }: { listing: Listing | null; onClose: (
       className="flex flex-col gap-2 items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[2000] 
       w-68 h-73 bg-background rounded-xl shadow-md hover:cursor-pointer"
       style={{ fontFamily: "roboto" }}
-      onMouseDown={(e) => e.stopPropagation()}
-      onMouseMove={(e) => e.stopPropagation()}
-      onClick={(e) => e.stopPropagation()}
+      onMouseEnter={() => onInteractionChange(false)}
+      onMouseLeave={() => onInteractionChange(true)}
     >
       <div className="flex flex-col w-full overflow-hidden">
         <ImagesSlider images={listing.images} containerClassName="rounded-b-none" />
