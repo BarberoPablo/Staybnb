@@ -18,6 +18,13 @@ export default function ListingsMap({ listings, setListings }: { listings: Listi
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [mapEnabled, setMapEnabled] = useState(true);
 
+  useEffect(() => {
+    if (listings.length > 0) {
+      const newCenter: [number, number] = [listings[0].location.lat, listings[0].location.lng];
+      setCenter(newCenter);
+    }
+  }, [listings]);
+
   function MapController({ mapEnabled }: { mapEnabled: boolean }) {
     const map = useMap();
 
@@ -36,14 +43,7 @@ export default function ListingsMap({ listings, setListings }: { listings: Listi
     return null;
   }
 
-  useEffect(() => {
-    if (listings.length > 0) {
-      const newCenter: [number, number] = [listings[0].location.lat, listings[0].location.lng];
-      setCenter(newCenter);
-    }
-  }, [listings]);
-
-  const handleMapMove = async ({ zoom, northEast, southWest }: MapCoordinates) => {
+  const handleEndMapMove = async ({ zoom, northEast, southWest }: MapCoordinates) => {
     try {
       const listings = await api.getListings({ zoom, northEast, southWest });
 
@@ -67,31 +67,23 @@ export default function ListingsMap({ listings, setListings }: { listings: Listi
           }}
         />
       ))}
-      <MarkerPopup listing={selectedListing} onInteractionChange={setMapEnabled} onClose={() => setSelectedListing(null)} />
-      <MapEventsHandler onMoveEnd={handleMapMove} />
+      <MarkerPopup listing={selectedListing} onClose={() => setSelectedListing(null)} enableMap={setMapEnabled} />
+      <MapEventsHandler closeMarkerPopup={() => setSelectedListing(null)} onMoveEnd={handleEndMapMove} />
       <MapController mapEnabled={mapEnabled} />
     </MapContainer>
   );
 }
 
-function MarkerPopup({
-  listing,
-  onInteractionChange,
-  onClose,
-}: {
-  listing: Listing | null;
-  onInteractionChange: (active: boolean) => void;
-  onClose: () => void;
-}) {
+function MarkerPopup({ listing, onClose, enableMap }: { listing: Listing | null; onClose: () => void; enableMap: (hovered: boolean) => void }) {
   if (!listing) return null;
 
   return (
     <div
-      className="flex flex-col gap-2 items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[2000] 
+      className="marker-popup flex flex-col gap-2 items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[2000] 
       w-68 h-73 bg-background rounded-xl shadow-md hover:cursor-pointer"
       style={{ fontFamily: "roboto" }}
-      onMouseEnter={() => onInteractionChange(false)}
-      onMouseLeave={() => onInteractionChange(true)}
+      onMouseEnter={() => enableMap(false)}
+      onMouseLeave={() => enableMap(true)}
     >
       <div className="flex flex-col w-full overflow-hidden">
         <ImagesSlider images={listing.images} containerClassName="rounded-b-none" />

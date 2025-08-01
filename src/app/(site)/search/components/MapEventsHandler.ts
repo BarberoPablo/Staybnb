@@ -1,24 +1,40 @@
 "use client";
 
 import { MapCoordinates } from "@/lib/types";
-import { LatLng, LeafletEvent } from "leaflet";
-import { useMap, useMapEvent } from "react-leaflet";
+import { LatLng, LeafletEvent, LeafletMouseEvent } from "leaflet";
+import { useMap, useMapEvents } from "react-leaflet";
 
 interface MapEventsHandlerProps {
+  closeMarkerPopup: () => void;
   onMoveEnd: (coords: MapCoordinates) => void;
 }
 
-export default function MapEventsHandler({ onMoveEnd }: MapEventsHandlerProps) {
+//  Component to handle map events and to perform functionalities besides the default ones
+export default function MapEventsHandler({ closeMarkerPopup, onMoveEnd }: MapEventsHandlerProps) {
   const map = useMap();
 
-  useMapEvent("moveend", (event: LeafletEvent) => {
-    const center = event.target.getCenter() as LatLng;
-    const zoom = event.target.getZoom() as number;
-    const bounds = map.getBounds();
-    const northEast = bounds.getNorthEast();
-    const southWest = bounds.getSouthWest();
+  useMapEvents({
+    click: (e: LeafletMouseEvent) => {
+      const target = e.originalEvent.target as HTMLElement;
+      if (target.closest(".marker-popup")) {
+        // Click inside popup, dont close
+        return;
+      }
+      closeMarkerPopup();
+    },
 
-    onMoveEnd({ center, zoom, northEast, southWest });
+    moveend: (event: LeafletEvent) => {
+      const center = event.target.getCenter() as LatLng;
+      const zoom = event.target.getZoom() as number;
+      const bounds = map.getBounds();
+      const northEast = bounds.getNorthEast();
+      const southWest = bounds.getSouthWest();
+
+      onMoveEnd({ center, zoom, northEast, southWest });
+    },
+    movestart: () => {
+      closeMarkerPopup();
+    },
   });
 
   return null;
