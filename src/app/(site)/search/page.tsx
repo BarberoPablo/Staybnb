@@ -38,9 +38,11 @@ export default function SearchPage() {
 
   return (
     <div className="flex w-full h-full items-center justify-center">
-      <div className="grid lg:grid-cols-2 gap-x-8 w-full h-full">
-        <ListingCards listings={filteredListings} />
-        <div className="flex flex-col sticky top-10 h-[calc(100vh-176px)] bg-blue-500">
+      <div className="flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-x-8 w-full h-full">
+        <div className="lg:col-span-1 xl:col-span-2">
+          <ListingCards listings={filteredListings} />
+        </div>
+        <div className="lg:col-span-1 xl:col-span-1 flex flex-col sticky top-10 h-[calc(100vh-176px)] bg-blue-500">
           <ListingsMapNoSSR listings={filteredListings} setListings={setFilteredListings} />
         </div>
       </div>
@@ -50,13 +52,17 @@ export default function SearchPage() {
 
 function ListingCards({ listings }: { listings: Listing[] }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className={`flex flex-col gap-4 `}>
       <p className="text-sm text-gray-600">{listings.length} places found</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4 bg-blue-300">
+      <div className={`flex flex-col lg:grid lg:grid-cols-${lowListings(listings.length, 2)} xl:grid-cols-${lowListings(listings.length, 3)} gap-6`}>
         {listings.map((listing) => (
           <ListingCard key={listing.id} listing={listing} />
         ))}
       </div>
     </div>
   );
+}
+
+function lowListings(listings: number, fallback: number) {
+  return listings < 3 ? listings : fallback;
 }
