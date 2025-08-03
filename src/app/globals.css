@@ -20,6 +20,7 @@
   --color-myGreenBold: #B0DB9C;
   --color-myGreenComplement: #F3E5FA;
   --color-myGray: #6A6A6A;
+  --color-myGrayDark: #364153;
 }
 
 @media (prefers-color-scheme: light) {
