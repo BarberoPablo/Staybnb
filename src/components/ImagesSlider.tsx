@@ -6,17 +6,18 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { RoundButton } from "./Button/RoundButton";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 export default function ImagesSlider({
   images,
   containerClassName,
   href,
-  hover,
+  hoverEffect,
 }: {
   images: string[];
   containerClassName?: string;
   href?: string;
-  hover?: boolean;
+  hoverEffect?: boolean;
 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -29,6 +30,9 @@ export default function ImagesSlider({
       setLoaded(true);
     },
   });
+  const [isHovering, setIsHovering] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const hoverAnimation = !isMobile && hoverEffect && isHovering ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none";
 
   useEffect(() => {
     setTimeout(() => {
@@ -73,9 +77,19 @@ export default function ImagesSlider({
     }
   };
 
+  const handleHoverButton = (hovering: boolean) => {
+    if (hoverEffect) {
+      setIsHovering(hovering);
+    }
+  };
+
   return (
     <>
-      <div className={`relative overflow-hidden rounded-xl ${containerClassName}`}>
+      <div
+        className={`relative overflow-hidden rounded-xl ${containerClassName}`}
+        onMouseOver={() => handleHoverButton(true)}
+        onMouseOut={() => handleHoverButton(false)}
+      >
         <ConditionalLink href={href || ""} condition={!!href}>
           <div ref={sliderRef} className="keen-slider h-full w-full">
             {images.map((image, index) => (
@@ -83,8 +97,13 @@ export default function ImagesSlider({
                 <Image src={image} alt={`listing secondary image`} priority fill className="object-cover" sizes="100%" />
               </div>
             ))}
+
+            <div className="absolute bottom-2 right-2 px-3 text-white text-sm rounded-sm bg-myGrayDark">
+              {currentSlide + 1}/{images.length}
+            </div>
+
             {loaded && instanceRef.current && (
-              <div className="dots w-full absolute bottom-4 flex justify-center">
+              <div className={`dots w-full absolute bottom-4 flex justify-center transition-opacity duration-300 ${hoverAnimation}`}>
                 {[...Array(images.length).keys()].map((idx) => {
                   return (
                     <button
@@ -102,11 +121,17 @@ export default function ImagesSlider({
         </ConditionalLink>
         {loaded && instanceRef.current && (
           <>
-            <RoundButton className="absolute left-2 top-1/2 transform -translate-y-1/2 text-2xl" onClick={handlePrev}>
+            <RoundButton
+              className={`absolute left-2 top-1/2 transform -translate-y-1/2 text-2xl transition-opacity duration-300 ${hoverAnimation}`}
+              onClick={handlePrev}
+            >
               <MdKeyboardArrowLeft />
             </RoundButton>
 
-            <RoundButton className="absolute right-2 top-1/2 transform -translate-y-1/2 text-2xl" onClick={handleNext}>
+            <RoundButton
+              className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-2xl transition-opacity duration-300 ${hoverAnimation}`}
+              onClick={handleNext}
+            >
               <MdKeyboardArrowRight />
             </RoundButton>
           </>
