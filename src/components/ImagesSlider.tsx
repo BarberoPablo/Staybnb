@@ -9,9 +9,9 @@ import { RoundButton } from "./Button/RoundButton";
 export default function ImagesSlider({
   images,
   containerClassName,
-}: /* href,
-  hover, */
-{
+  href,
+  hover,
+}: {
   images: string[];
   containerClassName?: string;
   href?: string;
@@ -30,11 +30,27 @@ export default function ImagesSlider({
   });
 
   useEffect(() => {
-    if (instanceRef.current) {
-      instanceRef.current.update();
-      instanceRef.current.moveToIdx(0);
-    }
+    setTimeout(() => {
+      if (instanceRef.current) {
+        instanceRef.current.update();
+        instanceRef.current.moveToIdx(0);
+      }
+    }, 50);
   }, [images.length, instanceRef]);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        instanceRef.current?.update();
+      }, 100);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [instanceRef]);
 
   const handlePrev = () => {
     if (instanceRef.current) {

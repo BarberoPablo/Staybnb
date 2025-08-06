@@ -57,11 +57,10 @@ function ListingCards({ listings }: { listings: Listing[] }) {
 
   let columns = 1;
 
-  if (isMd) {
-    columns = adaptiveColumns(listings.length, 2);
-  }
   if (is2xl) {
     columns = adaptiveColumns(listings.length, 3);
+  } else if (isMd) {
+    columns = adaptiveColumns(listings.length, 2);
   }
 
   return (
