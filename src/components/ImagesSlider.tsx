@@ -6,7 +6,17 @@ import { useEffect, useState } from "react";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { RoundButton } from "./Button/RoundButton";
 
-export default function ImagesSlider({ images, containerClassName }: { images: string[]; containerClassName?: string }) {
+export default function ImagesSlider({
+  images,
+  containerClassName,
+}: /* href,
+  hover, */
+{
+  images: string[];
+  containerClassName?: string;
+  href?: string;
+  hover?: boolean;
+}) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
@@ -20,7 +30,6 @@ export default function ImagesSlider({ images, containerClassName }: { images: s
   });
 
   useEffect(() => {
-    console.log("re render");
     if (instanceRef.current) {
       instanceRef.current.update();
       instanceRef.current.moveToIdx(0);
