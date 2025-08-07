@@ -1,3 +1,5 @@
+"use client";
+
 import { Listing } from "@/lib/types/listing";
 import { useState } from "react";
 import { IoHeart, IoHeartOutline, IoStar } from "react-icons/io5";
@@ -5,6 +7,7 @@ import ImagesSlider from "./ImagesSlider";
 
 export default function ListingCard({ listing }: { listing: Listing }) {
   const [isFavorite, setIsFavorite] = useState(false);
+
   return (
     <div className="flex flex-col shadow-sm border border-gray-200 rounded-xl gap-2 pb-2">
       <div className="relative rounded-xl">

@@ -35,13 +35,13 @@ export default function ImagesSlider({
   const hoverAnimation = !isMobile && hoverEffect && isHovering ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none";
 
   useEffect(() => {
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       if (instanceRef.current) {
         instanceRef.current.update();
         instanceRef.current.moveToIdx(0);
       }
-    }, 50);
-  }, [images.length, instanceRef]);
+    });
+  }, [instanceRef]);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
