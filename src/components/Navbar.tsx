@@ -45,7 +45,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
             <input
               type="text"
               placeholder="Where do you want to go?"
-              className="rounded-full p-2 text-sm focus:outline-none focus:bg-myGreen hover:bg-myGreen transition-colors duration-300"
+              className="rounded-full py-2 px-4 text-sm focus:outline-none focus:bg-myGreen hover:bg-myGreen transition-colors duration-300"
               value={searchCity}
               name="searchCity"
               onChange={handleSearchCityInput}
