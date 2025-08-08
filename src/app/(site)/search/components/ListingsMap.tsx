@@ -92,6 +92,11 @@ export default function ListingsMap({
 function MarkerPopup({ listing, onClose, enableMap }: { listing: Listing | null; onClose: () => void; enableMap: (hovered: boolean) => void }) {
   if (!listing) return null;
 
+  const handleClose = () => {
+    enableMap(true); // Restaurar el estado del mapa antes de cerrar
+    onClose();
+  };
+
   return (
     <div
       className="marker-popup flex flex-col gap-2 items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[2000] 
@@ -103,7 +108,7 @@ function MarkerPopup({ listing, onClose, enableMap }: { listing: Listing | null;
       <div className="flex flex-col w-full overflow-hidden">
         <ImagesSlider images={listing.images} containerClassName="rounded-b-none" />
       </div>
-      <RoundButton onClick={onClose} className="absolute top-2 right-2 text-[32px]">
+      <RoundButton onClick={handleClose} className="absolute top-2 right-2 text-[32px]">
         <IoIosClose />
       </RoundButton>
 
