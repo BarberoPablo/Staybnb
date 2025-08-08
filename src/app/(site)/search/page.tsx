@@ -15,6 +15,7 @@ export default function SearchPage() {
   const [filteredListings, setFilteredListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const layoutKey = getLayoutCategory(filteredListings.length);
+  const [locateListing, setLocateListing] = useState(-1);
 
   useEffect(() => {
     if (city) {
@@ -41,10 +42,10 @@ export default function SearchPage() {
     <div className="flex w-full h-full items-center justify-center">
       <div className="flex flex-col lg:grid lg:grid-cols-10 xl:grid-cols-10 gap-x-8 w-full h-full">
         <div className="lg:max-w-7xl lg:col-span-6 xl:col-span-5">
-          <ListingCards key={layoutKey} listings={filteredListings} />
+          <ListingCards key={layoutKey} listings={filteredListings} setLocateListing={setLocateListing} />
         </div>
         <div className="lg:col-span-4 xl:col-span-5 flex flex-col sticky top-10 h-[calc(100vh-176px)] bg-blue-500">
-          <ListingsMapNoSSR listings={filteredListings} setListings={setFilteredListings} />
+          <ListingsMapNoSSR listings={filteredListings} locateListing={locateListing} setListings={setFilteredListings} />
         </div>
       </div>
     </div>

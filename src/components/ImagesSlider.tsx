@@ -98,7 +98,7 @@ export default function ImagesSlider({
               </div>
             ))}
 
-            <div className="absolute bottom-2 right-2 px-3 text-white text-sm rounded-sm bg-myGrayDark">
+            <div className="absolute bottom-2 right-2 px-3 text-myGrayDark text-sm rounded-sm bg-myGreen">
               {currentSlide + 1}/{images.length}
             </div>
 
@@ -111,7 +111,7 @@ export default function ImagesSlider({
                       onClick={() => {
                         instanceRef.current?.moveToIdx(idx);
                       }}
-                      className={`w-2 h-2 rounded-full mx-1 transition-colors duration-300 ${currentSlide === idx ? "bg-black" : "bg-gray-400"}`}
+                      className={`w-2 h-2 rounded-full mx-1 transition-colors duration-300 ${currentSlide === idx ? "bg-myGreenBold" : "bg-myGrayDark"}`}
                     />
                   );
                 })}
@@ -122,14 +122,14 @@ export default function ImagesSlider({
         {loaded && instanceRef.current && (
           <>
             <RoundButton
-              className={`absolute left-2 top-1/2 transform -translate-y-1/2 text-2xl transition-opacity duration-300 ${hoverAnimation}`}
+              className={`absolute left-2 top-1/2 transform -translate-y-1/2 text-2xl transition-opacity duration-300 text-myGrayDark bg-myGreen ${hoverAnimation}`}
               onClick={handlePrev}
             >
               <MdKeyboardArrowLeft />
             </RoundButton>
 
             <RoundButton
-              className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-2xl transition-opacity duration-300 ${hoverAnimation}`}
+              className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-2xl transition-opacity duration-300 text-myGrayDark bg-myGreen ${hoverAnimation}`}
               onClick={handleNext}
             >
               <MdKeyboardArrowRight />

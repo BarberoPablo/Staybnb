@@ -3,7 +3,7 @@ import { Listing } from "@/lib/types/listing";
 import { useEffect } from "react";
 import ListingCard from "./ListingCard";
 
-export function ListingCards({ listings }: { listings: Listing[] }) {
+export function ListingCards({ listings, setLocateListing }: { listings: Listing[]; setLocateListing: (listingId: number) => void }) {
   const is2xl = useMediaQuery("(min-width:1536px)");
   const isMd = useMediaQuery("(min-width: 768px)");
 
@@ -33,7 +33,7 @@ export function ListingCards({ listings }: { listings: Listing[] }) {
         }}
       >
         {listings.map((listing) => (
-          <ListingCard key={listing.id} listing={listing} />
+          <ListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} />
         ))}
       </div>
     </div>

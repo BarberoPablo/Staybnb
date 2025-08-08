@@ -3,19 +3,27 @@
 import MapEventsHandler from "@/app/(site)/search/components/MapEventsHandler";
 import { RoundButton } from "@/components/Button/RoundButton";
 import ImagesSlider from "@/components/ImagesSlider";
-import "@/components/Leaflet/markerStyle";
 import { NightPriceWithPromotion } from "@/components/Promotions/NightPriceWithPromotion";
 import { api } from "@/lib/api/api";
 import { MapCoordinates } from "@/lib/types";
 import { Listing } from "@/lib/types/listing";
 import { twoDecimalsString } from "@/lib/utils";
+import { Icon } from "leaflet";
 import { useEffect, useState } from "react";
 import { IoIosClose, IoIosStar } from "react-icons/io";
 import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 
-export default function ListingsMap({ listings, setListings }: { listings: Listing[]; setListings: (listings: Listing[]) => void }) {
+export default function ListingsMap({
+  listings,
+  locateListing,
+  setListings,
+}: {
+  listings: Listing[];
+  locateListing: number;
+  setListings: (listings: Listing[]) => void;
+}) {
   const [center, setCenter] = useState<[number, number]>([-34.6037, -58.3816]);
-  const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const [listingPopup, setListingPopup] = useState<Listing | null>(null);
   const [mapEnabled, setMapEnabled] = useState(true);
 
   useEffect(() => {
@@ -62,13 +70,20 @@ export default function ListingsMap({ listings, setListings }: { listings: Listi
           position={[listing.location.lat, listing.location.lng]}
           eventHandlers={{
             click: () => {
-              setSelectedListing(listing);
+              setListingPopup(listing);
             },
           }}
+          icon={
+            new Icon({
+              iconUrl: `${locateListing === listing.id ? "https://i.postimg.cc/mkH5rzZ6/image.webp" : "https://i.postimg.cc/VsZmCYH4/House.png"}`,
+              iconSize: [40, 40],
+              iconAnchor: [40, 40],
+            })
+          }
         />
       ))}
-      <MarkerPopup listing={selectedListing} onClose={() => setSelectedListing(null)} enableMap={setMapEnabled} />
-      <MapEventsHandler closeMarkerPopup={() => setSelectedListing(null)} onMoveEnd={handleEndMapMove} />
+      <MarkerPopup listing={listingPopup} onClose={() => setListingPopup(null)} enableMap={setMapEnabled} />
+      <MapEventsHandler closeMarkerPopup={() => setListingPopup(null)} onMoveEnd={handleEndMapMove} />
       <MapController mapEnabled={mapEnabled} />
     </MapContainer>
   );
