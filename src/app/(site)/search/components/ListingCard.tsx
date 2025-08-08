@@ -1,9 +1,9 @@
 "use client";
 
+import ImagesSlider from "@/components/ImagesSlider";
 import { Listing } from "@/lib/types/listing";
 import { useState } from "react";
 import { IoHeart, IoHeartOutline, IoStar } from "react-icons/io5";
-import ImagesSlider from "./ImagesSlider";
 
 export default function ListingCard({ listing }: { listing: Listing }) {
   const [isFavorite, setIsFavorite] = useState(false);
