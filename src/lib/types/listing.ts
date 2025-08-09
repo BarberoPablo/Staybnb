@@ -10,7 +10,7 @@ export type ListingDB = CreateListingDB & {
 export type Listing = {
   id: number;
   hostId: string;
-  createdAt: string;
+  createdAt: Date;
   propertyType: PropertyType;
   privacyType: PrivacyType;
   title: string;

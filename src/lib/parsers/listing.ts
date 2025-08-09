@@ -15,7 +15,7 @@ export function parseListingFromDB(listingDB: ListingDB): Listing {
   return {
     id: listingDB.id,
     hostId: listingDB.host_id,
-    createdAt: listingDB.created_at,
+    createdAt: new Date(listingDB.created_at),
     propertyType: listingDB.property_type,
     privacyType: listingDB.privacy_type,
     title: listingDB.title,
