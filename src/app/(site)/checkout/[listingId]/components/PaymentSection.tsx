@@ -19,7 +19,7 @@ const reserve = {
   },
   message: {
     loading: "Please wait while we make the reservation",
-    confirmed: "A confirmation email has been sent to your inbox.",
+    confirmed: "An email with the details has been sent to your inbox.",
     error: "Selected dates are not available.",
     serverError: "Something went wrong. Please try again.",
   },

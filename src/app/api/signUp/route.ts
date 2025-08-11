@@ -4,8 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 export async function POST(req: NextRequest) {
   const { first_name, last_name, avatar_url, bio } = await req.json();
 
-  console.log({ first_name, last_name, avatar_url, bio });
-
   const supabase = await createClient();
 
   const {

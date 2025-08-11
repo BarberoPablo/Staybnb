@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import { Container } from "./components/Container";
 
 export default async function SiteLayout({
   children,
@@ -11,9 +10,7 @@ export default async function SiteLayout({
       <header>
         <Navbar />
       </header>
-      <main className="flex-grow overflow-auto flex flex-col items-center w-full">
-        <Container>{children}</Container>
-      </main>
+      <main className="flex-1 flex-grow overflow-auto flex flex-col items-center w-full h-full">{children}</main>
     </div>
   );
 }

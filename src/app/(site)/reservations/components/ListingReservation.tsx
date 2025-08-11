@@ -2,6 +2,7 @@
 
 import ListingPrice from "@/components/ListingPrice";
 import ReservationDate from "@/components/ReservationDate";
+import { basicButton } from "@/lib/supabase/styles";
 import { ResumedReservationWithListing } from "@/lib/types/reservation";
 import Image from "next/image";
 import { useState } from "react";
@@ -31,22 +32,22 @@ export default function ListingReservation({ reservation, eventKey }: { reservat
         </div>
 
         <div className="flex flex-col pt-5 gap-2 w-[170px]">
-          <button className="basic-button text-[#13422d] bg-myGreen hover:bg-myGreenDark">
+          <button className={`${basicButton} text-[#13422d] bg-myGreen hover:bg-myGreenDark`}>
             <LuReceiptText className="w-5 h-5" />
             <h3 className="ml-2">See receipt</h3>
           </button>
-          <button className="basic-button text-[#13422d] bg-myGreen hover:bg-myGreenDark">
+          <button className={`${basicButton} text-[#13422d] bg-myGreen hover:bg-myGreenDark`}>
             <MdOutlineMessage className="w-5 h-5" />
             <h3 className="ml-2">Chat with host</h3>
           </button>
           {eventKey === "active" && (
-            <button className="basic-button text-red-900 bg-red-400 hover:bg-red-500" onClick={() => setOpenCancelResevationDialog(true)}>
+            <button className={`${basicButton} text-red-900 bg-red-400 hover:bg-red-500`} onClick={() => setOpenCancelResevationDialog(true)}>
               <LuCalendarX2 className="w-5 h-5" />
               <h3 className="ml-2">Cancel Reservation</h3>
             </button>
           )}
           {eventKey === "history" && (
-            <button className="basic-button text-yellow-900 bg-yellow-400 hover:bg-yellow-500" onClick={() => setOpenCancelResevationDialog(true)}>
+            <button className={`${basicButton} text-yellow-900 bg-yellow-400 hover:bg-yellow-500`} onClick={() => setOpenCancelResevationDialog(true)}>
               <MdOutlineRateReview className="w-5 h-5" />
               <h3 className="ml-2">Review this listing</h3>
             </button>

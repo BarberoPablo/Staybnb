@@ -1,6 +1,5 @@
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Listing } from "@/lib/types/listing";
-import { useEffect } from "react";
 import ListingCard from "./ListingCard";
 
 export function ListingCards({ listings, setLocateListing }: { listings: Listing[]; setLocateListing: (listingId: number) => void }) {
@@ -14,13 +13,6 @@ export function ListingCards({ listings, setLocateListing }: { listings: Listing
   } else if (isMd) {
     columns = adaptiveColumns(listings.length, 2);
   }
-
-  useEffect(() => {
-    console.log("ListingCards mounted or re-mounted");
-    return () => {
-      console.log("ListingCards unmounted");
-    };
-  }, []);
 
   return (
     <div className={`flex flex-col gap-4 `}>
@@ -41,11 +33,8 @@ export function ListingCards({ listings, setLocateListing }: { listings: Listing
 }
 
 /* 
-To ensure the listing layout re-renders only when necessary, we assign a specific key to <ListingCards> based on the number of columns it should display.
-This avoids layout glitches (e.g., with Keen slider) that occur when the column count changes but React doesn't remount the component.
-
-We don't use `key={filteredListings.length}` because that would trigger a full remount every time the number of listings changes, even if the column layout remains the same.
-Instead, this function maps listing counts to layout categories (single, double, triple column), ensuring remounting happens *only* when the visual layout needs to adapt.
+When layout changes, keen-slider does not notices the change in column count, making the images to break.
+This is fixed by using a specific key for each layout category.
 */
 
 function adaptiveColumns(listingsLength: number, maxColumns: number) {
