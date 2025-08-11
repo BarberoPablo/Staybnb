@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+
 @import "tailwindcss";
 @import "keen-slider/keen-slider.min.css";
 @import "react-date-range/dist/styles.css";
@@ -38,7 +40,7 @@ body {
   height: 100%;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-roboto), sans-serif;
+  font-family: "Geist", sans-serif;
   font-weight: 400;
   font-optical-sizing: auto;
   font-style: normal;
@@ -53,10 +55,6 @@ body {
 .no-spinner {
   appearance: textfield;
   -moz-appearance: textfield;
-}
-
-.basic-button {
-  @apply flex items-center border border-gray-300 p-2 rounded-md hover:cursor-pointer text-sm;
 }
 
 .rs-tabs {

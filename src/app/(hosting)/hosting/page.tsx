@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
+import { basicButton } from "@/lib/supabase/styles";
 import { useRouter } from "next/navigation";
 
 export default function Hosting() {
@@ -20,10 +21,10 @@ export default function Hosting() {
       </header>
       <main className="w-full mt-2 flex-grow px-5">
         <div className="flex items-center justify-center gap-20">
-          <button className="basic-button justify-center w-50 h-50" onClick={handleMyListings}>
+          <button className={`${basicButton} justify-center w-50 h-50`} onClick={handleMyListings}>
             My listings
           </button>
-          <button className="basic-button justify-center w-50 h-50" onClick={handleCreateListing}>
+          <button className={`${basicButton} justify-center w-50 h-50`} onClick={handleCreateListing}>
             Create Listing
           </button>
         </div>

@@ -23,13 +23,15 @@ export type Profile = {
 };
 
 export type CreateProfile = {
-  id: string;
   firstName: string;
   lastName: string;
+  avatarUrl?: string;
+  bio?: string;
 };
 
 export type CreateProfileDB = {
-  id: string;
   first_name: string;
   last_name: string;
+  avatar_url?: string;
+  bio?: string;
 };

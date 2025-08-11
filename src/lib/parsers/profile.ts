@@ -15,8 +15,9 @@ export function parseProfileFromDB(profileDB: ProfileDB): Profile {
 
 export function parseCreateProfile(profileDB: CreateProfile): CreateProfileDB {
   return {
-    id: profileDB.id,
     first_name: profileDB.firstName,
     last_name: profileDB.lastName,
+    avatar_url: profileDB.avatarUrl ?? "",
+    bio: profileDB.bio ?? "",
   };
 }
