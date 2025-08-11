@@ -1,14 +1,17 @@
 import { ListingForm } from "@/store/useListingForm";
 import { parseHostListingsWithReservations, parseListingFormData, parseListingFromDB, parseListingWithReservationsFromDB } from "../parsers/listing";
+import { parseCreateProfile } from "../parsers/profile";
 import { parseListingReservedDatesDB, parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../parsers/reservation";
 import { MapCoordinates } from "../types";
 import { HostListingsWithReservationsDB, ListingDB, ListingWithReservationsDB } from "../types/listing";
+import { CreateProfile } from "../types/profile";
 import { CreateReservation, ListingReservedDatesDB, ReservationDB, ResumedReservationWithListingDB } from "../types/reservation";
 import customFetch from "./fetch";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export const endpoint = {
+  signUp: () => `${baseUrl}/api/signUp`,
   getUserReservations: () => `${baseUrl}/api/reservations`,
   getListingReservations: (listingId: number) => `${baseUrl}/api/reservations/${listingId}`, // clients not included
   createReservation: `${baseUrl}/api/reservations`,
@@ -22,6 +25,11 @@ export const endpoint = {
 };
 
 export const api = {
+  async signUp(userData: CreateProfile) {
+    const parsedUserData = parseCreateProfile(userData);
+    return await customFetch.post(endpoint.signUp(), { ...parsedUserData });
+  },
+
   async getUserReservations() {
     const { data } = await customFetch.get<ResumedReservationWithListingDB[]>(endpoint.getUserReservations());
     const parsedData = parseResumedReservationWithListingFromDB(data);

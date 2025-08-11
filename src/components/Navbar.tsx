@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoSearch } from "react-icons/io5";
+import ChangeViewButton from "./ChangeViewButton";
 import { SignButton } from "./SignButton";
 
 export default function Navbar({ search = true }: { search?: boolean }) {
@@ -27,7 +28,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   };
 
   return (
-    <nav className="flex items-center justify-center py-4 border-b border-b-gray-100 bg-myGreenComplement">
+    <nav className="flex items-center justify-center py-4 bg-myGreenComplement shadow-sm border border-gray-200">
       <motion.div
         className="flex items-center justify-center sticky top-0 sm:justify-between w-full px-12"
         initial={{ maxWidth: fullWidth ? windowWidth.full : windowWidth.short }}
@@ -44,7 +45,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
             <input
               type="text"
               placeholder="Where do you want to go?"
-              className="rounded-full p-2 text-sm focus:outline-none focus:bg-myGreen hover:bg-myGreen transition-colors duration-300"
+              className="rounded-full py-2 px-4 text-sm focus:outline-none focus:bg-myGreen hover:bg-myGreen transition-colors duration-300"
               value={searchCity}
               name="searchCity"
               onChange={handleSearchCityInput}
@@ -77,8 +78,10 @@ export default function Navbar({ search = true }: { search?: boolean }) {
             </motion.button>
           </div>
         )}
-
-        <SignButton />
+        <div className="flex gap-2">
+          <ChangeViewButton />
+          <SignButton />
+        </div>
       </motion.div>
     </nav>
   );

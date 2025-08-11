@@ -14,9 +14,9 @@ export function RoundButton({
   return (
     <motion.button
       transition={{ duration: 0.2, ease: "easeOut" }}
-      whileHover={{ scale: 1.1, opacity: 1 }}
+      whileHover={{ scale: 1.1 }}
       disabled={disabled}
-      className={`flex items-center justify-center w-8 h-8 cursor-pointer bg-background rounded-full opacity-80 ${className}`}
+      className={`flex items-center justify-center w-8 h-8 cursor-pointer bg-background rounded-full ${className}`}
       onClick={onClick}
     >
       {children}

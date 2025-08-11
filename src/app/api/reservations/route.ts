@@ -129,7 +129,7 @@ export async function POST(req: Request) {
     });
 
     if (isOverlapping) {
-      return NextResponse.json({ error: "Selected dates are not available" }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Selected dates are not available" }, { status: 400 });
     }
 
     const newReservation: ReservationInsert = {
