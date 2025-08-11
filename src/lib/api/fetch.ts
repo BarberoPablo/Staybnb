@@ -55,4 +55,6 @@ export type CustomFetchResponse<T> = {
   data: T;
   message?: string;
   status?: number;
+  code?: string;
+  error?: string;
 };
