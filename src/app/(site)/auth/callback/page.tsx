@@ -13,6 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FiCamera, FiFileText, FiUser } from "react-icons/fi";
+import { Container } from "../../components/Container";
 
 const supabase = createClient();
 
@@ -150,7 +151,7 @@ export default function AuthCallback() {
 
   if (step === "verifying") {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-myGreenLight to-myGreen">
+      <Container className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-myGreenLight to-myGreen">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
           <div className="w-16 h-16 bg-myGreenBold rounded-full flex items-center justify-center mx-auto mb-6">
             <FiUser className="w-8 h-8 text-white" />
@@ -158,50 +159,92 @@ export default function AuthCallback() {
           <h1 className="text-2xl font-semibold text-myGrayDark mb-2">Verifiying account...</h1>
           <p className="text-myGray text-lg">You will be redirected shortly</p>
         </motion.div>
-      </div>
+      </Container>
     );
   }
 
   if (step === "completed") {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-myGreenLight to-myGreen">
-        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
-          <div className="w-16 h-16 bg-myGreenBold rounded-full flex items-center justify-center mx-auto mb-6">
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 0.5 }}>
-              ✓
-            </motion.div>
-          </div>
-          <h1 className="text-2xl font-semibold text-myGrayDark mb-2">Profile completed!</h1>
-          <p className="text-myGray text-lg">Redirecting to main page...</p>
-        </motion.div>
-      </div>
+      <Container className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-myGreenLight to-myGreen">
+        <div className="text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0, rotate: 360 }}
+            transition={{ delay: 0.1, duration: 0.4 }}
+            className="w-16 h-16 bg-myGreenBold rounded-full flex items-center justify-center mx-auto mb-6"
+          >
+            <motion.div animate={{ rotate: 360 }}>✓</motion.div>
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="text-2xl font-semibold text-myGrayDark mb-2"
+          >
+            Profile completed!
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+            className="text-myGray text-lg"
+          >
+            Redirecting to main page...
+          </motion.p>
+        </div>
+      </Container>
     );
   }
 
   if (step === "profile") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-myGreenLight to-myGreen flex items-center justify-center p-4">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
+      <Container className="flex flex-col items-center justify-center bg-gradient-to-br from-myGreenLight to-myGreen">
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="w-full max-w-md"
+        >
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-myGreen">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-myGreenBold rounded-full flex items-center justify-center mx-auto mb-4">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.4, type: "spring", stiffness: 300 }}
+                className="w-16 h-16 bg-myGreenBold rounded-full flex items-center justify-center mx-auto mb-4"
+              >
                 <FiUser className="w-8 h-8 text-white" />
-              </div>
-              <h1 className="text-2xl font-semibold text-myGrayDark mb-2">Complete your profile</h1>
-              <p className="text-myGray">Tell us more about yourself</p>
+              </motion.div>
+              <motion.h1
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.4 }}
+                className="text-2xl font-semibold text-myGrayDark mb-2"
+              >
+                Complete your profile
+              </motion.h1>
+              <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.4 }} className="text-myGray">
+                Tell us more about yourself
+              </motion.p>
             </div>
 
             <form onSubmit={handleCreateProfile} className="space-y-6">
-              <div className="space-y-3">
+              {/* Profile picture with small scale animation */}
+              <motion.div
+                className="space-y-3"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.4 }}
+              >
                 <label className="block text-sm font-medium text-myGrayDark">Profile picture (optional)</label>
                 <div className="flex items-center justify-center w-full">
-                  <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-myGreen rounded-full cursor-pointer hover:border-myGreenBold transition-colors group">
+                  <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-myGreenDark rounded-full cursor-pointer hover:border-myGreenBold transition-colors group">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                       {profileImage && profileImage.url ? (
                         <Image src={profileImage.url} alt="Preview" height={20} width={20} className="w-20 h-20 rounded-full object-cover" />
                       ) : (
                         <>
-                          <FiCamera className="w-6 h-6 text-myGreen group-hover:text-myGreenBold mb-2" />
+                          <FiCamera className="w-6 h-6 text-myGreenDark group-hover:text-myGreenBold mb-2" />
                           <p className="text-xs text-myGray">Upload</p>
                         </>
                       )}
@@ -209,9 +252,10 @@ export default function AuthCallback() {
                     <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
                   </label>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="space-y-2">
+              {/* First name input */}
+              <motion.div className="space-y-2" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.9, duration: 0.4 }}>
                 <label className="block text-sm font-medium text-myGrayDark">First name *</label>
                 <input
                   type="text"
@@ -221,9 +265,10 @@ export default function AuthCallback() {
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-myGreen focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
                   placeholder="Tu nombre"
                 />
-              </div>
+              </motion.div>
 
-              <div className="space-y-2">
+              {/* Last name input */}
+              <motion.div className="space-y-2" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 1.0, duration: 0.4 }}>
                 <label className="block text-sm font-medium text-myGrayDark">Last name *</label>
                 <input
                   type="text"
@@ -233,9 +278,10 @@ export default function AuthCallback() {
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-myGreen focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
                   placeholder="Tu apellido"
                 />
-              </div>
+              </motion.div>
 
-              <div className="space-y-2">
+              {/* Biography textarea */}
+              <motion.div className="space-y-2" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 1.1, duration: 0.4 }}>
                 <label className="block text-sm font-medium text-myGrayDark">Biography (optional)</label>
                 <textarea
                   value={profileData.bio}
@@ -244,12 +290,18 @@ export default function AuthCallback() {
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-myGreen focus:border-transparent transition-all duration-200 placeholder:text-gray-400 resize-none"
                   placeholder="Cuéntanos un poco sobre ti..."
                 />
-              </div>
+              </motion.div>
 
-              <button
+              {/* Submit button with scale animation */}
+              <motion.button
                 type="submit"
                 disabled={loading || !profileData.firstName || !profileData.lastName}
-                className={`${basicButton} w-full bg-myGreenBold text-white py-3 px-6 rounded-lg font-medium hover:bg-myGreenDark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
+                className={`${basicButton} w-full bg-myGreenBold text-myGrayDark py-3 px-6 rounded-lg font-medium hover:bg-myGreenDark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2, duration: 0.3 }}
               >
                 {loading ? (
                   <>
@@ -262,11 +314,11 @@ export default function AuthCallback() {
                     Complete profile
                   </>
                 )}
-              </button>
+              </motion.button>
             </form>
           </div>
         </motion.div>
-      </div>
+      </Container>
     );
   }
 }

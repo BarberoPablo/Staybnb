@@ -1,6 +1,7 @@
 "use client";
 
-import { logoUrl, windowWidth } from "@/lib/utils";
+import { Container } from "@/app/(site)/components/Container";
+import { logoUrl } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +17,6 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
   const hosting = pathname.includes("/hosting");
-  const fullWidth = !windowWidth.shortPath(pathname);
 
   const handleSearchCityInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchCity(event.target.value);
@@ -28,13 +28,8 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   };
 
   return (
-    <nav className="flex items-center justify-center py-4 bg-myGreenComplement shadow-sm border border-gray-200">
-      <motion.div
-        className="flex items-center justify-center sticky top-0 sm:justify-between w-full px-12"
-        initial={{ maxWidth: fullWidth ? windowWidth.full : windowWidth.short }}
-        animate={{ maxWidth: fullWidth ? windowWidth.full : windowWidth.short }}
-        transition={{ type: "spring", stiffness: 250, damping: 20 }}
-      >
+    <nav className="flex items-center justify-center bg-myGreenComplement shadow-sm border border-gray-200 h-full w-full p-0 m-0">
+      <Container style={{ padding: "16px 48px 16px 48px" }} className="flex items-center justify-center sticky top-0 sm:justify-between w-full">
         <div>
           <Link href={`${hosting ? "/hosting" : "/"}`}>
             <Image src={logoUrl} alt="logo" className="object-cover" width={80} height={63} />
@@ -82,7 +77,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
           <ChangeViewButton />
           <SignButton />
         </div>
-      </motion.div>
+      </Container>
     </nav>
   );
 }
