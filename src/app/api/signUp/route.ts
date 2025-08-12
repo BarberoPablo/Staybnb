@@ -1,8 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
+import { cleanString } from "@/lib/server-utils";
 import { createClient } from "@/lib/supabase/server";
+import { isValidUrl } from "@/lib/utils";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { first_name, last_name, avatar_url, bio } = await req.json();
+  const clean_first_name = cleanString(first_name);
+  const clean_last_name = cleanString(last_name);
+  const clean_bio = cleanString(bio);
+  const clean_avatar_url = avatar_url ? (isValidUrl(avatar_url.trim()) ? avatar_url.trim() : "") : "";
+
+  if (!clean_first_name || !clean_last_name) {
+    return NextResponse.json({ error: "First name and last name are required and must be valid text." }, { status: 400 });
+  }
 
   const supabase = await createClient();
 
@@ -18,10 +28,10 @@ export async function POST(req: NextRequest) {
   const { error: insertError } = await supabase.from("profiles").insert([
     {
       id: user.id,
-      first_name,
-      last_name,
-      avatar_url,
-      bio,
+      first_name: clean_first_name,
+      last_name: clean_last_name,
+      avatar_url: clean_avatar_url,
+      bio: clean_bio,
       role: "user",
     },
   ]);

@@ -1,5 +1,6 @@
 import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import DOMPurify from "dompurify";
 import { Guests, ListingSearchParams } from "./types";
 import { Listing, Location, Promotion } from "./types/listing";
 import { ReservedDate } from "./types/reservation";
@@ -161,4 +162,17 @@ export function createTimezoneDate(date: Date, timezone: string) {
 
 export function showUTCDate(date: Date) {
   return format(date, "MMM d, yyyy HH:mm");
+}
+
+export function cleanString(value?: unknown): string {
+  return typeof value === "string" ? DOMPurify.sanitize(value.trim(), { ALLOWED_TAGS: [] }) : "";
+}
+
+export function isValidUrl(url: string) {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
 }

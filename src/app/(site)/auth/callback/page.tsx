@@ -1,27 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import toast from "react-hot-toast";
-import { FiUser, FiFileText /* , FiCamera */ } from "react-icons/fi";
-import { motion } from "framer-motion";
-/* import Image from "next/image"; */
+import { PreviewImage } from "@/components/Hosting/Steps/PhotosStep";
 import { api } from "@/lib/api/api";
-import { CreateProfile } from "@/lib/types/profile";
-import { useSearchParams } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { basicButton } from "@/lib/supabase/styles";
+import { CreateProfile } from "@/lib/types/profile";
+import { uploadFiles } from "@/lib/uploadthing";
+import { cleanString, isValidUrl } from "@/lib/utils";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { FiCamera, FiFileText, FiUser } from "react-icons/fi";
 
 const supabase = createClient();
 
 export default function AuthCallback() {
   const router = useRouter();
   const [step, setStep] = useState<"verifying" | "profile" | "completed">("verifying");
+  const [profileImage, setProfileImage] = useState<PreviewImage>();
   const [profileData, setProfileData] = useState<CreateProfile>({
     firstName: "",
     lastName: "",
     bio: "",
-    avatarUrl: "",
   });
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
@@ -96,19 +98,39 @@ export default function AuthCallback() {
     setProfileData((prev) => ({ ...prev, [field]: value }));
   };
 
-  /* const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
-    handleInputChange("avatarUrl", file);
-  }; */
+    if (file) {
+      setProfileImage({ file, url: URL.createObjectURL(file) });
+    }
+  };
+
+  const handleUploadImage = async () => {
+    if (!profileImage || !profileImage?.file) {
+      return;
+    }
+    try {
+      const response = await uploadFiles("imagesUploader", { files: [profileImage.file] });
+
+      if (response) {
+        return response[0].ufsUrl;
+      }
+    } catch (error) {
+      console.error("Upload failed", error);
+      toast.error("Image upload failed, try again.");
+    }
+  };
 
   const handleCreateProfile = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
 
     try {
-      const response = await api.signUp(profileData);
+      const avatarUrl = await handleUploadImage();
+      const data = verifyProfileData({ ...profileData, avatarUrl });
+      const signUpResponse = await api.signUp(data);
 
-      if (response.success) {
+      if (signUpResponse?.success) {
         setStep("completed");
         setLoading(false);
         toast.success("Account created.", { duration: 2000 });
@@ -116,7 +138,7 @@ export default function AuthCallback() {
           router.push("/");
         }, 2000);
       } else {
-        throw new Error("Failed to create listing");
+        throw new Error("Failed to create account");
       }
     } catch (error) {
       toast.error((error as Error).message, { duration: 3000 });
@@ -170,13 +192,13 @@ export default function AuthCallback() {
             </div>
 
             <form onSubmit={handleCreateProfile} className="space-y-6">
-              {/* <div className="space-y-3">
+              <div className="space-y-3">
                 <label className="block text-sm font-medium text-myGrayDark">Profile picture (optional)</label>
                 <div className="flex items-center justify-center w-full">
                   <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-myGreen rounded-full cursor-pointer hover:border-myGreenBold transition-colors group">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      {profileData.avatarUrl ? (
-                        <Image src={profileData.avatarUrl} alt="Preview" height={20} width={20} className="w-20 h-20 rounded-full object-cover" />
+                      {profileImage && profileImage.url ? (
+                        <Image src={profileImage.url} alt="Preview" height={20} width={20} className="w-20 h-20 rounded-full object-cover" />
                       ) : (
                         <>
                           <FiCamera className="w-6 h-6 text-myGreen group-hover:text-myGreenBold mb-2" />
@@ -187,7 +209,7 @@ export default function AuthCallback() {
                     <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
                   </label>
                 </div>
-              </div> */}
+              </div>
 
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-myGrayDark">First name *</label>
@@ -247,4 +269,14 @@ export default function AuthCallback() {
       </div>
     );
   }
+}
+
+function verifyProfileData(profileData: CreateProfile): CreateProfile {
+  const avatarUrl = profileData.avatarUrl ? (isValidUrl(profileData.avatarUrl.trim()) ? profileData.avatarUrl.trim() : "") : "";
+  return {
+    firstName: cleanString(profileData.firstName),
+    lastName: cleanString(profileData.lastName),
+    bio: profileData.bio ? cleanString(profileData.bio.trim()) : "",
+    avatarUrl,
+  };
 }
