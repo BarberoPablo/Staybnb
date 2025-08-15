@@ -4,7 +4,7 @@ import { parseCreateProfile, parseProfileFromDB } from "../parsers/profile";
 import { parseListingReservedDatesDB, parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../parsers/reservation";
 import { MapCoordinates } from "../types";
 import { HostListingsWithReservationsDB, ListingDB, ListingWithReservationsDB } from "../types/listing";
-import { CreateProfile, ProfileDB } from "../types/profile";
+import { CreateProfile, Profile, ProfileDB } from "../types/profile";
 import { CreateReservation, ListingReservedDatesDB, ReservationDB, ResumedReservationWithListingDB } from "../types/reservation";
 import customFetch from "./fetch";
 
@@ -26,7 +26,7 @@ export const endpoint = {
 };
 
 export const api = {
-  async getProfile() {
+  async getProfile(): Promise<Profile | null> {
     try {
       const { data } = await customFetch.get<ProfileDB>(endpoint.getProfile);
       const parsedData = parseProfileFromDB(data);

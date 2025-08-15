@@ -13,8 +13,8 @@ export type ProfileDB = {
 
 export type Profile = {
   id: string;
-  firstName: string | null;
-  lastName: string | null;
+  firstName: string;
+  lastName: string;
   avatarUrl: string | null;
   role: UserRole;
   bio: string | null;
