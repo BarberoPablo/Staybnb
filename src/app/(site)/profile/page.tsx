@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IoCheckmark, IoClose, IoLocation, IoMail, IoPerson } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
+import { SkeletonProfile } from "./components/SkeletonProfile";
 
 export default function ProfileInfo() {
   const [userProfile, setUserProfile] = useState<Profile | null>(null);
@@ -69,7 +70,7 @@ export default function ProfileInfo() {
     }
   };
 
-  if (loading && !userProfile) return <div>Loading...</div>;
+  if (loading && !userProfile) return <SkeletonProfile />;
 
   /* This should not happen, profileInfo should always be within a layout with AuthGuard */
   if (!userProfile) return <div>Profile not found, please log in</div>;
