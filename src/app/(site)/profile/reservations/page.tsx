@@ -1,76 +1,76 @@
 "use client";
 
+import { api } from "@/lib/api/api";
+import { ResumedReservationWithListing } from "@/lib/types/reservation";
+import { getTotalGuests } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { IoCalendar, IoFilter, IoLocation, IoPerson, IoSearch, IoTime } from "react-icons/io5";
-
-// Mock data - replace with actual data from your API
-const mockReservations = [
-  {
-    id: "1",
-    listingTitle: "Cozy Mountain Cabin",
-    location: "Aspen, CO",
-    checkIn: "2024-01-15",
-    checkOut: "2024-01-20",
-    guests: 4,
-    status: "upcoming",
-    totalPrice: 1200,
-    imageUrl: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop",
-  },
-  {
-    id: "2",
-    listingTitle: "Beachfront Villa",
-    location: "Miami, FL",
-    checkIn: "2024-02-10",
-    checkOut: "2024-02-15",
-    guests: 6,
-    status: "upcoming",
-    totalPrice: 1800,
-    imageUrl: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
-  },
-  {
-    id: "3",
-    listingTitle: "Urban Loft",
-    location: "New York, NY",
-    checkIn: "2023-12-20",
-    checkOut: "2023-12-25",
-    guests: 2,
-    status: "completed",
-    totalPrice: 900,
-    imageUrl: "https://images.unsplash.com/photo-1493809842364-78817add7c65?w=400&h=300&fit=crop",
-  },
-];
+import { CancelReservationDialog } from "../../reservations/components/CancelReservationDialog";
 
 type ReservationStatus = "all" | "upcoming" | "completed" | "cancelled";
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case "upcoming":
+      return "bg-blue-100 text-blue-800 border-blue-200";
+    case "completed":
+      return "bg-green-100 text-green-800 border-green-200";
+    case "canceled":
+      return "bg-red-100 text-red-800 border-red-200";
+    default:
+      return "bg-gray-100 text-gray-800 border-gray-200";
+  }
+};
 
 export default function ReservationsSection() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<ReservationStatus>("all");
+  const [userReservations, setUserReservations] = useState<ResumedReservationWithListing[]>([]);
+  const [filteredReservations, setFilteredReservations] = useState<ResumedReservationWithListing[]>([]);
+  const [loadingReservations, setLoadingReservations] = useState(false);
+  const [openCancelResevationDialog, setOpenCancelResevationDialog] = useState(false);
+  const router = useRouter();
 
-  const filteredReservations = mockReservations.filter((reservation) => {
-    const matchesSearch =
-      reservation.listingTitle.toLowerCase().includes(searchTerm.toLowerCase()) || reservation.location.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || reservation.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  useEffect(() => {
+    setLoadingReservations(true);
+    const fetchReservations = async () => {
+      try {
+        const reservations = await api.getUserReservations();
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "upcoming":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "completed":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "cancelled":
-        return "bg-red-100 text-red-800 border-red-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        setUserReservations(reservations);
+        setFilteredReservations(reservations);
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message, { duration: 4000 });
+        } else {
+          toast.error("Something went wrong");
+        }
+      } finally {
+        setLoadingReservations(false);
+      }
+    };
+    fetchReservations();
+  }, []);
+
+  useEffect(() => {
+    if (userReservations) {
+      const showReservations = userReservations.filter((reservation) => {
+        const matchesSearch =
+          reservation.listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          `${reservation.listing.location.country} ${reservation.listing.location.city}`.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = statusFilter === "all" || reservation.status === statusFilter;
+        return matchesSearch && matchesStatus;
+      });
+
+      setFilteredReservations(showReservations);
     }
-  };
+  }, [searchTerm, statusFilter, userReservations]);
 
-  const getStatusText = (status: string) => {
-    return status.charAt(0).toUpperCase() + status.slice(1);
-  };
+  if (loadingReservations && !filteredReservations && !userReservations) return <div>Loading...</div>;
 
   return (
     <div className="space-y-6">
@@ -127,27 +127,29 @@ export default function ReservationsSection() {
               <div className="flex flex-col lg:flex-row gap-6">
                 {/* Image */}
                 <div className="relative w-full lg:w-48 h-32 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                  <Image src={reservation.imageUrl} alt={reservation.listingTitle} fill className="object-cover" />
+                  <Image src={reservation.listing.images[0]} alt={reservation.listing.title + " main image"} fill className="object-cover" />
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 space-y-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-xl font-semibold text-myGrayDark mb-2">{reservation.listingTitle}</h3>
+                      <h3 className="text-xl font-semibold text-myGrayDark mb-2">{reservation.listing.title}</h3>
                       <div className="flex items-center gap-4 text-sm text-myGray">
                         <div className="flex items-center gap-1">
                           <IoLocation className="w-4 h-4" />
-                          {reservation.location}
+                          <p>
+                            {reservation.listing.location.country}, {reservation.listing.location.city}
+                          </p>
                         </div>
                         <div className="flex items-center gap-1">
                           <IoPerson className="w-4 h-4" />
-                          {reservation.guests} {reservation.guests === 1 ? "guest" : "guests"}
+                          {getTotalGuests(reservation.guests)} {getTotalGuests(reservation.guests) === 1 ? "guest" : "guests"}
                         </div>
                       </div>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(reservation.status)}`}>
-                      {getStatusText(reservation.status)}
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium border capitalize ${getStatusColor(reservation.status)}`}>
+                      {reservation.status}
                     </span>
                   </div>
 
@@ -156,14 +158,14 @@ export default function ReservationsSection() {
                       <IoCalendar className="w-4 h-4 text-myGray" />
                       <div>
                         <p className="text-xs text-myGray">Check-in</p>
-                        <p className="font-medium text-myGrayDark">{new Date(reservation.checkIn).toLocaleDateString()}</p>
+                        <p className="font-medium text-myGrayDark">{new Date(reservation.startDate).toLocaleDateString()}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <IoTime className="w-4 h-4 text-myGray" />
                       <div>
                         <p className="text-xs text-myGray">Check-out</p>
-                        <p className="font-medium text-myGrayDark">{new Date(reservation.checkOut).toLocaleDateString()}</p>
+                        <p className="font-medium text-myGrayDark">{new Date(reservation.endDate).toLocaleDateString()}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -176,15 +178,24 @@ export default function ReservationsSection() {
                   </div>
 
                   <div className="flex gap-3 pt-2">
-                    <button className="px-4 py-2 bg-myGreenBold text-background rounded-lg hover:bg-myGreenDark transition-colors text-sm">
-                      View Details
+                    <button
+                      className="px-4 py-2 bg-myGreenBold text-background rounded-lg hover:bg-myGreenDark hover:cursor-pointer transition-colors text-sm"
+                      onClick={() => router.push(`/listing/${reservation.listing.id}`)}
+                    >
+                      Visit Listing
                     </button>
-                    {reservation.status === "upcoming" && (
-                      <button className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors text-sm">Cancel</button>
+                    {reservation.status === "active" && (
+                      <button
+                        className="px-4 py-2 border border-red-300 text-red-600 bg-red-100 rounded-lg hover:bg-red-50 hover:cursor-pointer transition-colors text-sm"
+                        onClick={() => setOpenCancelResevationDialog(true)}
+                      >
+                        Cancel
+                      </button>
                     )}
                   </div>
                 </div>
               </div>
+              <CancelReservationDialog reservationId={reservation.id} isOpen={openCancelResevationDialog} setIsOpen={setOpenCancelResevationDialog} />
             </motion.div>
           ))
         )}

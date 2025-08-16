@@ -60,6 +60,10 @@ export function getGuestsFromParams(params: ListingSearchParams) {
   return guests;
 }
 
+export function getTotalGuests(guests: Record<Guests, number>) {
+  return Object.values(guests).reduce((total, count) => total + count, 0);
+}
+
 export function validateDateRange(startDate: Date, endDate: Date) {
   if (startDate.getTime() === endDate.getTime()) {
     return "Check-in and check-out can't be the same day";
@@ -80,9 +84,7 @@ export function getDisabledDates(reservedDates: ReservedDate[]): { unavailableCh
     const start = normalizeDate(addDays(reservation.startDate, 1));
     const end = normalizeDate(subDays(reservation.endDate, 1));
 
-    // Add all checkin dates to unavailable unavailableCheckInDates
     unavailableCheckInDates.push(normalizeDate(reservation.startDate));
-    // Add all checkout dates to unavailable unavailableCheckOutDates
     unavailableCheckOutDates.push(normalizeDate(reservation.endDate));
 
     if (start <= end) {
