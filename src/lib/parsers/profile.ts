@@ -1,4 +1,4 @@
-import { CreateProfile, CreateProfileDB, Profile, ProfileDB } from "../types/profile";
+import { CreateProfile, CreateProfileDB, Profile, ProfileDB, UpdateProfile, UpdateProfileDB } from "../types/profile";
 
 export function parseProfileFromDB(profileDB: ProfileDB): Profile {
   return {
@@ -19,5 +19,14 @@ export function parseCreateProfile(profileDB: CreateProfile): CreateProfileDB {
     last_name: profileDB.lastName,
     avatar_url: profileDB.avatarUrl ?? "",
     bio: profileDB.bio ?? "",
+  };
+}
+
+export function parseUpdateProfile(updateProfile: UpdateProfile): UpdateProfileDB {
+  return {
+    first_name: updateProfile.firstName,
+    last_name: updateProfile.lastName,
+    avatar_url: updateProfile.avatarUrl,
+    bio: updateProfile.bio,
   };
 }

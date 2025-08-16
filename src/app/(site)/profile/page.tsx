@@ -1,10 +1,11 @@
 "use client";
 
 import { api } from "@/lib/api/api";
-import type { CreateProfile, Profile } from "@/lib/types/profile";
+import type { Profile, UpdateProfile } from "@/lib/types/profile";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { IoCheckmark, IoClose, IoLocation, IoMail, IoPerson } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 
@@ -12,12 +13,7 @@ export default function ProfileInfo() {
   const [userProfile, setUserProfile] = useState<Profile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [profileData, setProfileDate] = useState<CreateProfile>({
-    firstName: "",
-    lastName: "",
-    avatarUrl: "",
-    bio: "",
-  });
+  const [updateProfile, setUpdateProfile] = useState<UpdateProfile>({});
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -26,7 +22,7 @@ export default function ProfileInfo() {
       if (profile) {
         setLoading(false);
         setUserProfile(profile);
-        setProfileDate({
+        setUpdateProfile({
           firstName: profile.firstName,
           lastName: profile.lastName,
           avatarUrl: profile.avatarUrl ?? "",
@@ -36,19 +32,38 @@ export default function ProfileInfo() {
     };
 
     fetchUser();
-  });
+  }, []);
 
-  const handleSave = () => {
-    // TODO: Implement save functionality
-    setIsEditing(false);
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const response = await api.updateProfile(updateProfile);
+
+      if (response.success) {
+        toast.success("Profile information updated", { duration: 2000 });
+        setUserProfile((prevState) => mergeProfile(prevState, updateProfile));
+      } else {
+        toast.error(response.message || "Error");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message, { duration: 4000 });
+      } else {
+        toast.error("Error at canceling", { duration: 4000 });
+      }
+    } finally {
+      setLoading(false);
+      setIsEditing(false);
+    }
   };
 
   const handleCancel = () => {
     if (userProfile) {
-      setProfileDate({
+      setUpdateProfile({
         firstName: userProfile.firstName,
-        lastName: userProfile.lastName || "",
+        lastName: userProfile.lastName,
         bio: userProfile.bio || "",
+        avatarUrl: userProfile.avatarUrl || "",
       });
       setIsEditing(false);
     }
@@ -61,7 +76,7 @@ export default function ProfileInfo() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between h-10">
         <h1 className="text-3xl font-bold text-myGrayDark">Profile Information</h1>
         {!isEditing && (
           <motion.button
@@ -78,11 +93,23 @@ export default function ProfileInfo() {
 
       {/* Profile Header */}
       <div className="flex items-center gap-6 p-6 bg-myGreenLight rounded-xl border border-myGreenBold/20">
-        <div className="w-24 h-24 bg-myGreen rounded-full flex items-center justify-center">
-          {userProfile.avatarUrl ? (
-            <Image src={userProfile.avatarUrl} alt="Profile" width={96} height={96} className="rounded-full object-cover" />
+        <div className="relative w-24 h-24 bg-myGreen rounded-full flex items-center justify-center">
+          {isEditing && userProfile.avatarUrl ? (
+            <button className="absolute w-24 h-24 rounded-full text-myGrayDark text-2xl hover:cursor-pointer z-10">Upload</button>
           ) : (
             <IoPerson className="w-12 h-12 text-myGrayDark" />
+          )}
+          {userProfile.avatarUrl ? (
+            <Image
+              src={userProfile.avatarUrl}
+              alt="Profile"
+              width={96}
+              height={96}
+              className={`rounded-full object-cover`}
+              style={{ opacity: isEditing ? 0.5 : 1 }}
+            />
+          ) : (
+            <IoPerson className="w-12 h-12 text-myGrayDark" style={{ opacity: isEditing ? 0.5 : 1 }} />
           )}
         </div>
         <div>
@@ -104,8 +131,8 @@ export default function ProfileInfo() {
               {isEditing ? (
                 <input
                   type="text"
-                  value={profileData.firstName}
-                  onChange={(e) => setProfileDate({ ...profileData, firstName: e.target.value })}
+                  value={updateProfile.firstName}
+                  onChange={(e) => setUpdateProfile({ ...updateProfile, firstName: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
                 />
               ) : (
@@ -118,8 +145,8 @@ export default function ProfileInfo() {
               {isEditing ? (
                 <input
                   type="text"
-                  value={profileData.lastName}
-                  onChange={(e) => setProfileDate({ ...profileData, lastName: e.target.value })}
+                  value={updateProfile.lastName}
+                  onChange={(e) => setUpdateProfile({ ...updateProfile, lastName: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
                 />
               ) : (
@@ -131,8 +158,8 @@ export default function ProfileInfo() {
               <label className="block text-sm font-medium text-myGray mb-2">Bio</label>
               {isEditing ? (
                 <textarea
-                  value={profileData.bio}
-                  onChange={(e) => setProfileDate({ ...profileData, bio: e.target.value })}
+                  value={updateProfile.bio}
+                  onChange={(e) => setUpdateProfile({ ...updateProfile, bio: e.target.value })}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
                   placeholder="Tell us about yourself..."
@@ -201,4 +228,14 @@ export default function ProfileInfo() {
       )}
     </div>
   );
+}
+
+export function mergeProfile(prev: Profile | null, updates: UpdateProfile): Profile | null {
+  if (!prev) return prev;
+
+  return {
+    ...prev,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    ...Object.fromEntries(Object.entries(updates).filter(([_, value]) => value !== undefined && value !== null)),
+  };
 }

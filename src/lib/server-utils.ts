@@ -8,3 +8,5 @@ const DOMPurify = createDOMPurify(window);
 export function cleanString(value?: unknown): string {
   return typeof value === "string" ? DOMPurify.sanitize(value.trim(), { ALLOWED_TAGS: [] }) : "";
 }
+
+export const PROFILE_PATCH_ALLOWED_FIELDS = ["first_name", "last_name", "avatar_url", "bio"] as const;

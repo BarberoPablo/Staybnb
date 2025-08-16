@@ -2,8 +2,8 @@ export type UserRole = "user" | "admin";
 
 export type ProfileDB = {
   id: string;
-  first_name: string | null;
-  last_name: string | null;
+  first_name: string;
+  last_name: string;
   avatar_url: string | null;
   role: UserRole;
   bio: string | null;
@@ -35,3 +35,33 @@ export type CreateProfileDB = {
   avatar_url?: string;
   bio?: string;
 };
+
+export type UpdateProfileDB = {
+  first_name?: string;
+  last_name?: string;
+  avatar_url?: string;
+  bio?: string;
+};
+
+export type UpdateProfile = {
+  firstName?: string;
+  lastName?: string;
+  avatarUrl?: string;
+  bio?: string;
+};
+
+/* 
+export type UpdateProfileDB = {
+  first_name: string | "";
+  last_name: string | "";
+  avatar_url: string | "";
+  bio: string | "";
+};
+
+export type UpdateProfile = {
+  firstName: string;
+  lastName: string;
+  avatarUrl: string | "";
+  bio: string | "";
+};
+*/

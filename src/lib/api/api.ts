@@ -1,10 +1,10 @@
 import { ListingForm } from "@/store/useListingForm";
 import { parseHostListingsWithReservations, parseListingFormData, parseListingFromDB, parseListingWithReservationsFromDB } from "../parsers/listing";
-import { parseCreateProfile, parseProfileFromDB } from "../parsers/profile";
+import { parseCreateProfile, parseProfileFromDB, parseUpdateProfile } from "../parsers/profile";
 import { parseListingReservedDatesDB, parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../parsers/reservation";
 import { MapCoordinates } from "../types";
 import { HostListingsWithReservationsDB, ListingDB, ListingWithReservationsDB } from "../types/listing";
-import { CreateProfile, Profile, ProfileDB } from "../types/profile";
+import { CreateProfile, Profile, ProfileDB, UpdateProfile } from "../types/profile";
 import { CreateReservation, ListingReservedDatesDB, ReservationDB, ResumedReservationWithListingDB } from "../types/reservation";
 import customFetch from "./fetch";
 
@@ -12,6 +12,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export const endpoint = {
   getProfile: `${baseUrl}/api/profile`,
+  updateProfile: `${baseUrl}/api/profile`,
   signUp: `${baseUrl}/api/signUp`,
   getUserReservations: () => `${baseUrl}/api/reservations`,
   getListingReservations: (listingId: number) => `${baseUrl}/api/reservations/${listingId}`, // clients not included
@@ -39,13 +40,13 @@ export const api = {
       throw error; // Supabase errors
     }
   },
+  async updateProfile(props: UpdateProfile) {
+    const parsedProps = parseUpdateProfile(props);
+    return await customFetch.patch(endpoint.updateProfile, parsedProps);
+  },
   async signUp(userData: CreateProfile) {
     const parsedUserData = parseCreateProfile(userData);
     return await customFetch.post(endpoint.signUp, { ...parsedUserData });
-  },
-  async createListing2(data: ListingForm) {
-    const parsedListingFormData = parseListingFormData(data);
-    return await customFetch.post(endpoint.createListing, { ...parsedListingFormData });
   },
   async getUserReservations() {
     const { data } = await customFetch.get<ResumedReservationWithListingDB[]>(endpoint.getUserReservations());
