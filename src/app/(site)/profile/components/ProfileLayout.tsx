@@ -20,19 +20,10 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState(pathname);
 
-  console.log("Active section: ", pathname);
-
   const handleClickMenuButton = (href: string) => {
     setActiveSection(href);
     router.push(href);
   };
-  /* 
-  sm	40rem (640px)	@media (width >= 40rem) { ... }
-  md	48rem (768px)	@media (width >= 48rem) { ... }
-  lg	64rem (1024px)	@media (width >= 64rem) { ... }
-  xl	80rem (1280px)	@media (width >= 80rem) { ... }
-  2xl	96rem (1536px)	@media (width >= 96rem) { ... }
-  */
 
   return (
     <div className="w-full px-12 py-10 min-h-screen bg-background max-w-[1250px]">
@@ -53,7 +44,6 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeSection === item.href;
-              console.log("href: ", item.href);
 
               return (
                 <motion.button

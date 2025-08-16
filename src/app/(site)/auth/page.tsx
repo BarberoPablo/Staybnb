@@ -60,6 +60,7 @@ export default function AuthForm() {
             onChange={(event) => handleChangeUserDate(event, "email")}
             required
             className="border p-2 rounded"
+            autoComplete="username"
           />
           <input
             type="password"
@@ -69,6 +70,7 @@ export default function AuthForm() {
             required
             className="border p-2 rounded"
             minLength={6}
+            autoComplete="current-password"
           />
           <button type="submit" disabled={loading} className="bg-myGreen text-myGrayDark py-2 rounded disabled:opacity-50">
             {loading ? (mode === "login" ? "Logging in..." : "Registering...") : mode === "login" ? "Login" : "Register"}

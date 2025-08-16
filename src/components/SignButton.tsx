@@ -35,7 +35,7 @@ export function SignButton() {
       </button>
 
       <button onClick={handleProfile} className={`${basicButton}`}>
-        <FaUserCircle className="rounded-full text-4xl text-myGreenDark bg-myGreenLight hover:bg-myGreen transition-colors duration-200" />
+        <FaUserCircle className="rounded-full text-4xl text-myGreenDark bg-white hover:bg-myGreen transition-colors duration-200" />
       </button>
     </div>
   ) : (
