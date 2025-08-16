@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -88,9 +88,9 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           created_at: string | null
-          first_name: string | null
+          first_name: string
           id: string
-          last_name: string | null
+          last_name: string
           role: Database["public"]["Enums"]["user_role"]
           updated_at: string | null
         }
@@ -98,9 +98,9 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
-          first_name?: string | null
+          first_name: string
           id: string
-          last_name?: string | null
+          last_name: string
           role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string | null
         }
@@ -108,9 +108,9 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
-          first_name?: string | null
+          first_name?: string
           id?: string
-          last_name?: string | null
+          last_name?: string
           role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string | null
         }
@@ -180,12 +180,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       listing_status: "draft" | "published" | "paused" | "pending"
       reservation_status:
-        | "active"
+        | "upcoming"
         | "completed"
         | "canceled"
         | "canceled_by_host"
@@ -319,7 +322,7 @@ export const Constants = {
     Enums: {
       listing_status: ["draft", "published", "paused", "pending"],
       reservation_status: [
-        "active",
+        "upcoming",
         "completed",
         "canceled",
         "canceled_by_host",
