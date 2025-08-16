@@ -1,3 +1,4 @@
+import { getEffectiveStatus } from "@/lib/server-utils";
 import { createClient } from "@/lib/supabase/server";
 import { ReservationStatusDB } from "@/lib/types/reservation";
 import { NextResponse } from "next/server";
@@ -27,10 +28,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       return NextResponse.json({ success: false, error: "Error fetching reservations" }, { status: 500 });
     }
 
+    const validatedReservations = reservationsData.map((reservation) => ({
+      ...reservation,
+      status: getEffectiveStatus(reservation.status, reservation.start_date, reservation.end_date),
+    }));
+
     return NextResponse.json(
       {
         success: true,
-        data: reservationsData,
+        data: validatedReservations,
       },
       { status: 200 }
     );

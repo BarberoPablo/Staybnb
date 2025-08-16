@@ -47,6 +47,8 @@ export default function ReservationsPage() {
         <ReservationsTable reservations={reservations} status={["upcoming"]} onClick={handleCancelReservation} />
         <h2 className="text-2xl font-semibold">Canceled reservations</h2>
         <ReservationsTable reservations={reservations} status={["canceled", "canceledByHost"]} />
+        <h2 className="text-2xl font-semibold">Completed reservations</h2>
+        <ReservationsTable reservations={reservations} status={["completed"]} />
       </div>
       <CancelReservationDialog isOpen={openCancelDialog} setIsOpen={setOpenCancelDialog} reservationId={selectedReservation} />
     </motion.div>
