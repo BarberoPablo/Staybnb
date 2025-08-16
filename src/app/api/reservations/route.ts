@@ -108,7 +108,7 @@ export async function POST(req: Request) {
       .from("reservations")
       .select("start_date, end_date")
       .eq("listing_id", listingId)
-      .eq("status", "active");
+      .eq("status", "upcoming");
 
     if (reservationFetchError) {
       console.error("Error fetching existing reservations:", reservationFetchError);
@@ -143,7 +143,7 @@ export async function POST(req: Request) {
       night_price: listingFromDB.night_price,
       discount,
       discount_percentage,
-      status: "active",
+      status: "upcoming",
     };
 
     const { error: insertError } = await supabase.from("reservations").insert(newReservation);

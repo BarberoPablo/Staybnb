@@ -40,7 +40,7 @@ export default function ListingReservation({ reservation, eventKey }: { reservat
             <MdOutlineMessage className="w-5 h-5" />
             <h3 className="ml-2">Chat with host</h3>
           </button>
-          {eventKey === "active" && (
+          {eventKey === "upcoming" && (
             <button className={`${basicButton} text-red-900 bg-red-400 hover:bg-red-500`} onClick={() => setOpenCancelResevationDialog(true)}>
               <LuCalendarX2 className="w-5 h-5" />
               <h3 className="ml-2">Cancel Reservation</h3>

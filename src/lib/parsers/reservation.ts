@@ -13,7 +13,7 @@ import {
 
 const reservationStatus: Record<ReservationStatusDB, ReservationStatus> = {
   canceled_by_host: "canceledByHost",
-  active: "active",
+  upcoming: "upcoming",
   completed: "completed",
   canceled: "canceled",
 };

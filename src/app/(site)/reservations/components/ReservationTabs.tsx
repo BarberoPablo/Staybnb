@@ -9,7 +9,7 @@ import ListingReservation from "./ListingReservation";
 
 type userReservations = {
   total: number;
-  active: ResumedReservationWithListing[];
+  upcoming: ResumedReservationWithListing[];
   canceled: ResumedReservationWithListing[];
   history: ResumedReservationWithListing[];
 };
@@ -17,14 +17,14 @@ type userReservations = {
 export function ReservationTabs() {
   const [userReservations, setUserReservations] = useState<userReservations>({
     total: 0,
-    active: [],
+    upcoming: [],
     canceled: [],
     history: [],
   });
   const [error, setError] = useState("");
   const [loadingReservations, setLoadingReservations] = useState(false);
   const tabs = [
-    { eventKey: "active", title: "Active", reservations: userReservations.active },
+    { eventKey: "upcoming", title: "Upcoming", reservations: userReservations.upcoming },
     { eventKey: "history", title: "History", reservations: userReservations.history },
     { eventKey: "canceled", title: "Canceled", reservations: userReservations.canceled },
   ];
@@ -37,9 +37,9 @@ export function ReservationTabs() {
         const now = new Date();
         setUserReservations({
           total: reservations.length,
-          active: reservations.filter((r) => r.status === "active" && new Date(r.endDate) >= now),
+          upcoming: reservations.filter((r) => r.status === "upcoming" && new Date(r.endDate) >= now),
           canceled: reservations.filter((r) => r.status === "canceled"),
-          history: reservations.filter((r) => r.status === "active" && new Date(r.endDate) < now),
+          history: reservations.filter((r) => r.status === "upcoming" && new Date(r.endDate) < now),
         });
       } catch (error) {
         if (error instanceof Error) {

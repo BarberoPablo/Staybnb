@@ -25,7 +25,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         `
       )
       .eq("listing_id", Number(id))
-      .eq("status", "active")
+      .eq("status", "upcoming")
       .order("start_date", { ascending: false });
 
     if (reservationsError) {

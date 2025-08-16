@@ -33,9 +33,9 @@ export type Reservation = {
   status: ReservationStatus;
 };
 
-export type ReservationStatusDB = "active" | "completed" | "canceled" | "canceled_by_host";
+export type ReservationStatusDB = "upcoming" | "completed" | "canceled" | "canceled_by_host";
 
-export type ReservationStatus = "active" | "completed" | "canceled" | "canceledByHost";
+export type ReservationStatus = "upcoming" | "completed" | "canceled" | "canceledByHost";
 
 export type CreateReservationDB = {
   listing_id: number;

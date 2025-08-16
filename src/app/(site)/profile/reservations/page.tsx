@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { IoCalendar, IoFilter, IoLocation, IoPerson, IoSearch, IoTime } from "react-icons/io5";
 import { CancelReservationDialog } from "../../reservations/components/CancelReservationDialog";
 
-type ReservationStatus = "all" | "upcoming" | "completed" | "cancelled";
+type ReservationStatus = "all" | "upcoming" | "completed" | "canceled" | "canceledByHost";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -20,6 +20,8 @@ const getStatusColor = (status: string) => {
     case "completed":
       return "bg-green-100 text-green-800 border-green-200";
     case "canceled":
+      return "bg-red-100 text-red-800 border-red-200";
+    case "canceledByHost":
       return "bg-red-100 text-red-800 border-red-200";
     default:
       return "bg-gray-100 text-gray-800 border-gray-200";
@@ -102,7 +104,8 @@ export default function ReservationsSection() {
             <option value="all">All Status</option>
             <option value="upcoming">Upcoming</option>
             <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="canceled">Canceled</option>
+            <option value="canceledByHost">Canceled by Host</option>
           </select>
         </div>
       </div>
@@ -184,7 +187,7 @@ export default function ReservationsSection() {
                     >
                       Visit Listing
                     </button>
-                    {reservation.status === "active" && (
+                    {reservation.status === "upcoming" && (
                       <button
                         className="px-4 py-2 border border-red-300 text-red-600 bg-red-100 rounded-lg hover:bg-red-50 hover:cursor-pointer transition-colors text-sm"
                         onClick={() => setOpenCancelResevationDialog(true)}

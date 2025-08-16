@@ -3,24 +3,24 @@ import { Reservation, ReservationStatus } from "@/lib/types/reservation";
 import { showUTCDate } from "@/lib/utils";
 import { MdOutlineCancelPresentation } from "react-icons/md";
 
-const activeReservationsTableHeaders = ["Check-in", "Check-out", "Guests", "Total Price", "Reserved on", "Total nights", "Discount", "Cancel"];
+const upcomingReservationsTableHeaders = ["Check-in", "Check-out", "Guests", "Total Price", "Reserved on", "Total nights", "Discount", "Cancel"];
 const canceledReservationsTableHeaders = ["Check-in", "Check-out", "Guests", "Total Price", "Reserved on", "Total nights", "Discount", "Status"];
 
 export const tableHeaders = {
-  active: activeReservationsTableHeaders,
+  upcoming: upcomingReservationsTableHeaders,
   canceled: canceledReservationsTableHeaders,
   canceledByHost: canceledReservationsTableHeaders,
   completed: canceledReservationsTableHeaders,
 };
 
 const parseStatus = {
-  active: "Active",
+  upcoming: "Upcoming",
   canceled: "Canceled",
   canceledByHost: "Canceled by Host",
   completed: "Completed",
 };
 
-/* status combinations: [active], [any combination of the other 3] */
+/* status combinations: [upcoming], [any combination of the other 3] */
 export function ReservationsTable({
   reservations,
   status,
@@ -54,7 +54,7 @@ export function ReservationsTable({
             <td>{reservation.totalNights}</td>
             <td>{reservation.discount}</td>
             <td>
-              {reservation.status === "active" && onClick && (
+              {reservation.status === "upcoming" && onClick && (
                 <button onClick={() => onClick(reservation.id)} className="flex p-1 w-full items-center justify-center hover:cursor-pointer">
                   <MdOutlineCancelPresentation className="w-8 h-6" />
                 </button>

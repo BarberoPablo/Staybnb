@@ -38,8 +38,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    if (reservation.status !== "active") {
-      return NextResponse.json({ error: "Can only cancel active reservations" }, { status: 400 });
+    if (reservation.status !== "upcoming") {
+      return NextResponse.json({ error: "Can only cancel upcoming reservations" }, { status: 400 });
     }
 
     const { error: cancelError } = await supabase

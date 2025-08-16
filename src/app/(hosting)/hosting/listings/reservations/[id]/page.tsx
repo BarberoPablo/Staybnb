@@ -43,8 +43,8 @@ export default function ReservationsPage() {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: "easeOut" }}>
       <div className="flex flex-col items-center justify-center w-full gap-4">
-        <h2 className="text-2xl font-semibold">Active reservations</h2>
-        <ReservationsTable reservations={reservations} status={["active"]} onClick={handleCancelReservation} />
+        <h2 className="text-2xl font-semibold">Upcoming reservations</h2>
+        <ReservationsTable reservations={reservations} status={["upcoming"]} onClick={handleCancelReservation} />
         <h2 className="text-2xl font-semibold">Canceled reservations</h2>
         <ReservationsTable reservations={reservations} status={["canceled", "canceledByHost"]} />
       </div>
