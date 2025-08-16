@@ -44,7 +44,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
     const { error: cancelError } = await supabase
       .from("reservations")
-      .update({ status: isGuest ? "canceled" : "canceled_by_host" })
+      .update({
+        status: isGuest ? "canceled" : "canceled_by_host",
+        canceled_at: new Date().toISOString(),
+      })
       .eq("id", id)
       .single();
 

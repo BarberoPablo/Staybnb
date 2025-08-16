@@ -1,16 +1,10 @@
+import { getEffectiveStatus } from "@/lib/server-utils";
 import { createClient } from "@/lib/supabase/server";
 import { Location, PromotionDB } from "@/lib/types/listing";
 import { calculateNights, createUTCDate, twoDecimals } from "@/lib/utils";
 import { NextResponse } from "next/server";
 import { Database } from "../../../../database.types";
 
-type ReservationInsert = Database["public"]["Tables"]["reservations"]["Insert"];
-type ListingWithLocation = Omit<Database["public"]["Tables"]["listings"]["Row"], "location" | "promotions"> & {
-  location: Location;
-  promotions: PromotionDB[];
-};
-
-// To get user reservations
 export async function GET() {
   try {
     const supabase = await createClient();
@@ -51,13 +45,24 @@ export async function GET() {
       return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, data }, { status: 200 });
+    const validatedReservations = data.map((reservation) => ({
+      ...reservation,
+      status: getEffectiveStatus(reservation.status, reservation.start_date, reservation.end_date),
+    }));
+
+    return NextResponse.json({ success: true, data: validatedReservations }, { status: 200 });
   } catch (err) {
     console.error("Server error:", err);
 
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+type ReservationInsert = Database["public"]["Tables"]["reservations"]["Insert"];
+type ListingWithLocation = Omit<Database["public"]["Tables"]["listings"]["Row"], "location" | "promotions"> & {
+  location: Location;
+  promotions: PromotionDB[];
+};
 
 export async function POST(req: Request) {
   try {
