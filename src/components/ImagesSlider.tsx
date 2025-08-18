@@ -83,6 +83,10 @@ export default function ImagesSlider({
     }
   };
 
+  const handleDotClick = (index: number) => {
+    instanceRef.current?.moveToIdx(index);
+  };
+
   return (
     <>
       <div
@@ -98,38 +102,32 @@ export default function ImagesSlider({
               </div>
             ))}
 
-            <div className="absolute bottom-2 right-2 px-3 text-myGrayDark text-sm rounded-sm bg-myGreen">
-              {currentSlide + 1}/{images.length}
+            {/* Image Counter Badge */}
+            <div className="absolute bottom-3 right-3 px-3 py-1.5 bg-white/90 backdrop-blur-sm border border-gray-200/50 text-sm rounded-full shadow-lg">
+              <span className="font-semibold text-myGrayDark">
+                {currentSlide + 1}/{images.length}
+              </span>
             </div>
 
+            {/* Navigation Dots */}
             {loaded && instanceRef.current && (
-              <div className={`dots w-full absolute bottom-4 flex justify-center transition-opacity duration-300 ${hoverAnimation}`}>
-                {[...Array(images.length).keys()].map((idx) => {
-                  return (
-                    <button
-                      key={idx}
-                      onClick={() => {
-                        instanceRef.current?.moveToIdx(idx);
-                      }}
-                      className={`w-2 h-2 rounded-full mx-1 transition-colors duration-300 ${currentSlide === idx ? "bg-myGreenBold" : "bg-myGrayDark"}`}
-                    />
-                  );
-                })}
-              </div>
+              <Dots totalDots={images.length} currentSlide={currentSlide} onDotClick={handleDotClick} hoverAnimation={hoverAnimation} />
             )}
           </div>
         </ConditionalLink>
+
+        {/* Navigation Arrows */}
         {loaded && instanceRef.current && (
           <>
             <RoundButton
-              className={`absolute left-2 top-1/2 transform -translate-y-1/2 text-2xl transition-opacity duration-300 text-myGrayDark bg-myGreen ${hoverAnimation}`}
+              className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-xl transition-all duration-300 text-myGrayDark bg-white/90 hover:bg-white backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl hover:scale-105 ${hoverAnimation}`}
               onClick={handlePrev}
             >
               <MdKeyboardArrowLeft />
             </RoundButton>
 
             <RoundButton
-              className={`absolute right-2 top-1/2 transform -translate-y-1/2 text-2xl transition-opacity duration-300 text-myGrayDark bg-myGreen ${hoverAnimation}`}
+              className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-xl transition-all duration-300 text-myGrayDark bg-white/90 hover:bg-white backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl hover:scale-105 ${hoverAnimation}`}
               onClick={handleNext}
             >
               <MdKeyboardArrowRight />
@@ -143,4 +141,54 @@ export default function ImagesSlider({
 
 function ConditionalLink({ children, condition, href }: { children: React.ReactNode; condition: boolean; href: string }) {
   return condition ? <Link href={href}>{children}</Link> : <>{children}</>;
+}
+
+interface DotsProps {
+  totalDots: number;
+  currentSlide: number;
+  onDotClick: (index: number) => void;
+  hoverAnimation: string;
+}
+
+function Dots({ totalDots, currentSlide, onDotClick, hoverAnimation }: DotsProps) {
+  const maxVisibleDots = 3;
+
+  if (totalDots <= maxVisibleDots) {
+    // Show all dots if 3 or fewer images
+    return (
+      <div className={`dots w-full absolute bottom-4 flex justify-center transition-all duration-300 ${hoverAnimation}`}>
+        {[...Array(totalDots).keys()].map((idx) => (
+          <button
+            key={idx}
+            onClick={() => onDotClick(idx)}
+            className={`w-2.5 h-2.5 rounded-full mx-1 transition-all duration-300 ${
+              currentSlide === idx ? "bg-myGreenBold scale-110 shadow-md" : "bg-white/70 hover:bg-white/90 hover:scale-105"
+            }`}
+          />
+        ))}
+      </div>
+    );
+  } else {
+    // Show only 3 dots with dynamic positioning
+    const startIdx = Math.max(0, Math.min(currentSlide - 1, totalDots - maxVisibleDots));
+
+    return (
+      <div className={`dots w-full absolute bottom-4 flex justify-center transition-all duration-300 ${hoverAnimation}`}>
+        {[...Array(maxVisibleDots).keys()].map((dotIdx) => {
+          const actualIdx = startIdx + dotIdx;
+          const isActive = currentSlide === actualIdx;
+
+          return (
+            <button
+              key={actualIdx}
+              onClick={() => onDotClick(actualIdx)}
+              className={`w-2.5 h-2.5 rounded-full mx-1 transition-all duration-300 ${
+                isActive ? "bg-myGreenBold scale-110 shadow-md" : "bg-white/70 hover:bg-white/90 hover:scale-105"
+              }`}
+            />
+          );
+        })}
+      </div>
+    );
+  }
 }
