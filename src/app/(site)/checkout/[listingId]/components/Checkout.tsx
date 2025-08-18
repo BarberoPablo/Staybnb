@@ -5,6 +5,7 @@ import PaymentSection from "@/app/(site)/checkout/[listingId]/components/Payment
 import { Guests, ListingSearchParams } from "@/lib/types";
 import { Listing, Promotion } from "@/lib/types/listing";
 import { calculateNights, getGuestsFromParams, getListingPromotion } from "@/lib/utils";
+import { motion } from "framer-motion";
 import { useState } from "react";
 
 export type ListingData = {
@@ -30,12 +31,34 @@ export default function Checkout({ listing, searchParams }: { listing: Listing; 
   });
 
   return (
-    <div className="grid grid-cols-2 relative">
-      <div className="flex justify-center col-span-2 sm:col-span-1">
-        <PaymentSection listingData={listingData} />
-      </div>
-      <div className="flex justify-center items-center col-span-2 sm:col-span-1">
-        <ListingResume listingData={listingData} setListingData={setListingData} />
+    <div className="space-y-8">
+      {/* Page Header */}
+      <motion.div className="text-center py-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+        <h1 className="text-4xl font-bold text-myGrayDark mb-2">Complete Your Booking</h1>
+        <p className="text-myGray text-lg">Review your trip details and complete payment</p>
+      </motion.div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+        {/* Payment Section */}
+        <motion.div
+          className="flex justify-center"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          <PaymentSection listingData={listingData} />
+        </motion.div>
+
+        {/* Listing Resume */}
+        <motion.div
+          className="flex justify-center"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+        >
+          <ListingResume listingData={listingData} setListingData={setListingData} />
+        </motion.div>
       </div>
     </div>
   );

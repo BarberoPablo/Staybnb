@@ -6,6 +6,7 @@ import { Guests } from "@/lib/types";
 import { displayGuestLabel } from "@/lib/utils";
 import Image from "next/image";
 import { useState } from "react";
+import { IoCalendar, IoLocation, IoPeople, IoStar } from "react-icons/io5";
 import { ListingData } from "./Checkout";
 import DateRangeSelector from "./DateRangeSelector";
 
@@ -23,60 +24,88 @@ export default function ListingResume({
   };
 
   return (
-    <div className="w-full h-full p-8 border border-gray-300">
-      <div className="flex gap-4">
+    <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
+      {/* Listing Image and Basic Info */}
+      <div className="relative">
         <Image
           src={listingData.listing.images[0]}
           alt="listing main image"
           priority
-          className="object-cover w-[200px] h-[200px] sm:w-[100px] sm:h-[100px] rounded-xl"
-          width={200}
+          className="object-cover w-full h-48"
+          width={400}
           height={200}
-          sizes="(max-width: 640px) 200px, 100px"
+          sizes="(max-width: 640px) 100vw, 400px"
         />
-        <div className="flex flex-col">
-          <h2>{listingData.listing.title}</h2>
-          <h3>
-            ⭐{listingData.listing.score.value} ({listingData.listing.score.reviews.length})
-          </h3>
-        </div>
+
+        {/* Edit Button Overlay */}
+        <button
+          className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm hover:bg-white text-myGrayDark px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-md"
+          onClick={openDateSelector}
+        >
+          Edit Dates
+        </button>
       </div>
 
-      <hr className="text-gray-300 my-4" />
+      <div className="p-6 space-y-6">
+        {/* Listing Title and Rating */}
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold text-myGrayDark line-clamp-2">{listingData.listing.title}</h2>
 
-      <div className="flex flex-col justify-center w-fit">
-        <h2>Trip information</h2>
-        <div className="relative flex items-center justify-center gap-4 py-2">
-          <ReservationDate
-            startDate={listingData.startDate}
-            endDate={listingData.endDate}
-            timezone={listingData.listing.location.timezone}
-            className="bg-myGreen text-white"
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 bg-myGreenLight px-2 py-1 rounded-full">
+              <IoStar className="w-4 h-4 text-yellow-500 fill-current" />
+              <span className="text-sm font-semibold text-myGrayDark">{listingData.listing.score.value.toFixed(1)}</span>
+            </div>
+            <span className="text-sm text-myGray">({listingData.listing.score.reviews.length} reviews)</span>
+          </div>
+
+          <div className="flex items-center gap-2 text-myGray text-sm">
+            <IoLocation className="w-4 h-4" />
+            <span className="line-clamp-1">{listingData.listing.location.formatted}</span>
+          </div>
+        </div>
+
+        {/* Trip Information */}
+        <div className="bg-myGreenLight rounded-xl border border-myGreenBold/20 p-4">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 bg-myGreen rounded-full flex items-center justify-center">
+              <IoCalendar className="w-4 h-4 text-myGrayDark" />
+            </div>
+            <h3 className="text-lg font-semibold text-myGrayDark">Trip Information</h3>
+          </div>
+
+          <div className="space-y-3">
+            <ReservationDate
+              startDate={listingData.startDate}
+              endDate={listingData.endDate}
+              timezone={listingData.listing.location.timezone}
+              className="bg-white text-myGrayDark border border-myGreenBold/20"
+            />
+
+            <div className="flex items-center gap-2 text-sm text-myGray">
+              <IoPeople className="w-4 h-4" />
+              <span>
+                {Object.entries(listingData.guests)
+                  .map(([guest, value]) => displayGuestLabel(guest as Guests, Number(value)))
+                  .join(", ")}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Price Details */}
+        <div className="bg-gray-50 rounded-xl p-4">
+          <h3 className="text-lg font-semibold text-myGrayDark mb-3">Price Details</h3>
+          <ListingPrice
+            nightPrice={listingData.listing.nightPrice}
+            nights={listingData.nights}
+            discountPercentage={listingData.promo?.discountPercentage}
+            promotions={listingData.listing.promotions}
           />
-          <button
-            className="absolute top-2 right-0 text-sm w-10 text-white bg-myGreenDark py-2 rounded-tr-xl border-t border-r border-gray-300"
-            onClick={openDateSelector}
-          >
-            Edit
-          </button>
         </div>
-        {Object.entries(listingData.guests).map(([guest, value]) => (
-          <span key={guest}>{displayGuestLabel(guest as Guests, Number(value))}</span>
-        ))}
       </div>
 
-      <hr className="text-gray-300 my-4" />
-
-      <div className="flex flex-col">
-        <h2>Price details</h2>
-        <ListingPrice
-          nightPrice={listingData.listing.nightPrice}
-          nights={listingData.nights}
-          discountPercentage={listingData.promo?.discountPercentage}
-          promotions={listingData.listing.promotions}
-        />
-      </div>
-
+      {/* Date Range Selector Modal */}
       <DateRangeSelector
         isOpen={isOpen}
         startDate={listingData.startDate}

@@ -9,6 +9,7 @@ import { createUTCDate, getDisabledDates, validateDateRange } from "@/lib/utils"
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import { DateRange, RangeKeyDict } from "react-date-range";
+import { IoCalendar, IoCheckmark, IoClose } from "react-icons/io5";
 import { ListingData } from "./Checkout";
 
 export default function DateRangeSelector({
@@ -99,22 +100,44 @@ export default function DateRangeSelector({
     setListingData((prevState) => ({ ...prevState, startDate: dateRange.startDate, endDate: dateRange.endDate }));
     onClose();
   };
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-      <div className="fixed inset-0 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
+      <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel
           aria-labelledby="dialog-title"
           aria-describedby="dialog-description"
-          className="flex flex-col items-center bg-white rounded-lg py-2 sm:py-4 max-w-sm w-full"
+          className="flex flex-col bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
         >
-          <DialogTitle id="dialog-title" className="text-xl font-semibold text-myGreen">
-            Select your dates
-          </DialogTitle>
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-myGreenLight rounded-full flex items-center justify-center">
+                <IoCalendar className="w-5 h-5 text-myGrayDark" />
+              </div>
+              <div>
+                <DialogTitle id="dialog-title" className="text-xl font-bold text-myGrayDark">
+                  Select Your Dates
+                </DialogTitle>
+                <p className="text-sm text-myGray">Choose your check-in and check-out dates</p>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-myGray hover:text-myGrayDark transition-colors duration-200"
+            >
+              <IoClose className="w-4 h-4" />
+            </button>
+          </div>
 
-          <CalendarLegend />
+          {/* Calendar Legend */}
+          <div className="px-6 pt-4">
+            <CalendarLegend />
+          </div>
 
-          <div id="dialog-description" className="flex flex-col justify-center items-center w-full px-6 relative">
+          {/* Calendar */}
+          <div id="dialog-description" className="flex flex-col justify-center items-center w-full px-6 py-4 relative">
             <DateRange
               ranges={[dateRange]}
               onChange={handleChangeDateRange}
@@ -125,9 +148,23 @@ export default function DateRangeSelector({
               dayContentRenderer={getCustomDayContent(disabledDates)}
             />
             {error && <Tooltip text={error} arrow={false} containerStyle={"top-[-6px]"} />}
+          </div>
 
-            <button className="w-25 bg-myGreen text-white py-2 rounded" disabled={dateRange.startDate === dateRange.endDate} onClick={handleConfirm}>
-              Confirm
+          {/* Actions */}
+          <div className="flex gap-3 p-6 border-t border-gray-100 bg-gray-50">
+            <button
+              onClick={onClose}
+              className="flex-1 bg-white hover:bg-gray-50 text-myGrayDark font-medium py-3 px-4 rounded-xl border border-gray-200 transition-all duration-200 hover:border-gray-300"
+            >
+              Cancel
+            </button>
+            <button
+              className="flex-1 bg-myGreenBold hover:bg-myGreenDark text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2"
+              disabled={dateRange.startDate === dateRange.endDate}
+              onClick={handleConfirm}
+            >
+              <IoCheckmark className="w-4 h-4" />
+              Confirm Dates
             </button>
           </div>
         </DialogPanel>
