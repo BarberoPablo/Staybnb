@@ -51,6 +51,7 @@ export const api = {
   },
   async getFavorites(): Promise<FavoriteWithListing[]> {
     const { data } = await customFetch.get<FavoriteWithListingDB[]>(endpoint.getFavorites);
+    if (!data) return [];
     const parsedData = parseFavoritesWithListingFromDB(data);
     return parsedData;
   },

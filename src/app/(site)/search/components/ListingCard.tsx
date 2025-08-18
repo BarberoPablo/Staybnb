@@ -1,14 +1,14 @@
 "use client";
 
 import { RoundButton } from "@/components/Button/RoundButton";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import ImagesSlider from "@/components/ImagesSlider";
 import { Listing } from "@/lib/types/listing";
 import { useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
-import { IoHeart, IoStar } from "react-icons/io5";
+import { IoStar } from "react-icons/io5";
 
 export default function ListingCard({ listing, setLocateListing }: { listing: Listing; setLocateListing: (listingId: number) => void }) {
-  const [isFavorite, setIsFavorite] = useState(false);
   const [locatingListing, setLocatingListing] = useState(-1);
 
   const handleLocateListing = (listingId: number) => {
@@ -22,12 +22,7 @@ export default function ListingCard({ listing, setLocateListing }: { listing: Li
         <ImagesSlider images={listing.images} href={`/listing/${listing.id}`} hoverEffect={true} containerClassName="rounded-b-none" />
 
         <div className="absolute flex top-3 right-3 gap-1">
-          <RoundButton
-            className="text-myGray bg-myGreen hover:myGreen transition-colors duration-200 shadow-sm"
-            onClick={() => setIsFavorite(!isFavorite)}
-          >
-            {isFavorite ? <IoHeart className="text-red-500" /> : <IoHeart />}
-          </RoundButton>
+          <FavoriteButton listingId={listing.id} />
           <RoundButton
             className={`text-xl ${
               locatingListing === listing.id ? "text-myGreenBold" : "text-myGray"
