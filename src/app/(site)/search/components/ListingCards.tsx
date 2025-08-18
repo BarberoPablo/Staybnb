@@ -15,8 +15,17 @@ export function ListingCards({ listings, setLocateListing }: { listings: Listing
   }
 
   return (
-    <div className={`flex flex-col gap-4 `}>
-      <p className="text-sm text-gray-600">{listings.length} places found</p>
+    <div className="space-y-6">
+      <div className="flex items-center gap-3 p-4 h-[90px] bg-myGreenLight rounded-xl border border-myGreenBold/20">
+        <div className="w-8 h-8 bg-myGreen rounded-full flex items-center justify-center">
+          <span className="text-sm font-semibold text-myGrayDark">{listings.length}</span>
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold text-myGrayDark">Places Found</h2>
+          <p className="text-sm text-myGray">Explore these amazing locations</p>
+        </div>
+      </div>
+
       <div
         className="flex flex-col gap-6"
         style={{

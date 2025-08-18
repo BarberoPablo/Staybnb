@@ -4,9 +4,10 @@ import { RoundButton } from "@/components/Button/RoundButton";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import ImagesSlider from "@/components/ImagesSlider";
 import { Listing } from "@/lib/types/listing";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
-import { IoStar } from "react-icons/io5";
+import { IoLocation, IoStar } from "react-icons/io5";
 
 export default function ListingCard({ listing, setLocateListing }: { listing: Listing; setLocateListing: (listingId: number) => void }) {
   const [locatingListing, setLocatingListing] = useState(-1);
@@ -17,16 +18,30 @@ export default function ListingCard({ listing, setLocateListing }: { listing: Li
   };
 
   return (
-    <div className="flex flex-col shadow-sm border border-gray-200 rounded-xl gap-2 pb-2">
-      <div className="relative rounded-xl">
-        <ImagesSlider images={listing.images} href={`/listing/${listing.id}`} hoverEffect={true} containerClassName="rounded-b-none" />
+    <motion.div
+      className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Image Section */}
+      <div className="relative">
+        <ImagesSlider images={listing.images} href={`/listing/${listing.id}`} hoverEffect={true} containerClassName="rounded-t-xl" />
 
-        <div className="absolute flex top-3 right-3 gap-1">
+        {/* Price Badge */}
+        <div className="absolute bottom-3 left-3 bg-white px-3 py-1 rounded-full shadow-md border border-gray-100">
+          <span className="font-semibold text-myGrayDark">${listing.nightPrice}</span>
+          <span className="text-sm text-myGray">/night</span>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="absolute flex top-3 right-3 gap-2">
           <FavoriteButton listingId={listing.id} />
           <RoundButton
-            className={`text-xl ${
-              locatingListing === listing.id ? "text-myGreenBold" : "text-myGray"
-            } bg-myGreen hover:myGreen transition-colors duration-200 shadow-sm`}
+            className={`text-lg ${
+              locatingListing === listing.id ? "text-myGreenBold bg-myGreen" : "text-myGray bg-white hover:bg-myGreenLight"
+            } transition-all duration-200 shadow-md hover:shadow-lg`}
             onClick={() => handleLocateListing(listing.id)}
           >
             <FaLocationDot />
@@ -34,23 +49,34 @@ export default function ListingCard({ listing, setLocateListing }: { listing: Li
         </div>
       </div>
 
-      <div className="px-2">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold truncate pr-2">
+      {/* Content Section */}
+      <div className="p-4 space-y-3">
+        {/* Title and Rating */}
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-semibold text-myGrayDark text-lg leading-tight line-clamp-2 flex-1">
             {listing.propertyType} in {listing.location.city}
           </h3>
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <IoStar className="" />
-            <span className="text-sm font-medium text-myGrayDark">
-              {listing.score.value} ({listing.score.reviews.length})
-            </span>
+          <div className="flex items-center gap-1 flex-shrink-0 bg-myGreenLight px-2 py-1 rounded-full">
+            <IoStar className="w-4 h-4 text-yellow-500 fill-current" />
+            <span className="text-sm font-semibold text-myGrayDark">{listing.score.value.toFixed(1)}</span>
           </div>
         </div>
-        <div className="text-sm">
-          <span className="font-semibold">${listing.nightPrice}</span> per night
+
+        {/* Location */}
+        <div className="flex items-center gap-2 text-myGray text-sm">
+          <IoLocation className="w-4 h-4" />
+          <span className="line-clamp-1">{listing.location.formatted}</span>
         </div>
-        <div className="text-sm">${listing.nightPrice * 7} total for 7 nights</div>
+
+        {/* Price Details */}
+        <div className="space-y-2 pt-2 border-t border-gray-100">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-myGray">7 nights total</span>
+            <span className="font-semibold text-myGrayDark">${(listing.nightPrice * 7).toFixed(0)}</span>
+          </div>
+          <div className="text-xs text-myGray">${listing.nightPrice} × 7 nights</div>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
