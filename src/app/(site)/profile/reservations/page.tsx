@@ -9,8 +9,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { IoCalendar, IoFilter, IoLocation, IoPerson, IoSearch, IoTime } from "react-icons/io5";
+import { IoCalendar, IoFilter, IoLocation, IoPerson, IoTime } from "react-icons/io5";
 import { CancelReservationDialog } from "../../reservations/components/CancelReservationDialog";
+import { PageHeader } from "../components/PageHeader";
+import { SearchBar } from "../components/SearchBar";
 
 type ReservationStatus = "all" | "upcoming" | "completed" | "canceled" | "canceledByHost";
 
@@ -77,22 +79,12 @@ export default function ReservationsSection() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-myGrayDark">My Reservations</h1>
-        <p className="text-myGray mt-2">Manage and view all your upcoming and past trips</p>
-      </div>
+      <PageHeader title="My Reservations" description="Manage and view all your upcoming and past trips" />
 
       {/* Search and Filter Bar */}
       <div className="flex flex-col sm:flex-row gap-4 p-4 bg-gray-50 rounded-xl">
-        <div className="flex-1 relative">
-          <IoSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-myGray w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search reservations..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
-          />
+        <div className="flex-1">
+          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} placeholder="Search reservations..." variant="compact" />
         </div>
 
         <div className="flex items-center gap-2">
