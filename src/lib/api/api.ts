@@ -1,8 +1,10 @@
 import { ListingForm } from "@/store/useListingForm";
+import { parseFavoritesWithListingFromDB, parseFavoriteWithListingFromDB } from "../parsers/favorites";
 import { parseHostListingsWithReservations, parseListingFormData, parseListingFromDB, parseListingWithReservationsFromDB } from "../parsers/listing";
 import { parseCreateProfile, parseProfileFromDB, parseUpdateProfile } from "../parsers/profile";
 import { parseListingReservedDatesDB, parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../parsers/reservation";
 import { MapCoordinates } from "../types";
+import { FavoriteWithListing, FavoriteWithListingDB } from "../types/favorites";
 import { HostListingsWithReservationsDB, ListingDB, ListingWithReservationsDB } from "../types/listing";
 import { CreateProfile, Profile, ProfileDB, UpdateProfile } from "../types/profile";
 import { CreateReservation, ListingReservedDatesDB, ReservationDB, ResumedReservationWithListingDB } from "../types/reservation";
@@ -13,6 +15,9 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 export const endpoint = {
   getProfile: `${baseUrl}/api/profile`,
   updateProfile: `${baseUrl}/api/profile`,
+  getFavorites: `${baseUrl}/api/favorites`,
+  createFavorites: `${baseUrl}/api/favorites`,
+  deleteFavorites: (id: number) => `${baseUrl}/api/favorites/${id}`,
   signUp: `${baseUrl}/api/signUp`,
   getUserReservations: () => `${baseUrl}/api/reservations`,
   getListingReservations: (listingId: number) => `${baseUrl}/api/reservations/${listingId}`, // clients not included
@@ -43,6 +48,19 @@ export const api = {
   async updateProfile(props: UpdateProfile) {
     const parsedProps = parseUpdateProfile(props);
     return await customFetch.patch(endpoint.updateProfile, parsedProps);
+  },
+  async getFavorites(): Promise<FavoriteWithListing[]> {
+    const { data } = await customFetch.get<FavoriteWithListingDB[]>(endpoint.getFavorites);
+    const parsedData = parseFavoritesWithListingFromDB(data);
+    return parsedData;
+  },
+  async createFavorite(listingId: number): Promise<FavoriteWithListing> {
+    const { data } = await customFetch.post<FavoriteWithListingDB>(endpoint.createFavorites, { listingId });
+    const parsedData = parseFavoriteWithListingFromDB(data);
+    return parsedData;
+  },
+  async deleteFavorite(id: number) {
+    await customFetch.del(endpoint.deleteFavorites(id));
   },
   async signUp(userData: CreateProfile) {
     const parsedUserData = parseCreateProfile(userData);

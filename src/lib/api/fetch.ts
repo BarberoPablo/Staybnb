@@ -42,7 +42,7 @@ const request = async <T>(method: string, input: RequestInfo, data?: unknown, in
 
 const customFetch = {
   get: <T>(input: RequestInfo, init?: RequestInit) => request<T>("GET", input, undefined, init),
-  post: (input: RequestInfo, data?: unknown, init?: RequestInit) => request("POST", input, data, init),
+  post: <T>(input: RequestInfo, data?: unknown, init?: RequestInit) => request<T>("POST", input, data, init),
   patch: (input: RequestInfo, data?: unknown, init?: RequestInit) => request("PATCH", input, data, init),
   put: (input: RequestInfo, data?: unknown, init?: RequestInit) => request("PUT", input, data, init),
   del: (input: RequestInfo, init?: RequestInit) => request("DELETE", input, undefined, init),
