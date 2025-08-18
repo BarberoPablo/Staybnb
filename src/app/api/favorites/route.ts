@@ -17,17 +17,17 @@ export async function GET() {
       .from("favorites")
       .select(
         `
-        *,
-        listings (
-          id,
-          title,
-          images,
-          night_price,
-          location,
-          score,
-          property_type
-        )
-      `
+          *,
+          listing:listing_id (
+            id,
+            title,
+            images,
+            night_price,
+            location,
+            score,
+            property_type
+          )
+        `
       )
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
@@ -37,7 +37,7 @@ export async function GET() {
       return NextResponse.json({ error: "Failed to fetch favorites" }, { status: 500 });
     }
 
-    return NextResponse.json(favorites);
+    return NextResponse.json({ success: true, data: favorites });
   } catch (error) {
     console.error("Unexpected error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -58,7 +58,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: listing, error: listingError } = await supabase.from("listings").select("id").eq("id", listingId).single();
+    const { data: listing, error: listingError } = await supabase
+      .from("listings")
+      .select("title, images, night_price, location, score")
+      .eq("id", listingId)
+      .single();
 
     if (listingError || !listing) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 });
@@ -81,7 +85,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Failed to add to favorites" }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({
+      success: true,
+      data: {
+        ...data,
+        listing: listing,
+      },
+    });
   } catch (error) {
     console.error("Unexpected error:", error);
     return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });

@@ -1,10 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = await createClient();
-    const listingId = parseInt(params.id);
+    const { id } = await params;
+
+    const listingId = parseInt(id);
 
     const {
       data: { user },

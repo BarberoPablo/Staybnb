@@ -61,7 +61,7 @@ export const api = {
     return parsedData;
   },
   async deleteFavorite(id: number) {
-    await customFetch.del(endpoint.deleteFavorites(id));
+    return await customFetch.del(endpoint.deleteFavorites(id));
   },
   async signUp(userData: CreateProfile) {
     const parsedUserData = parseCreateProfile(userData);
