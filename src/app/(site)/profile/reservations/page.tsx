@@ -1,5 +1,6 @@
 "use client";
 
+import { SkeletonReservations } from "@/app/(site)/profile/components/SkeletonReservations";
 import { api } from "@/lib/api/api";
 import { ResumedReservationWithListing } from "@/lib/types/reservation";
 import { getTotalGuests } from "@/lib/utils";
@@ -72,7 +73,7 @@ export default function ReservationsSection() {
     }
   }, [searchTerm, statusFilter, userReservations]);
 
-  if (loadingReservations && !filteredReservations && !userReservations) return <div>Loading...</div>;
+  if (loadingReservations && filteredReservations.length === 0 && userReservations.length === 0) return <SkeletonReservations />;
 
   return (
     <div className="space-y-6">
