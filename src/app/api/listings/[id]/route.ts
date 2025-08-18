@@ -21,6 +21,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       .from("reservations")
       .select("start_date, end_date")
       .eq("listing_id", Number(id))
+      .eq("status", "upcoming")
       .gte("end_date", today);
 
     if (reservationsError) {

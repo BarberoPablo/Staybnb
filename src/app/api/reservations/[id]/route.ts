@@ -10,6 +10,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
     const supabase = await createClient();
 
+    const today = new Date().toISOString().split("T")[0];
+
     const { data: reservationsData, error: reservationsError } = await supabase
       .from("reservations")
       .select(
@@ -26,6 +28,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       )
       .eq("listing_id", Number(id))
       .eq("status", "upcoming")
+      .gte("end_date", today)
       .order("start_date", { ascending: false });
 
     if (reservationsError) {
