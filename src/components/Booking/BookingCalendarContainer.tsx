@@ -1,27 +1,30 @@
 "use client";
 
 import { ListingWithReservations } from "@/lib/types/listing";
-import { useState } from "react";
+import { motion } from "framer-motion";
+import { IoCalendar } from "react-icons/io5";
 import BookingForm from "./BookingForm";
-import BookingModal from "./BookingModal";
 
 export default function BookingCalendarContainer({ listing }: { listing: ListingWithReservations }) {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <>
-      <div className="block sm:hidden">
-        <div className="fixed bottom-0 left-0 w-full py-2 px-4 border-t border-t-gray-300 backdrop-blur-md sm:hidden">
-          <button className="w-full bg-gray-800 text-white py-3 rounded-lg" onClick={() => setIsOpen(true)}>
-            Reserve
-          </button>
+    <motion.div
+      className="bg-background border border-gray-200 rounded-2xl shadow-lg p-6 sticky top-8"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-12 h-12 bg-myGreenLight rounded-full flex items-center justify-center">
+          <IoCalendar className="w-6 h-6 text-myGrayDark" />
         </div>
-        <BookingModal isOpen={isOpen} listing={listing} onClose={() => setIsOpen(false)} />
+        <div>
+          <h3 className="text-xl font-bold text-myGrayDark">Book Your Stay</h3>
+          <p className="text-sm text-myGray">Select dates and guests</p>
+        </div>
       </div>
 
-      <div className="hidden sm:flex justify-end lg:justify-center col-span-5">
-        <BookingForm listing={listing} priceFirst={true} />
-      </div>
-    </>
+      <BookingForm listing={listing} priceFirst={true} />
+    </motion.div>
   );
 }

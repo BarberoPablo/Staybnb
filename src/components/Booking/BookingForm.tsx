@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
 import { DateRange } from "react-date-range";
+import { IoCalendar, IoCheckmarkCircle, IoPeople } from "react-icons/io5";
 import ListingPrice from "../ListingPrice";
 import { excludeDate, getCustomDayContent, validateFormData } from "./bookingFormUtils";
 import { CalendarLegend } from "./CalendarLegend";
@@ -116,85 +117,130 @@ export default function BookingForm({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Calendar Section */}
       {!priceFirst && (
-        <div className="relative">
-          <CalendarLegend />
-          <DateRange
-            ranges={[dateRange]}
-            onChange={handleChangeDateRange}
-            minDate={new Date()}
-            rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
-            showDateDisplay={true}
-            disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
-            dayContentRenderer={getCustomDayContent(disabledDates)}
-          />
-          {errors.dateRange && <Tooltip text={errors.dateRange} arrow={false} containerStyle={"top-[-6px]"} />}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-lg font-semibold text-myGrayDark">
+            <IoCalendar className="w-5 h-5 text-myGreenBold" />
+            Select Dates
+          </div>
+          <div className="relative">
+            <CalendarLegend />
+            <DateRange
+              ranges={[dateRange]}
+              onChange={handleChangeDateRange}
+              minDate={new Date()}
+              rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
+              showDateDisplay={true}
+              disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
+              dayContentRenderer={getCustomDayContent(disabledDates)}
+            />
+            {errors.dateRange && <Tooltip text={errors.dateRange} arrow={false} containerStyle={"top-[-6px]"} />}
+          </div>
         </div>
       )}
-      <div className="flex flex-col">
-        <span>nights: {nights}</span>
-        <span>discountPercentage: {discountPercentage}</span>
+
+      {/* Trip Summary */}
+      <div className="bg-myGreenLight rounded-xl p-4 border border-myGreenBold/20">
+        <div className="flex items-center gap-2 mb-3">
+          <IoCalendar className="w-4 h-4 text-myGrayDark" />
+          <span className="text-sm font-medium text-myGrayDark">Trip Summary</span>
+        </div>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-myGray">Nights:</span>
+            <span className="font-semibold text-myGrayDark">{nights}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-myGray">Discount:</span>
+            <span className="font-semibold text-myGreenBold">{discountPercentage}%</span>
+          </div>
+        </div>
       </div>
-      <div className="flex sm:mt-4">
-        {<ListingPrice nightPrice={listing.nightPrice} nights={nights} discountPercentage={discountPercentage} promotions={listing.promotions} />}
-        <div>
+
+      {/* Price Section */}
+      <div className="bg-gray-50 rounded-xl p-4">
+        <h4 className="font-semibold text-myGrayDark mb-3">Price Details</h4>
+        <ListingPrice nightPrice={listing.nightPrice} nights={nights} discountPercentage={discountPercentage} promotions={listing.promotions} />
+      </div>
+
+      {/* Guests Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 text-lg font-semibold text-myGrayDark">
+          <IoPeople className="w-5 h-5 text-myGreenBold" />
+          Guests
+        </div>
+
+        <div className="space-y-3">
           {listingGuests.map((type) => (
-            <div key={type} className="flex gap-5">
-              <div className="relative">
-                <label className="capitalize">{type}</label>
+            <div key={type} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+              <div className="flex items-center gap-3">
+                <label className="capitalize font-medium text-myGrayDark min-w-[60px]">{type}</label>
                 {errors[type] && <Tooltip text={errors[type]} />}
               </div>
-              <button
-                type="button"
-                disabled={guests[type] === listing.guestLimits[type].min}
-                className="bg-myGreen rounded-full w-6 h-6 hover:cursor-pointer"
-                onClick={() => handleGuest(type, -1)}
-              >
-                -
-              </button>
-              <label>{guests[type]}</label>
-              <button
-                type="button"
-                disabled={guests[type] === listing.guestLimits[type].max}
-                className="bg-myGreen rounded-full w-6 h-6 hover:cursor-pointer"
-                onClick={() => handleGuest(type, 1)}
-              >
-                +
-              </button>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  disabled={guests[type] === listing.guestLimits[type].min}
+                  className="w-8 h-8 bg-myGreenLight hover:bg-myGreen text-myGrayDark hover:text-white rounded-full flex items-center justify-center font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => handleGuest(type, -1)}
+                >
+                  -
+                </button>
+
+                <span className="w-8 text-center font-semibold text-myGrayDark">{guests[type]}</span>
+
+                <button
+                  type="button"
+                  disabled={guests[type] === listing.guestLimits[type].max}
+                  className="w-8 h-8 bg-myGreenLight hover:bg-myGreen text-myGrayDark hover:text-white rounded-full flex items-center justify-center font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => handleGuest(type, 1)}
+                >
+                  +
+                </button>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
+      {/* Calendar Section (when priceFirst is true) */}
       {priceFirst && (
-        <div className="relative">
-          {errors.dateRange && <Tooltip text={errors.dateRange} containerStyle="top-[-6px]" arrow={false} />}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-lg font-semibold text-myGrayDark">
+            <IoCalendar className="w-5 h-5 text-myGreenBold" />
+            Select Dates
+          </div>
 
-          <CalendarLegend />
-
-          <DateRange
-            locale={enUS}
-            ranges={[dateRange]}
-            onChange={handleChangeDateRange}
-            minDate={new Date()}
-            rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
-            showDateDisplay={true}
-            disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
-            dayContentRenderer={getCustomDayContent(disabledDates)}
-          />
+          <div className="relative">
+            {errors.dateRange && <Tooltip text={errors.dateRange} containerStyle="top-[-6px]" arrow={false} />}
+            <CalendarLegend />
+            <DateRange
+              locale={enUS}
+              ranges={[dateRange]}
+              onChange={handleChangeDateRange}
+              minDate={new Date()}
+              rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
+              showDateDisplay={true}
+              disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
+              dayContentRenderer={getCustomDayContent(disabledDates)}
+            />
+          </div>
         </div>
       )}
 
-      <div className="flex justify-center gap-10">
+      {/* Submit Button */}
+      <div className="pt-4">
         {children}
-
         <button
           type="submit"
           disabled={dateRange.startDate.getTime() >= dateRange.endDate.getTime() || Object.keys(errors).length > 0}
-          className="px-4 py-2 bg-myGreen text-white rounded-4xl"
+          className="w-full bg-myGreenBold hover:bg-myGreenDark text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2 hover:cursor-pointer"
         >
-          Reserve
+          <IoCheckmarkCircle className="w-5 h-5" />
+          Reserve Now
         </button>
       </div>
     </form>
