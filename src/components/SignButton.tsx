@@ -3,10 +3,12 @@
 import { logout } from "@/app/(site)/auth/components/auth";
 import { useUser } from "@/hooks/useUser";
 import { basicButton } from "@/lib/supabase/styles";
+import { MenuItem } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";
+import { MdOutlineLogin, MdOutlineLogout } from "react-icons/md";
 
-export function SignButton() {
+export function SignButton({ isMobile = false }: { isMobile?: boolean }) {
   const router = useRouter();
   const { user, loading } = useUser();
 
@@ -25,16 +27,42 @@ export function SignButton() {
 
   if (loading) return <button className="w-20 rounded-lg overflow-hidden bg-gray-100 animate-pulse"></button>;
 
+  if (isMobile) {
+    return user ? (
+      <div>
+        <MenuItem>
+          <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreenDark/70" onClick={handleProfile}>
+            <FaUserCircle className="size-4 fill-GrayDark" />
+            Profile
+          </button>
+        </MenuItem>
+        <MenuItem>
+          <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreenDark/70" onClick={handleLogout}>
+            <MdOutlineLogout className="size-4 fill-GrayDark" />
+            Logout
+          </button>
+        </MenuItem>
+      </div>
+    ) : (
+      <MenuItem>
+        <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreenDark/70" onClick={handleLogin}>
+          <MdOutlineLogin className="size-4 fill-GrayDark" />
+          Login
+        </button>
+      </MenuItem>
+    );
+  }
+
   return user ? (
     <div className="flex items-center gap-2">
       <button
-        onClick={handleLogout}
         className="w-20 px-4 py-2 text-sm font-medium rounded-lg text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200"
+        onClick={handleLogout}
       >
         Logout
       </button>
 
-      <button onClick={handleProfile} className={`${basicButton}`}>
+      <button className={`${basicButton}`} onClick={handleProfile}>
         <FaUserCircle className="rounded-full text-4xl text-myGreenDark bg-white hover:bg-myGreen transition-colors duration-200" />
       </button>
     </div>
