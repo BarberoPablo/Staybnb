@@ -64,6 +64,11 @@ export function getTotalGuests(guests: Record<Guests, number>) {
   return Object.values(guests).reduce((total, count) => total + count, 0);
 }
 
+export function getTotalPrice(nights: number, nightPrice: number, discountPercentage?: number) {
+  const total = nights * nightPrice * (1 - (discountPercentage ?? 0) / 100);
+  return total;
+}
+
 export function validateDateRange(startDate: Date, endDate: Date) {
   if (startDate.getTime() === endDate.getTime()) {
     return "Check-in and check-out can't be the same day";
@@ -106,7 +111,14 @@ export function calculateNights(startDate: Date, endDate: Date) {
 }
 
 export function getListingPromotion(listing: Listing, nights: number): Promotion | null {
-  const promos = listing.promotions?.filter((promo) => promo.minNights <= nights);
+  const sortedPromotions = [...listing.promotions].sort((a, b) => a.minNights - b.minNights);
+  const promos = sortedPromotions?.filter((promo) => promo.minNights <= nights);
+  return promos.length > 0 ? promos[promos.length - 1] : null;
+}
+
+export function getPromotion(promotions: Promotion[], nights: number): Promotion | null {
+  const sortedPromotions = [...promotions].sort((a, b) => a.minNights - b.minNights);
+  const promos = sortedPromotions?.filter((promo) => promo.minNights <= nights);
   return promos.length > 0 ? promos[promos.length - 1] : null;
 }
 
