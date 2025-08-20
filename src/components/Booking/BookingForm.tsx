@@ -139,12 +139,11 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
             <div className="flex justify-between items-center">
               <span className="font-semibold text-myGrayDark">Total:</span>
               <div className="flex items-center gap-2">
-                {/* Precio original tachado */}
-                <span className="text-myGray text-lg font-medium line-through decoration-2 decoration-myGray/70">
-                  ${getTotalPrice(nights, listing.nightPrice).toFixed(2)}
-                </span>
-
-                {/* Precio con descuento destacado */}
+                {discountPercentage ? (
+                  <span className="text-myGray text-lg font-medium line-through decoration-2 decoration-myGray/70">
+                    ${getTotalPrice(nights, listing.nightPrice).toFixed(2)}
+                  </span>
+                ) : null}
                 <span className="text-myGrayDark text-xl font-bold">${getTotalPrice(nights, listing.nightPrice, discountPercentage).toFixed(2)}</span>
               </div>
             </div>
