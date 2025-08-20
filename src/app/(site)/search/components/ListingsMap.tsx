@@ -3,14 +3,12 @@
 import MapEventsHandler from "@/app/(site)/search/components/MapEventsHandler";
 import { RoundButton } from "@/components/Button/RoundButton";
 import ImagesSlider from "@/components/ImagesSlider";
-import { NightPriceWithPromotion } from "@/components/Promotions/NightPriceWithPromotion";
 import { api } from "@/lib/api/api";
 import { MapCoordinates } from "@/lib/types";
 import { Listing } from "@/lib/types/listing";
-import { twoDecimalsString } from "@/lib/utils";
 import { Icon } from "leaflet";
 import { useEffect, useState } from "react";
-import { IoIosClose, IoIosStar } from "react-icons/io";
+import { IoIosClose } from "react-icons/io";
 import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 
 export default function ListingsMap({
@@ -93,39 +91,34 @@ function MarkerPopup({ listing, onClose, enableMap }: { listing: Listing | null;
   if (!listing) return null;
 
   const handleClose = () => {
-    enableMap(true); // Restaurar el estado del mapa antes de cerrar
+    enableMap(true);
     onClose();
   };
 
   return (
     <div
-      className="marker-popup flex flex-col gap-2 items-center justify-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[2000] 
-      w-68 h-73 bg-background rounded-xl shadow-md hover:cursor-pointer"
-      style={{ fontFamily: "roboto" }}
+      className="marker-popup absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[2000] 
+      w-80 bg-background border border-gray-200 rounded-xl overflow-hidden shadow-lg"
       onMouseEnter={() => enableMap(false)}
       onMouseLeave={() => enableMap(true)}
     >
-      <div className="flex flex-col w-full overflow-hidden">
-        <ImagesSlider images={listing.images} containerClassName="rounded-b-none" />
-      </div>
-      <RoundButton onClick={handleClose} className="absolute top-2 right-2 text-[32px]">
-        <IoIosClose />
-      </RoundButton>
+      <div className="relative">
+        {/* Image */}
+        <ImagesSlider images={listing.images} hoverEffect={true} containerClassName="rounded-t-xl" />
 
-      <div className="flex flex-col justify-center gap-1 w-full px-3 mb-2">
-        <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-sm">
-            {listing.propertyType} in {listing.location.city}
-          </h2>
-          <div className="flex items-center justify-center gap-1 font-semibold text-sm">
-            <IoIosStar className="mb-0.5" />
-            <h2>
-              {twoDecimalsString(listing.score.value)} ({listing.score.reviews.length})
-            </h2>
-          </div>
+        {/* Price Badge */}
+        <div className="absolute bottom-3 left-3 bg-white px-3 py-1 rounded-full shadow-md border border-gray-100">
+          <span className="font-semibold text-myGrayDark">${listing.nightPrice}</span>
+          <span className="text-sm text-myGray">/night</span>
         </div>
-        <h3 className="truncate text-sm text-myGray">{listing.location.formatted}</h3>
-        <NightPriceWithPromotion listing={listing} />
+
+        {/* Close Button */}
+        <RoundButton
+          onClick={handleClose}
+          className="absolute top-3 right-3 text-lg text-myGray bg-white hover:bg-myGrayLight transition-all duration-200 shadow-md"
+        >
+          <IoIosClose />
+        </RoundButton>
       </div>
     </div>
   );

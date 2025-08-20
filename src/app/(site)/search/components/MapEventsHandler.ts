@@ -10,11 +10,21 @@ interface MapEventsHandlerProps {
 }
 
 //  Component to handle map events and to perform functionalities besides the default ones
+let startedInsidePopup = false;
 export default function MapEventsHandler({ closeMarkerPopup, onMoveEnd }: MapEventsHandlerProps) {
   const map = useMap();
 
   useMapEvents({
+    mousedown: (e: LeafletMouseEvent) => {
+      const target = e.originalEvent.target as HTMLElement;
+      startedInsidePopup = !!target.closest(".marker-popup");
+    },
     click: (e: LeafletMouseEvent) => {
+      if (startedInsidePopup) {
+        // Reset and dont close
+        startedInsidePopup = false;
+        return;
+      }
       const target = e.originalEvent.target as HTMLElement;
       if (target.closest(".marker-popup")) {
         // Click inside popup, dont close

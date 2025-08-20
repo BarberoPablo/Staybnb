@@ -68,3 +68,7 @@ body {
   height: 10px !important;
   border-top-right-radius: 40px !important;
 }
+
+.marker-popup {
+  font-family: "Geist", sans-serif !important;
+}
