@@ -24,7 +24,7 @@ export default function BookingCalendarContainer({ listing }: { listing: Listing
         </div>
       </div>
 
-      <BookingForm listing={listing} priceFirst={true} />
+      <BookingForm listing={listing} />
     </motion.div>
   );
 }

@@ -6,6 +6,7 @@ import { api } from "@/lib/api/api";
 import { Listing } from "@/lib/types/listing";
 import { notFound } from "next/navigation";
 import { IoLocation, IoStar } from "react-icons/io5";
+import { Container } from "../../components/Container";
 
 type ListingDetailsProps = {
   params: Promise<{ id: string }>;
@@ -23,13 +24,13 @@ export default async function ListingDetailsPage({ params }: ListingDetailsProps
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 flex flex-col mx-auto px-6 py-8 gap-4">
+    <Container noPadding className="min-h-screen w-full bg-gray-50 flex flex-col mx-auto px-2 sm:px-6 py-8 gap-4">
       {/* Hero Section with Images */}
       <div className="relative">
-        <div className="hidden sm:block">
+        <div className="hidden lg:block">
           <ImagesLayout images={listing.images} />
         </div>
-        <div className="grid relative sm:hidden">
+        <div className="grid relative lg:hidden">
           <ImagesSlider images={listing.images} hoverEffect={true} containerClassName="rounded-t-xl" />
         </div>
       </div>
@@ -69,7 +70,7 @@ export default async function ListingDetailsPage({ params }: ListingDetailsProps
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }
 

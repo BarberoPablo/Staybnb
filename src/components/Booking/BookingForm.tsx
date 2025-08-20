@@ -3,28 +3,17 @@
 import Tooltip from "@/components/Tooltip";
 import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
 import { ListingWithReservations } from "@/lib/types/listing";
-import { buildListingParams, calculateNights, createUTCDate, getDisabledDates, getListingPromotion, listingGuests } from "@/lib/utils";
-import { enUS } from "date-fns/locale";
+import { buildListingParams, calculateNights, createUTCDate, getDisabledDates, getListingPromotion, getTotalPrice, listingGuests } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
 import { DateRange } from "react-date-range";
-import { IoCalendar, IoCheckmarkCircle, IoPeople } from "react-icons/io5";
-import ListingPrice from "../ListingPrice";
+import { IoCalendar, IoCheckmarkCircle, IoPeople, IoPricetag } from "react-icons/io5";
 import { excludeDate, getCustomDayContent, validateFormData } from "./bookingFormUtils";
 import { CalendarLegend } from "./CalendarLegend";
+import PromotionsProgressBar from "./PromotionsProgressBar";
 
-export default function BookingForm({
-  listing,
-  priceFirst = false,
-  children,
-  onConfirm,
-}: {
-  listing: ListingWithReservations;
-  priceFirst?: boolean;
-  children?: ReactNode;
-  onConfirm?: () => void;
-}) {
+export default function BookingForm({ listing, children, onConfirm }: { listing: ListingWithReservations; children?: ReactNode; onConfirm?: () => void }) {
   const [dateRange, setDateRange] = useState<DateRangeKey>({
     startDate: new Date(),
     endDate: new Date(),
@@ -44,6 +33,7 @@ export default function BookingForm({
   });
   const [isSelectingCheckOut, setIsSelectingCheckOut] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<Guests | "dateRange", string>>>({});
+
   const router = useRouter();
 
   useEffect(() => {
@@ -118,51 +108,76 @@ export default function BookingForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Calendar Section */}
-      {!priceFirst && (
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-lg font-semibold text-myGrayDark">
-            <IoCalendar className="w-5 h-5 text-myGreenBold" />
-            Select Dates
-          </div>
-          <div className="relative">
-            <CalendarLegend />
-            <DateRange
-              ranges={[dateRange]}
-              onChange={handleChangeDateRange}
-              minDate={new Date()}
-              rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
-              showDateDisplay={true}
-              disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
-              dayContentRenderer={getCustomDayContent(disabledDates)}
-            />
-            {errors.dateRange && <Tooltip text={errors.dateRange} arrow={false} containerStyle={"top-[-6px]"} />}
-          </div>
-        </div>
-      )}
-
-      {/* Trip Summary */}
-      <div className="bg-myGreenLight rounded-xl p-4 border border-myGreenBold/20">
+      {/* Price and Nights Summary - Always at the top */}
+      <div className="bg-gradient-to-r from-myGreenLight to-myGreenBold/10 rounded-xl p-4 border border-myGreenBold/20">
         <div className="flex items-center gap-2 mb-3">
-          <IoCalendar className="w-4 h-4 text-myGrayDark" />
-          <span className="text-sm font-medium text-myGrayDark">Trip Summary</span>
+          <IoPricetag className="w-5 h-5 text-myGreenBold" />
+          <span className="text-lg font-semibold text-myGrayDark">Price Summary</span>
         </div>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-myGray">Nights:</span>
-            <span className="font-semibold text-myGrayDark">{nights}</span>
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-myGray">Selected:</span>
+            <span className="font-bold text-lg text-myGrayDark">
+              {nights} night{nights > 1 ? "s" : ""}
+            </span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
+            <span className="text-myGray">Price per night:</span>
+            <span className="font-semibold text-myGrayDark">${listing.nightPrice}</span>
+          </div>
+          <div className="flex justify-between items-center">
             <span className="text-myGray">Discount:</span>
-            <span className="font-semibold text-myGreenBold">{discountPercentage}%</span>
+            {discountPercentage > 0 ? (
+              <span className="font-semibold text-myGreenBold">
+                {(getTotalPrice(nights, listing.nightPrice) * discountPercentage) / 100} USD ({discountPercentage}% off)
+              </span>
+            ) : (
+              <span className="font-semibold text-myGrayDark">-</span>
+            )}
+          </div>
+          <div className="border-t border-myGreenBold/20 pt-2 mt-2">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-myGrayDark">Total:</span>
+              <div className="flex items-center gap-2">
+                {/* Precio original tachado */}
+                <span className="text-myGray text-lg font-medium line-through decoration-2 decoration-myGray/70">
+                  ${getTotalPrice(nights, listing.nightPrice).toFixed(2)}
+                </span>
+
+                {/* Precio con descuento destacado */}
+                <span className="text-myGrayDark text-xl font-bold">${getTotalPrice(nights, listing.nightPrice, discountPercentage).toFixed(2)}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Price Section */}
-      <div className="bg-gray-50 rounded-xl p-4">
-        <h4 className="font-semibold text-myGrayDark mb-3">Price Details</h4>
-        <ListingPrice nightPrice={listing.nightPrice} nights={nights} discountPercentage={discountPercentage} promotions={listing.promotions} />
+      {/* Promotions Progress Bar */}
+      {listing.promotions && listing.promotions.length > 0 && (
+        <div className="bg-background rounded-xl pl-4 pr-10 pt-3 pb-10 border border-gray-200">
+          <PromotionsProgressBar promotions={listing.promotions} currentNights={nights} />
+        </div>
+      )}
+
+      {/* Calendar Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 text-lg font-semibold text-myGrayDark">
+          <IoCalendar className="w-5 h-5 text-myGreenBold" />
+          Select Dates
+        </div>
+        <div className="relative flex flex-col w-full justify-center items-center">
+          <CalendarLegend />
+          <DateRange
+            ranges={[dateRange]}
+            onChange={handleChangeDateRange}
+            minDate={new Date()}
+            rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
+            showDateDisplay={true}
+            disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
+            dayContentRenderer={getCustomDayContent(disabledDates)}
+          />
+          {errors.dateRange && <Tooltip text={errors.dateRange} arrow={false} containerStyle={"top-[-6px]"} />}
+        </div>
       </div>
 
       {/* Guests Section */}
@@ -205,31 +220,6 @@ export default function BookingForm({
           ))}
         </div>
       </div>
-
-      {/* Calendar Section (when priceFirst is true) */}
-      {priceFirst && (
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-lg font-semibold text-myGrayDark">
-            <IoCalendar className="w-5 h-5 text-myGreenBold" />
-            Select Dates
-          </div>
-
-          <div className="relative">
-            {errors.dateRange && <Tooltip text={errors.dateRange} containerStyle="top-[-6px]" arrow={false} />}
-            <CalendarLegend />
-            <DateRange
-              locale={enUS}
-              ranges={[dateRange]}
-              onChange={handleChangeDateRange}
-              minDate={new Date()}
-              rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
-              showDateDisplay={true}
-              disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
-              dayContentRenderer={getCustomDayContent(disabledDates)}
-            />
-          </div>
-        </div>
-      )}
 
       {/* Submit Button */}
       <div className="pt-4">
