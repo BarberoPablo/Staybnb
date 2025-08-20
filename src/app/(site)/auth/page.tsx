@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Container } from "../components/Container";
 import { signIn, signUp } from "./components/auth";
@@ -13,6 +13,12 @@ export default function AuthForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/";
+
+  useEffect(() => {
+    if (redirectTo.includes("hosting")) {
+      toast.error("You need to be logged in to host a listing");
+    }
+  }, [redirectTo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
