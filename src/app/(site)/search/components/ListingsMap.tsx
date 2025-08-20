@@ -6,7 +6,7 @@ import ImagesSlider from "@/components/ImagesSlider";
 import { api } from "@/lib/api/api";
 import { MapCoordinates } from "@/lib/types";
 import { Listing } from "@/lib/types/listing";
-import { Icon } from "leaflet";
+import { divIcon } from "leaflet";
 import { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
@@ -71,13 +71,21 @@ export default function ListingsMap({
               setListingPopup(listing);
             },
           }}
-          icon={
-            new Icon({
-              iconUrl: `${locateListing === listing.id ? "https://i.postimg.cc/mkH5rzZ6/image.webp" : "https://i.postimg.cc/VsZmCYH4/House.png"}`,
-              iconSize: [40, 40],
-              iconAnchor: [40, 40],
-            })
-          }
+          icon={divIcon({
+            html: `<div class="flex items-center justify-center py-1 transition-all duration-300 ease-in-out
+            ${
+              locateListing === listing.id
+                ? "bg-foreground text-background border-gray-600 font-bold"
+                : "bg-background text-foreground border-gray-300 font-semibold"
+            } 
+            shadow-md rounded-full border">
+              $${listing.nightPrice} USD
+            </div>`,
+
+            className: "", // Important to avoid leaflet to apply the default Leaflet class
+            iconSize: [70, 40],
+            iconAnchor: [20, 20],
+          })}
         />
       ))}
       <MarkerPopup listing={listingPopup} onClose={() => setListingPopup(null)} enableMap={setMapEnabled} />

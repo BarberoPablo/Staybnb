@@ -78,7 +78,7 @@ export default function SearchPage() {
           <div className="flex flex-col lg:grid lg:grid-cols-10 xl:grid-cols-10 gap-x-8 w-full h-full">
             {/* Listings Section */}
             <div className="lg:max-w-7xl lg:col-span-6 xl:col-span-5">
-              <ListingCards key={layoutKey} listings={filteredListings} locateListing={locateListing} setLocateListing={setLocateListing} />
+              <ListingCards key={layoutKey} listings={filteredListings} setLocateListing={setLocateListing} />
             </div>
 
             {/* Map Section */}

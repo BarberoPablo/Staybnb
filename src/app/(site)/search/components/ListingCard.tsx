@@ -1,26 +1,13 @@
 "use client";
 
-import { RoundButton } from "@/components/Button/RoundButton";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import ImagesSlider from "@/components/ImagesSlider";
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
-import { FaLocationDot } from "react-icons/fa6";
 import { IoLocation, IoStar } from "react-icons/io5";
+import {} from "../page";
 
-export default function ListingCard({
-  listing,
-  locateListing,
-  setLocateListing,
-}: {
-  listing: Listing;
-  locateListing: number;
-  setLocateListing: (listingId: number) => void;
-}) {
-  const handleLocateListing = (listingId: number) => {
-    setLocateListing(listingId);
-  };
-
+export default function ListingCard({ listing, setLocateListing }: { listing: Listing; setLocateListing: (trackListing: number) => void }) {
   return (
     <motion.div
       className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group"
@@ -28,6 +15,8 @@ export default function ListingCard({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.3 }}
+      onMouseEnter={() => setLocateListing(listing.id)}
+      onMouseLeave={() => setLocateListing(-1)}
     >
       {/* Image Section */}
       <div className="relative">
@@ -42,14 +31,6 @@ export default function ListingCard({
         {/* Action Buttons */}
         <div className="absolute flex top-3 right-3 gap-2">
           <FavoriteButton listingId={listing.id} />
-          <RoundButton
-            className={`text-lg ${
-              locateListing === listing.id ? "text-myGreenBold bg-myGreen" : "text-myGray bg-white hover:bg-myGreenLight"
-            } transition-all duration-200 shadow-md hover:shadow-lg`}
-            onClick={() => handleLocateListing(listing.id)}
-          >
-            <FaLocationDot />
-          </RoundButton>
         </div>
       </div>
 
