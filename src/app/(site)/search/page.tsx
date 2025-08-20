@@ -37,20 +37,6 @@ export default function SearchPage() {
     }
   }, [city]);
 
-  if (filteredListings.length === 0 && !loading) {
-    return (
-      <Container>
-        <div className="space-y-6">
-          <div className="text-center py-12">
-            <IoSearch className="w-16 h-16 text-myGray mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-myGrayDark mb-2">No listings found</h1>
-            <p className="text-myGray">We couldn&apos;t find any places in {city}</p>
-          </div>
-        </div>
-      </Container>
-    );
-  }
-
   if (loading) {
     return (
       <Container>
@@ -78,18 +64,20 @@ export default function SearchPage() {
           <div className="flex flex-col lg:grid lg:grid-cols-10 xl:grid-cols-10 gap-x-8 w-full h-full">
             {/* Listings Section */}
             <div className="lg:max-w-7xl lg:col-span-6 xl:col-span-5">
-              <ListingCards key={layoutKey} listings={filteredListings} setLocateListing={setLocateListing} />
+              {filteredListings.length === 0 && !loading ? (
+                <div className="h-[calc(100vh-177px)] text-center py-12 px-[-16px]">
+                  <IoSearch className="w-16 h-16 text-myGray mx-auto mb-4" />
+                  <h1 className="text-3xl font-bold text-myGrayDark mb-2">No listings found</h1>
+                  <p className="text-myGray">We couldn&apos;t find any places in {city}</p>
+                </div>
+              ) : (
+                <ListingCards key={layoutKey} listings={filteredListings} setLocateListing={setLocateListing} />
+              )}
             </div>
 
             {/* Map Section */}
-            <div className="lg:col-span-4 xl:col-span-5 flex flex-col sticky top-10 h-[calc(100vh-177px)]">
-              <div className="bg-myGreenLight rounded-xl border border-myGreenBold/20 p-4 mb-4">
-                <h3 className="text-lg font-semibold text-myGrayDark mb-2">Interactive Map</h3>
-                <p className="text-sm text-myGray">Click on markers to see listing details or move around!</p>
-              </div>
-              <div className="flex-1 bg-white rounded-xl overflow-hidden shadow-lg">
-                <ListingsMapNoSSR listings={filteredListings} locateListing={locateListing} setListings={setFilteredListings} />
-              </div>
+            <div className="lg:col-span-4 xl:col-span-5 flex flex-col sticky top-10 h-[calc(100vh-177px)] flex-1 bg-white rounded-xl overflow-hidden shadow-lg">
+              <ListingsMapNoSSR listings={filteredListings} locateListing={locateListing} setListings={setFilteredListings} />
             </div>
           </div>
         </motion.div>
