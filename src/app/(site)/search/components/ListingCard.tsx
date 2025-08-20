@@ -5,16 +5,20 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import ImagesSlider from "@/components/ImagesSlider";
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
-import { useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoLocation, IoStar } from "react-icons/io5";
 
-export default function ListingCard({ listing, setLocateListing }: { listing: Listing; setLocateListing: (listingId: number) => void }) {
-  const [locatingListing, setLocatingListing] = useState(-1);
-
+export default function ListingCard({
+  listing,
+  locateListing,
+  setLocateListing,
+}: {
+  listing: Listing;
+  locateListing: number;
+  setLocateListing: (listingId: number) => void;
+}) {
   const handleLocateListing = (listingId: number) => {
     setLocateListing(listingId);
-    setLocatingListing(listingId);
   };
 
   return (
@@ -40,7 +44,7 @@ export default function ListingCard({ listing, setLocateListing }: { listing: Li
           <FavoriteButton listingId={listing.id} />
           <RoundButton
             className={`text-lg ${
-              locatingListing === listing.id ? "text-myGreenBold bg-myGreen" : "text-myGray bg-white hover:bg-myGreenLight"
+              locateListing === listing.id ? "text-myGreenBold bg-myGreen" : "text-myGray bg-white hover:bg-myGreenLight"
             } transition-all duration-200 shadow-md hover:shadow-lg`}
             onClick={() => handleLocateListing(listing.id)}
           >
@@ -64,7 +68,7 @@ export default function ListingCard({ listing, setLocateListing }: { listing: Li
 
         {/* Location */}
         <div className="flex items-center gap-2 text-myGray text-sm">
-          <IoLocation className="w-4 h-4" />
+          <IoLocation className="w-5 h-5" />
           <span className="line-clamp-1">{listing.location.formatted}</span>
         </div>
 

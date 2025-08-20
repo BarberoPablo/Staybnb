@@ -113,10 +113,7 @@ function MarkerPopup({ listing, onClose, enableMap }: { listing: Listing | null;
         </div>
 
         {/* Close Button */}
-        <RoundButton
-          onClick={handleClose}
-          className="absolute top-3 right-3 text-lg text-myGray bg-white hover:bg-myGrayLight transition-all duration-200 shadow-md"
-        >
+        <RoundButton onClick={handleClose} className="absolute top-3 right-3 text-3xl text-myGray bg-white hover:bg-myGrayLight shadow-md">
           <IoIosClose />
         </RoundButton>
       </div>
