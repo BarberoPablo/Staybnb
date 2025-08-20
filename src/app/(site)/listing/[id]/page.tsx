@@ -4,6 +4,7 @@ import ImagesSlider from "@/components/ImagesSlider";
 import { ListBadges } from "@/components/ListBadges";
 import { api } from "@/lib/api/api";
 import { Listing } from "@/lib/types/listing";
+import { notFound } from "next/navigation";
 import { IoLocation, IoStar } from "react-icons/io5";
 
 type ListingDetailsProps = {
@@ -12,17 +13,13 @@ type ListingDetailsProps = {
 
 export default async function ListingDetailsPage({ params }: ListingDetailsProps) {
   const { id } = await params;
-  const listing = await api.getListing(Number(id));
 
-  if (!listing) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-myGrayDark mb-2">Listing Not Found</h1>
-          <p className="text-myGray">The listing you&apos;re looking for doesn&apos;t exist or has been removed.</p>
-        </div>
-      </div>
-    );
+  let listing;
+  try {
+    listing = await api.getListing(Number(id));
+  } catch (error) {
+    console.error(error);
+    notFound();
   }
 
   return (
