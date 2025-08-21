@@ -57,9 +57,9 @@ export type Database = {
           location: Json
           min_cancel_days: number
           night_price: number
-          privacy_type: string
+          privacy_type: Database["public"]["Enums"]["privacy_type"]
           promotions: Json
-          property_type: string
+          property_type: Database["public"]["Enums"]["property_type"]
           safety_items: string[]
           score: Json
           status: Database["public"]["Enums"]["listing_status"]
@@ -79,9 +79,9 @@ export type Database = {
           location: Json
           min_cancel_days?: number
           night_price: number
-          privacy_type?: string
+          privacy_type?: Database["public"]["Enums"]["privacy_type"]
           promotions: Json
-          property_type: string
+          property_type: Database["public"]["Enums"]["property_type"]
           safety_items?: string[]
           score: Json
           status?: Database["public"]["Enums"]["listing_status"]
@@ -101,16 +101,24 @@ export type Database = {
           location?: Json
           min_cancel_days?: number
           night_price?: number
-          privacy_type?: string
+          privacy_type?: Database["public"]["Enums"]["privacy_type"]
           promotions?: Json
-          property_type?: string
+          property_type?: Database["public"]["Enums"]["property_type"]
           safety_items?: string[]
           score?: Json
           status?: Database["public"]["Enums"]["listing_status"]
           structure?: Json
           title?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "listings_host_id_fkey"
+            columns: ["host_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -216,6 +224,8 @@ export type Database = {
     }
     Enums: {
       listing_status: "draft" | "published" | "paused" | "pending"
+      privacy_type: "Entire" | "Private" | "Shared"
+      property_type: "House" | "Apartment" | "Cabin" | "Boat"
       reservation_status:
         | "upcoming"
         | "completed"
@@ -350,6 +360,8 @@ export const Constants = {
   public: {
     Enums: {
       listing_status: ["draft", "published", "paused", "pending"],
+      privacy_type: ["Entire", "Private", "Shared"],
+      property_type: ["House", "Apartment", "Cabin", "Boat"],
       reservation_status: [
         "upcoming",
         "completed",
