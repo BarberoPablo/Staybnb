@@ -1,4 +1,5 @@
 import Image from "next/image";
+import ImageWithFallback, { FallbackIcon } from "./ImageWithFallback";
 
 /* Renders 5 images max */
 export function ImagesLayout({ images }: { images: string[] }) {
@@ -14,7 +15,21 @@ export function ImagesLayout({ images }: { images: string[] }) {
 
       {sideImages.map((image) => (
         <div key={image} className={`${imageHorizontalSpace} ${imageVerticalSpace} relative h-full w-full`}>
+          {image ? (
+            <ImageWithFallback
+              src={image}
+              alt={`listing secondary image`}
+              fill
+              className="object-cover"
+              sizes="(min-width: 640px) 25vw, (max-width: 639px) 0px"
+            />
+          ) : (
+            <FallbackIcon />
+          )}
+          {/* 
           <Image src={image} alt={`listing secondary image`} fill className="object-cover" sizes="(min-width: 640px) 25vw, (max-width: 639px) 0px" />
+
+          */}
         </div>
       ))}
     </div>

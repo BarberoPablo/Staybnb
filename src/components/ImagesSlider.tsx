@@ -1,12 +1,12 @@
 "use client";
 
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useKeenSlider } from "keen-slider/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { RoundButton } from "./Button/RoundButton";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+import ImageWithFallback, { FallbackIcon } from "./ImageWithFallback";
 
 export default function ImagesSlider({
   images,
@@ -98,7 +98,11 @@ export default function ImagesSlider({
           <div ref={sliderRef} className="keen-slider h-full w-full">
             {images.map((image, index) => (
               <div key={image} className={`keen-slider__slide number-slide${index + 1} relative h-[300px] min-w-full`}>
-                <Image src={image} alt={`listing secondary image`} priority fill className="object-cover" sizes="100%" />
+                {image ? (
+                  <ImageWithFallback src={image} alt={`listing secondary image`} priority fill className="object-cover" sizes="100%" />
+                ) : (
+                  <FallbackIcon />
+                )}
               </div>
             ))}
 
