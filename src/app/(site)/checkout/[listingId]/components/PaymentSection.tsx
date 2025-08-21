@@ -1,7 +1,9 @@
 "use client";
 
+import { PriceSummary } from "@/components/Booking/PriceSummary";
 import { api } from "@/lib/api/api";
 import { CreateReservation } from "@/lib/types/reservation";
+import { calculateNights } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -35,6 +37,8 @@ const reserve = {
 export default function PaymentSection({ listingData }: { listingData: ListingData }) {
   const [isOpen, setIsOpen] = useState(false);
   const [confirmationState, setConfirmationState] = useState<ConfirmationState>("loading");
+  const nights = calculateNights(listingData.startDate, listingData.endDate);
+
   const router = useRouter();
 
   const handleConfirmPayment = async () => {
@@ -79,7 +83,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
     <div className="w-full max-w-md space-y-6">
       {/* Section Header */}
       <div className="text-center">
-        <div className="w-16 h-16 bg-myGreenExtraLight rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-myGreen rounded-full flex items-center justify-center mx-auto mb-4">
           <IoCard className="w-8 h-8 text-myGrayDark" />
         </div>
         <h1 className="text-3xl font-bold text-myGrayDark mb-2">Payment Method</h1>
@@ -87,7 +91,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
       </div>
 
       {/* Trip Dates */}
-      <div className="bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20 p-6">
+      <div className="rounded-xl border bg-gradient-to-r p-6 from-myGreenExtraLight to-myGreenExtraLight/60 border-myGreenSemiBold/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 bg-myGreen rounded-full flex items-center justify-center">
             <IoCalendar className="w-5 h-5 text-myGrayDark" />
@@ -117,6 +121,12 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
             </span>
           </div>
         </div>
+        <PriceSummary
+          nights={nights}
+          listing={listingData.listing}
+          discountPercentage={listingData.promo?.discountPercentage}
+          className="flex flex-col mt-4"
+        />
       </div>
 
       {/* Payment Button */}

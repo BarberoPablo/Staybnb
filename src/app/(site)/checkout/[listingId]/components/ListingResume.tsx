@@ -1,6 +1,5 @@
 "use client";
 
-import ListingPrice from "@/components/ListingPrice";
 import ReservationDate from "@/components/ReservationDate";
 import { Guests } from "@/lib/types";
 import { displayGuestLabel } from "@/lib/utils";
@@ -91,17 +90,6 @@ export default function ListingResume({
               </span>
             </div>
           </div>
-        </div>
-
-        {/* Price Details */}
-        <div className="bg-gray-50 rounded-xl p-4">
-          <h3 className="text-lg font-semibold text-myGrayDark mb-3">Price Details</h3>
-          <ListingPrice
-            nightPrice={listingData.listing.nightPrice}
-            nights={listingData.nights}
-            discountPercentage={listingData.promo?.discountPercentage}
-            promotions={listingData.listing.promotions}
-          />
         </div>
       </div>
 

@@ -14,8 +14,6 @@ export default function PromotionsProgressBar({ promotions, currentNights }: Pro
   const activePromo = getPromotion(promotions, currentNights);
   const nextPromo = sortedPromotions.find((p) => currentNights < p.minNights);
   const maxNights = sortedPromotions[sortedPromotions.length - 1]?.minNights || 0;
-
-  // Calculate progress percentage
   const progressPercentage = Math.min((currentNights / maxNights) * 100, 100);
 
   return (

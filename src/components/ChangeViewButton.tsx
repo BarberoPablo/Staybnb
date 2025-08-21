@@ -41,7 +41,7 @@ export default function ChangeViewButton({ isMobile = false }: { isMobile?: bool
 
   return (
     <button
-      className="px-4 py-2 text-sm font-medium text-myGrayDark bg-myGreenExtraLight hover:bg-myGreen rounded-lg transition-colors"
+      className="px-4 py-2 text-sm text-myGrayDark bg-myGreenLight hover:bg-myGreen hover:cursor-pointer rounded-lg transition-colors"
       onClick={handleChangeMode}
     >
       Switch to {mode === "hosting" ? "traveling" : "hosting"}

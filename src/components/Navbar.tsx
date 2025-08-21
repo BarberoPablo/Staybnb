@@ -49,7 +49,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
               placeholder="Where do you want to go?"
               className={`rounded-full py-2 ${
                 searchEffect ? "px-4" : "px-2"
-              } text-sm focus:outline-none focus:bg-myGreen hover:bg-myGreen transition-colors duration-300`}
+              } text-sm focus:outline-none focus:bg-myGreenLight hover:bg-myGreenLight transition-colors duration-300`}
               value={searchCity}
               name="searchCity"
               onChange={handleSearchCityInput}
@@ -62,7 +62,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
 
             {searchEffect ? (
               <motion.button
-                className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGreenSemiBold text-background overflow-hidden transition-colors hover:cursor-pointer"
+                className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGreen text-myGray overflow-hidden transition-colors hover:cursor-pointer"
                 disabled={searchCity === ""}
                 onClick={handleSearchCity}
                 initial={{ width: 40 }}

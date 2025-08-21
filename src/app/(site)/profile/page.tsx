@@ -82,7 +82,7 @@ export default function ProfileInfo() {
         {!isEditing && (
           <motion.button
             onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-myGreenSemiBold text-background rounded-lg hover:bg-myGreen transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-myGreenLight text-myGrayDark rounded-lg hover:bg-myGreen transition-colors"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >

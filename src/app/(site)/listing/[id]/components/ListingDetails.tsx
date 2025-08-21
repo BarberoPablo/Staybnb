@@ -1,0 +1,77 @@
+"use client";
+
+import { ListBadges } from "@/components/ListBadges";
+import { Listing } from "@/lib/types/listing";
+import { motion } from "framer-motion";
+import { IoLocation, IoStar } from "react-icons/io5";
+
+export default function ListingDetails({ listing }: { listing: Listing }) {
+  return (
+    <motion.div
+      className="lg:col-span-7 space-y-8 border border-gray-200 rounded-2xl shadow-lg p-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Listing Header */}
+      <div className="space-y-4">
+        <h1 className="text-4xl font-bold text-myGrayDark leading-tight">{listing.title}</h1>
+        <ListingSubtitle listingDetails={listing} />
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-gray-200"></div>
+
+      {/* Host Information - Placeholder for future implementation */}
+      {/* <HostInformation host={listingDetails.host} /> */}
+
+      {/* Description */}
+      <div className="space-y-4">
+        <h3 className="text-2xl font-semibold text-myGrayDark">About this place</h3>
+        <p className="text-myGray leading-relaxed text-lg">{listing.description}</p>
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-gray-200"></div>
+    </motion.div>
+  );
+}
+
+/* function HostInformation({ host }: { host: Host }) {
+  return (
+    <div className="flex items-center">
+      <Image src={host.avatarUrl} alt="Rounded avatar" height={40} width={40} className="rounded-full" />
+      <h3>Hosted by {host.name}</h3>
+    </div>
+  );
+} */
+
+function ListingSubtitle({ listingDetails }: { listingDetails: Listing }) {
+  return (
+    <div className="space-y-4">
+      {/* Property Type and Location */}
+      <div className="flex items-center gap-2 text-lg text-myGray">
+        <IoLocation className="w-5 h-5" />
+        <h2 className="font-medium">
+          {listingDetails.propertyType} in {listingDetails.location.city}
+        </h2>
+      </div>
+
+      {/* Structure Badges */}
+      <div>
+        <ListBadges badges={listingDetails.structure} className="text-base" />
+      </div>
+
+      {/* Rating and Reviews */}
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 bg-myGreenExtraLight px-3 py-1.5 rounded-full">
+          <IoStar className="w-4 h-4 text-yellow-500 fill-current" />
+          <span className="text-sm font-semibold text-myGrayDark">{listingDetails.score.value.toFixed(1)}</span>
+        </div>
+        <span className="text-myGray font-medium underline cursor-pointer hover:text-myGrayDark transition-colors">
+          {listingDetails.score.reviews.length} reviews
+        </span>
+      </div>
+    </div>
+  );
+}
