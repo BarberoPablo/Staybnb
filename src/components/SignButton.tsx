@@ -56,19 +56,19 @@ export function SignButton({ isMobile = false }: { isMobile?: boolean }) {
   return user ? (
     <div className="flex items-center gap-2">
       <button
-        className="w-20 px-4 py-2 text-sm font-medium rounded-lg text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200"
+        className="w-20 px-4 py-2 text-sm font-medium rounded-lg text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200 hover:cursor-pointer"
         onClick={handleLogout}
       >
         Logout
       </button>
 
       <button className={`${basicButton}`} onClick={handleProfile}>
-        <FaUserCircle className="rounded-full text-4xl text-myGreen bg-white hover:bg-myGreen transition-colors duration-200" />
+        <FaUserCircle className="rounded-full text-4xl text-myGreen bg-white hover:bg-myGreenExtraLight transition-colors duration-200" />
       </button>
     </div>
   ) : (
     <button
-      className="w-20 px-4 py-2 text-sm font-medium rounded-lg text-myGrayDark bg-myGreenExtraLight hover:bg-myGreen transition-colors duration-200"
+      className="w-20 px-4 py-2 text-sm font-medium rounded-lg text-myGrayDark bg-myGreenExtraLight hover:bg-myGreen transition-colors duration-200 hover:cursor-pointer"
       onClick={handleLogin}
     >
       Login
