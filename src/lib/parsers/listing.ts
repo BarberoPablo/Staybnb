@@ -6,6 +6,8 @@ import {
   Listing,
   ListingDB,
   ListingWithReservations,
+  ListingWithReservationsAndHost,
+  ListingWithReservationsAndHostDB,
   ListingWithReservationsDB,
 } from "../types/listing";
 import { ReservedDate } from "../types/reservation";
@@ -55,6 +57,19 @@ export function parseListingWithReservationsFromDB(listingWithReservationDB: Lis
   };
 
   return listingWithReservation;
+}
+
+export function parseListingWithReservationsAndHostFromDB(listing: ListingWithReservationsAndHostDB): ListingWithReservationsAndHost {
+  const parsedListing = parseListingWithReservationsFromDB(listing);
+
+  return {
+    ...parsedListing,
+    host: {
+      firstName: listing.host.first_name,
+      lastName: listing.host.last_name,
+      avatarUrl: listing.host.avatar_url,
+    },
+  };
 }
 
 export function parseListingFormData(listingForm: ListingForm): CreateListingDB {

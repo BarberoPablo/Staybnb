@@ -2,7 +2,7 @@
 
 import ListingPrice from "@/components/ListingPrice";
 import ReservationDate from "@/components/ReservationDate";
-import { basicButton } from "@/lib/supabase/styles";
+import { basicButton } from "@/lib/styles";
 import { ResumedReservationWithListing } from "@/lib/types/reservation";
 import Image from "next/image";
 import { useState } from "react";

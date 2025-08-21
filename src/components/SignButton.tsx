@@ -2,7 +2,7 @@
 
 import { logout } from "@/app/(site)/auth/components/auth";
 import { useUser } from "@/hooks/useUser";
-import { basicButton } from "@/lib/supabase/styles";
+import { basicButton } from "@/lib/styles";
 import { MenuItem } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { FaUserCircle } from "react-icons/fa";

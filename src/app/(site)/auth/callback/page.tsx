@@ -3,7 +3,7 @@
 import { PreviewImage } from "@/components/Hosting/Steps/PhotosStep";
 import { api } from "@/lib/api/api";
 import { createClient } from "@/lib/supabase/client";
-import { basicButton } from "@/lib/supabase/styles";
+import { basicButton } from "@/lib/styles";
 import { CreateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";
 import { cleanString, isValidUrl } from "@/lib/utils";

@@ -69,8 +69,8 @@ export type ReservationWithListing = Reservation & {
 };
 
 export type ReservedDateDB = {
-  start_date: Date;
-  end_date: Date;
+  start_date: string;
+  end_date: string;
 };
 
 export type ReservedDate = {

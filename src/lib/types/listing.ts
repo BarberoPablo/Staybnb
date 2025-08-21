@@ -1,4 +1,5 @@
 import { Guests } from "../types";
+import { Host, HostDB } from "./profile";
 import { Reservation, ReservationDB, ReservedDate, ReservedDateDB } from "./reservation";
 
 export type ListingDB = CreateListingDB & {
@@ -41,6 +42,14 @@ export type ListingWithReservationsDB = ListingDB & {
 
 export type ListingWithReservations = Listing & {
   reservations: ReservedDate[] | [];
+};
+
+export type ListingWithReservationsAndHostDB = ListingWithReservationsDB & {
+  host: HostDB;
+};
+
+export type ListingWithReservationsAndHost = ListingWithReservations & {
+  host: Host;
 };
 
 export type ResumedListingDB = Pick<

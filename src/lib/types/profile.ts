@@ -50,18 +50,14 @@ export type UpdateProfile = {
   bio?: string;
 };
 
-/* 
-export type UpdateProfileDB = {
-  first_name: string | "";
-  last_name: string | "";
-  avatar_url: string | "";
-  bio: string | "";
+export type HostDB = {
+  first_name: string;
+  last_name: string;
+  avatar_url: string;
 };
 
-export type UpdateProfile = {
+export type Host = {
   firstName: string;
   lastName: string;
-  avatarUrl: string | "";
-  bio: string | "";
+  avatarUrl: string;
 };
-*/

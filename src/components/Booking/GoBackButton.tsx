@@ -1,6 +1,6 @@
 "use client";
 
-import { basicButton } from "@/lib/supabase/styles";
+import { basicButton } from "@/lib/styles";
 
 export function GoBackButton() {
   return (

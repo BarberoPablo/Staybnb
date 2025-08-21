@@ -1,7 +1,7 @@
 "use client";
 
 import Navbar from "@/components/Navbar";
-import { basicButton } from "@/lib/supabase/styles";
+import { basicButton } from "@/lib/styles";
 import { useRouter } from "next/navigation";
 
 export default function Hosting() {

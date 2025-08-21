@@ -95,12 +95,9 @@ export default function ProfileInfo() {
       {/* Profile Header */}
       <div className="flex items-center gap-6 p-6 bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20">
         <div className="relative w-24 h-24 bg-myGreen rounded-full flex items-center justify-center">
-          {isEditing && userProfile.avatarUrl ? (
+          {isEditing ? (
             <button className="absolute w-24 h-24 rounded-full text-myGrayDark text-2xl hover:cursor-pointer z-10">Upload</button>
-          ) : (
-            <IoPerson className="w-12 h-12 text-myGrayDark" />
-          )}
-          {userProfile.avatarUrl ? (
+          ) : userProfile.avatarUrl ? (
             <Image
               src={userProfile.avatarUrl}
               alt="Profile"
