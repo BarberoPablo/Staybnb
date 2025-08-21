@@ -16,7 +16,7 @@ export function ListingCards({ listings, setLocateListing }: { listings: Listing
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3 p-4 h-[90px] bg-myGreenLight rounded-xl border border-myGreenBold/20">
+      <div className="flex items-center gap-3 p-4 h-[90px] bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20">
         <div className="w-8 h-8 bg-myGreen rounded-full flex items-center justify-center">
           <span className="text-sm font-semibold text-myGrayDark">{listings.length}</span>
         </div>

@@ -41,7 +41,7 @@ export default function ListingCard({ listing, setLocateListing }: { listing: Li
           <h3 className="font-semibold text-myGrayDark text-lg leading-tight line-clamp-2 flex-1">
             {listing.propertyType} in {listing.location.city}
           </h3>
-          <div className="flex items-center gap-1 flex-shrink-0 bg-myGreenLight px-2 py-1 rounded-full">
+          <div className="flex items-center gap-1 flex-shrink-0 bg-myGreenExtraLight px-2 py-1 rounded-full">
             <IoStar className="w-4 h-4 text-yellow-500 fill-current" />
             <span className="text-sm font-semibold text-myGrayDark">{listing.score.value.toFixed(1)}</span>
           </div>

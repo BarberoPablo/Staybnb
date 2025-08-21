@@ -52,7 +52,7 @@ export default function ListingResume({
           <h2 className="text-xl font-bold text-myGrayDark line-clamp-2">{listingData.listing.title}</h2>
 
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 bg-myGreenLight px-2 py-1 rounded-full">
+            <div className="flex items-center gap-1 bg-myGreenExtraLight px-2 py-1 rounded-full">
               <IoStar className="w-4 h-4 text-yellow-500 fill-current" />
               <span className="text-sm font-semibold text-myGrayDark">{listingData.listing.score.value.toFixed(1)}</span>
             </div>
@@ -66,7 +66,7 @@ export default function ListingResume({
         </div>
 
         {/* Trip Information */}
-        <div className="bg-myGreenLight rounded-xl border border-myGreenBold/20 p-4">
+        <div className="bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20 p-4">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 bg-myGreen rounded-full flex items-center justify-center">
               <IoCalendar className="w-4 h-4 text-myGrayDark" />
@@ -79,7 +79,7 @@ export default function ListingResume({
               startDate={listingData.startDate}
               endDate={listingData.endDate}
               timezone={listingData.listing.location.timezone}
-              className="bg-white text-myGrayDark border border-myGreenBold/20"
+              className="bg-white text-myGrayDark border border-myGreenSemiBold/20"
             />
 
             <div className="flex items-center gap-2 text-sm text-myGray">

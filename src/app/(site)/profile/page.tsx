@@ -82,7 +82,7 @@ export default function ProfileInfo() {
         {!isEditing && (
           <motion.button
             onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-myGreenBold text-background rounded-lg hover:bg-myGreenDark transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-myGreenSemiBold text-background rounded-lg hover:bg-myGreen transition-colors"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -93,7 +93,7 @@ export default function ProfileInfo() {
       </div>
 
       {/* Profile Header */}
-      <div className="flex items-center gap-6 p-6 bg-myGreenLight rounded-xl border border-myGreenBold/20">
+      <div className="flex items-center gap-6 p-6 bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20">
         <div className="relative w-24 h-24 bg-myGreen rounded-full flex items-center justify-center">
           {isEditing && userProfile.avatarUrl ? (
             <button className="absolute w-24 h-24 rounded-full text-myGrayDark text-2xl hover:cursor-pointer z-10">Upload</button>
@@ -134,7 +134,7 @@ export default function ProfileInfo() {
                   type="text"
                   value={updateProfile.firstName}
                   onChange={(e) => setUpdateProfile({ ...updateProfile, firstName: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                 />
               ) : (
                 <p className="px-3 py-2 bg-gray-50 rounded-lg text-myGrayDark">{userProfile.firstName || "Not provided"}</p>
@@ -148,7 +148,7 @@ export default function ProfileInfo() {
                   type="text"
                   value={updateProfile.lastName}
                   onChange={(e) => setUpdateProfile({ ...updateProfile, lastName: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                 />
               ) : (
                 <p className="px-3 py-2 bg-gray-50 rounded-lg text-myGrayDark">{userProfile.lastName || "Not provided"}</p>
@@ -162,7 +162,7 @@ export default function ProfileInfo() {
                   value={updateProfile.bio}
                   onChange={(e) => setUpdateProfile({ ...updateProfile, bio: e.target.value })}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                   placeholder="Tell us about yourself..."
                 />
               ) : (
@@ -213,7 +213,7 @@ export default function ProfileInfo() {
         >
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 px-6 py-2 bg-myGreenBold text-background rounded-lg hover:bg-myGreenDark transition-colors"
+            className="flex items-center gap-2 px-6 py-2 bg-myGreenSemiBold text-background rounded-lg hover:bg-myGreen transition-colors"
           >
             <IoCheckmark className="w-4 h-4" />
             Save Changes

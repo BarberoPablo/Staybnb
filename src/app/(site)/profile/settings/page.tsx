@@ -88,7 +88,7 @@ export default function SettingsSection() {
               </div>
               <button
                 onClick={() => handleNotificationChange(key as keyof typeof notifications)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${value ? "bg-myGreenBold" : "bg-gray-200"}`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${value ? "bg-myGreenSemiBold" : "bg-gray-200"}`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${value ? "translate-x-6" : "translate-x-1"}`}
@@ -121,7 +121,7 @@ export default function SettingsSection() {
             <select
               value={privacy.profileVisibility}
               onChange={(e) => handlePrivacyChange("profileVisibility", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
             >
               <option value="public">Public - Anyone can see your profile</option>
               <option value="friends">Friends Only - Only your connections can see</option>
@@ -147,7 +147,7 @@ export default function SettingsSection() {
                 </div>
                 <button
                   onClick={() => handlePrivacyChange(key as keyof typeof privacy, !value)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${value ? "bg-myGreenBold" : "bg-gray-200"}`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${value ? "bg-myGreenSemiBold" : "bg-gray-200"}`}
                 >
                   <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${value ? "translate-x-6" : "translate-x-1"}`}
@@ -188,8 +188,8 @@ export default function SettingsSection() {
                   onClick={() => setTheme(value as "light" | "dark" | "auto")}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
                     theme === value
-                      ? "border-myGreenBold bg-myGreenBold text-background"
-                      : "border-gray-300 text-myGrayDark hover:border-myGreenBold hover:bg-myGreenLight"
+                      ? "border-myGreenSemiBold bg-myGreenSemiBold text-background"
+                      : "border-gray-300 text-myGrayDark hover:border-myGreenSemiBold hover:bg-myGreenExtraLight"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -225,7 +225,7 @@ export default function SettingsSection() {
                 type={showPassword ? "text" : "password"}
                 value={passwordData.current}
                 onChange={(e) => setPasswordData({ ...passwordData, current: e.target.value })}
-                className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
+                className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                 placeholder="Enter current password"
               />
               <button
@@ -244,7 +244,7 @@ export default function SettingsSection() {
               type="password"
               value={passwordData.new}
               onChange={(e) => setPasswordData({ ...passwordData, new: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
               placeholder="Enter new password"
             />
           </div>
@@ -255,12 +255,12 @@ export default function SettingsSection() {
               type="password"
               value={passwordData.confirm}
               onChange={(e) => setPasswordData({ ...passwordData, confirm: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
               placeholder="Confirm new password"
             />
           </div>
 
-          <button onClick={handlePasswordChange} className="px-6 py-2 bg-myGreenBold text-background rounded-lg hover:bg-myGreenDark transition-colors">
+          <button onClick={handlePasswordChange} className="px-6 py-2 bg-myGreenSemiBold text-background rounded-lg hover:bg-myGreen transition-colors">
             Update Password
           </button>
         </div>

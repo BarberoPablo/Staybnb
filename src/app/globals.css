@@ -13,17 +13,35 @@
   --foreground: #222222;
 }
 
-@theme inline {
+/* @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-myGreenLight: #ECFAE5;
-  --color-myGreen: #DDF6D2;
-  --color-myGreenDark: #CAE8BD;
-  --color-myGreenBold: #B0DB9C;
+  --color-myGreenLight: #E8F5E8;
+  --color-myGreen: #C8E6C9;
+  --color-myGreenDark: #A5D6A7;
+  --color-myGreenBold: #4CAF50;
+  --color-myGreenBoldDarker: #388E3C;
   --color-myGreenComplement: #F3E5FA;
   --color-myGray: #6A6A6A;
   --color-myGrayDark: #364153;
+} */
+
+
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-myGreenExtraLight: #DDF6D2;
+  --color-myGreenLight: #CAE8BD;
+  --color-myGreen: #B0DB9C;
+  --color-myGreenSemiBold: #7FB069;
+  --color-myGreenBold: #5A8A4A;
+  --color-myGreenComplement: #F3E5FA;
+  --color-myGray: #6A6A6A;
+  --color-myGrayDark: #364153;
+
 }
+
 
 @media (prefers-color-scheme: light) {
   :root {

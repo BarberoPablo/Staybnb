@@ -101,7 +101,7 @@ function ListingSubtitle({ listingDetails }: { listingDetails: Listing }) {
 
       {/* Rating and Reviews */}
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 bg-myGreenLight px-3 py-1.5 rounded-full">
+        <div className="flex items-center gap-2 bg-myGreenExtraLight px-3 py-1.5 rounded-full">
           <IoStar className="w-4 h-4 text-yellow-500 fill-current" />
           <span className="text-sm font-semibold text-myGrayDark">{listingDetails.score.value.toFixed(1)}</span>
         </div>

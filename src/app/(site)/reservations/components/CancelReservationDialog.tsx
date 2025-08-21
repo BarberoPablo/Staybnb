@@ -56,7 +56,7 @@ export function CancelReservationDialog({
           aria-describedby="dialog-description"
           className="flex flex-col items-center bg-white rounded-lg py-2 sm:py-4 max-w-sm w-full gap-10"
         >
-          <DialogTitle id="dialog-title" className="text-xl font-semibold text-myGreen">
+          <DialogTitle id="dialog-title" className="text-xl font-semibold text-myGreenLight">
             Cancel reservation
           </DialogTitle>
 

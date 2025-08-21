@@ -15,7 +15,7 @@ export default function BookingCalendarContainer({ listing }: { listing: Listing
     >
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 bg-myGreenLight rounded-full flex items-center justify-center">
+        <div className="w-12 h-12 bg-myGreenExtraLight rounded-full flex items-center justify-center">
           <IoCalendar className="w-6 h-6 text-myGrayDark" />
         </div>
         <div>

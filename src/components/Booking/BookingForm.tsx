@@ -109,9 +109,9 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Price and Nights Summary - Always at the top */}
-      <div className="bg-gradient-to-r from-myGreenLight to-myGreenBold/10 rounded-xl p-4 border border-myGreenBold/20">
+      <div className="bg-gradient-to-r from-myGreenExtraLight to-myGreenSemiBold/10 rounded-xl p-4 border border-myGreenSemiBold/20">
         <div className="flex items-center gap-2 mb-3">
-          <IoPricetag className="w-5 h-5 text-myGreenBold" />
+          <IoPricetag className="w-5 h-5 text-myGreenSemiBold" />
           <span className="text-lg font-semibold text-myGrayDark">Price Summary</span>
         </div>
         <div className="space-y-2">
@@ -128,14 +128,14 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
           <div className="flex justify-between items-center">
             <span className="text-myGray">Discount:</span>
             {discountPercentage > 0 ? (
-              <span className="font-semibold text-myGreenBold">
+              <span className="font-semibold text-myGreenSemiBold">
                 {(getTotalPrice(nights, listing.nightPrice) * discountPercentage) / 100} USD ({discountPercentage}% off)
               </span>
             ) : (
               <span className="font-semibold text-myGrayDark">-</span>
             )}
           </div>
-          <div className="border-t border-myGreenBold/20 pt-2 mt-2">
+          <div className="border-t border-myGreenSemiBold/20 pt-2 mt-2">
             <div className="flex justify-between items-center">
               <span className="font-semibold text-myGrayDark">Total:</span>
               <div className="flex items-center gap-2">
@@ -161,7 +161,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
       {/* Calendar Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-lg font-semibold text-myGrayDark">
-          <IoCalendar className="w-5 h-5 text-myGreenBold" />
+          <IoCalendar className="w-5 h-5 text-myGreenSemiBold" />
           Select Dates
         </div>
         <div className="relative flex flex-col w-full justify-center items-center">
@@ -182,7 +182,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
       {/* Guests Section */}
       <div className="space-y-4">
         <div className="flex items-center gap-2 text-lg font-semibold text-myGrayDark">
-          <IoPeople className="w-5 h-5 text-myGreenBold" />
+          <IoPeople className="w-5 h-5 text-myGreenSemiBold" />
           Guests
         </div>
 
@@ -198,7 +198,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
                 <button
                   type="button"
                   disabled={guests[type] === listing.guestLimits[type].min}
-                  className="w-8 h-8 bg-myGreenLight hover:bg-myGreen text-myGrayDark hover:text-white rounded-full flex items-center justify-center font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-8 h-8 bg-myGreenExtraLight hover:bg-myGreen text-myGrayDark hover:text-white rounded-full flex items-center justify-center font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => handleGuest(type, -1)}
                 >
                   -
@@ -209,7 +209,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
                 <button
                   type="button"
                   disabled={guests[type] === listing.guestLimits[type].max}
-                  className="w-8 h-8 bg-myGreenLight hover:bg-myGreen text-myGrayDark hover:text-white rounded-full flex items-center justify-center font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-8 h-8 bg-myGreenExtraLight hover:bg-myGreen text-myGrayDark hover:text-white rounded-full flex items-center justify-center font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => handleGuest(type, 1)}
                 >
                   +
@@ -226,7 +226,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
         <button
           type="submit"
           disabled={dateRange.startDate.getTime() >= dateRange.endDate.getTime() || Object.keys(errors).length > 0}
-          className="w-full bg-myGreenBold hover:bg-myGreenDark text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2 hover:cursor-pointer"
+          className="w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2 hover:cursor-pointer"
         >
           <IoCheckmarkCircle className="w-5 h-5" />
           Reserve Now

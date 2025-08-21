@@ -32,11 +32,11 @@ export default function ListingReservation({ reservation, eventKey }: { reservat
         </div>
 
         <div className="flex flex-col pt-5 gap-2 w-[170px]">
-          <button className={`${basicButton} text-[#13422d] bg-myGreen hover:bg-myGreenDark`}>
+          <button className={`${basicButton} text-[#13422d] bg-myGreen hover:bg-myGreen`}>
             <LuReceiptText className="w-5 h-5" />
             <h3 className="ml-2">See receipt</h3>
           </button>
-          <button className={`${basicButton} text-[#13422d] bg-myGreen hover:bg-myGreenDark`}>
+          <button className={`${basicButton} text-[#13422d] bg-myGreen hover:bg-myGreen`}>
             <MdOutlineMessage className="w-5 h-5" />
             <h3 className="ml-2">Chat with host</h3>
           </button>

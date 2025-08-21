@@ -34,7 +34,7 @@ export function ReservationsTable({
 
   return (
     <table className="w-full text-center">
-      <thead className="flex-1 border-2 border-myGreenDark bg-myGreen">
+      <thead className="flex-1 border-2 border-myGreen bg-myGreen">
         <tr>
           {tableHeaders[status[0]].map((header) => (
             <th key={"table-head-" + header} className="border-r border-gray-300 py-1">
@@ -43,7 +43,7 @@ export function ReservationsTable({
           ))}
         </tr>
       </thead>
-      <tbody className="flex-1 border-2 border-myGreenDark">
+      <tbody className="flex-1 border-2 border-myGreen">
         {filteredReservations.map((reservation, index) => (
           <tr key={reservation.id} className={`${index % 2 === 0 ? "bg-gray-300" : "bg-gray-200"}`}>
             <td>{showUTCDate(reservation.startDate)}</td>

@@ -32,7 +32,7 @@ export default function PromotionsProgressBar({ promotions, currentNights }: Pro
       {/* Current Status */}
       {currentNights > 1 && (
         <div className="text-center">
-          {activePromo && <div className="text-myGreenBold font-medium">🎉 You&apos;re getting {activePromo.discountPercentage}% off!</div>}
+          {activePromo && <div className="text-myGreenSemiBold font-medium">🎉 You&apos;re getting {activePromo.discountPercentage}% off!</div>}
           {nextPromo && (
             <div className="text-myGray text-sm">
               Stay {nextPromo.minNights - currentNights} more night{nextPromo.minNights - currentNights > 1 ? "s" : ""} to unlock{" "}
@@ -46,7 +46,7 @@ export default function PromotionsProgressBar({ promotions, currentNights }: Pro
       <div className="relative">
         <div className="w-full bg-gray-200 rounded-full h-3">
           <div
-            className="bg-gradient-to-r from-myGreenLight to-myGreenBold h-3 rounded-full transition-all duration-500 ease-out"
+            className="bg-gradient-to-r from-myGreenExtraLight to-myGreenSemiBold h-3 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progressPercentage}%` }}
           />
         </div>
@@ -66,9 +66,9 @@ export default function PromotionsProgressBar({ promotions, currentNights }: Pro
                   w-4 h-4 rounded-full border-2 transition-all duration-300
                   ${
                     isActive
-                      ? "bg-myGreenBold border-myGreenBold shadow-lg"
+                      ? "bg-myGreenSemiBold border-myGreenBold shadow-lg"
                       : isNext
-                      ? "bg-background border-myGreenBold"
+                      ? "bg-background border-myGreenSemiBold"
                       : "bg-background border-gray-300"
                   }
                 `}
@@ -79,7 +79,7 @@ export default function PromotionsProgressBar({ promotions, currentNights }: Pro
                   className={`
                   absolute top-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap
                   text-xs font-medium transition-all duration-300
-                  ${isActive ? "text-myGreenBold" : "text-myGrayDark"}
+                  ${isActive ? "text-myGreenSemiBold" : "text-myGrayDark"}
                 `}
                 >
                   <div className="text-center">

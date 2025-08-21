@@ -7,7 +7,7 @@ interface FavoritesSummaryProps {
 export function FavoritesSummary({ favoritesCount }: FavoritesSummaryProps) {
   return (
     <motion.div
-      className="bg-myGreenLight rounded-xl p-6 border border-myGreenBold/20"
+      className="bg-myGreenExtraLight rounded-xl p-6 border border-myGreenSemiBold/20"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}

@@ -8,7 +8,7 @@ export function SkeletonProfile() {
       </div>
 
       {/* Profile Header */}
-      <div className="flex items-center gap-6 p-6 bg-myGreenLight rounded-xl border border-myGreenBold/20">
+      <div className="flex items-center gap-6 p-6 bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20">
         {/* Avatar skeleton */}
         <div className="w-24 h-24 bg-gray-200 rounded-full animate-pulse" />
 

@@ -166,7 +166,7 @@ function Dots({ totalDots, currentSlide, onDotClick, hoverAnimation }: DotsProps
             key={idx}
             onClick={() => onDotClick(idx)}
             className={`w-2.5 h-2.5 rounded-full mx-1 transition-all duration-300 ${
-              currentSlide === idx ? "bg-myGreenBold scale-110 shadow-md" : "bg-white/70 hover:bg-white/90 hover:scale-105"
+              currentSlide === idx ? "bg-myGreenSemiBold scale-110 shadow-md" : "bg-white/70 hover:bg-white/90 hover:scale-105"
             }`}
           />
         ))}
@@ -187,7 +187,7 @@ function Dots({ totalDots, currentSlide, onDotClick, hoverAnimation }: DotsProps
               key={actualIdx}
               onClick={() => onDotClick(actualIdx)}
               className={`w-2.5 h-2.5 rounded-full mx-1 transition-all duration-300 ${
-                isActive ? "bg-myGreenBold scale-110 shadow-md" : "bg-white/70 hover:bg-white/90 hover:scale-105"
+                isActive ? "bg-myGreenSemiBold scale-110 shadow-md" : "bg-white/70 hover:bg-white/90 hover:scale-105"
               }`}
             />
           );

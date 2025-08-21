@@ -113,7 +113,7 @@ export default function DateRangeSelector({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-myGreenLight rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-myGreenExtraLight rounded-full flex items-center justify-center">
                 <IoCalendar className="w-5 h-5 text-myGrayDark" />
               </div>
               <div>
@@ -159,7 +159,7 @@ export default function DateRangeSelector({
               Cancel
             </button>
             <button
-              className="flex-1 bg-myGreenBold hover:bg-myGreenDark text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2"
+              className="flex-1 bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2"
               disabled={dateRange.startDate === dateRange.endDate}
               onClick={handleConfirm}
             >

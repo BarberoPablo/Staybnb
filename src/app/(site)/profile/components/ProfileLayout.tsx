@@ -30,7 +30,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
       <div className="flex gap-8 w-full">
         {/* Left Sidebar */}
         <motion.div
-          className="w-64 bg-myGreenLight rounded-2xl p-6 shadow-sm border border-myGreenBold/20"
+          className="w-64 bg-myGreenExtraLight rounded-2xl p-6 shadow-sm border border-myGreenSemiBold/20"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
@@ -50,7 +50,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                   key={item.id}
                   onClick={() => handleClickMenuButton(item.href)}
                   className={`${basicButton} w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
-                    isActive ? "bg-myGreenBold text-background shadow-md" : "text-myGrayDark hover:bg-myGreen hover:text-myGrayDark"
+                    isActive ? "bg-myGreenSemiBold text-background shadow-md" : "text-myGrayDark hover:bg-myGreen hover:text-myGrayDark"
                   }`}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}

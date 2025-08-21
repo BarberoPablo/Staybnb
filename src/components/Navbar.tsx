@@ -43,7 +43,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
           </Link>
         </div>
         {search && (
-          <div className="flex items-center gap-2 h-10 border border-myGreenBold bg-myGreenLight rounded-full">
+          <div className="flex items-center gap-2 h-10 border border-myGreenSemiBold bg-myGreenExtraLight rounded-full">
             <input
               type="text"
               placeholder="Where do you want to go?"
@@ -62,7 +62,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
 
             {searchEffect ? (
               <motion.button
-                className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGreenBold text-background overflow-hidden transition-colors hover:cursor-pointer"
+                className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGreenSemiBold text-background overflow-hidden transition-colors hover:cursor-pointer"
                 disabled={searchCity === ""}
                 onClick={handleSearchCity}
                 initial={{ width: 40 }}
@@ -84,7 +84,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
               </motion.button>
             ) : (
               <button
-                className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGreenBold text-background overflow-hidden transition-colors hover:cursor-pointer"
+                className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGreenSemiBold text-background overflow-hidden transition-colors hover:cursor-pointer"
                 disabled={searchCity === ""}
                 onClick={handleSearchCity}
               >
@@ -107,7 +107,7 @@ function DropDownNavbarMenu() {
   return (
     <div className="text-right md:hidden">
       <Menu>
-        <MenuButton className="rounded-lg bg-myGreenLight p-2">
+        <MenuButton className="rounded-lg bg-myGreenExtraLight p-2">
           <IoMenu className="w-6 h-6 text-myGrayDark" />
         </MenuButton>
 

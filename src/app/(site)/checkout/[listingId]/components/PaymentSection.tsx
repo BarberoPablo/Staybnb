@@ -79,7 +79,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
     <div className="w-full max-w-md space-y-6">
       {/* Section Header */}
       <div className="text-center">
-        <div className="w-16 h-16 bg-myGreenLight rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-myGreenExtraLight rounded-full flex items-center justify-center mx-auto mb-4">
           <IoCard className="w-8 h-8 text-myGrayDark" />
         </div>
         <h1 className="text-3xl font-bold text-myGrayDark mb-2">Payment Method</h1>
@@ -87,7 +87,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
       </div>
 
       {/* Trip Dates */}
-      <div className="bg-myGreenLight rounded-xl border border-myGreenBold/20 p-6">
+      <div className="bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20 p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 bg-myGreen rounded-full flex items-center justify-center">
             <IoCalendar className="w-5 h-5 text-myGrayDark" />
@@ -122,7 +122,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
       {/* Payment Button */}
       <button
         disabled={listingData.startDate.getTime() >= listingData.endDate.getTime()}
-        className="w-full bg-myGreenBold hover:bg-myGreenDark text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02]"
+        className="w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02]"
         onClick={handleConfirmPayment}
       >
         Confirm & Pay
@@ -139,8 +139,8 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
           >
             {/* Success Icon */}
             {confirmationState === "confirmed" && (
-              <div className="w-20 h-20 bg-myGreenLight rounded-full flex items-center justify-center mb-6">
-                <IoCheckmarkCircle className="w-12 h-12 text-myGreenBold" />
+              <div className="w-20 h-20 bg-myGreenExtraLight rounded-full flex items-center justify-center mb-6">
+                <IoCheckmarkCircle className="w-12 h-12 text-myGreenSemiBold" />
               </div>
             )}
 
@@ -154,7 +154,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
 
             <button
               disabled={confirmationState === "loading"}
-              className="flex items-center justify-center w-full bg-myGreenBold hover:bg-myGreenDark text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-300"
+              className="flex items-center justify-center w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-300"
               onClick={handleRedirect}
             >
               {reserve.button[confirmationState]}

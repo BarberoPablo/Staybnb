@@ -42,7 +42,7 @@ export default function SearchPage() {
       <Container>
         <div className="space-y-6">
           <div className="text-center py-12">
-            <div className="animate-spin w-16 h-16 border-4 border-myGreenBold border-t-transparent rounded-full mx-auto mb-4"></div>
+            <div className="animate-spin w-16 h-16 border-4 border-myGreenSemiBold border-t-transparent rounded-full mx-auto mb-4"></div>
             <h1 className="text-3xl font-bold text-myGrayDark mb-2">Searching listings</h1>
             <p className="text-myGray">Looking for amazing places in {city}</p>
           </div>

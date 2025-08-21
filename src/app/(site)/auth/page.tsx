@@ -78,7 +78,7 @@ export default function AuthForm() {
             minLength={6}
             autoComplete="current-password"
           />
-          <button type="submit" disabled={loading} className="bg-myGreen text-myGrayDark py-2 rounded disabled:opacity-50">
+          <button type="submit" disabled={loading} className="bg-myGreenLight text-myGrayDark py-2 rounded disabled:opacity-50">
             {loading ? (mode === "login" ? "Logging in..." : "Registering...") : mode === "login" ? "Login" : "Register"}
           </button>
         </form>

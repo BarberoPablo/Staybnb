@@ -57,7 +57,7 @@ export function FavoriteCard({ favorite, index, onViewListing, onRemoveFavorite 
         <div className="flex gap-2 pt-2">
           <button
             onClick={() => onViewListing(favorite.listing.id)}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-myGreenBold text-background rounded-lg hover:bg-myGreenDark transition-colors text-sm hover:cursor-pointer"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-myGreenSemiBold text-background rounded-lg hover:bg-myGreen transition-colors text-sm hover:cursor-pointer"
           >
             <IoEye className="w-4 h-4" />
             View

@@ -31,13 +31,13 @@ export function SignButton({ isMobile = false }: { isMobile?: boolean }) {
     return user ? (
       <div>
         <MenuItem>
-          <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreenDark/70" onClick={handleProfile}>
+          <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreen/70" onClick={handleProfile}>
             <FaUserCircle className="size-4 fill-GrayDark" />
             Profile
           </button>
         </MenuItem>
         <MenuItem>
-          <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreenDark/70" onClick={handleLogout}>
+          <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreen/70" onClick={handleLogout}>
             <MdOutlineLogout className="size-4 fill-GrayDark" />
             Logout
           </button>
@@ -45,7 +45,7 @@ export function SignButton({ isMobile = false }: { isMobile?: boolean }) {
       </div>
     ) : (
       <MenuItem>
-        <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreenDark/70" onClick={handleLogin}>
+        <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreen/70" onClick={handleLogin}>
           <MdOutlineLogin className="size-4 fill-GrayDark" />
           Login
         </button>
@@ -63,12 +63,12 @@ export function SignButton({ isMobile = false }: { isMobile?: boolean }) {
       </button>
 
       <button className={`${basicButton}`} onClick={handleProfile}>
-        <FaUserCircle className="rounded-full text-4xl text-myGreenDark bg-white hover:bg-myGreen transition-colors duration-200" />
+        <FaUserCircle className="rounded-full text-4xl text-myGreen bg-white hover:bg-myGreen transition-colors duration-200" />
       </button>
     </div>
   ) : (
     <button
-      className="w-20 px-4 py-2 text-sm font-medium rounded-lg text-myGrayDark bg-myGreenLight hover:bg-myGreen transition-colors duration-200"
+      className="w-20 px-4 py-2 text-sm font-medium rounded-lg text-myGrayDark bg-myGreenExtraLight hover:bg-myGreen transition-colors duration-200"
       onClick={handleLogin}
     >
       Login

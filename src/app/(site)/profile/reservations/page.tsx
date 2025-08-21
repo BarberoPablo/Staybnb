@@ -92,7 +92,7 @@ export default function ReservationsSection() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as ReservationStatus)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
           >
             <option value="all">All Status</option>
             <option value="upcoming">Upcoming</option>
@@ -165,7 +165,7 @@ export default function ReservationsSection() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 bg-myGreenBold rounded-full"></div>
+                      <div className="w-4 h-4 bg-myGreenSemiBold rounded-full"></div>
                       <div>
                         <p className="text-xs text-myGray">Total</p>
                         <p className="font-medium text-myGrayDark">${reservation.totalPrice}</p>
@@ -175,7 +175,7 @@ export default function ReservationsSection() {
 
                   <div className="flex gap-3 pt-2">
                     <button
-                      className="px-4 py-2 bg-myGreenBold text-background rounded-lg hover:bg-myGreenDark hover:cursor-pointer transition-colors text-sm"
+                      className="px-4 py-2 bg-myGreenSemiBold text-background rounded-lg hover:bg-myGreen hover:cursor-pointer transition-colors text-sm"
                       onClick={() => router.push(`/listing/${reservation.listing.id}`)}
                     >
                       Visit Listing

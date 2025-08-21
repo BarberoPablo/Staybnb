@@ -151,9 +151,9 @@ export default function AuthCallback() {
 
   if (step === "verifying") {
     return (
-      <Container className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-myGreenLight to-myGreen">
+      <Container className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-myGreenExtraLight to-myGreen">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-          <div className="w-16 h-16 bg-myGreenBold rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-myGreenSemiBold rounded-full flex items-center justify-center mx-auto mb-6">
             <FiUser className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-2xl font-semibold text-myGrayDark mb-2">Verifiying account...</h1>
@@ -165,13 +165,13 @@ export default function AuthCallback() {
 
   if (step === "completed") {
     return (
-      <Container className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-myGreenLight to-myGreen">
+      <Container className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-myGreenExtraLight to-myGreen">
         <div className="text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0, rotate: 360 }}
             transition={{ delay: 0.1, duration: 0.4 }}
-            className="w-16 h-16 bg-myGreenBold rounded-full flex items-center justify-center mx-auto mb-6"
+            className="w-16 h-16 bg-myGreenSemiBold rounded-full flex items-center justify-center mx-auto mb-6"
           >
             <motion.div animate={{ rotate: 360 }}>✓</motion.div>
           </motion.div>
@@ -198,7 +198,7 @@ export default function AuthCallback() {
 
   if (step === "profile") {
     return (
-      <Container className="flex flex-col items-center justify-center bg-gradient-to-br from-myGreenLight to-myGreen">
+      <Container className="flex flex-col items-center justify-center bg-gradient-to-br from-myGreenExtraLight to-myGreen">
         <motion.div
           initial={{ opacity: 0, y: 30, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -211,7 +211,7 @@ export default function AuthCallback() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.4, type: "spring", stiffness: 300 }}
-                className="w-16 h-16 bg-myGreenBold rounded-full flex items-center justify-center mx-auto mb-4"
+                className="w-16 h-16 bg-myGreenSemiBold rounded-full flex items-center justify-center mx-auto mb-4"
               >
                 <FiUser className="w-8 h-8 text-white" />
               </motion.div>
@@ -238,13 +238,13 @@ export default function AuthCallback() {
               >
                 <label className="block text-sm font-medium text-myGrayDark">Profile picture (optional)</label>
                 <div className="flex items-center justify-center w-full">
-                  <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-myGreenDark rounded-full cursor-pointer hover:border-myGreenBold transition-colors group">
+                  <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-myGreen rounded-full cursor-pointer hover:border-myGreenSemiBold transition-colors group">
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                       {profileImage && profileImage.url ? (
                         <Image src={profileImage.url} alt="Preview" height={20} width={20} className="w-20 h-20 rounded-full object-cover" />
                       ) : (
                         <>
-                          <FiCamera className="w-6 h-6 text-myGreenDark group-hover:text-myGreenBold mb-2" />
+                          <FiCamera className="w-6 h-6 text-myGreen group-hover:text-myGreenSemiBold mb-2" />
                           <p className="text-xs text-myGray">Upload</p>
                         </>
                       )}
@@ -296,7 +296,7 @@ export default function AuthCallback() {
               <motion.button
                 type="submit"
                 disabled={loading || !profileData.firstName || !profileData.lastName}
-                className={`${basicButton} w-full bg-myGreenBold text-myGrayDark py-3 px-6 rounded-lg font-medium hover:bg-myGreenDark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
+                className={`${basicButton} w-full bg-myGreenSemiBold text-myGrayDark py-3 px-6 rounded-lg font-medium hover:bg-myGreen transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0 }}

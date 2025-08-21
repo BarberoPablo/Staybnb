@@ -12,8 +12,8 @@ export function SearchBar({ searchTerm, onSearchChange, placeholder, variant = "
   const baseClasses = "relative";
   const inputClasses =
     variant === "compact"
-      ? "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent"
-      : "w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenBold focus:border-transparent";
+      ? "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
+      : "w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent";
 
   return (
     <div className={`${baseClasses} ${className}`}>
