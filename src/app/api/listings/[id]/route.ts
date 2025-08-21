@@ -1,3 +1,5 @@
+/*  Not bein used, getting the listing from the server side instead. "src/lib/api/server/api.ts"
+
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -9,7 +11,11 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     }
 
     const supabase = await createClient();
-    const { data: listing, error: listingError } = await supabase.from("listings").select("*").eq("id", Number(id)).single();
+    const { data: listing, error: listingError } = await supabase
+      .from("listings")
+      .select("*, profile:profiles(first_name, last_name, avatar_url)")
+      .eq("id", Number(id))
+      .single();
 
     if (listingError || !listing) {
       console.error("Error fetching listing:", listingError);
@@ -44,3 +50,4 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ success: false, error: "Unexpected error occurred" }, { status: 500 });
   }
 }
+ */
