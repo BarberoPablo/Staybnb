@@ -3,6 +3,7 @@ import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import DOMPurify from "dompurify";
 import { Guests, ListingSearchParams } from "./types";
 import { Listing, Location, Promotion } from "./types/listing";
+import { CreateProfile, UpdateProfile } from "./types/profile";
 import { ReservedDate } from "./types/reservation";
 
 export const logoUrl = "https://i.postimg.cc/152jT0ZW/logo80x63.png";
@@ -189,4 +190,22 @@ export function isValidUrl(url: string) {
   } catch {
     return false;
   }
+}
+
+export function verifyCreateProfileData(profileData: CreateProfile): CreateProfile {
+  const avatarUrl = profileData.avatarUrl ? (isValidUrl(profileData.avatarUrl.trim()) ? profileData.avatarUrl.trim() : "") : "";
+  return {
+    firstName: cleanString(profileData.firstName),
+    lastName: cleanString(profileData.lastName),
+    bio: profileData.bio ? cleanString(profileData.bio.trim()) : "",
+    avatarUrl,
+  };
+}
+
+export function verifyUpdateProfileData(profileData: UpdateProfile): UpdateProfile {
+  const data = verifyCreateProfileData(profileData);
+
+  return {
+    ...data,
+  };
 }

@@ -2,11 +2,11 @@
 
 import { PreviewImage } from "@/components/Hosting/Steps/PhotosStep";
 import { api } from "@/lib/api/api";
-import { createClient } from "@/lib/supabase/client";
 import { basicButton } from "@/lib/styles";
+import { createClient } from "@/lib/supabase/client";
 import { CreateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";
-import { cleanString, isValidUrl } from "@/lib/utils";
+import { verifyCreateProfileData } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -128,7 +128,7 @@ export default function AuthCallback() {
 
     try {
       const avatarUrl = await handleUploadImage();
-      const data = verifyProfileData({ ...profileData, avatarUrl });
+      const data = verifyCreateProfileData({ ...profileData, avatarUrl });
       const signUpResponse = await api.signUp(data);
 
       if (signUpResponse?.success) {
@@ -321,14 +321,4 @@ export default function AuthCallback() {
       </Container>
     );
   }
-}
-
-function verifyProfileData(profileData: CreateProfile): CreateProfile {
-  const avatarUrl = profileData.avatarUrl ? (isValidUrl(profileData.avatarUrl.trim()) ? profileData.avatarUrl.trim() : "") : "";
-  return {
-    firstName: cleanString(profileData.firstName),
-    lastName: cleanString(profileData.lastName),
-    bio: profileData.bio ? cleanString(profileData.bio.trim()) : "",
-    avatarUrl,
-  };
 }

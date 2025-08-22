@@ -36,19 +36,9 @@ export type CreateProfileDB = {
   bio?: string;
 };
 
-export type UpdateProfileDB = {
-  first_name?: string;
-  last_name?: string;
-  avatar_url?: string;
-  bio?: string;
-};
+export type UpdateProfileDB = CreateProfileDB & {};
 
-export type UpdateProfile = {
-  firstName?: string;
-  lastName?: string;
-  avatarUrl?: string;
-  bio?: string;
-};
+export type UpdateProfile = CreateProfile & {};
 
 export type HostDB = {
   first_name: string;

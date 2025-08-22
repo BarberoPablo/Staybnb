@@ -1,11 +1,16 @@
 "use client";
 
+import { PreviewImage } from "@/components/Hosting/Steps/PhotosStep";
 import { api } from "@/lib/api/api";
 import type { Profile, UpdateProfile } from "@/lib/types/profile";
+import { uploadFiles } from "@/lib/uploadthing";
+import { verifyUpdateProfileData } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { FiCamera } from "react-icons/fi";
 import { IoCheckmark, IoClose, IoLocation, IoMail, IoPerson } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import { SkeletonProfile } from "./components/SkeletonProfile";
@@ -13,15 +18,17 @@ import { SkeletonProfile } from "./components/SkeletonProfile";
 export default function ProfileInfo() {
   const [userProfile, setUserProfile] = useState<Profile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [updateProfile, setUpdateProfile] = useState<UpdateProfile>({});
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [updatingProfile, setUpdatingProfile] = useState(false);
+  const [updateProfile, setUpdateProfile] = useState<UpdateProfile>({ firstName: "", lastName: "", avatarUrl: "", bio: "" });
+  const [profileImage, setProfileImage] = useState<PreviewImage>();
 
   useEffect(() => {
     const fetchUser = async () => {
       const profile = await api.getProfile();
 
       if (profile) {
-        setLoading(false);
+        setLoadingProfile(false);
         setUserProfile(profile);
         setUpdateProfile({
           firstName: profile.firstName,
@@ -35,16 +42,41 @@ export default function ProfileInfo() {
     fetchUser();
   }, []);
 
-  const handleSave = async () => {
-    setLoading(true);
-    try {
-      const response = await api.updateProfile(updateProfile);
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (file) {
+      setProfileImage({ file, url: URL.createObjectURL(file) });
+    }
+  };
 
-      if (response.success) {
+  const handleUploadImage = async () => {
+    if (!profileImage || !profileImage?.file) {
+      return;
+    }
+    try {
+      const response = await uploadFiles("imagesUploader", { files: [profileImage.file] });
+
+      if (response) {
+        return response[0].ufsUrl;
+      }
+    } catch (error) {
+      console.error("Upload failed", error);
+      toast.error("Image upload failed, try again.");
+    }
+  };
+
+  const handleSave = async () => {
+    setUpdatingProfile(true);
+    try {
+      const avatarUrl = await handleUploadImage();
+      const data = verifyUpdateProfileData({ ...updateProfile, avatarUrl });
+      const updateResponse = await api.updateProfile(data);
+
+      if (updateResponse.success) {
         toast.success("Profile information updated", { duration: 2000 });
-        setUserProfile((prevState) => mergeProfile(prevState, updateProfile));
+        setUserProfile((prevState) => mergeProfile(prevState, data));
       } else {
-        toast.error(response.message || "Error");
+        toast.error(updateResponse.message || "Error");
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -53,8 +85,9 @@ export default function ProfileInfo() {
         toast.error("Error at canceling", { duration: 4000 });
       }
     } finally {
-      setLoading(false);
+      setUpdatingProfile(false);
       setIsEditing(false);
+      setProfileImage(undefined);
     }
   };
 
@@ -70,7 +103,7 @@ export default function ProfileInfo() {
     }
   };
 
-  if (loading && !userProfile) return <SkeletonProfile />;
+  if (loadingProfile && !userProfile) return <SkeletonProfile />;
 
   /* This should not happen, profileInfo should always be within a layout with AuthGuard */
   if (!userProfile) return <div>Profile not found, please log in</div>;
@@ -94,10 +127,8 @@ export default function ProfileInfo() {
 
       {/* Profile Header */}
       <div className="flex items-center gap-6 p-6 bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20">
-        <div className="relative w-24 h-24 bg-myGreen rounded-full flex items-center justify-center">
-          {isEditing ? (
-            <button className="absolute w-24 h-24 rounded-full text-myGrayDark text-2xl hover:cursor-pointer z-10">Upload</button>
-          ) : userProfile.avatarUrl ? (
+        <div className="relative w-24 h-24 bg-myGreenLight rounded-full flex items-center justify-center">
+          {userProfile.avatarUrl ? (
             <Image
               src={userProfile.avatarUrl}
               alt="Profile"
@@ -108,6 +139,21 @@ export default function ProfileInfo() {
             />
           ) : (
             <IoPerson className="w-12 h-12 text-myGrayDark" style={{ opacity: isEditing ? 0.5 : 1 }} />
+          )}
+          {isEditing && (
+            <div className="absolute top-0 left-0 transform z-2">
+              <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-myGreen rounded-full cursor-pointer hover:border-myGreenSemiBold transition-colors group">
+                {profileImage && profileImage.url ? (
+                  <Image src={profileImage.url} alt="Profile" width={96} height={96} className={`rounded-full object-cover`} />
+                ) : (
+                  <>
+                    <FiCamera className="w-20 h-20 text-myGreenBold group-hover:text-myGreenSemiBold" />
+                    <p className="text-xs text-myGreenBold">Upload</p>
+                  </>
+                )}
+                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
+              </label>
+            </div>
           )}
         </div>
         <div>
@@ -210,14 +256,25 @@ export default function ProfileInfo() {
         >
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 px-6 py-2 bg-myGreenSemiBold text-background rounded-lg hover:bg-myGreen transition-colors"
+            disabled={updatingProfile}
+            className="flex items-center gap-2 px-6 py-2 bg-myGreenSemiBold text-background rounded-lg transition-colors hover:bg-myGreen hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <IoCheckmark className="w-4 h-4" />
-            Save Changes
+            {updatingProfile ? (
+              <>
+                <AiOutlineLoading3Quarters className="w-4 h-4 animate-spin" />
+                <span>Saving...</span>
+              </>
+            ) : (
+              <>
+                <IoCheckmark className="w-4 h-4" />
+                <span>Save Changes</span>
+              </>
+            )}
           </button>
           <button
             onClick={handleCancel}
-            className="flex items-center gap-2 px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+            disabled={updatingProfile}
+            className="flex items-center gap-2 px-6 py-2 bg-gray-200 text-gray-700 rounded-lg transition-colors hover:bg-gray-300 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <IoClose className="w-4 h-4" />
             Cancel
