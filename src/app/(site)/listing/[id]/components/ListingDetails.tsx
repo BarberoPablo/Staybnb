@@ -1,11 +1,14 @@
 "use client";
 
+import ImageWithFallback from "@/components/ImageWithFallback";
 import { ListBadges } from "@/components/ListBadges";
-import { Listing } from "@/lib/types/listing";
+import { Listing, ListingWithReservationsAndHost } from "@/lib/types/listing";
+import { Host } from "@/lib/types/profile";
 import { motion } from "framer-motion";
+import { CiUser } from "react-icons/ci";
 import { IoLocation, IoStar } from "react-icons/io5";
 
-export default function ListingDetails({ listing }: { listing: Listing }) {
+export default function ListingDetails({ listing }: { listing: ListingWithReservationsAndHost }) {
   return (
     <motion.div
       className="lg:col-span-7 space-y-8 border border-gray-200 rounded-2xl shadow-lg p-6"
@@ -19,11 +22,12 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
         <ListingSubtitle listingDetails={listing} />
       </div>
 
-      {/* Divider */}
       <div className="border-t border-gray-200"></div>
 
       {/* Host Information - Placeholder for future implementation */}
-      {/* <HostInformation host={listingDetails.host} /> */}
+      <HostInformation host={listing.host} />
+
+      <div className="border-t border-gray-200" />
 
       {/* Description */}
       <div className="space-y-4">
@@ -31,20 +35,30 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
         <p className="text-myGray leading-relaxed text-lg">{listing.description}</p>
       </div>
 
-      {/* Divider */}
-      <div className="border-t border-gray-200"></div>
+      <div className="border-t border-gray-200" />
     </motion.div>
   );
 }
 
-/* function HostInformation({ host }: { host: Host }) {
+function HostInformation({ host }: { host: Host }) {
   return (
     <div className="flex items-center">
-      <Image src={host.avatarUrl} alt="Rounded avatar" height={40} width={40} className="rounded-full" />
-      <h3>Hosted by {host.name}</h3>
+      <ImageWithFallback
+        src={host.avatarUrl}
+        alt="Host image"
+        height={40}
+        width={40}
+        className="object-cover rounded-full border border-gray-200 w-11 h-11 overflow-hidden bg-myGrayLight"
+        fallbackIcon={
+          <div className="bg-myGreenLight rounded-full border-2 border-myGreenBold">
+            <CiUser className="w-10 h-10 text-myGreenBold" />
+          </div>
+        }
+      />
+      <h3 className="text-myGrayDark ml-2">Hosted by: {host.firstName}</h3>
     </div>
   );
-} */
+}
 
 function ListingSubtitle({ listingDetails }: { listingDetails: Listing }) {
   return (

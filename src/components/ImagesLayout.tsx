@@ -19,6 +19,7 @@ export function ImagesLayout({ images }: { images: string[] }) {
             <ImageWithFallback
               src={image}
               alt={`listing secondary image`}
+              priority
               fill
               className="object-cover"
               sizes="(min-width: 640px) 25vw, (max-width: 639px) 0px"
