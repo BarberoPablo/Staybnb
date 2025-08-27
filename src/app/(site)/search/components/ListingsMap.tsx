@@ -7,7 +7,7 @@ import { api } from "@/lib/api/api";
 import { MapCoordinates } from "@/lib/types";
 import { Listing } from "@/lib/types/listing";
 import { divIcon } from "leaflet";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 
@@ -20,7 +20,7 @@ export default function ListingsMap({
   locateListing: number;
   setListings: (listings: Listing[]) => void;
 }) {
-  const [center, setCenter] = useState<[number, number]>([-34.6037, -58.3816]);
+  const [center, setCenter] = useState<[number, number]>(listings[0] ? [listings[0].location.lat, listings[0].location.lng] : [0, 0]);
   const [listingPopup, setListingPopup] = useState<Listing | null>(null);
   const [mapEnabled, setMapEnabled] = useState(true);
 
@@ -30,24 +30,6 @@ export default function ListingsMap({
       setCenter(newCenter);
     }
   }, [listings]);
-
-  function MapController({ mapEnabled }: { mapEnabled: boolean }) {
-    const map = useMap();
-
-    useEffect(() => {
-      if (mapEnabled) {
-        map.dragging.enable();
-        map.scrollWheelZoom.enable();
-        map.doubleClickZoom.enable();
-      } else {
-        map.dragging.disable();
-        map.scrollWheelZoom.disable();
-        map.doubleClickZoom.disable();
-      }
-    }, [mapEnabled, map]);
-
-    return null;
-  }
 
   const handleEndMapMove = async ({ zoom, northEast, southWest }: MapCoordinates) => {
     try {
@@ -91,8 +73,44 @@ export default function ListingsMap({
       <MarkerPopup listing={listingPopup} onClose={() => setListingPopup(null)} enableMap={setMapEnabled} />
       <MapEventsHandler closeMarkerPopup={() => setListingPopup(null)} onMoveEnd={handleEndMapMove} />
       <MapController mapEnabled={mapEnabled} />
+      <ChangeView center={center} />
     </MapContainer>
   );
+}
+
+function ChangeView({ center }: { center: [number, number] }) {
+  const map = useMap();
+  const prevCenterRef = useRef<[number, number] | null>(null);
+
+  useEffect(() => {
+    if (prevCenterRef.current && (prevCenterRef.current[0] !== center[0] || prevCenterRef.current[1] !== center[1])) {
+      map.flyTo(center, 12, {
+        duration: 3,
+        easeLinearity: 0.25,
+      });
+    }
+    prevCenterRef.current = center;
+  }, [center, map]);
+
+  return null;
+}
+
+function MapController({ mapEnabled }: { mapEnabled: boolean }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (mapEnabled) {
+      map.dragging.enable();
+      map.scrollWheelZoom.enable();
+      map.doubleClickZoom.enable();
+    } else {
+      map.dragging.disable();
+      map.scrollWheelZoom.disable();
+      map.doubleClickZoom.disable();
+    }
+  }, [mapEnabled, map]);
+
+  return null;
 }
 
 function MarkerPopup({ listing, onClose, enableMap }: { listing: Listing | null; onClose: () => void; enableMap: (hovered: boolean) => void }) {
