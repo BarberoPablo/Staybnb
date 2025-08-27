@@ -3,7 +3,7 @@ import { parseListingWithReservationsAndHostFromDB } from "../../parsers/listing
 import { createClient } from "../../supabase/server";
 import { NotFoundError, ReservationError } from "./errors";
 
-export async function getListingById(id: number) {
+export async function getListingWithReservations(id: number) {
   const supabase = await createClient();
 
   const { data: listing, error: listingError } = await supabase

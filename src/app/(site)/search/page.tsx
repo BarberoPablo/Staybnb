@@ -24,7 +24,7 @@ export default function SearchPage() {
     if (city) {
       const fetchListings = async () => {
         try {
-          const listings = await api.getListings({ city });
+          const listings = await api.getListings({ city, includeAmenities: true });
           setFilteredListings(listings);
         } catch (error) {
           console.error(error);

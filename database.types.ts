@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      amenities: {
+        Row: {
+          category: Database["public"]["Enums"]["amenity_category"]
+          created_at: string | null
+          id: number
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["amenity_category"]
+          created_at?: string | null
+          id?: never
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["amenity_category"]
+          created_at?: string | null
+          id?: never
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string | null
@@ -43,9 +67,44 @@ export type Database = {
           },
         ]
       }
+      listing_amenities: {
+        Row: {
+          amenity_id: number
+          created_at: string | null
+          id: number
+          listing_id: number
+        }
+        Insert: {
+          amenity_id: number
+          created_at?: string | null
+          id?: never
+          listing_id: number
+        }
+        Update: {
+          amenity_id?: number
+          created_at?: string | null
+          id?: never
+          listing_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_amenities_amenity_id_fkey"
+            columns: ["amenity_id"]
+            isOneToOne: false
+            referencedRelation: "amenities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_amenities_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listings: {
         Row: {
-          amenities: string[]
           check_in_time: string
           check_out_time: string
           created_at: string | null
@@ -67,7 +126,6 @@ export type Database = {
           title: string
         }
         Insert: {
-          amenities?: string[]
           check_in_time?: string
           check_out_time?: string
           created_at?: string | null
@@ -89,7 +147,6 @@ export type Database = {
           title: string
         }
         Update: {
-          amenities?: string[]
           check_in_time?: string
           check_out_time?: string
           created_at?: string | null
@@ -223,6 +280,15 @@ export type Database = {
       }
     }
     Enums: {
+      amenity_category:
+        | "general"
+        | "kitchen"
+        | "dining"
+        | "bedroom"
+        | "bathroom"
+        | "entertainment"
+        | "security"
+        | "activities"
       listing_status: "draft" | "published" | "paused" | "pending"
       privacy_type: "Entire" | "Private" | "Shared"
       property_type: "House" | "Apartment" | "Cabin" | "Boat"
@@ -359,6 +425,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      amenity_category: [
+        "general",
+        "kitchen",
+        "dining",
+        "bedroom",
+        "bathroom",
+        "entertainment",
+        "security",
+        "activities",
+      ],
       listing_status: ["draft", "published", "paused", "pending"],
       privacy_type: ["Entire", "Private", "Shared"],
       property_type: ["House", "Apartment", "Cabin", "Boat"],

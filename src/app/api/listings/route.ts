@@ -11,30 +11,75 @@ export async function GET(req: Request) {
     const northEast = params.get("northEast")?.split(",").map(Number);
     const southWest = params.get("southWest")?.split(",").map(Number);
 
-    const baseQuery = supabase.from("listings").select();
+    const includeAmenities = params.get("includeAmenities") === "true";
+    const amenities = params.get("amenities")?.split(",").filter(Boolean);
+    const limit = parseInt(params.get("limit") || "50");
+    const offset = parseInt(params.get("offset") || "0");
 
+    // Build the select query
+    let selectQuery = "*";
+
+    if (includeAmenities) {
+      selectQuery = `
+        *,
+        listing_amenities(
+          amenities(
+            id,
+            name,
+            category
+          )
+        )
+      `;
+    }
+
+    // Start building the query
+    let query = supabase.from("listings").select(selectQuery);
+
+    // Apply filters
     if (city) {
-      baseQuery.ilike("location->>city", `%${city}%`);
+      query = query.ilike("location->>city", `%${city}%`);
     }
 
     if (northEast && southWest && northEast.length === 2 && southWest.length === 2) {
       const [neLat, neLng] = northEast;
       const [swLat, swLng] = southWest;
 
-      baseQuery
+      query = query
         .gte("location->lat", swLat.toString())
         .lte("location->lat", neLat.toString())
         .gte("location->lng", swLng.toString())
         .lte("location->lng", neLng.toString());
     }
 
-    const { data: listings, error } = await baseQuery;
+    // Filter by specific amenities if provided
+    if (amenities && amenities.length > 0) {
+      const amenityIds = amenities.map((id) => parseInt(id)).filter((id) => !isNaN(id));
+      if (amenityIds.length > 0) {
+        query = query.in("listing_amenities.amenity_id", amenityIds);
+      }
+    }
+
+    // Apply pagination
+    query = query.range(offset, offset + limit - 1);
+
+    const { data: listings, error } = await query;
 
     if (error) {
       throw error;
     }
 
-    return NextResponse.json({ success: true, data: listings ?? [] }, { status: 200 });
+    return NextResponse.json(
+      {
+        success: true,
+        data: listings ?? [],
+        pagination: {
+          limit,
+          offset,
+          total: listings?.length || 0,
+        },
+      },
+      { status: 200 }
+    );
   } catch (err) {
     console.error("Server error:", err);
     return NextResponse.json({ success: false, error: "Unexpected error occurred" }, { status: 500 });

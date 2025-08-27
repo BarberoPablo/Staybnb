@@ -1,4 +1,5 @@
 import { ListingForm } from "@/store/useListingForm";
+import { Amenity } from "../types/amenities";
 import {
   CreateListingDB,
   HostListingsWithReservations,
@@ -11,9 +12,14 @@ import {
   ListingWithReservationsDB,
 } from "../types/listing";
 import { ReservedDate } from "../types/reservation";
+import { parseAmenitiesFromDB } from "./amenities";
 import { parseReservationsFromDB } from "./reservation";
 
 export function parseListingFromDB(listingDB: ListingDB): Listing {
+  let amenities: Amenity[] = [];
+  if (listingDB.listing_amenities) {
+    amenities = parseAmenitiesFromDB(listingDB.listing_amenities);
+  }
   return {
     id: listingDB.id,
     hostId: listingDB.host_id,
@@ -37,6 +43,7 @@ export function parseListingFromDB(listingDB: ListingDB): Listing {
     images: listingDB.images,
     minCancelDays: listingDB.min_cancel_days,
     status: listingDB.status,
+    amenities,
   };
 }
 
