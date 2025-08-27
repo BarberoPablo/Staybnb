@@ -1,11 +1,11 @@
 import { ListingForm } from "@/store/useListingForm";
 import { parseFavoritesWithListingFromDB, parseFavoriteWithListingFromDB } from "../parsers/favorites";
-import { parseHostListingsWithReservations, parseListingFormData, parseListingFromDB, parseListingWithReservationsFromDB } from "../parsers/listing";
+import { parseHostListingsWithReservations, parseListingFormData, parseListingFromDB } from "../parsers/listing";
 import { parseCreateProfile, parseProfileFromDB, parseUpdateProfile } from "../parsers/profile";
 import { parseListingReservedDatesDB, parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../parsers/reservation";
 import { MapCoordinates } from "../types";
 import { FavoriteWithListing, FavoriteWithListingDB } from "../types/favorites";
-import { HostListingsWithReservationsDB, ListingDB, ListingWithReservationsDB } from "../types/listing";
+import { HostListingsWithReservationsDB, ListingDB } from "../types/listing";
 import { CreateProfile, Profile, ProfileDB, UpdateProfile } from "../types/profile";
 import { CreateReservation, ListingReservedDatesDB, ReservationDB, ResumedReservationWithListingDB } from "../types/reservation";
 import customFetch from "./fetch";
@@ -13,22 +13,28 @@ import customFetch from "./fetch";
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export const endpoint = {
-  getProfile: `${baseUrl}/api/profile`,
-  updateProfile: `${baseUrl}/api/profile`,
-  getFavorites: `${baseUrl}/api/favorites`,
-  createFavorites: `${baseUrl}/api/favorites`,
-  deleteFavorites: (id: number) => `${baseUrl}/api/favorites/${id}`,
-  signUp: `${baseUrl}/api/signUp`,
-  getUserReservations: () => `${baseUrl}/api/reservations`,
-  getListingReservations: (listingId: number) => `${baseUrl}/api/reservations/${listingId}`, // clients not included
-  createReservation: `${baseUrl}/api/reservations`,
+  // listing
   getListings: (params: string) => `${baseUrl}/api/listings?${params}`,
-  getListing: (id: number) => `${baseUrl}/api/listings/${id}`,
   createListing: `${baseUrl}/api/listings`,
-  cancelReservation: (id: string) => `${baseUrl}/api/reservations/${id}/cancel`,
+  //NOT BEING USED getListing: (id: number) => `${baseUrl}/api/listings/${id}`,
+  // listing-host
   getHostListings: () => `${baseUrl}/api/host/listings?includeReservations=false`,
   getHostListingsWithReservations: () => `${baseUrl}/api/host/listings?includeReservations=true`,
   getHostListingReservations: (id: number) => `${baseUrl}/api/host/listings/${id}/reservations`,
+  // profile
+  getProfile: `${baseUrl}/api/profile`,
+  updateProfile: `${baseUrl}/api/profile`,
+  // favorites
+  getFavorites: `${baseUrl}/api/favorites`,
+  createFavorites: `${baseUrl}/api/favorites`,
+  deleteFavorites: (id: number) => `${baseUrl}/api/favorites/${id}`,
+  // auth
+  signUp: `${baseUrl}/api/signUp`,
+  // reservations
+  getUserReservations: () => `${baseUrl}/api/reservations`,
+  getListingReservations: (listingId: number) => `${baseUrl}/api/reservations/${listingId}`,
+  createReservation: `${baseUrl}/api/reservations`,
+  cancelReservation: (id: string) => `${baseUrl}/api/reservations/${id}/cancel`,
 };
 
 export const api = {
@@ -80,7 +86,7 @@ export const api = {
   async createReservation(data: CreateReservation) {
     return await customFetch.post(endpoint.createReservation, { ...data });
   },
-  async getListings(params: { city?: string } & Partial<MapCoordinates>) {
+  async getListings(params: { city?: string; includeAmenities?: boolean } & Partial<MapCoordinates>) {
     const query = new URLSearchParams();
 
     if (params.city) query.append("city", params.city);
@@ -90,16 +96,19 @@ export const api = {
       query.append("southWest", `${params.southWest.lat},${params.southWest.lng}`);
       query.append("zoom", `${params.zoom}`);
     }
+    if (params.includeAmenities) {
+      query.append("includeAmenities", "true");
+    }
 
     const { data } = await customFetch.get<ListingDB[]>(endpoint.getListings(query.toString()));
     const parsedListings = data.map((listing) => parseListingFromDB(listing));
     return parsedListings;
   },
-  async getListing(id: number) {
+  /* async getListing(id: number) {
     const { data } = await customFetch.get<ListingWithReservationsDB>(endpoint.getListing(id));
     const parsedData = parseListingWithReservationsFromDB(data);
     return parsedData;
-  },
+  }, */
   async createListing(data: ListingForm) {
     const parsedListingFormData = parseListingFormData(data);
     return await customFetch.post(endpoint.createListing, { ...parsedListingFormData });

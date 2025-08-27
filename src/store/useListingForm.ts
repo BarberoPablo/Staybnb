@@ -1,3 +1,4 @@
+import { Amenity } from "@/lib/types/amenities";
 import { Listing, Location, PrivacyType, Promotion, PropertyType, Score, Structure } from "@/lib/types/listing";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -14,7 +15,7 @@ export type ListingForm = {
   promotions: Promotion[];
   structure: Structure;
   guestLimits: Listing["guestLimits"];
-  amenities: string[];
+  amenities: Amenity[];
   safetyItems: string[];
   images: string[];
   score: Score;

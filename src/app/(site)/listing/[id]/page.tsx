@@ -1,7 +1,7 @@
 import BookingCalendarContainer from "@/components/Booking/BookingCalendarContainer";
 import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
-import { getListingById } from "@/lib/api/server/api";
+import { getListingWithReservations } from "@/lib/api/server/api";
 import { AuthError, NotFoundError } from "@/lib/api/server/errors";
 import { notFound, redirect } from "next/navigation";
 import { Container } from "../../components/Container";
@@ -16,7 +16,7 @@ export default async function ListingDetailsPage({ params }: ListingDetailsProps
 
   let listing;
   try {
-    listing = await getListingById(Number(id));
+    listing = await getListingWithReservations(Number(id));
   } catch (error) {
     if (error instanceof AuthError) {
       console.error(error.message);
@@ -28,8 +28,6 @@ export default async function ListingDetailsPage({ params }: ListingDetailsProps
     }
     throw error;
   }
-
-  console.log({ listing });
 
   return (
     <Container noPadding className="flex flex-col mx-auto px-2 sm:px-6 py-8 gap-8">
