@@ -31,3 +31,11 @@ export type MapCoordinates = {
   northEast: LatLng;
   southWest: LatLng;
 };
+
+export type GetListingsParams = Partial<MapCoordinates> & {
+  city?: string;
+  includeAmenities?: boolean;
+  amenities?: number[];
+  limit?: number;
+  offset?: number;
+};
