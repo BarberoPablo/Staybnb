@@ -3,7 +3,7 @@ import { parseFavoritesWithListingFromDB, parseFavoriteWithListingFromDB } from 
 import { parseHostListingsWithReservations, parseListingFormData, parseListingFromDB } from "../parsers/listing";
 import { parseCreateProfile, parseProfileFromDB, parseUpdateProfile } from "../parsers/profile";
 import { parseListingReservedDatesDB, parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../parsers/reservation";
-import { MapCoordinates } from "../types";
+import { GetListingsParams } from "../types";
 import { FavoriteWithListing, FavoriteWithListingDB } from "../types/favorites";
 import { HostListingsWithReservationsDB, ListingDB } from "../types/listing";
 import { CreateProfile, Profile, ProfileDB, UpdateProfile } from "../types/profile";
@@ -86,7 +86,7 @@ export const api = {
   async createReservation(data: CreateReservation) {
     return await customFetch.post(endpoint.createReservation, { ...data });
   },
-  async getListings(params: { city?: string; includeAmenities?: boolean } & Partial<MapCoordinates>) {
+  async getListings(params: GetListingsParams) {
     const query = new URLSearchParams();
 
     if (params.city) query.append("city", params.city);
@@ -99,6 +99,19 @@ export const api = {
     if (params.includeAmenities) {
       query.append("includeAmenities", "true");
     }
+
+    if (params.amenities) {
+      query.append("amenities", params.amenities.join(","));
+    }
+
+    if (params.offset) {
+      query.append("offset", params.offset.toString());
+    }
+    if (params.limit) {
+      query.append("limit", params.limit.toString());
+    }
+
+    console.log("Query API: ", query.toString());
 
     const { data } = await customFetch.get<ListingDB[]>(endpoint.getListings(query.toString()));
     const parsedListings = data.map((listing) => parseListingFromDB(listing));
