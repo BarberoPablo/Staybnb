@@ -5,6 +5,7 @@ import { ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing
 import { parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { createClient } from "../../supabase/server";
 import { NotFoundError, ReservationError } from "./errors";
+import { ParsedFilters, buildSearchListingsWhereClause } from "./utils";
 
 export async function getListingWithReservations(id: number) {
   const supabase = await createClient();
@@ -41,24 +42,16 @@ export async function getListingWithReservations(id: number) {
   return parseListingWithReservationsAndHostFromDB(rawData as ListingWithReservationsAndHostDB);
 }
 
-export async function searchListings(city: string | undefined, filters: string | undefined) {
+export async function searchListings(city: string | undefined, filters: ParsedFilters) {
   if (!city) {
-    console.log("No city provided");
     return [];
   }
 
-  console.log("City provided", city);
-
   try {
+    const whereClause = buildSearchListingsWhereClause(city, filters);
+
     const listings = await prisma.listings.findMany({
-      where: {
-        status: "published",
-        location: {
-          path: ["city"],
-          string_contains: city,
-          mode: "insensitive",
-        },
-      },
+      where: whereClause,
     });
 
     const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));

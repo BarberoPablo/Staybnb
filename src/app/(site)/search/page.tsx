@@ -1,8 +1,14 @@
 import { searchListings } from "@/lib/api/server/api";
+import { parseFilters } from "@/lib/api/server/utils";
 import SearchContainer from "./components/SearchContainer";
 
-export default async function SearchPage({ searchParams }: { searchParams: Promise<{ city?: string; filters?: string }> }) {
-  const { city, filters } = await searchParams;
+type SearchPageParams = Record<string, string | string[] | undefined>;
+
+export default async function SearchPage({ searchParams }: { searchParams: Promise<SearchPageParams> }) {
+  const params = await searchParams;
+
+  const city = typeof params.city === "string" ? params.city : undefined;
+  const filters = parseFilters(params);
 
   const listings = await searchListings(city, filters);
 

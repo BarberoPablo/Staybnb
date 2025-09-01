@@ -111,8 +111,6 @@ export const api = {
       query.append("limit", params.limit.toString());
     }
 
-    console.log("Query API: ", query.toString());
-
     const { data } = await customFetch.get<ListingDB[]>(endpoint.getListings(query.toString()));
     const parsedListings = data.map((listing) => parseListingFromDB(listing));
     return parsedListings;
