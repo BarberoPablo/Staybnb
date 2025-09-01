@@ -18,7 +18,7 @@ export function parseFavoriteWithListingFromDB(favoriteWithListingDB: FavoriteWi
       title: favoriteWithListingDB.listing.title,
       images: favoriteWithListingDB.listing.images,
       location: favoriteWithListingDB.listing.location,
-      nightPrice: favoriteWithListingDB.listing.night_price,
+      nightPrice: Number(favoriteWithListingDB.listing.night_price),
       score: favoriteWithListingDB.listing.score,
       propertyType: favoriteWithListingDB.listing.property_type,
     },
