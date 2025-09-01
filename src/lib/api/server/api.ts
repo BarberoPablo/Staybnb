@@ -1,5 +1,8 @@
-import { ListingWithReservationsAndHostDB } from "@/lib/types/listing";
-import { parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
+"use server";
+
+import { prisma } from "@/lib/prisma";
+import { ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
+import { parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { createClient } from "../../supabase/server";
 import { NotFoundError, ReservationError } from "./errors";
 
@@ -36,4 +39,33 @@ export async function getListingWithReservations(id: number) {
   };
 
   return parseListingWithReservationsAndHostFromDB(rawData as ListingWithReservationsAndHostDB);
+}
+
+export async function searchListings(city: string | undefined, filters: string | undefined) {
+  if (!city) {
+    console.log("No city provided");
+    return [];
+  }
+
+  console.log("City provided", city);
+
+  try {
+    const listings = await prisma.listings.findMany({
+      where: {
+        status: "published",
+        location: {
+          path: ["city"],
+          string_contains: city,
+          mode: "insensitive",
+        },
+      },
+    });
+
+    const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+
+    return parsedListings;
+  } catch (error) {
+    console.error("Error fetching listings", error);
+    throw new NotFoundError();
+  }
 }

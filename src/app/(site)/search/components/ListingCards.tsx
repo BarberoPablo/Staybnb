@@ -1,3 +1,5 @@
+"use client";
+
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Listing } from "@/lib/types/listing";
 import ListingCard from "./ListingCard";
