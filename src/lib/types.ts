@@ -2,6 +2,11 @@ import { LatLng } from "leaflet";
 
 export type Guests = "adults" | "children" | "infant" | "pets";
 
+export type Dates = {
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+};
+
 export type DateRangeKey = {
   startDate: Date;
   endDate: Date;
