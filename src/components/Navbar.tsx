@@ -2,7 +2,6 @@
 
 import { Container } from "@/app/(site)/components/Container";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { Dates } from "@/lib/types";
 import { logoUrl } from "@/lib/utils";
 import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -11,7 +10,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { IoIosClose } from "react-icons/io";
-import { IoCalendar, IoMenu, IoSearch } from "react-icons/io5";
+import { IoCalendar, IoMenu, IoPeople, IoSearch } from "react-icons/io5";
+import { MdHomeWork } from "react-icons/md";
 import { RoundButton } from "./Button/RoundButton";
 import ChangeViewButton from "./ChangeViewButton";
 import FiltersDialog from "./Navbar/FiltersDialog";
@@ -22,10 +22,8 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const [focusInput, setFocusInput] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [openCalendar, setOpenCalendar] = useState(false);
-  const [dates, setDates] = useState<Dates>({
-    startDate: undefined,
-    endDate: undefined,
-  });
+  const [filtersStep, setFiltersStep] = useState(0);
+  const [filtersQuery, setFiltersQuery] = useState("");
   const router = useRouter();
   const pathname = usePathname();
   const hosting = pathname.includes("/hosting");
@@ -38,13 +36,12 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const handleSearchCity = () => {
     let query = `/search?city=${encodeURIComponent(searchCity.trim())}`;
 
-    if (dates.startDate && dates.endDate) {
-      query += `&startDate=${dates.startDate.toISOString()}&endDate=${dates.endDate.toISOString()}`;
+    if (filtersQuery !== "") {
+      query += filtersQuery;
     }
-    router.push(query);
 
+    router.push(query);
     setSearchCity("");
-    setDates({ startDate: undefined, endDate: undefined });
     setShowFilters(false);
   };
 
@@ -55,9 +52,9 @@ export default function Navbar({ search = true }: { search?: boolean }) {
     setFocusInput(focus);
   };
 
-  const handleSetDates = (dates: Dates) => {
-    setOpenCalendar(false);
-    setDates({ startDate: dates.startDate, endDate: dates.endDate });
+  const handleOpenCalendar = (step: number) => {
+    setFiltersStep(step);
+    setOpenCalendar(true);
   };
 
   return (
@@ -139,9 +136,24 @@ export default function Navbar({ search = true }: { search?: boolean }) {
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
-                        <div className="flex gap-10 px-4">
-                          <RoundButton className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark" onClick={() => setOpenCalendar(true)}>
+                        <div className="flex gap-4">
+                          <RoundButton
+                            className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold"
+                            onClick={() => handleOpenCalendar(0)}
+                          >
                             <IoCalendar className="text-myGrayDark" />
+                          </RoundButton>
+                          <RoundButton
+                            className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold"
+                            onClick={() => handleOpenCalendar(1)}
+                          >
+                            <IoPeople className="text-myGrayDark" />
+                          </RoundButton>
+                          <RoundButton
+                            className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold"
+                            onClick={() => handleOpenCalendar(2)}
+                          >
+                            <MdHomeWork className="text-myGrayDark" />
                           </RoundButton>
                           <RoundButton className="w-10 h-10 bg-myGreenExtraLight shadow-md text-3xl text-myGrayDark" onClick={() => setShowFilters(false)}>
                             <IoIosClose />
@@ -163,7 +175,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
           </motion.div>
         )}
       </Container>
-      <FiltersDialog isOpen={openCalendar} onClose={() => setOpenCalendar(false)} setDates={handleSetDates} />
+      <FiltersDialog isOpen={openCalendar} step={filtersStep} onClose={() => setOpenCalendar(false)} setQuery={setFiltersQuery} />
     </nav>
   );
 }
