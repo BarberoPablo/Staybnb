@@ -182,6 +182,10 @@ export default function Navbar({ search = true }: { search?: boolean }) {
                           </RoundButton>
                           <RoundButton
                             className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold"
+                            style={{
+                              backgroundColor: `${filtersQuery.includes("amenities") ? "var(--color-myPurple)" : "var(--color-myGreenExtraLight)"}`,
+                              borderColor: `${filtersQuery.includes("amenities") ? "var(--color-myGray)" : "var(--color-myGreenSemiBold)"}`,
+                            }}
                             onClick={() => handleOpenCalendar(2)}
                           >
                             <MdHomeWork className="text-myGrayDark" />
