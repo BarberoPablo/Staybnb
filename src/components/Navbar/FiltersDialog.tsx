@@ -1,8 +1,11 @@
 "use client";
 
-import { Dates } from "@/lib/types";
+import { AmenityId } from "@/lib/constants/amenities";
+import { Dates, Guests } from "@/lib/types";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { FilterState } from "../Navbar";
+import SelectAmenities from "./SelectAmenities";
 import SelectDays from "./SelectDays";
 import SelectGuests from "./SelectGuests";
 
@@ -11,37 +14,58 @@ export default function FiltersDialog({
   step,
   setQuery,
   onClose,
+  filters,
+  setFilters,
 }: {
   isOpen: boolean;
   step: number;
   setQuery: (query: string) => void;
   onClose: () => void;
+  filters: FilterState;
+  setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
 }) {
   const [filterStep, setFilterStep] = useState(0);
-  const [dates, setDates] = useState<Dates>({
-    startDate: undefined,
-    endDate: undefined,
-  });
+
+  const setDates = useCallback(
+    (dates: Dates) => {
+      setFilters((prev) => ({ ...prev, dates }));
+    },
+    [setFilters]
+  );
+
+  const setGuests = useCallback(
+    (guests: Record<Guests, number>) => {
+      setFilters((prev) => ({ ...prev, guests }));
+    },
+    [setFilters]
+  );
+
+  const setAmenities = useCallback(
+    (amenities: AmenityId[]) => {
+      setFilters((prev) => ({ ...prev, amenities }));
+    },
+    [setFilters]
+  );
 
   const filtersMenu = useMemo(
     () => [
       {
         step: "Date Range",
         title: "When are you planning to stay?",
-        content: <SelectDays setDates={setDates} dates={dates} />,
+        content: <SelectDays setDates={setDates} dates={filters.dates} />,
       },
       {
         step: "Guests",
         title: "Who's coming with you?",
-        content: <SelectGuests />,
+        content: <SelectGuests guests={filters.guests} setGuests={setGuests} />,
       },
       {
         step: "Amenities",
         title: "Looking for specific comforts?",
-        content: <div className="text-center">Amenities filter coming soon...</div>,
+        content: <SelectAmenities selectedAmenities={filters.amenities || []} setSelectedAmenities={setAmenities} />,
       },
     ],
-    [setDates, dates]
+    [filters.dates, filters.guests, filters.amenities, setDates, setGuests, setAmenities]
   );
 
   useEffect(() => {
@@ -51,10 +75,23 @@ export default function FiltersDialog({
   const handleFilters = () => {
     let query = "";
 
-    if (dates.startDate && dates.endDate) {
-      query += `&startDate=${dates.startDate.toISOString()}&endDate=${dates.endDate.toISOString()}`;
+    // Add dates to query
+    if (filters.dates.startDate && filters.dates.endDate) {
+      query += `&startDate=${filters.dates.startDate.toISOString()}&endDate=${filters.dates.endDate.toISOString()}`;
     }
-    setDates({ startDate: undefined, endDate: undefined });
+
+    // Add guests to query
+    const { adults, children, infant, pets } = filters.guests;
+    if (children > 0) query += `&children=${children}`;
+    if (infant > 0) query += `&infant=${infant}`;
+    if (pets > 0) query += `&pets=${pets}`;
+    if (children > 0 || infant > 0 || pets > 0 || adults > 1) query += `&adults=${adults}`;
+
+    // Add amenities to query
+    if (filters.amenities && filters.amenities.length > 0) {
+      query += `&amenities=${filters.amenities.join(",")}`;
+    }
+
     setQuery(query);
     onClose();
   };
@@ -87,9 +124,10 @@ export default function FiltersDialog({
             {filtersMenu[filterStep].title}
           </DialogTitle>
 
-          <div id="dialog-description" className="flex-1 flex flex-col items-center text-center text-myGray overflow-y-auto">
+          <div id="dialog-description" className="flex-1 flex flex-col items-center text-center max-h-[346px] text-myGray overflow-y-auto">
             {filtersMenu[filterStep].content}
           </div>
+
           <button
             className="flex items-center justify-center w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-300"
             onClick={handleFilters}
