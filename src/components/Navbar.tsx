@@ -2,20 +2,29 @@
 
 import { Container } from "@/app/(site)/components/Container";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { AmenityId } from "@/lib/constants/amenities";
+import { Dates, Guests } from "@/lib/types";
 import { logoUrl } from "@/lib/utils";
 import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { IoCalendar, IoMenu, IoPeople, IoSearch } from "react-icons/io5";
 import { MdHomeWork } from "react-icons/md";
 import { RoundButton } from "./Button/RoundButton";
 import ChangeViewButton from "./ChangeViewButton";
-import FiltersDialog from "./Navbar/FiltersDialog";
 import { SignButton } from "./SignButton";
+
+const FiltersDialog = lazy(() => import("./Navbar/FiltersDialog"));
+
+export type FilterState = {
+  dates: Dates;
+  guests: Record<Guests, number>;
+  amenities?: AmenityId[];
+};
 
 export default function Navbar({ search = true }: { search?: boolean }) {
   const [searchCity, setSearchCity] = useState("");
@@ -24,6 +33,20 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const [openCalendar, setOpenCalendar] = useState(false);
   const [filtersStep, setFiltersStep] = useState(0);
   const [filtersQuery, setFiltersQuery] = useState("");
+  const [filters, setFilters] = useState<FilterState>({
+    dates: {
+      startDate: undefined,
+      endDate: undefined,
+    },
+    guests: {
+      adults: 1,
+      children: 0,
+      infant: 0,
+      pets: 0,
+    },
+    amenities: [],
+  });
+
   const router = useRouter();
   const pathname = usePathname();
   const hosting = pathname.includes("/hosting");
@@ -138,13 +161,21 @@ export default function Navbar({ search = true }: { search?: boolean }) {
                       >
                         <div className="flex gap-4">
                           <RoundButton
-                            className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold"
+                            className={`w-10 h-10 shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold`}
+                            style={{
+                              backgroundColor: `${filtersQuery.includes("startDate") ? "var(--color-myPurple)" : "var(--color-myGreenExtraLight)"}`,
+                              borderColor: `${filtersQuery.includes("startDate") ? "var(--color-myGray)" : "var(--color-myGreenSemiBold)"}`,
+                            }}
                             onClick={() => handleOpenCalendar(0)}
                           >
                             <IoCalendar className="text-myGrayDark" />
                           </RoundButton>
                           <RoundButton
                             className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold"
+                            style={{
+                              backgroundColor: `${filtersQuery.includes("adults") ? "var(--color-myPurple)" : "var(--color-myGreenExtraLight)"}`,
+                              borderColor: `${filtersQuery.includes("adults") ? "var(--color-myGray)" : "var(--color-myGreenSemiBold)"}`,
+                            }}
                             onClick={() => handleOpenCalendar(1)}
                           >
                             <IoPeople className="text-myGrayDark" />
@@ -175,7 +206,14 @@ export default function Navbar({ search = true }: { search?: boolean }) {
           </motion.div>
         )}
       </Container>
-      <FiltersDialog isOpen={openCalendar} step={filtersStep} onClose={() => setOpenCalendar(false)} setQuery={setFiltersQuery} />
+      <FiltersDialog
+        isOpen={openCalendar}
+        step={filtersStep}
+        onClose={() => setOpenCalendar(false)}
+        setQuery={setFiltersQuery}
+        filters={filters}
+        setFilters={setFilters}
+      />
     </nav>
   );
 }
