@@ -8,6 +8,8 @@ export type ParsedFilters = {
   minPrice?: number;
   maxPrice?: number;
   amenities?: string[];
+  startDate?: Date;
+  endDate?: Date;
 };
 
 export function parseFilters(params: SearchParams): ParsedFilters {
@@ -22,6 +24,10 @@ export function parseFilters(params: SearchParams): ParsedFilters {
   // Handle price parameters (convert to numbers)
   if (params.minPrice) filters.minPrice = toNumber(params.minPrice);
   if (params.maxPrice) filters.maxPrice = toNumber(params.maxPrice);
+
+  // Handle dates parameters (convert to dates)
+  if (params.startDate) filters.startDate = new Date(params.startDate as string);
+  if (params.endDate) filters.endDate = new Date(params.endDate as string);
 
   // Handle amenities (ensure it's always an array)
   if (params.amenities) {
@@ -126,6 +132,36 @@ export function buildSearchListingsWhereClause(city: string, filters: ParsedFilt
         },
       });
     });
+  }
+
+  if (filters.startDate && filters.endDate) {
+    // Helper: normalize a Date to UTC midnight (YYYY-MM-DDT00:00:00Z)
+    // This ensures we ignore hours/minutes/seconds and only compare by year-month-day.
+    const toUtcMidnight = (d: Date) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+
+    const startDay = toUtcMidnight(filters.startDate);
+    const endDay = toUtcMidnight(filters.endDate);
+    /* 
+      Add 1 day to the normalized start date.
+      Why? Because we treat the reservation interval as [start, end), meaning the "end date" is exclusive.
+      This way, if a reservation ends on Sept 17, a new booking can safely start on Sept 17 (same calendar day).
+    */
+    const startDayPlus1 = new Date(startDay.getTime() + 24 * 60 * 60 * 1000);
+    /* 
+      Exclude listings that have overlapping reservations.
+      Conflict happens if:
+      - A reservation starts before the search's checkout day (endDay), AND
+      - That reservation ends after the day *after* the search's check-in (startDayPlus1).
+      By pushing startDay forward 1 day, we effectively ignore hours and make end-date exclusive.
+    */
+    whereClause.NOT = {
+      reservations: {
+        some: {
+          status: "upcoming",
+          AND: [{ start_date: { lt: endDay.toISOString() } }, { end_date: { gt: startDayPlus1.toISOString() } }],
+        },
+      },
+    };
   }
 
   return whereClause;
