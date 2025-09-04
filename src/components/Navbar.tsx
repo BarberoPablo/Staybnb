@@ -9,7 +9,7 @@ import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { lazy, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { IoCalendar, IoMenu, IoPeople, IoSearch } from "react-icons/io5";
@@ -27,7 +27,8 @@ export type FilterState = {
 };
 
 export default function Navbar({ search = true }: { search?: boolean }) {
-  const [searchCity, setSearchCity] = useState("");
+  const searchParams = useSearchParams();
+  const [searchCity, setSearchCity] = useState(searchParams.get("city") ?? "");
   const [focusInput, setFocusInput] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -64,7 +65,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
     }
 
     router.push(query);
-    setSearchCity("");
+    //setSearchCity("");
     setShowFilters(false);
   };
 

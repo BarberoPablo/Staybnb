@@ -31,9 +31,5 @@ export default async function CheckoutPage({
     );
   }
 
-  return (
-    <div>
-      <Checkout listing={listing} searchParams={resolvedSearchParams} />
-    </div>
-  );
+  return <Checkout listing={listing} searchParams={resolvedSearchParams} />;
 }

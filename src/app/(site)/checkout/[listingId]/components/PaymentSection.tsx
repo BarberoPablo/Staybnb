@@ -132,10 +132,10 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
       {/* Payment Button */}
       <button
         disabled={listingData.startDate.getTime() >= listingData.endDate.getTime()}
-        className="w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02]"
+        className="w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] hover:cursor-pointer"
         onClick={handleConfirmPayment}
       >
-        Confirm & Pay
+        Confirm and Pay
       </button>
 
       {/* Confirmation Modal */}
@@ -164,7 +164,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
 
             <button
               disabled={confirmationState === "loading"}
-              className="flex items-center justify-center w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-300"
+              className="flex items-center justify-center w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-300 hover:cursor-pointer"
               onClick={handleRedirect}
             >
               {reserve.button[confirmationState]}

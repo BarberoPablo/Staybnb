@@ -129,7 +129,7 @@ export default function FiltersDialog({
           </div>
 
           <button
-            className="flex items-center justify-center w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-300"
+            className="flex items-center justify-center w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-300 hover:cursor-pointer"
             onClick={handleFilters}
           >
             Apply Filters
