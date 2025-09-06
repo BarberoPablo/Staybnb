@@ -1,35 +1,60 @@
 import { SearchParams } from "next/dist/server/request/search-params";
 
-export type ParsedFilters = {
-  guests?: number;
-  bedrooms?: number;
-  beds?: number;
-  bathrooms?: number;
-  minPrice?: number;
-  maxPrice?: number;
-  amenities?: string[];
-  startDate?: Date;
-  endDate?: Date;
-};
+type StructureFilters = { guests?: number; bedrooms?: number; beds?: number; bathrooms?: number };
+type GuestFilters = { adults?: number; children?: number; infant?: number; pets?: number };
+type PriceFilters = { minPrice?: number; maxPrice?: number };
+type DateFilters = { startDate?: Date; endDate?: Date };
+type AmenitiesFilters = { amenities?: string[] };
+
+export type ParsedFilters = StructureFilters & GuestFilters & PriceFilters & DateFilters & AmenitiesFilters;
 
 export function parseFilters(params: SearchParams): ParsedFilters {
   const filters: ParsedFilters = {};
 
-  // Handle structure parameters (convert to numbers)
-  if (params.guests) filters.guests = toNumber(params.guests);
-  if (params.bedrooms) filters.bedrooms = toNumber(params.bedrooms);
-  if (params.beds) filters.beds = toNumber(params.beds);
-  if (params.bathrooms) filters.bathrooms = toNumber(params.bathrooms);
+  // Structure parameters
+  const structureFilters: StructureFilters = {
+    ...(params.guests ? { guests: toNumber(params.guests) } : {}),
+    ...(params.bedrooms ? { bedrooms: toNumber(params.bedrooms) } : {}),
+    ...(params.beds ? { beds: toNumber(params.beds) } : {}),
+    ...(params.bathrooms ? { bathrooms: toNumber(params.bathrooms) } : {}),
+  };
 
-  // Handle price parameters (convert to numbers)
-  if (params.minPrice) filters.minPrice = toNumber(params.minPrice);
-  if (params.maxPrice) filters.maxPrice = toNumber(params.maxPrice);
+  Object.assign(filters, structureFilters);
 
-  // Handle dates parameters (convert to dates)
-  if (params.startDate) filters.startDate = new Date(params.startDate as string);
-  if (params.endDate) filters.endDate = new Date(params.endDate as string);
+  // Guest parameters
+  const guestFilters: GuestFilters = {
+    ...(params.adults ? { adults: toNumber(params.adults) } : {}),
+    ...(params.children ? { children: toNumber(params.children) } : {}),
+    ...(params.infant ? { infant: toNumber(params.infant) } : {}),
+    ...(params.pets ? { pets: toNumber(params.pets) } : {}),
+  };
 
-  // Handle amenities (ensure it's always an array)
+  Object.assign(filters, guestFilters);
+
+  // Calculate total guests
+  const totalGuests = Object.values(guestFilters).reduce((sum, value) => sum + (value ?? 0), 0);
+
+  if (totalGuests > 0) {
+    filters.guests = totalGuests;
+  }
+
+  // Price parameters
+  const priceFilters: PriceFilters = {
+    ...(params.minPrice ? { minPrice: toNumber(params.minPrice) } : {}),
+    ...(params.maxPrice ? { maxPrice: toNumber(params.maxPrice) } : {}),
+  };
+
+  Object.assign(filters, priceFilters);
+
+  // Date parameters
+  const dateFilters: DateFilters = {
+    ...(params.startDate ? { startDate: new Date(params.startDate as string) } : {}),
+    ...(params.endDate ? { endDate: new Date(params.endDate as string) } : {}),
+  };
+
+  Object.assign(filters, dateFilters);
+
+  // Handle amenities
   if (params.amenities) {
     if (typeof params.amenities === "string") {
       filters.amenities = params.amenities
@@ -53,10 +78,9 @@ export const toNumber = (value: string | string[] | undefined): number | undefin
 };
 
 export function buildSearchListingsWhereClause(city: string, filters: ParsedFilters) {
-  console.log("Building where clause with filters:", filters);
+  const { guests, bedrooms, beds, bathrooms, adults, children, infant, pets, minPrice, maxPrice, amenities, startDate, endDate } = filters;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const whereClause: any = {
+  const whereClause: Record<string, unknown> = {
     status: "published",
     location: {
       path: ["city"],
@@ -65,95 +89,44 @@ export function buildSearchListingsWhereClause(city: string, filters: ParsedFilt
     },
   };
 
-  // Add price filters if provided
-  if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
-    whereClause.night_price = {};
-    if (filters.minPrice !== undefined) {
-      whereClause.night_price.gte = filters.minPrice;
-    }
-    if (filters.maxPrice !== undefined) {
-      whereClause.night_price.lte = filters.maxPrice;
-    }
+  // Prices
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    whereClause.night_price = {
+      ...(minPrice !== undefined ? { gte: minPrice } : {}),
+      ...(maxPrice !== undefined ? { lte: maxPrice } : {}),
+    };
   }
 
-  // Build structure filters using AND operator
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const structureConditions: any[] = [];
+  // Structure + Guest limits
+  const conditions = [
+    ...buildStructureConditions({ guests, bedrooms, beds, bathrooms }),
+    ...buildGuestLimitConditions({ adults, children, infant, pets }),
+  ];
 
-  if (filters.guests !== undefined) {
-    structureConditions.push({
-      structure: {
-        path: ["guests"],
-        gte: filters.guests,
-      },
-    });
-  }
-  if (filters.bedrooms !== undefined) {
-    structureConditions.push({
-      structure: {
-        path: ["bedrooms"],
-        gte: filters.bedrooms,
-      },
-    });
-  }
-  if (filters.beds !== undefined) {
-    structureConditions.push({
-      structure: {
-        path: ["beds"],
-        gte: filters.beds,
-      },
-    });
-  }
-  if (filters.bathrooms !== undefined) {
-    structureConditions.push({
-      structure: {
-        path: ["bathrooms"],
-        gte: filters.bathrooms,
-      },
-    });
+  if (conditions.length === 1) {
+    Object.assign(whereClause, conditions[0]);
+  } else if (conditions.length > 1) {
+    whereClause.AND = conditions;
   }
 
-  if (structureConditions.length > 0) {
-    if (structureConditions.length === 1) {
-      Object.assign(whereClause, structureConditions[0]);
-    } else {
-      whereClause.AND = structureConditions;
-    }
-  }
-
-  if (filters.amenities && Array.isArray(filters.amenities) && filters.amenities.length > 0) {
-    whereClause.AND = whereClause.AND || [];
-    filters.amenities.forEach((amenityId) => {
-      whereClause.AND.push({
+  // Amenities
+  if (amenities?.length) {
+    whereClause.AND = (whereClause.AND || []) as object[];
+    amenities.forEach((amenityId) => {
+      (whereClause.AND as object[]).push({
         listing_amenities: {
-          some: {
-            amenity_id: Number(amenityId),
-          },
+          some: { amenity_id: Number(amenityId) },
         },
       });
     });
   }
 
-  if (filters.startDate && filters.endDate) {
-    // Helper: normalize a Date to UTC midnight (YYYY-MM-DDT00:00:00Z)
-    // This ensures we ignore hours/minutes/seconds and only compare by year-month-day.
-    const toUtcMidnight = (d: Date) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
-
-    const startDay = toUtcMidnight(filters.startDate);
-    const endDay = toUtcMidnight(filters.endDate);
-    /* 
-      Add 1 day to the normalized start date.
-      Why? Because we treat the reservation interval as [start, end), meaning the "end date" is exclusive.
-      This way, if a reservation ends on Sept 17, a new booking can safely start on Sept 17 (same calendar day).
-    */
+  // Dates
+  if (startDate && endDate) {
+    const startDay = toUtcMidnight(startDate);
+    const endDay = toUtcMidnight(endDate);
     const startDayPlus1 = new Date(startDay.getTime() + 24 * 60 * 60 * 1000);
-    /* 
-      Exclude listings that have overlapping reservations.
-      Conflict happens if:
-      - A reservation starts before the search's checkout day (endDay), AND
-      - That reservation ends after the day *after* the search's check-in (startDayPlus1).
-      By pushing startDay forward 1 day, we effectively ignore hours and make end-date exclusive.
-    */
+
     whereClause.NOT = {
       reservations: {
         some: {
@@ -166,3 +139,21 @@ export function buildSearchListingsWhereClause(city: string, filters: ParsedFilt
 
   return whereClause;
 }
+
+function buildStructureConditions(filters: StructureFilters) {
+  return (Object.keys(filters) as (keyof StructureFilters)[])
+    .filter((key) => filters[key] !== undefined)
+    .map((key) => ({
+      structure: { path: [key], gte: filters[key] },
+    }));
+}
+
+function buildGuestLimitConditions(filters: GuestFilters) {
+  return (Object.keys(filters) as (keyof GuestFilters)[])
+    .filter((key) => filters[key] !== undefined)
+    .map((key) => ({
+      guest_limits: { path: [key, "max"], gte: filters[key] },
+    }));
+}
+
+const toUtcMidnight = (d: Date) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));

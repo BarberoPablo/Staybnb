@@ -65,8 +65,6 @@ export default function Navbar({ search = true }: { search?: boolean }) {
     }
 
     router.push(query);
-    //setSearchCity("");
-    setShowFilters(false);
   };
 
   const handleFocusInput = (focus: boolean) => {
