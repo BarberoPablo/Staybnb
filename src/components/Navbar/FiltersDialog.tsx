@@ -105,7 +105,7 @@ export default function FiltersDialog({
         <DialogPanel
           aria-labelledby="dialog-title"
           aria-describedby="dialog-description"
-          className="flex flex-col bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl min-h-[570px] overflow-y-auto "
+          className="flex flex-col bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl min-h-[570px] overflow-y-auto"
         >
           {/* Top Navigation Tabs */}
           <div className="flex w-full mb-6 border-b border-gray-200">
