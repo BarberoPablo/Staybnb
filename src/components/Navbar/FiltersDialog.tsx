@@ -128,7 +128,7 @@ export default function FiltersDialog({
 
           <div
             id="dialog-description"
-            className="flex-1 flex flex-col items-center text-center max-h-[346px] 2xl:min-h-[400px] text-myGray overflow-y-auto overflow-x-hidden w-full"
+            className="flex-1 flex flex-col items-center text-center max-h-[346px] 2xl:min-h-[440px] text-myGray overflow-y-auto overflow-x-hidden w-full"
           >
             {filtersMenu[filterStep].content}
           </div>
