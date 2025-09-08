@@ -3,6 +3,7 @@
 import { AmenityId } from "@/lib/constants/amenities";
 import { Dates, Guests } from "@/lib/types";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
+import { SearchParams } from "next/dist/server/request/search-params";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FilterState } from "../Navbar";
 import SelectAmenities from "./SelectAmenities";
@@ -19,8 +20,8 @@ export default function FiltersDialog({
 }: {
   isOpen: boolean;
   step: number;
-  setQuery: (query: string) => void;
-  onClose: (searchListings?: boolean, query?: string) => void;
+  setQuery: (query: SearchParams) => void;
+  onClose: (searchListings?: boolean, query?: SearchParams) => void;
   filters: FilterState;
   setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
 }) {
@@ -73,23 +74,24 @@ export default function FiltersDialog({
   }, [step]);
 
   const handleFilters = () => {
-    let query = "";
+    const query: SearchParams = {};
 
     // Add dates to query
     if (filters.dates.startDate && filters.dates.endDate) {
-      query += `&startDate=${filters.dates.startDate.toISOString()}&endDate=${filters.dates.endDate.toISOString()}`;
+      query.startDate = filters.dates.startDate.toISOString();
+      query.endDate = filters.dates.endDate.toISOString();
     }
 
     // Add guests to query
     const { adults, children, infant, pets } = filters.guests;
-    if (children > 0) query += `&children=${children}`;
-    if (infant > 0) query += `&infant=${infant}`;
-    if (pets > 0) query += `&pets=${pets}`;
-    if (children > 0 || infant > 0 || pets > 0 || adults > 1) query += `&adults=${adults}`;
+    if (children > 0) query.children = children.toString();
+    if (infant > 0) query.infant = infant.toString();
+    if (pets > 0) query.pets = pets.toString();
+    if (children > 0 || infant > 0 || pets > 0 || adults > 1) query.adults = adults.toString();
 
     // Add amenities to query
     if (filters.amenities && filters.amenities.length > 0) {
-      query += `&amenities=${filters.amenities.join(",")}`;
+      query.amenities = filters.amenities.join(",");
     }
 
     setQuery(query);
