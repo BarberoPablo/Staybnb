@@ -3,7 +3,7 @@
 import Navbar from "@/components/Navbar";
 import { api } from "@/lib/api/api";
 import { Listing } from "@/lib/types/listing";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import React, { useEffect, useState } from "react";
 import { HostListingCard } from "./components/HostListingCard";
 import { SkeletonListingCard } from "@/components/Skeleton/SkeletonListingCard";

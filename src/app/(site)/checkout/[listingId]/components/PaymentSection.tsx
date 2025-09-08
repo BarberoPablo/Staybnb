@@ -5,7 +5,7 @@ import { api } from "@/lib/api/api";
 import { CreateReservation } from "@/lib/types/reservation";
 import { calculateNights } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { IoCalendar, IoCard, IoCheckmarkCircle } from "react-icons/io5";

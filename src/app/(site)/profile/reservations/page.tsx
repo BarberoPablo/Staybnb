@@ -6,7 +6,7 @@ import { ResumedReservationWithListing } from "@/lib/types/reservation";
 import { getTotalGuests } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IoCalendar, IoFilter, IoLocation, IoPerson, IoTime } from "react-icons/io5";

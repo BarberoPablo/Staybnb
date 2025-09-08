@@ -4,7 +4,7 @@ import { logout } from "@/app/(site)/auth/components/auth";
 import { useUser } from "@/hooks/useUser";
 import { basicButton } from "@/lib/styles";
 import { MenuItem } from "@headlessui/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { FaUserCircle } from "react-icons/fa";
 import { MdOutlineLogin, MdOutlineLogout } from "react-icons/md";
 

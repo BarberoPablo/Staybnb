@@ -1,7 +1,8 @@
 "use client";
 
 import { MenuItem } from "@headlessui/react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { FaHotel } from "react-icons/fa";
 import { MdOutlineTravelExplore } from "react-icons/md";
 

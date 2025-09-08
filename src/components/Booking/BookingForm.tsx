@@ -4,7 +4,7 @@ import Tooltip from "@/components/Tooltip";
 import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
 import { ListingWithReservations } from "@/lib/types/listing";
 import { buildListingParams, calculateNights, createUTCDate, getDisabledDates, getListingPromotion, listingGuests } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
 import { DateRange } from "react-date-range";

@@ -26,6 +26,7 @@
     "keen-slider": "^6.8.6",
     "leaflet": "^1.9.4",
     "next": "15.3.4",
+    "nextjs-toploader": "^3.9.16",
     "react": "^19.0.0-rc.1",
     "react-date-range": "^2.0.1",
     "react-dom": "^19.0.0-rc.1",

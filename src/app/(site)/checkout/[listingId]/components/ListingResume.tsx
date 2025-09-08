@@ -49,7 +49,7 @@ export default function ListingResume({
 
           {/* Edit Button Overlay */}
           <button
-            className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm hover:bg-white text-myGrayDark px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-md"
+            className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm hover:bg-white text-myGrayDark px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-md hover:cursor-pointer"
             onClick={openDateSelector}
           >
             Edit Dates
