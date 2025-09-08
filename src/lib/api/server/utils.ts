@@ -77,7 +77,11 @@ export const toNumber = (value: string | string[] | undefined): number | undefin
   return undefined;
 };
 
-export function buildSearchListingsWhereClause(city: string, filters: ParsedFilters) {
+export function buildSearchListingsWhereClause(
+  city: string,
+  filters: ParsedFilters,
+  mapCoordinates?: { zoom: number; northEast: { lat: number; lng: number }; southWest: { lat: number; lng: number } }
+) {
   const { guests, bedrooms, beds, bathrooms, adults, children, infant, pets, minPrice, maxPrice, amenities, startDate, endDate } = filters;
 
   const whereClause: Record<string, unknown> = {
@@ -88,6 +92,37 @@ export function buildSearchListingsWhereClause(city: string, filters: ParsedFilt
       mode: "insensitive",
     },
   };
+
+  if (mapCoordinates) {
+    const { northEast, southWest } = mapCoordinates;
+
+    whereClause.AND = [
+      {
+        location: {
+          path: ["city"],
+          string_contains: city,
+          mode: "insensitive",
+        },
+      },
+      {
+        location: {
+          path: ["lat"],
+          gte: southWest.lat,
+          lte: northEast.lat,
+        },
+      },
+      {
+        location: {
+          path: ["lng"],
+          gte: southWest.lng,
+          lte: northEast.lng,
+        },
+      },
+    ];
+
+    // Remove the original location filter since we're using AND now
+    delete whereClause.location;
+  }
 
   // Prices
   if (minPrice !== undefined || maxPrice !== undefined) {
@@ -106,19 +141,27 @@ export function buildSearchListingsWhereClause(city: string, filters: ParsedFilt
   if (conditions.length === 1) {
     Object.assign(whereClause, conditions[0]);
   } else if (conditions.length > 1) {
-    whereClause.AND = conditions;
+    // If we already have AND conditions (from map coordinates), merge them
+    if (whereClause.AND && Array.isArray(whereClause.AND)) {
+      whereClause.AND = [...whereClause.AND, ...conditions];
+    } else {
+      whereClause.AND = conditions;
+    }
   }
 
   // Amenities
   if (amenities?.length) {
-    whereClause.AND = (whereClause.AND || []) as object[];
-    amenities.forEach((amenityId) => {
-      (whereClause.AND as object[]).push({
-        listing_amenities: {
-          some: { amenity_id: Number(amenityId) },
-        },
-      });
-    });
+    const amenityConditions = amenities.map((amenityId) => ({
+      listing_amenities: {
+        some: { amenity_id: Number(amenityId) },
+      },
+    }));
+
+    if (whereClause.AND && Array.isArray(whereClause.AND)) {
+      whereClause.AND = [...whereClause.AND, ...amenityConditions];
+    } else {
+      whereClause.AND = amenityConditions;
+    }
   }
 
   // Dates

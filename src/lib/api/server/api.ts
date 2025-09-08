@@ -42,13 +42,17 @@ export async function getListingWithReservations(id: number) {
   return parseListingWithReservationsAndHostFromDB(rawData as ListingWithReservationsAndHostDB);
 }
 
-export async function searchListings(city: string | undefined, filters: ParsedFilters) {
+export async function searchListings(
+  city: string | undefined,
+  filters: ParsedFilters,
+  mapCoordinates?: { zoom: number; northEast: { lat: number; lng: number }; southWest: { lat: number; lng: number } }
+) {
   if (!city) {
     return [];
   }
 
   try {
-    const whereClause = buildSearchListingsWhereClause(city, filters);
+    const whereClause = buildSearchListingsWhereClause(city, filters, mapCoordinates);
 
     const listings = await prisma.listings.findMany({
       where: whereClause,
