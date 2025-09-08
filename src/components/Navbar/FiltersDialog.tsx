@@ -20,7 +20,7 @@ export default function FiltersDialog({
   isOpen: boolean;
   step: number;
   setQuery: (query: string) => void;
-  onClose: () => void;
+  onClose: (searchListings?: boolean, query?: string) => void;
   filters: FilterState;
   setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
 }) {
@@ -93,11 +93,11 @@ export default function FiltersDialog({
     }
 
     setQuery(query);
-    onClose();
+    onClose(true, query);
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+    <Dialog open={isOpen} onClose={() => onClose()} className="relative z-50">
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-start justify-center p-4 pt-8 sm:items-center sm:pt-4 overflow-y-auto">
         <DialogPanel
@@ -132,7 +132,7 @@ export default function FiltersDialog({
             className="flex items-center justify-center w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-300 hover:cursor-pointer"
             onClick={handleFilters}
           >
-            Apply Filters
+            Search
           </button>
         </DialogPanel>
       </div>
