@@ -36,7 +36,7 @@ export const displayGuestLabel = (type: Guests, value: number) => {
 };
 
 export function buildListingParams(guests: Record<Guests, number>, startDate: Date, endDate: Date) {
-  let query = `startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`;
+  let query = `startDate=${encodeURIComponent(startDate.toISOString())}&endDate=${encodeURIComponent(endDate.toISOString())}`;
 
   for (const [guest, count] of Object.entries(guests)) {
     if (count > 0) {

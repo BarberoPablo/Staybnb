@@ -34,7 +34,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const [showFilters, setShowFilters] = useState(false);
   const [openCalendar, setOpenCalendar] = useState(false);
   const [filtersStep, setFiltersStep] = useState(0);
-  const [filtersQuery, setFiltersQuery] = useState("");
+  const [filtersQuery, setFiltersQuery] = useState<SearchParams>({});
   const [showCityError, setShowCityError] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     dates: {
@@ -59,12 +59,9 @@ export default function Navbar({ search = true }: { search?: boolean }) {
     const isSearchPage = pathname.includes("/search");
 
     if (isSearchPage || searchParams.toString() !== "") {
-      const urlParams = new URLSearchParams(searchParams.toString());
-      const params = Object.fromEntries(urlParams.entries());
+      const params = Object.fromEntries(searchParams.entries());
 
-      const queryString = buildQueryStringFromParams(params);
-      setFiltersQuery(queryString);
-
+      setFiltersQuery(params);
       const parsedFilters = parseFilters(params);
 
       setFilters((prevFilters) => ({
@@ -94,8 +91,8 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const handleSearchCity = () => {
     if (searchCity) {
       let query = `/search?city=${encodeURIComponent(searchCity.trim())}`;
-      if (filtersQuery !== "") {
-        query += filtersQuery;
+      if (filtersQuery && Object.keys(filtersQuery).length > 0) {
+        query += buildQueryStringFromParams(filtersQuery);
       }
 
       router.push(query);
@@ -114,11 +111,13 @@ export default function Navbar({ search = true }: { search?: boolean }) {
     setOpenCalendar(true);
   };
 
-  const handleCloseCalendar = (searchListings?: boolean, query?: string) => {
+  const handleCloseCalendar = (searchListings?: boolean, query?: SearchParams) => {
     if (query || searchListings) {
       if (searchCity) {
         let searchQuery = `/search?city=${encodeURIComponent(searchCity.trim())}`;
-        searchQuery += query;
+        if (query && Object.keys(query).length > 0) {
+          searchQuery += buildQueryStringFromParams(query);
+        }
 
         router.push(searchQuery);
       } else {

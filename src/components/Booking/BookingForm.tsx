@@ -1,6 +1,8 @@
 "use client";
 
 import Tooltip from "@/components/Tooltip";
+import { useQueryParams } from "@/hooks/useQueryParams";
+import { parseFilters } from "@/lib/api/server/utils";
 import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
 import { ListingWithReservations } from "@/lib/types/listing";
 import { buildListingParams, calculateNights, createUTCDate, getDisabledDates, getListingPromotion, listingGuests } from "@/lib/utils";
@@ -36,6 +38,35 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
   const [errors, setErrors] = useState<Partial<Record<Guests | "dateRange", string>>>({});
 
   const router = useRouter();
+  const urlParams = useQueryParams(["startDate", "endDate", "adults", "children", "infant", "pets"]);
+
+  useEffect(() => {
+    if (Object.values(urlParams).some((value) => value !== undefined)) {
+      const parsedFilters = parseFilters(urlParams);
+
+      setGuests((prevGuests) => ({
+        adults: parsedFilters.adults ?? prevGuests.adults,
+        children: parsedFilters.children ?? prevGuests.children,
+        infant: parsedFilters.infant ?? prevGuests.infant,
+        pets: parsedFilters.pets ?? prevGuests.pets,
+      }));
+
+      if (parsedFilters.startDate && parsedFilters.endDate) {
+        setDateRange((prevDateRange) => {
+          const newDateRange = {
+            startDate: parsedFilters.startDate!,
+            endDate: parsedFilters.endDate!,
+            key: "selection" as const,
+          };
+
+          const hasChanged =
+            prevDateRange.startDate.getTime() !== newDateRange.startDate.getTime() || prevDateRange.endDate.getTime() !== newDateRange.endDate.getTime();
+
+          return hasChanged ? newDateRange : prevDateRange;
+        });
+      }
+    }
+  }, [urlParams]);
 
   useEffect(() => {
     const fetchReservedDates = async () => {
@@ -127,7 +158,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
               <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  disabled={guests[type] === listing.guestLimits[type].min}
+                  disabled={guests[type] <= listing.guestLimits[type].min}
                   className="w-8 h-8 bg-myGreenExtraLight hover:bg-myGreen hover:cursor-pointer text-myGrayDark hover:text-white rounded-full flex items-center justify-center font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => handleGuest(type, -1)}
                 >
@@ -138,7 +169,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
 
                 <button
                   type="button"
-                  disabled={guests[type] === listing.guestLimits[type].max}
+                  disabled={guests[type] >= listing.guestLimits[type].max}
                   className="w-8 h-8 bg-myGreenExtraLight hover:bg-myGreen hover:cursor-pointer text-myGrayDark hover:text-white rounded-full flex items-center justify-center font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => handleGuest(type, 1)}
                 >

@@ -2,12 +2,25 @@
 
 import { FavoriteButton } from "@/components/FavoriteButton";
 import ImagesSlider from "@/components/ImagesSlider";
+import { buildQueryStringFromParams } from "@/components/Navbar";
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 import { IoLocation, IoStar } from "react-icons/io5";
-import {} from "../page";
 
 export default function ListingCard({ listing, setLocateListing }: { listing: Listing; setLocateListing: (trackListing: number) => void }) {
+  const searchParams = useSearchParams();
+  const urlParams = new URLSearchParams(searchParams.toString());
+
+  const buildHrefWithParams = () => {
+    const baseHref = `/listing/${listing.id}`;
+    const params = Object.fromEntries(urlParams.entries());
+
+    const queryString = buildQueryStringFromParams(params);
+
+    return queryString ? `${baseHref}?${queryString}` : baseHref;
+  };
+
   return (
     <motion.div
       className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group"
@@ -20,7 +33,7 @@ export default function ListingCard({ listing, setLocateListing }: { listing: Li
     >
       {/* Image Section */}
       <div className="relative">
-        <ImagesSlider images={listing.images} href={`/listing/${listing.id}`} hoverEffect={true} containerClassName="rounded-t-xl" />
+        <ImagesSlider images={listing.images} href={buildHrefWithParams()} hoverEffect={true} containerClassName="rounded-t-xl" />
 
         {/* Price Badge */}
         <div className="absolute bottom-3 left-3 bg-white px-3 py-1 rounded-full shadow-md border border-gray-100">
