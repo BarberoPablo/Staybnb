@@ -2,23 +2,23 @@
 
 import { Container } from "@/app/(site)/components/Container";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { parseFilters } from "@/lib/api/server/utils";
 import { AmenityId } from "@/lib/constants/amenities";
 import { Dates, Guests } from "@/lib/types";
 import { logoUrl } from "@/lib/utils";
 import { Menu, MenuButton, MenuItems } from "@headlessui/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
+import { SearchParams } from "next/dist/server/request/search-params";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { lazy, useState } from "react";
-import { IoIosClose } from "react-icons/io";
-import { IoCalendar, IoMenu, IoPeople, IoSearch } from "react-icons/io5";
-import { MdHomeWork } from "react-icons/md";
-import { RoundButton } from "./Button/RoundButton";
+import { lazy, useEffect, useState } from "react";
+import { IoMenu, IoSearch } from "react-icons/io5";
 import ChangeViewButton from "./ChangeViewButton";
 import { SignButton } from "./SignButton";
 
 const FiltersDialog = lazy(() => import("./Navbar/FiltersDialog"));
+const FilterButtons = lazy(() => import("./Navbar/FilterButtons"));
 
 export type FilterState = {
   dates: Dates;
@@ -52,6 +52,31 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const pathname = usePathname();
   const hosting = pathname.includes("/hosting");
   const searchEffect = !useMediaQuery("(max-width: 500px)");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(searchParams.toString());
+    const params = Object.fromEntries(urlParams.entries());
+
+    const queryString = buildQueryStringFromParams(params);
+    setFiltersQuery(queryString);
+
+    const parsedFilters = parseFilters(params);
+
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      dates: {
+        startDate: parsedFilters.startDate,
+        endDate: parsedFilters.endDate,
+      },
+      guests: {
+        adults: parsedFilters.adults ?? prevFilters.guests.adults,
+        children: parsedFilters.children ?? prevFilters.guests.children,
+        infant: parsedFilters.infant ?? prevFilters.guests.infant,
+        pets: parsedFilters.pets ?? prevFilters.guests.pets,
+      },
+      amenities: (parsedFilters.amenities as AmenityId[]) ?? prevFilters.amenities,
+    }));
+  }, [searchParams]);
 
   const handleSearchCityInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchCity(event.target.value);
@@ -149,53 +174,12 @@ export default function Navbar({ search = true }: { search?: boolean }) {
                       </button>
                     )}
                   </div>
-                  <AnimatePresence>
-                    {showFilters && (
-                      <motion.div
-                        className="flex flex-col gap-2 mt-2"
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                      >
-                        <div className="flex gap-4">
-                          <RoundButton
-                            className={`w-10 h-10 shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold`}
-                            style={{
-                              backgroundColor: `${filtersQuery.includes("startDate") ? "var(--color-myPurple)" : "var(--color-myGreenExtraLight)"}`,
-                              borderColor: `${filtersQuery.includes("startDate") ? "var(--color-myGray)" : "var(--color-myGreenSemiBold)"}`,
-                            }}
-                            onClick={() => handleOpenCalendar(0)}
-                          >
-                            <IoCalendar className="text-myGrayDark" />
-                          </RoundButton>
-                          <RoundButton
-                            className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold"
-                            style={{
-                              backgroundColor: `${filtersQuery.includes("adults") ? "var(--color-myPurple)" : "var(--color-myGreenExtraLight)"}`,
-                              borderColor: `${filtersQuery.includes("adults") ? "var(--color-myGray)" : "var(--color-myGreenSemiBold)"}`,
-                            }}
-                            onClick={() => handleOpenCalendar(1)}
-                          >
-                            <IoPeople className="text-myGrayDark" />
-                          </RoundButton>
-                          <RoundButton
-                            className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold"
-                            style={{
-                              backgroundColor: `${filtersQuery.includes("amenities") ? "var(--color-myPurple)" : "var(--color-myGreenExtraLight)"}`,
-                              borderColor: `${filtersQuery.includes("amenities") ? "var(--color-myGray)" : "var(--color-myGreenSemiBold)"}`,
-                            }}
-                            onClick={() => handleOpenCalendar(2)}
-                          >
-                            <MdHomeWork className="text-myGrayDark" />
-                          </RoundButton>
-                          <RoundButton className="w-10 h-10 bg-myGreenExtraLight shadow-md text-3xl text-myGrayDark" onClick={() => setShowFilters(false)}>
-                            <IoIosClose />
-                          </RoundButton>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  <FilterButtons
+                    showFilters={showFilters}
+                    filtersQuery={filtersQuery}
+                    onOpenCalendar={handleOpenCalendar}
+                    onCloseFilters={() => setShowFilters(false)}
+                  />
                 </div>
               </div>
               <div className="">
@@ -240,4 +224,55 @@ function DropDownNavbarMenu() {
       </Menu>
     </div>
   );
+}
+
+export function buildQueryStringFromParams(params: SearchParams): string {
+  const queryParts: string[] = [];
+
+  if (params.startDate) {
+    queryParts.push(`startDate=${encodeURIComponent(params.startDate as string)}`);
+  }
+  if (params.endDate) {
+    queryParts.push(`endDate=${encodeURIComponent(params.endDate as string)}`);
+  }
+
+  if (params.adults) {
+    queryParts.push(`adults=${params.adults}`);
+  }
+  if (params.children) {
+    queryParts.push(`children=${params.children}`);
+  }
+  if (params.infant) {
+    queryParts.push(`infant=${params.infant}`);
+  }
+  if (params.pets) {
+    queryParts.push(`pets=${params.pets}`);
+  }
+
+  if (params.amenities) {
+    const amenitiesValue = Array.isArray(params.amenities) ? params.amenities.join(",") : params.amenities;
+    queryParts.push(`amenities=${encodeURIComponent(amenitiesValue)}`);
+  }
+
+  if (params.minPrice) {
+    queryParts.push(`minPrice=${params.minPrice}`);
+  }
+  if (params.maxPrice) {
+    queryParts.push(`maxPrice=${params.maxPrice}`);
+  }
+
+  if (params.guests) {
+    queryParts.push(`guests=${params.guests}`);
+  }
+  if (params.bedrooms) {
+    queryParts.push(`bedrooms=${params.bedrooms}`);
+  }
+  if (params.beds) {
+    queryParts.push(`beds=${params.beds}`);
+  }
+  if (params.bathrooms) {
+    queryParts.push(`bathrooms=${params.bathrooms}`);
+  }
+
+  return queryParts.length > 0 ? `&${queryParts.join("&")}` : "";
 }
