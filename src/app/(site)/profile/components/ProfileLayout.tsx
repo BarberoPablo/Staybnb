@@ -2,7 +2,8 @@
 
 import { basicButton } from "@/lib/styles";
 import { motion } from "framer-motion";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { IoCalendar, IoCog, IoHeart, IoPerson } from "react-icons/io5";
 

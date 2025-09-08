@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import { basicButton } from "@/lib/styles";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 
 export default function Hosting() {
   const router = useRouter();

@@ -1,7 +1,10 @@
+"use client";
+
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { MdOutlineEdit } from "react-icons/md";
 

@@ -1,14 +1,14 @@
 "use client";
 
 import { useFavorites } from "@/hooks/useFavorites";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { EmptyState } from "../components/EmptyState";
-import { FavoriteCard } from "./components/FavoriteCard";
-import { FavoritesSummary } from "./components/FavoritesSummary";
 import { PageHeader } from "../components/PageHeader";
 import { SearchBar } from "../components/SearchBar";
 import { SkeletonFavorites } from "../components/SkeletonFavorites";
+import { FavoriteCard } from "./components/FavoriteCard";
+import { FavoritesSummary } from "./components/FavoritesSummary";
 
 export default function FavoritesSection() {
   const [searchTerm, setSearchTerm] = useState("");

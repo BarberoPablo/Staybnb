@@ -3,7 +3,8 @@
 import { api } from "@/lib/api/api";
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { useListingForm } from "@/store/useListingForm";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import toast from "react-hot-toast";
 
 export default function HostingCreateListingLayout({ children }: { children: React.ReactNode }) {

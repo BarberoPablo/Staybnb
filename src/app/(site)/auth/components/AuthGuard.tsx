@@ -2,7 +2,7 @@
 
 import { useUser } from "@/hooks/useUser";
 import { api } from "@/lib/api/api";
-import { useRouter } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
+import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 import { Roboto } from "next/font/google";
 
@@ -18,6 +19,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={roboto.variable}>
       <body>
+        <NextTopLoader
+          color="#7FB069"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={true}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #7FB069,0 0 5px #7FB069"
+          zIndex={1600}
+          showAtBottom={false}
+        />
         <Toaster position="top-center" />
         {children}
       </body>
