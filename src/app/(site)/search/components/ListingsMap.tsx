@@ -3,10 +3,12 @@
 import MapEventsHandler from "@/app/(site)/search/components/MapEventsHandler";
 import { RoundButton } from "@/components/Button/RoundButton";
 import ImagesSlider from "@/components/ImagesSlider";
-import { api } from "@/lib/api/api";
+import { searchListings } from "@/lib/api/server/api";
+import { parseFilters } from "@/lib/api/server/utils";
 import { MapCoordinates } from "@/lib/types";
 import { Listing } from "@/lib/types/listing";
 import { divIcon } from "leaflet";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
@@ -20,6 +22,16 @@ export default function ListingsMap({
   locateListing: number;
   setListings: (listings: Listing[]) => void;
 }) {
+  const searchParams = useSearchParams();
+  const city = searchParams.get("city") || undefined;
+
+  // Convert URLSearchParams to object for parseFilters
+  const paramsObject: Record<string, string | string[] | undefined> = {};
+  searchParams.forEach((value, key) => {
+    paramsObject[key] = value;
+  });
+
+  const filters = parseFilters(paramsObject);
   const [center, setCenter] = useState<[number, number]>(listings[0] ? [listings[0].location.lat, listings[0].location.lng] : [0, 0]);
   const [listingPopup, setListingPopup] = useState<Listing | null>(null);
   const [mapEnabled, setMapEnabled] = useState(true);
@@ -33,7 +45,20 @@ export default function ListingsMap({
 
   const handleEndMapMove = async ({ zoom, northEast, southWest }: MapCoordinates) => {
     try {
-      const listings = await api.getListings({ zoom, northEast, southWest });
+      // Serialize the map coordinates to plain objects to avoid client reference issues
+      const serializedMapCoordinates = {
+        zoom,
+        northEast: {
+          lat: northEast.lat,
+          lng: northEast.lng,
+        },
+        southWest: {
+          lat: southWest.lat,
+          lng: southWest.lng,
+        },
+      };
+
+      const listings = await searchListings(city, filters, serializedMapCoordinates);
 
       setListings(listings);
     } catch (error) {
