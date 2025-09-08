@@ -77,3 +77,58 @@ body {
 .leaflet-marker-icon {
   font-family: "Geist", sans-serif !important;
 }
+
+/* Responsive fixes for react-date-range on mobile */
+@media (max-width: 640px) {
+  .rdrDateRangeWrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .rdrCalendarWrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .rdrMonth {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: unset !important;
+  }
+
+  .rdrMonthAndYearWrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .rdrWeekDays {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .rdrDays {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .rdrDay {
+    min-width: 32px !important;
+    width: calc(100% / 7) !important;
+    max-width: calc(100% / 7) !important;
+  }
+
+  .rdrDayNumber {
+    font-size: 12px !important;
+  }
+
+  .rdrMonthAndYearPickers {
+    font-size: 14px !important;
+  }
+
+  .rdrNextPrevButton {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
