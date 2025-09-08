@@ -11,7 +11,11 @@ A modern, full-featured Airbnb clone built with Next.js 15, TypeScript, and Supa
 
 ### 🏡 **For Guests**
 
-- **Smart Search & Discovery**: Search properties by city with real-time filtering
+- **Smart Search & Discovery**:
+  - Search properties by city with real-time filtering
+  - Advanced URL-based filtering with persistent state
+  - Smart filter persistence across page navigation and browser refresh
+  - Real-time search validation with city error handling
 - **Interactive Maps**: View listings on an interactive map with Leaflet integration
 - **Advanced Booking System**:
   - Date range selection with availability checking
@@ -93,6 +97,21 @@ A modern, full-featured Airbnb clone built with Next.js 15, TypeScript, and Supa
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
 - **Turbopack** - Fast bundler for development
+
+### **Technical Improvements**
+
+- **Stable Query Parameter Management**:
+  - Custom `useQueryParams` hook for reliable URL parameter handling
+  - Stable dependency management to prevent unnecessary re-renders
+  - Optimized search parameter parsing and validation
+- **Enhanced Filter Processing**:
+  - Improved server-side filter parsing with comprehensive type safety
+  - Better handling of complex filter combinations (dates, guests, amenities)
+  - Robust error handling for malformed search parameters
+- **Performance Optimizations**:
+  - Memoized filter components to prevent unnecessary re-renders
+  - Optimized search parameter building and URL construction
+  - Efficient state management for complex filter states
 
 ## 🚀 Getting Started
 
@@ -201,6 +220,21 @@ The application uses Supabase's SSR package for secure authentication:
 - **Loading States**: Skeleton components for better UX
 - **Toast Notifications**: User feedback and error handling
 - **Accessibility**: WCAG compliant components
+
+### **Navigation & User Experience**
+
+- **Enhanced Filter System**:
+  - Modular filter buttons with improved state management
+  - Multi-step filter selection dialog with intuitive navigation
+  - Real-time filter application with immediate search results
+- **Smart Search Experience**:
+  - Improved mobile responsiveness for search functionality
+  - Better error handling and user feedback for search validation
+  - Seamless integration between search input and filter system
+- **URL State Management**:
+  - Search parameters synced with browser URL for better navigation
+  - Shareable search URLs with all applied filters
+  - Browser back/forward button support for search history
 
 ## 🔄 Booking System
 
