@@ -52,6 +52,16 @@ export default function SelectAmenities({ selectedAmenities, setSelectedAmenitie
 
   return (
     <div className="w-full overflow-y-auto">
+      {selectedAmenities.length > 0 && (
+        <div className="sticky top-0 bg-white border-b border-gray-200 mb-4 pb-2 z-10 flex justify-between items-center">
+          <p className="text-sm text-myGray">
+            Selected: {selectedAmenities.length} amenit{selectedAmenities.length !== 1 ? "ies" : "y"}
+          </p>
+          <button onClick={() => setSelectedAmenities([])} className="text-sm text-red-600 hover:text-red-800 hover:underline hover:cursor-pointer">
+            Clear all
+          </button>
+        </div>
+      )}
       <div className="space-y-6">
         {Object.entries(amenitiesByCategory).map(([category, amenities]) => (
           <div key={category} className="space-y-3">
@@ -64,14 +74,6 @@ export default function SelectAmenities({ selectedAmenities, setSelectedAmenitie
           </div>
         ))}
       </div>
-
-      {selectedAmenities.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          <p className="text-sm text-myGray">
-            Selected: {selectedAmenities.length} amenit{selectedAmenities.length !== 1 ? "ies" : "y"}
-          </p>
-        </div>
-      )}
     </div>
   );
 }
