@@ -25,9 +25,23 @@ export default function SelectDays({ dates, setDates }: { dates: Dates; setDates
     }
   };
 
+  const handleClearDates = () => {
+    setDateRange({ startDate: new Date(), endDate: new Date(), key: "selection" });
+    setDates({ startDate: new Date(), endDate: new Date() });
+  };
+
   return (
-    <div className="text-center text-myGray">
-      <DateRange ranges={[dateRange]} onChange={handleChangeDateRange} minDate={new Date()} rangeColors={["#3ecf8e"]} showDateDisplay={true} />
+    <div className="text-center text-myGray w-full">
+      {dateRange.startDate.toISOString() !== dateRange.endDate.toISOString() && (
+        <div className="sticky top-0 bg-white border-b border-gray-200 mb-4 pb-2 z-10 flex justify-end items-center">
+          <button onClick={handleClearDates} className="text-sm text-red-600 hover:text-red-800 hover:underline hover:cursor-pointer">
+            Clear dates
+          </button>
+        </div>
+      )}
+      <div className="overflow-y-auto overflow-x-hidden w-full">
+        <DateRange ranges={[dateRange]} onChange={handleChangeDateRange} minDate={new Date()} rangeColors={["#3ecf8e"]} showDateDisplay={true} />
+      </div>
     </div>
   );
 }

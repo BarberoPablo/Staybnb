@@ -51,7 +51,7 @@ export default function SelectAmenities({ selectedAmenities, setSelectedAmenitie
   );
 
   return (
-    <div className="w-full overflow-y-auto">
+    <div className="w-full mb-4">
       {selectedAmenities.length > 0 && (
         <div className="sticky top-0 bg-white border-b border-gray-200 mb-4 pb-2 z-10 flex justify-between items-center">
           <p className="text-sm text-myGray">

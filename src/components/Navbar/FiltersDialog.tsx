@@ -105,7 +105,7 @@ export default function FiltersDialog({
         <DialogPanel
           aria-labelledby="dialog-title"
           aria-describedby="dialog-description"
-          className="flex flex-col bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl min-h-[570px] overflow-y-auto "
+          className="flex flex-col bg-white rounded-2xl p-4 sm:p-8 w-full max-w-md shadow-2xl min-h-[570px] overflow-y-auto overflow-x-hidden"
         >
           {/* Top Navigation Tabs */}
           <div className="flex w-full mb-6 border-b border-gray-200">
@@ -126,7 +126,10 @@ export default function FiltersDialog({
             {filtersMenu[filterStep].title}
           </DialogTitle>
 
-          <div id="dialog-description" className="flex-1 flex flex-col items-center text-center max-h-[346px] text-myGray overflow-y-auto">
+          <div
+            id="dialog-description"
+            className="flex-1 flex flex-col items-center text-center max-h-[346px] 2xl:min-h-[440px] text-myGray overflow-y-auto overflow-x-hidden w-full"
+          >
             {filtersMenu[filterStep].content}
           </div>
 
