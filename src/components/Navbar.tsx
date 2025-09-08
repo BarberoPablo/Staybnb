@@ -2,15 +2,17 @@
 
 import { Container } from "@/app/(site)/components/Container";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { parseFilters } from "@/lib/api/server/utils";
 import { AmenityId } from "@/lib/constants/amenities";
 import { Dates, Guests } from "@/lib/types";
 import { logoUrl } from "@/lib/utils";
 import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 import { motion } from "framer-motion";
+import { SearchParams } from "next/dist/server/request/search-params";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { lazy, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { IoMenu, IoSearch } from "react-icons/io5";
 import ChangeViewButton from "./ChangeViewButton";
 import { SignButton } from "./SignButton";
@@ -50,6 +52,31 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const pathname = usePathname();
   const hosting = pathname.includes("/hosting");
   const searchEffect = !useMediaQuery("(max-width: 500px)");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(searchParams.toString());
+    const params = Object.fromEntries(urlParams.entries());
+
+    const queryString = buildQueryStringFromParams(params);
+    setFiltersQuery(queryString);
+
+    const parsedFilters = parseFilters(params);
+
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      dates: {
+        startDate: parsedFilters.startDate,
+        endDate: parsedFilters.endDate,
+      },
+      guests: {
+        adults: parsedFilters.adults ?? prevFilters.guests.adults,
+        children: parsedFilters.children ?? prevFilters.guests.children,
+        infant: parsedFilters.infant ?? prevFilters.guests.infant,
+        pets: parsedFilters.pets ?? prevFilters.guests.pets,
+      },
+      amenities: (parsedFilters.amenities as AmenityId[]) ?? prevFilters.amenities,
+    }));
+  }, [searchParams]);
 
   const handleSearchCityInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchCity(event.target.value);
@@ -197,4 +224,55 @@ function DropDownNavbarMenu() {
       </Menu>
     </div>
   );
+}
+
+export function buildQueryStringFromParams(params: SearchParams): string {
+  const queryParts: string[] = [];
+
+  if (params.startDate) {
+    queryParts.push(`startDate=${encodeURIComponent(params.startDate as string)}`);
+  }
+  if (params.endDate) {
+    queryParts.push(`endDate=${encodeURIComponent(params.endDate as string)}`);
+  }
+
+  if (params.adults) {
+    queryParts.push(`adults=${params.adults}`);
+  }
+  if (params.children) {
+    queryParts.push(`children=${params.children}`);
+  }
+  if (params.infant) {
+    queryParts.push(`infant=${params.infant}`);
+  }
+  if (params.pets) {
+    queryParts.push(`pets=${params.pets}`);
+  }
+
+  if (params.amenities) {
+    const amenitiesValue = Array.isArray(params.amenities) ? params.amenities.join(",") : params.amenities;
+    queryParts.push(`amenities=${encodeURIComponent(amenitiesValue)}`);
+  }
+
+  if (params.minPrice) {
+    queryParts.push(`minPrice=${params.minPrice}`);
+  }
+  if (params.maxPrice) {
+    queryParts.push(`maxPrice=${params.maxPrice}`);
+  }
+
+  if (params.guests) {
+    queryParts.push(`guests=${params.guests}`);
+  }
+  if (params.bedrooms) {
+    queryParts.push(`bedrooms=${params.bedrooms}`);
+  }
+  if (params.beds) {
+    queryParts.push(`beds=${params.beds}`);
+  }
+  if (params.bathrooms) {
+    queryParts.push(`bathrooms=${params.bathrooms}`);
+  }
+
+  return queryParts.length > 0 ? `&${queryParts.join("&")}` : "";
 }
