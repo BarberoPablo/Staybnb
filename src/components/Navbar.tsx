@@ -34,6 +34,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const [openCalendar, setOpenCalendar] = useState(false);
   const [filtersStep, setFiltersStep] = useState(0);
   const [filtersQuery, setFiltersQuery] = useState("");
+  const [showCityError, setShowCityError] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     dates: {
       startDate: undefined,
@@ -54,42 +55,50 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const searchEffect = !useMediaQuery("(max-width: 500px)");
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(searchParams.toString());
-    const params = Object.fromEntries(urlParams.entries());
+    const isSearchPage = pathname.includes("/search");
 
-    const queryString = buildQueryStringFromParams(params);
-    setFiltersQuery(queryString);
+    if (isSearchPage || searchParams.toString() !== "") {
+      const urlParams = new URLSearchParams(searchParams.toString());
+      const params = Object.fromEntries(urlParams.entries());
 
-    const parsedFilters = parseFilters(params);
+      const queryString = buildQueryStringFromParams(params);
+      setFiltersQuery(queryString);
 
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      dates: {
-        startDate: parsedFilters.startDate,
-        endDate: parsedFilters.endDate,
-      },
-      guests: {
-        adults: parsedFilters.adults ?? prevFilters.guests.adults,
-        children: parsedFilters.children ?? prevFilters.guests.children,
-        infant: parsedFilters.infant ?? prevFilters.guests.infant,
-        pets: parsedFilters.pets ?? prevFilters.guests.pets,
-      },
-      amenities: (parsedFilters.amenities as AmenityId[]) ?? prevFilters.amenities,
-    }));
-  }, [searchParams]);
+      const parsedFilters = parseFilters(params);
+
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        dates: {
+          startDate: parsedFilters.startDate,
+          endDate: parsedFilters.endDate,
+        },
+        guests: {
+          adults: parsedFilters.adults ?? prevFilters.guests.adults,
+          children: parsedFilters.children ?? prevFilters.guests.children,
+          infant: parsedFilters.infant ?? prevFilters.guests.infant,
+          pets: parsedFilters.pets ?? prevFilters.guests.pets,
+        },
+        amenities: (parsedFilters.amenities as AmenityId[]) ?? prevFilters.amenities,
+      }));
+    }
+  }, [searchParams, pathname]);
 
   const handleSearchCityInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchCity(event.target.value);
+    if (showCityError) {
+      setShowCityError(false);
+    }
   };
 
   const handleSearchCity = () => {
-    let query = `/search?city=${encodeURIComponent(searchCity.trim())}`;
+    if (searchCity) {
+      let query = `/search?city=${encodeURIComponent(searchCity.trim())}`;
+      if (filtersQuery !== "") {
+        query += filtersQuery;
+      }
 
-    if (filtersQuery !== "") {
-      query += filtersQuery;
+      router.push(query);
     }
-
-    router.push(query);
   };
 
   const handleFocusInput = (focus: boolean) => {
@@ -102,6 +111,22 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const handleOpenCalendar = (step: number) => {
     setFiltersStep(step);
     setOpenCalendar(true);
+  };
+
+  const handleCloseCalendar = (searchListings?: boolean, query?: string) => {
+    if (query || searchListings) {
+      if (searchCity) {
+        let searchQuery = `/search?city=${encodeURIComponent(searchCity.trim())}`;
+        searchQuery += query;
+
+        router.push(searchQuery);
+      } else {
+        setShowCityError(true);
+        setTimeout(() => setShowCityError(false), 3000);
+      }
+    }
+
+    setOpenCalendar(false);
   };
 
   return (
@@ -125,13 +150,17 @@ export default function Navbar({ search = true }: { search?: boolean }) {
             <div className="flex w-full justify-around items-center">
               <div className="flex-1 flex justify-center">
                 <div className="flex flex-col">
-                  <div className="flex items-center gap-2 h-10 border border-myGreenSemiBold bg-myGreenExtraLight rounded-full">
+                  <div
+                    className={`flex items-center gap-2 h-10 border rounded-full transition-all duration-300 ${
+                      showCityError ? "border-red-500 bg-red-50 animate-pulse" : "border-myGreenSemiBold bg-myGreenExtraLight"
+                    }`}
+                  >
                     <input
                       type="text"
-                      placeholder="Where do you want to go?"
-                      className={`rounded-full py-2 ${
-                        searchEffect ? "px-4" : "px-2"
-                      } text-sm focus:outline-none focus:bg-myGreenLight hover:bg-myGreenLight transition-colors duration-300`}
+                      placeholder={showCityError ? "Please enter a city to search" : "Where do you want to go?"}
+                      className={`rounded-full py-2 ${searchEffect ? "px-4" : "px-2"} text-sm focus:outline-none transition-colors duration-300 ${
+                        showCityError ? "bg-red-50 text-red-700 placeholder-red-400" : "focus:bg-myGreenLight hover:bg-myGreenLight"
+                      }`}
                       value={searchCity}
                       name="searchCity"
                       onChange={handleSearchCityInput}
@@ -144,7 +173,9 @@ export default function Navbar({ search = true }: { search?: boolean }) {
 
                     {searchEffect ? (
                       <motion.button
-                        className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGreenLight text-myGray overflow-hidden transition-colors hover:cursor-pointer"
+                        className={`flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 ${
+                          showCityError ? "bg-red-300 text-red-700" : "bg-myGreenLight text-myGray"
+                        }   overflow-hidden transition-colors hover:cursor-pointer`}
                         disabled={searchCity === ""}
                         onClick={handleSearchCity}
                         initial={{ width: 40 }}
@@ -196,7 +227,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
       <FiltersDialog
         isOpen={openCalendar}
         step={filtersStep}
-        onClose={() => setOpenCalendar(false)}
+        onClose={handleCloseCalendar}
         setQuery={setFiltersQuery}
         filters={filters}
         setFilters={setFilters}
