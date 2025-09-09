@@ -66,3 +66,32 @@ export async function searchListings(
     throw new NotFoundError();
   }
 }
+
+export async function getHostListings() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const listings = await prisma.listings.findMany({
+      where: {
+        host_id: user.id,
+      },
+    });
+
+    const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+
+    return parsedListings;
+  } catch (error) {
+    console.error("Error fetching host listings", error);
+    throw new NotFoundError();
+  }
+}
