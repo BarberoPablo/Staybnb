@@ -1,8 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
-import { parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
+import { EditListing, ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
+import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { createClient } from "../../supabase/server";
 import { NotFoundError, ReservationError } from "./errors";
 import { ParsedFilters, buildSearchListingsWhereClause } from "./utils";
@@ -87,11 +87,69 @@ export async function getHostListings() {
       },
     });
 
-    const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
-
-    return parsedListings;
+    return listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
   } catch (error) {
     console.error("Error fetching host listings", error);
+    throw new NotFoundError();
+  }
+}
+
+export async function getHostListing(id: number) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const listing = await prisma.listings.findUnique({
+      where: {
+        id: id,
+        host_id: user.id,
+      },
+    });
+    return parseListingFromDB(listing as unknown as ListingDB);
+  } catch (error) {
+    console.error("Error fetching host listings", error);
+    throw new NotFoundError();
+  }
+}
+
+export async function editListing(id: number, props: EditListing) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const dbData = parseEditListingToDB(props);
+
+    const updatedListing = await prisma.listings.update({
+      where: {
+        id: id,
+        host_id: user.id,
+      },
+      data: dbData,
+    });
+
+    const parsedListing = parseListingFromDB(updatedListing as unknown as ListingDB);
+
+    return parsedListing;
+  } catch (error) {
+    console.error("Error updating listing", error);
     throw new NotFoundError();
   }
 }
