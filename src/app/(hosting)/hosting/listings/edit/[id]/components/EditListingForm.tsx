@@ -1,0 +1,135 @@
+"use client";
+
+import { editListing } from "@/lib/api/server/api";
+import { editListingSchema } from "@/lib/schemas/editListingSchema";
+import { EditListing, Listing } from "@/lib/types/listing";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { useRouter } from "nextjs-toploader/app";
+import { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { FaArrowLeft, FaSave } from "react-icons/fa";
+import BasicInfoSection from "./BasicInfoSection";
+import GuestLimitsSection from "./GuestLimitsSection";
+import ImagesSection from "./ImagesSection";
+import LocationSection from "./LocationSection";
+import PromotionsSection from "./PromotionsSection";
+import StructureSection from "./StructureSection";
+
+export default function EditListingForm({ listing }: { listing: Listing }) {
+  const router = useRouter();
+  const [saving, setSaving] = useState(false);
+  const methods = useForm<EditListing>({
+    mode: "onChange",
+    resolver: zodResolver(editListingSchema),
+    shouldUnregister: false,
+    defaultValues: {
+      title: listing.title,
+      description: listing.description,
+      nightPrice: listing.nightPrice,
+      propertyType: listing.propertyType,
+      privacyType: listing.privacyType,
+      checkInTime: listing.checkInTime,
+      checkOutTime: listing.checkOutTime,
+      minCancelDays: listing.minCancelDays,
+      promotions: listing.promotions,
+      images: listing.images,
+      structure: listing.structure,
+      guestLimits: listing.guestLimits,
+      location: listing.location,
+    },
+  });
+
+  const {
+    handleSubmit,
+    setFocus,
+    formState: { errors, isValid },
+  } = methods;
+
+  const onSubmit = async (data: EditListing) => {
+    if (!isValid) {
+      const firstErrorField = Object.keys(errors)[0] as keyof EditListing;
+      setFocus(firstErrorField);
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await editListing(listing.id, data);
+      toast.success("Listing updated successfully!");
+      setTimeout(() => {
+        router.push("/hosting/listings");
+      }, 2000);
+    } catch (error) {
+      console.error("Error updating listing:", error);
+      toast.error("Failed to update listing");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleGoBack = () => {
+    router.push("/hosting/listings");
+  };
+
+  return (
+    <div className="w-full p-2 sm:px-12 sm:py-10 ">
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="mb-8">
+        <button
+          onClick={handleGoBack}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-background border border-gray-200 hover:bg-myGray/5 transition-all duration-200 hover:cursor-pointer"
+        >
+          <FaArrowLeft className="w-4 h-4 text-myGrayDark" />
+          <span className="text-myGrayDark font-medium">Back to Listings</span>
+        </button>
+
+        <div className="text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-myGrayDark mb-4">Edit Listing</h1>
+          <p className="text-lg text-myGray max-w-2xl mx-auto">Update your listing information and settings</p>
+        </div>
+      </motion.div>
+
+      {/* Form */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="max-w-4xl mx-auto">
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-gray-100">
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+              <BasicInfoSection />
+
+              <StructureSection />
+
+              <GuestLimitsSection />
+
+              <LocationSection />
+
+              <ImagesSection />
+
+              <PromotionsSection />
+
+              <div className="mt-8 flex justify-end">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex items-center justify-center w-50 gap-2 px-8 py-4 rounded-xl bg-myGreenSemiBold text-white font-semibold hover:bg-myGreenBold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
+                >
+                  {saving ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <FaSave className="w-4 h-4" />
+                      Save Changes
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </FormProvider>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
