@@ -77,13 +77,13 @@ export type Promotion = {
   description: string;
 };
 
-export type PropertyType = "House" | "Apartment" | "Cabin" | "Boat";
+export const propertyTypes = ["House", "Apartment", "Cabin", "Boat"] as const;
+export type PropertyType = (typeof propertyTypes)[number];
 
-export type PrivacyType = "Entire" | "Private" | "Shared";
+export const privacyTypes = ["Entire", "Private", "Shared"] as const;
+export type PrivacyType = (typeof privacyTypes)[number];
 
-export type Structure = {
-  [key in "guests" | "bedrooms" | "beds" | "bathrooms"]: number;
-};
+export type Structure = Record<"guests" | "bedrooms" | "beds" | "bathrooms", number>;
 
 export type Score = {
   value: number;
@@ -138,4 +138,25 @@ export type HostListingsWithReservationsDB = ListingDB & {
 
 export type HostListingsWithReservations = Listing & {
   reservations: Reservation[] | [];
+};
+
+export type EditListing = {
+  title: string;
+  description: string;
+  nightPrice: number;
+  promotions: Promotion[];
+  propertyType: PropertyType;
+  images: string[];
+  structure: Structure;
+  guestLimits: {
+    [key in Guests]: {
+      min: number;
+      max: number;
+    };
+  };
+  location: Location;
+  checkInTime: string;
+  checkOutTime: string;
+  minCancelDays: number;
+  privacyType: PrivacyType;
 };

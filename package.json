@@ -14,6 +14,7 @@
     "@dnd-kit/modifiers": "9.0.0",
     "@dnd-kit/sortable": "10.0.0",
     "@headlessui/react": "2.2.4",
+    "@hookform/resolvers": "^5.2.1",
     "@prisma/client": "6.15.0",
     "@supabase/ssr": "0.6.1",
     "@supabase/supabase-js": "2.50.2",
@@ -38,6 +39,7 @@
     "rsuite": "5.83.1",
     "tailwindcss": "4.1.10",
     "uploadthing": "7.7.3",
+    "zod": "^4.1.5",
     "zustand": "5.0.6"
   },
   "devDependencies": {

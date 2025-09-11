@@ -24,7 +24,7 @@ export default function HostListingsHeader() {
       <div className="flex relative items-center gap-4 justify-between mb-6 sm:mb-0">
         <button
           onClick={handleGoBack}
-          className="flex sm:absolute left-0 top-0 items-center gap-2 px-6 py-3 rounded-lg bg-white/60 backdrop-blur-sm border border-gray-200 hover:bg-white/80 transition-all duration-200 hover:cursor-pointer"
+          className="flex sm:absolute left-0 top-0 items-center gap-2 px-6 py-3 rounded-lg hover:bg-myGray/5 border border-gray-200 transition-all duration-200 hover:cursor-pointer"
         >
           <FaArrowLeft className="w-4 h-4 text-myGrayDark" />
           <span className="text-myGrayDark font-medium">{xs ? "Back" : "Back to Dashboard"}</span>

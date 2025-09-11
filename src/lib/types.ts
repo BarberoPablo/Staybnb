@@ -1,6 +1,7 @@
 import { LatLng } from "leaflet";
 
-export type Guests = "adults" | "children" | "infant" | "pets";
+export const guests = ["adults", "children", "infant", "pets"] as const;
+export type Guests = (typeof guests)[number];
 
 export type Dates = {
   startDate: Date | undefined;

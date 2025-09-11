@@ -2,6 +2,7 @@ import { ListingForm } from "@/store/useListingForm";
 //import { Amenity } from "../types/amenities";
 import {
   CreateListingDB,
+  EditListing,
   HostListingsWithReservations,
   HostListingsWithReservationsDB,
   Listing,
@@ -112,4 +113,30 @@ export function parseHostListingsWithReservations(listings: HostListingsWithRese
   }));
 
   return parsedListings;
+}
+
+export function parseEditListingToDB(listingProps: EditListing) {
+  const listingPropsDB = {
+    title: listingProps.title,
+    description: listingProps.description,
+    night_price: listingProps.nightPrice,
+    promotions: listingProps.promotions?.map((p) => ({
+      min_nights: p.minNights,
+      discount_percentage: p.discountPercentage,
+      description: p.description,
+    })),
+    property_type: listingProps.propertyType,
+    images: listingProps.images,
+    structure: listingProps.structure,
+    guest_limits: listingProps.guestLimits,
+    location: listingProps.location,
+    check_in_time: listingProps.checkInTime,
+    check_out_time: listingProps.checkOutTime,
+    min_cancel_days: listingProps.minCancelDays,
+    privacy_type: listingProps.privacyType,
+  };
+
+  const filteredPropsDB = Object.fromEntries(Object.entries(listingPropsDB).filter(([, value]) => value !== undefined));
+
+  return filteredPropsDB;
 }
