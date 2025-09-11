@@ -329,19 +329,19 @@ model users {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model amenities {
-  id                BigInt              @id @default(autoincrement())
-  name              String              @unique
+  id                BigInt             @id @default(autoincrement())
+  name              String             @unique
   category          amenity_category
-  created_at        DateTime?           @default(now()) @db.Timestamptz(6)
-  updated_at        DateTime?           @default(now()) @db.Timestamptz(6)
-  listing_amenities listing_amenities[]
+  created_at        DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?          @default(now()) @db.Timestamptz(6)
+  listing_amenities ListingAmenities[]
 
   @@schema("public")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model favorites {
-  id         BigInt    @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   user_id    String    @db.Uuid
   listing_id Int?
   created_at DateTime? @default(now()) @db.Timestamptz(6)
@@ -354,51 +354,47 @@ model favorites {
   @@schema("public")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model listing_amenities {
-  id         BigInt    @id @default(autoincrement())
-  listing_id Int
-  amenity_id BigInt
-  created_at DateTime? @default(now()) @db.Timestamptz(6)
-  amenities  amenities @relation(fields: [amenity_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  listings   listings  @relation(fields: [listing_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@unique([listing_id, amenity_id])
-  @@index([amenity_id], map: "idx_listing_amenities_amenity_id")
-  @@index([listing_id], map: "idx_listing_amenities_listing_id")
-  @@schema("public")
-}
-
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model listings {
-  id                Int                 @id @default(autoincrement())
+  id                Int                @id @default(autoincrement())
   title             String
   description       String
-  night_price       Decimal             @db.Decimal(10, 2)
+  night_price       Decimal            @db.Decimal(10, 2)
   promotions        Json
   property_type     property_type
-  host_id           String              @db.Uuid
-  created_at        DateTime?           @default(now()) @db.Timestamptz(6)
+  host_id           String             @db.Uuid
+  created_at        DateTime?          @default(now()) @db.Timestamptz(6)
   images            String[]
   structure         Json
   guest_limits      Json
   score             Json
-  safety_items      String[]            @default([])
+  safety_items      String[]           @default([])
   location          Json
-  check_in_time     String              @default("15:00")
-  check_out_time    String              @default("11:00")
-  min_cancel_days   Int                 @default(3)
-  status            listing_status      @default(draft)
-  privacy_type      privacy_type        @default(Private)
+  check_in_time     String             @default("15:00")
+  check_out_time    String             @default("11:00")
+  min_cancel_days   Int                @default(3)
+  status            listing_status     @default(draft)
+  privacy_type      privacy_type       @default(Private)
   favorites         favorites[]
-  listing_amenities listing_amenities[]
-  profiles          profiles            @relation(fields: [host_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  listing_amenities ListingAmenities[]
+  profiles          profiles           @relation(fields: [host_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   reservations      reservations[]
 
   @@index([host_id], map: "idx_listings_host_id")
   @@index([host_id])
   @@index([night_price])
+  @@schema("public")
+}
+
+model ListingAmenities {
+  listing_id Int
+  amenity_id BigInt
+  amenities  amenities @relation(fields: [amenity_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  listings   listings  @relation(fields: [listing_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([listing_id, amenity_id])
+  @@map("listing_amenities")
   @@schema("public")
 }
 

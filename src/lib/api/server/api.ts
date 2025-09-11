@@ -85,6 +85,7 @@ export async function getHostListings() {
       where: {
         host_id: user.id,
       },
+      include: { listing_amenities: { include: { amenities: true } } },
     });
 
     return listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
@@ -114,6 +115,7 @@ export async function getHostListing(id: number) {
         host_id: user.id,
       },
     });
+
     return parseListingFromDB(listing as unknown as ListingDB);
   } catch (error) {
     console.error("Error fetching host listings", error);

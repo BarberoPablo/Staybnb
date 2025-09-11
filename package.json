@@ -57,6 +57,7 @@
     "eslint-config-next": "15.3.4",
     "prisma": "6.15.0",
     "supabase": "2.30.4",
+    "tsx": "^4.20.5",
     "typescript": "^5"
   }
 }

@@ -43,19 +43,19 @@ export type Database = {
           created_at: string | null
           id: number
           listing_id: number | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string | null
           id?: never
           listing_id?: number | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string | null
           id?: never
           listing_id?: number | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
@@ -65,25 +65,26 @@ export type Database = {
             referencedRelation: "listings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "favorites_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       listing_amenities: {
         Row: {
           amenity_id: number
-          created_at: string | null
-          id: number
           listing_id: number
         }
         Insert: {
           amenity_id: number
-          created_at?: string | null
-          id?: never
           listing_id: number
         }
         Update: {
           amenity_id?: number
-          created_at?: string | null
-          id?: never
           listing_id?: number
         }
         Relationships: [
