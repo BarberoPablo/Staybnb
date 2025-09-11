@@ -74,7 +74,7 @@ export default function EditListingForm({ listing }: { listing: Listing }) {
   };
 
   return (
-    <div className="w-full p-2 sm:px-12 sm:py-10 ">
+    <div className="w-full p-2 sm:px-12 py-10 ">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="mb-8">
         <button
           onClick={handleGoBack}
@@ -84,7 +84,7 @@ export default function EditListingForm({ listing }: { listing: Listing }) {
           <span className="text-myGrayDark font-medium">Back to Listings</span>
         </button>
 
-        <div className="text-center">
+        <div className="text-center mt-8 sm:mt-4">
           <h1 className="text-4xl md:text-5xl font-bold text-myGrayDark mb-4">Edit Listing</h1>
           <p className="text-lg text-myGray max-w-2xl mx-auto">Update your listing information and settings</p>
         </div>
