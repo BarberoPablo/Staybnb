@@ -1,4 +1,3 @@
-import { useListingForm } from "@/store/useListingForm";
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -7,10 +6,15 @@ import { CiImageOn } from "react-icons/ci";
 import { FaTrashAlt } from "react-icons/fa";
 import { IoAddSharp } from "react-icons/io5";
 
-export function SortableImageGrid({ setIsOpen }: { setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const images = useListingForm((state) => state.images);
-  const setField = useListingForm((state) => state.setField);
-
+export function SortableImageGrid({
+  images,
+  setIsOpen,
+  setField,
+}: {
+  images: string[];
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setField: (field: string, value: string[]) => void;
+}) {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -40,8 +44,8 @@ export function SortableImageGrid({ setIsOpen }: { setIsOpen: React.Dispatch<Rea
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={images.map((img) => img)} strategy={rectSortingStrategy}>
         <div className="relative grid grid-cols-2 gap-4 w-full h-full">
-          <div className="absolute top-4 left-4 z-10 px-2 py-0.5 bg-background rounded-md">
-            <span className="text-sm">Cover photo</span>
+          <div className="absolute top-4 left-4 z-10 px-3 py-1.5 bg-white backdrop-blur-sm rounded-lg shadow-sm border border-myGray/20">
+            <span className="text-sm font-medium text-myGrayDark">Cover photo</span>
           </div>
 
           {images.map((img, index) => (
@@ -52,9 +56,9 @@ export function SortableImageGrid({ setIsOpen }: { setIsOpen: React.Dispatch<Rea
                   e.stopPropagation();
                   handleRemove(img);
                 }}
-                className="absolute top-1 right-1 z-10 bg-foreground text-background rounded-full px-2 py-2 text-xs shadow hover:bg-gray-900 transition"
+                className="absolute top-2 right-2 z-10 bg-red-500 text-white rounded-full p-2 text-xs shadow-lg hover:bg-red-600 transition-colors duration-200 opacity-0 group-hover:opacity-100 hover:cursor-pointer"
               >
-                <FaTrashAlt className="w-4 h-4" />
+                <FaTrashAlt className="w-3 h-3" />
               </button>
             </div>
           ))}
@@ -63,10 +67,10 @@ export function SortableImageGrid({ setIsOpen }: { setIsOpen: React.Dispatch<Rea
             <div
               key={`placeholder-${index}-${images.length}`}
               role="button"
-              className="flex items-center justify-center col-span-1 h-[200px] rounded-xl bg-gray-100 hover:cursor-pointer hover:border-gray-500 hover:border-2"
+              className="flex items-center justify-center col-span-1 h-[200px] rounded-xl bg-myGreenExtraLight/30 border-2 border-dashed border-myGray/30 hover:border-myGreenSemiBold hover:bg-myGreenExtraLight/50 transition-all duration-200 hover:cursor-pointer"
               onClick={() => setIsOpen(true)}
             >
-              <CiImageOn className="w-8 h-8 text-gray-500" />
+              <CiImageOn className="w-8 h-8 text-myGray" />
             </div>
           ))}
           <AddImage handleClick={() => setIsOpen(true)} />
@@ -85,8 +89,14 @@ function SortableImage({ url }: { url: string }) {
   };
 
   return (
-    <div ref={setNodeRef} {...attributes} {...listeners} style={style} className="relative w-full h-full rounded-xl bg-gray-100">
-      <Image src={url} alt="Listing image" fill className="object-cover rounded-xl" />
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
+      className="relative w-full h-full rounded-xl bg-myGreenExtraLight/30 hover:cursor-grab active:cursor-grabbing overflow-hidden hover:shadow-lg transition-shadow duration-200"
+    >
+      <Image src={url} alt="Listing image" fill className="object-cover" />
     </div>
   );
 }
@@ -96,10 +106,10 @@ function AddImage({ handleClick }: { handleClick: () => void }) {
     <div
       role="button"
       onClick={handleClick}
-      className="flex flex-col items-center justify-center col-span-1 h-[200px] rounded-xl bg-gray-100 hover:cursor-pointer hover:border-gray-500 hover:border-2"
+      className="flex flex-col items-center justify-center col-span-1 h-[200px] rounded-xl bg-myGreenExtraLight/30 border-2 border-dashed border-myGray/30 hover:border-myGreenSemiBold hover:bg-myGreenExtraLight/50 transition-all duration-200 hover:cursor-pointer"
     >
-      <IoAddSharp className="w-8 h-8 text-gray-500" />
-      <p className="text-sm text-gray-500">Add more</p>
+      <IoAddSharp className="w-8 h-8 text-myGray mb-2" />
+      <p className="text-sm font-medium text-myGray">Add more</p>
     </div>
   );
 }
