@@ -1,6 +1,8 @@
 "use server";
 
+import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
 import { prisma } from "@/lib/prisma";
+import { AmenityDB } from "@/lib/types/amenities";
 import { EditListing, ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { createClient } from "../../supabase/server";
@@ -88,7 +90,12 @@ export async function getHostListings() {
       include: { listing_amenities: { include: { amenities: true } } },
     });
 
-    return listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+    const parsedListings = listings.map((listing) => ({
+      ...listing,
+      amenities: parseAmenitiesFromDB(listing.listing_amenities as unknown as AmenityDB[]),
+    }));
+
+    return parsedListings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
   } catch (error) {
     console.error("Error fetching host listings", error);
     throw new NotFoundError();

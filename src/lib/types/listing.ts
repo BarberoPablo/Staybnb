@@ -1,13 +1,12 @@
 import { Guests } from "../types";
-import { /* Amenity, AmenityDB, */ CreateListingAmenityDB } from "./amenities";
+import { Amenity } from "./amenities";
 import { Host, HostDB } from "./profile";
 import { Reservation, ReservationDB, ReservedDate, ReservedDateDB } from "./reservation";
 
-export type ListingDB = Omit<CreateListingDB, "amenities"> & {
+export type ListingDB = CreateListingDB & {
   id: number;
   host_id: string;
   created_at: string;
-  //listing_amenities: AmenityDB[];
 };
 
 export type Listing = {
@@ -34,7 +33,11 @@ export type Listing = {
   images: string[];
   minCancelDays: number;
   status: ListingStatus;
-  //amenities: Amenity[];
+  amenities: Amenity[];
+};
+
+export type ListingWithAmenities = Listing & {
+  amenities: Amenity[];
 };
 
 export type ListingStatus = "draft" | "published" | "paused" | "pending";
@@ -116,7 +119,7 @@ export type CreateListingDB = {
   score: Score;
   min_cancel_days: number;
   status: ListingStatus;
-  amenities: CreateListingAmenityDB[];
+  amenities: Amenity[];
 };
 
 export type Location = {
