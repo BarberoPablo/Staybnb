@@ -76,7 +76,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
           infant: parsedFilters.infant ?? prevFilters.guests.infant,
           pets: parsedFilters.pets ?? prevFilters.guests.pets,
         },
-        amenities: (parsedFilters.amenities as AmenityId[]) ?? prevFilters.amenities,
+        amenities: parsedFilters.amenities?.map((amenity) => Number(amenity)) ?? prevFilters.amenities,
       }));
     }
   }, [searchParams, pathname]);
@@ -112,20 +112,22 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   };
 
   const handleCloseCalendar = (searchListings?: boolean, query?: SearchParams) => {
-    if (query || searchListings) {
+    let searchQuery = "";
+    if (query) {
       if (searchCity) {
-        let searchQuery = `/search?city=${encodeURIComponent(searchCity.trim())}`;
+        searchQuery = `/search?city=${encodeURIComponent(searchCity.trim())}`;
         if (query && Object.keys(query).length > 0) {
           searchQuery += buildQueryStringFromParams(query);
         }
-
-        router.push(searchQuery);
       } else {
         setShowCityError(true);
         setTimeout(() => setShowCityError(false), 3000);
       }
     }
 
+    if (searchListings) {
+      router.push(searchQuery);
+    }
     setOpenCalendar(false);
   };
 

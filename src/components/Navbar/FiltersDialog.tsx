@@ -74,10 +74,10 @@ export default function FiltersDialog({
     setFilterStep(step);
   }, [step]);
 
-  const handleFilters = () => {
+  const handleFilters = (searchListings?: boolean) => {
     const query: SearchParams = {};
 
-    if (filters.dates.startDate && filters.dates.endDate) {
+    if (filters.dates.startDate && filters.dates.endDate && filters.dates.startDate < filters.dates.endDate) {
       query.startDate = filters.dates.startDate.toISOString();
       query.endDate = filters.dates.endDate.toISOString();
     }
@@ -93,13 +93,13 @@ export default function FiltersDialog({
     }
 
     setQuery(query);
-    onClose(true, query);
+    onClose(searchListings, query);
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <Dialog key="filters-dialog" open={isOpen} onClose={() => onClose()} className="relative z-50">
+        <Dialog key="filters-dialog" open={isOpen} onClose={() => handleFilters(false)} className="relative z-50">
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
@@ -155,7 +155,7 @@ export default function FiltersDialog({
 
               <button
                 className="flex items-center justify-center w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-300 hover:cursor-pointer"
-                onClick={handleFilters}
+                onClick={() => handleFilters(true)}
               >
                 Search
               </button>
