@@ -36,4 +36,5 @@ export const editListingSchema = z.object({
   images: z.array(z.string()),
   promotions: z.array(z.any()),
   location: z.any(),
+  amenities: z.array(z.number()),
 });

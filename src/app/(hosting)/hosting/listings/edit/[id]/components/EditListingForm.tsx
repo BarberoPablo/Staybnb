@@ -10,6 +10,7 @@ import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
+import AmenitiesSection from "./AmenitiesSection";
 import BasicInfoSection from "./BasicInfoSection";
 import GuestLimitsSection from "./GuestLimitsSection";
 import ImagesSection from "./ImagesSection";
@@ -38,6 +39,7 @@ export default function EditListingForm({ listing }: { listing: Listing }) {
       structure: listing.structure,
       guestLimits: listing.guestLimits,
       location: listing.location,
+      amenities: listing.amenities,
     },
   });
 
@@ -106,6 +108,8 @@ export default function EditListingForm({ listing }: { listing: Listing }) {
               <ImagesSection />
 
               <PromotionsSection />
+
+              <AmenitiesSection />
 
               <div className="mt-8 flex justify-end">
                 <button

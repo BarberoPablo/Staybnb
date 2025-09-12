@@ -1,9 +1,6 @@
-import { Amenity, AmenityDB } from "../types/amenities";
+import { AmenityId } from "../constants/amenities";
+import { AmenityDB } from "../types/amenities";
 
-export function parseAmenitiesFromDB(amenitiesDB: AmenityDB[]): Amenity[] {
-  return amenitiesDB.map((amenityDB) => ({
-    id: amenityDB.amenities.id,
-    name: amenityDB.amenities.name,
-    category: amenityDB.amenities.category,
-  }));
+export function parseAmenitiesFromDB(amenitiesDB: AmenityDB[]): AmenityId[] {
+  return amenitiesDB.map((amenityDB) => amenityDB.amenities.id);
 }
