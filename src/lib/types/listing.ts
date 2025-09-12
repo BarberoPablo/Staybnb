@@ -1,3 +1,4 @@
+import { AmenityId } from "../constants/amenities";
 import { Guests } from "../types";
 import { Amenity } from "./amenities";
 import { Host, HostDB } from "./profile";
@@ -33,7 +34,7 @@ export type Listing = {
   images: string[];
   minCancelDays: number;
   status: ListingStatus;
-  amenities: Amenity[];
+  amenities: AmenityId[];
 };
 
 export type ListingWithAmenities = Listing & {
@@ -119,7 +120,7 @@ export type CreateListingDB = {
   score: Score;
   min_cancel_days: number;
   status: ListingStatus;
-  amenities: Amenity[];
+  amenities: AmenityId[];
 };
 
 export type Location = {
@@ -162,4 +163,5 @@ export type EditListing = {
   checkOutTime: string;
   minCancelDays: number;
   privacyType: PrivacyType;
+  amenities: AmenityId[];
 };

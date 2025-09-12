@@ -21,7 +21,7 @@ async function generateAmenitiesConstants() {
 
       return {
         ...amenity,
-        id: amenity.id.toString(),
+        id: amenity.id,
         icon: iconMapping,
       };
     });
@@ -54,7 +54,7 @@ async function generateAmenitiesConstants() {
     fs.writeFileSync(outputPath, constantsContent);
 
     console.log(`✅ Amenities constants generated at: ${outputPath}`);
-    console.log(`📊 Generated ${amenities.length} amenities with IDs: ${amenities.map((a: { id: bigint }) => a.id.toString()).join(", ")}`);
+    console.log(`📊 Generated ${amenities.length} amenities with IDs: ${amenities.map((a: { id: number }) => a.id.toString()).join(", ")}`);
   } catch (error) {
     console.error("❌ Error generating amenities constants:", error);
     process.exit(1);

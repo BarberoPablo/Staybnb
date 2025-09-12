@@ -121,9 +121,15 @@ export async function getHostListing(id: number) {
         id: id,
         host_id: user.id,
       },
+      include: { listing_amenities: { include: { amenities: true } } },
     });
 
-    return parseListingFromDB(listing as unknown as ListingDB);
+    const parsedListing = parseListingFromDB(listing as unknown as ListingDB);
+
+    return {
+      ...parsedListing,
+      amenities: parseAmenitiesFromDB(listing?.listing_amenities as unknown as AmenityDB[]),
+    };
   } catch (error) {
     console.error("Error fetching host listings", error);
     throw new NotFoundError();
