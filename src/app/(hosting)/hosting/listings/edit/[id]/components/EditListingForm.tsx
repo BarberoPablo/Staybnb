@@ -6,7 +6,7 @@ import { EditListing, Listing } from "@/lib/types/listing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaArrowLeft, FaSave } from "react-icons/fa";
@@ -17,6 +17,16 @@ import ImagesSection from "./ImagesSection";
 import LocationSection from "./LocationSection";
 import PromotionsSection from "./PromotionsSection";
 import StructureSection from "./StructureSection";
+
+const sections = [
+  <BasicInfoSection key="basic-info" />,
+  <StructureSection key="structure" />,
+  <GuestLimitsSection key="guest-limits" />,
+  <LocationSection key="location" />,
+  <ImagesSection key="images" />,
+  <PromotionsSection key="promotions" />,
+  <AmenitiesSection key="amenities" />,
+];
 
 export default function EditListingForm({ listing }: { listing: Listing }) {
   const router = useRouter();
@@ -48,6 +58,21 @@ export default function EditListingForm({ listing }: { listing: Listing }) {
     setFocus,
     formState: { errors, isValid },
   } = methods;
+
+  // Prevent Enter key from triggering form submission
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        const target = e.target as HTMLElement;
+        if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const onSubmit = async (data: EditListing) => {
     if (!isValid) {
@@ -94,22 +119,15 @@ export default function EditListingForm({ listing }: { listing: Listing }) {
 
       {/* Form */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="max-w-4xl mx-auto">
-        <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-gray-100">
+        <div className="rounded-2xl p-8 shadow-lg border border-gray-200">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-              <BasicInfoSection />
-
-              <StructureSection />
-
-              <GuestLimitsSection />
-
-              <LocationSection />
-
-              <ImagesSection />
-
-              <PromotionsSection />
-
-              <AmenitiesSection />
+              {sections.map((section, index) => (
+                <div key={index}>
+                  {section}
+                  {index < sections.length - 1 && <div className="mt-8 border-t border-gray-200" />}
+                </div>
+              ))}
 
               <div className="mt-8 flex justify-center md:justify-end">
                 <button

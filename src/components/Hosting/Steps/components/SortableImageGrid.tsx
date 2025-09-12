@@ -52,6 +52,7 @@ export function SortableImageGrid({
             <div key={img} className={`relative group ${index === 0 ? "h-[300px] col-span-2" : "h-[200px] col-span-1"}`}>
               <SortableImage url={img} />
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleRemove(img);

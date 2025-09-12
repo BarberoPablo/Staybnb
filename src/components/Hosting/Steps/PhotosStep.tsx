@@ -49,6 +49,7 @@ export function UploadPhotos({ images, handleSetField }: { images: string[]; han
             </div>
 
             <button
+              type="button"
               className="flex items-center justify-center w-11 h-11 rounded-full bg-myGreenExtraLight hover:bg-myGreen/20 transition-colors duration-200 hover:cursor-pointer"
               onClick={() => setIsOpen(true)}
             >
@@ -64,6 +65,7 @@ export function UploadPhotos({ images, handleSetField }: { images: string[]; han
         <div className="flex flex-col justify-center items-center h-[380px] border-2 border-dashed border-myGray/30 bg-myGreenExtraLight/30 rounded-xl gap-4">
           <Image src="https://i.postimg.cc/FHQPFG3C/c83b2a87-3be4-43c9-ad47-12dd2aee24c4.avif" alt="upload icon" priority width={182} height={182} />
           <button
+            type="button"
             className="px-6 py-3 text-sm font-medium border border-myGreenSemiBold rounded-xl bg-white text-myGreenSemiBold hover:bg-myGreenSemiBold hover:text-white transition-all duration-200 hover:cursor-pointer"
             onClick={() => setIsOpen(true)}
           >

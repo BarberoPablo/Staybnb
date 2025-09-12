@@ -49,17 +49,3 @@ export const editListingSchema = z.object({
   }),
   amenities: z.array(z.number()),
 });
-/* 
-{
-  "lat": -38.7032718,
-  "lng": -62.2664116,
-  "city": "Bahía Blanca",
-  "state": "Buenos Aires",
-  "street": "12 de Octubre",
-  "country": "Argentina",
-  "postcode": "B 8000",
-  "timezone": "America/Argentina/Buenos_Aires",
-  "formatted": "12 de Octubre 950, Bahía Blanca, Argentina",
-  "housenumber": "950"
-}
-*/
