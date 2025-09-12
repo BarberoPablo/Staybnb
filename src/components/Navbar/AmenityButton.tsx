@@ -18,6 +18,7 @@ interface AmenityButtonProps {
 const AmenityButton = memo(({ amenity, isSelected, onToggle }: AmenityButtonProps) => {
   return (
     <button
+      type="button"
       onClick={() => onToggle(amenity.id)}
       className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 text-left hover:cursor-pointer ${
         isSelected ? "border-myGreenSemiBold bg-myGreenSemiBold/5 text-myGreenSemiBold" : "border-gray-200 hover:border-gray-300 text-myGray"

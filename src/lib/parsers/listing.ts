@@ -110,7 +110,7 @@ export function parseHostListingsWithReservations(listings: HostListingsWithRese
 }
 
 export function parseEditListingToDB(listingProps: EditListing) {
-  const listingPropsDB = {
+  return {
     title: listingProps.title,
     description: listingProps.description,
     night_price: listingProps.nightPrice,
@@ -128,9 +128,6 @@ export function parseEditListingToDB(listingProps: EditListing) {
     check_out_time: listingProps.checkOutTime,
     min_cancel_days: listingProps.minCancelDays,
     privacy_type: listingProps.privacyType,
+    amenities: listingProps.amenities,
   };
-
-  const filteredPropsDB = Object.fromEntries(Object.entries(listingPropsDB).filter(([, value]) => value !== undefined));
-
-  return filteredPropsDB;
 }
