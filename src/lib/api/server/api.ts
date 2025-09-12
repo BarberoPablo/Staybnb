@@ -151,18 +151,43 @@ export async function editListing(id: number, props: EditListing) {
 
   try {
     const dbData = parseEditListingToDB(props);
+    const { amenities, ...listingData } = dbData;
 
-    const updatedListing = await prisma.listings.update({
-      where: {
-        id: id,
-        host_id: user.id,
-      },
-      data: dbData,
-    });
+    let validAmenities: number[] = [];
+    if (amenities && amenities.length > 0) {
+      const existingAmenities = await prisma.amenities.findMany({
+        where: { id: { in: amenities } },
+        select: { id: true },
+      });
+      validAmenities = existingAmenities.map((a) => a.id);
+    }
 
-    const parsedListing = parseListingFromDB(updatedListing as unknown as ListingDB);
+    await prisma.$transaction([
+      prisma.listings.update({
+        where: {
+          id,
+          host_id: user.id,
+        },
+        data: listingData,
+      }),
 
-    return parsedListing;
+      prisma.listingAmenities.deleteMany({
+        where: { listing_id: id },
+      }),
+
+      ...(validAmenities.length > 0
+        ? [
+            prisma.listingAmenities.createMany({
+              data: validAmenities.map((amenityId) => ({
+                listing_id: id,
+                amenity_id: amenityId,
+              })),
+            }),
+          ]
+        : []),
+    ]);
+
+    return;
   } catch (error) {
     console.error("Error updating listing", error);
     throw new NotFoundError();

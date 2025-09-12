@@ -111,7 +111,7 @@ export default function EditListingForm({ listing }: { listing: Listing }) {
 
               <AmenitiesSection />
 
-              <div className="mt-8 flex justify-end">
+              <div className="mt-8 flex justify-center md:justify-end">
                 <button
                   type="submit"
                   disabled={saving}

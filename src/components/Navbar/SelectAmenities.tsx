@@ -7,9 +7,10 @@ import AmenityButton from "./AmenityButton";
 interface SelectAmenitiesProps {
   selectedAmenities: AmenityId[];
   setSelectedAmenities: (amenities: AmenityId[]) => void;
+  displaySelected?: boolean;
 }
 
-export default function SelectAmenities({ selectedAmenities, setSelectedAmenities }: SelectAmenitiesProps) {
+export default function SelectAmenities({ displaySelected = true, selectedAmenities, setSelectedAmenities }: SelectAmenitiesProps) {
   // Memoize the toggle function to prevent unnecessary re-renders
   const toggleAmenity = useCallback(
     (amenityId: AmenityId) => {
@@ -52,7 +53,7 @@ export default function SelectAmenities({ selectedAmenities, setSelectedAmenitie
 
   return (
     <div className="w-full mb-4">
-      {selectedAmenities.length > 0 && (
+      {selectedAmenities.length > 0 && displaySelected && (
         <div className="sticky top-0 bg-white border-b border-gray-200 mb-4 pb-2 z-10 flex justify-between items-center">
           <p className="text-sm text-myGray">
             Selected: {selectedAmenities.length} amenit{selectedAmenities.length !== 1 ? "ies" : "y"}
