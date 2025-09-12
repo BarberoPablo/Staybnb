@@ -1,20 +1,21 @@
 "use client";
 
 import "@/components/Leaflet/markerStyle";
+import { Location } from "@/lib/types/listing";
 import { reverseGeocode } from "@/lib/utils";
-import { useListingForm } from "@/store/useListingForm";
 import { useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 
-export default function MapLocation() {
-  const lat = useListingForm((store) => store.location.lat);
-  const lng = useListingForm((store) => store.location.lng);
-  const formattedLocation = useListingForm((store) => store.location.formatted);
-  const setField = useListingForm((store) => store.setField);
+type MapLocationProps = {
+  lat: number;
+  lng: number;
+  formattedLocation: string;
+  handleChangeLocation: (address: Location) => void;
+};
 
+export default function MapLocation({ lat, lng, formattedLocation, handleChangeLocation }: MapLocationProps) {
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(lat && lng ? [lat, lng] : null);
-
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleMove = useCallback(
@@ -31,10 +32,10 @@ export default function MapLocation() {
           toast.error(address);
           return;
         }
-        setField("location", address);
+        handleChangeLocation(address);
       }, 800);
     },
-    [setField]
+    [handleChangeLocation]
   );
 
   useEffect(() => {
