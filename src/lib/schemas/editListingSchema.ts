@@ -6,8 +6,8 @@ export const editListingSchema = z.object({
   nightPrice: z.number().min(0, "Price must be positive"),
   propertyType: z.enum(["House", "Apartment", "Cabin", "Boat"]),
   privacyType: z.enum(["Entire", "Private", "Shared"]),
-  checkInTime: z.string(),
-  checkOutTime: z.string(),
+  checkInTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid check-in time (use HH:MM)"),
+  checkOutTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid check-in time (use HH:MM)"),
   minCancelDays: z.number().min(0, "Must be 0 or greater"),
   structure: z.object({
     guests: z.number().min(1, "Must be at least 1"),
@@ -35,6 +35,31 @@ export const editListingSchema = z.object({
     }),
   images: z.array(z.string()),
   promotions: z.array(z.any()),
-  location: z.any(),
+  location: z.object({
+    lat: z.number().min(-90, "Latitude must be between -90 and 90").max(90, "Latitude must be between -90 and 90"),
+    lng: z.number().min(-180, "Longitude must be between -180 and 180").max(180, "Longitude must be between -180 and 180"),
+    city: z.string().min(1, "City is required"),
+    state: z.string().min(1, "State is required"),
+    street: z.string().min(1, "Street is required"),
+    country: z.string().min(1, "Country is required"),
+    postcode: z.string().min(1, "Postcode is required"),
+    timezone: z.string().min(1, "Timezone is required"),
+    formatted: z.string().min(1, "Formatted address is required"),
+    housenumber: z.string().min(1, "House number is required"),
+  }),
   amenities: z.array(z.number()),
 });
+/* 
+{
+  "lat": -38.7032718,
+  "lng": -62.2664116,
+  "city": "Bahía Blanca",
+  "state": "Buenos Aires",
+  "street": "12 de Octubre",
+  "country": "Argentina",
+  "postcode": "B 8000",
+  "timezone": "America/Argentina/Buenos_Aires",
+  "formatted": "12 de Octubre 950, Bahía Blanca, Argentina",
+  "housenumber": "950"
+}
+*/
