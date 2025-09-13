@@ -193,3 +193,34 @@ export async function editListing(id: number, props: EditListing) {
     throw new NotFoundError();
   }
 }
+
+export async function pauseListing(id: number) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  const { data, error } = await supabase
+    .from("listings")
+    .update({ status: "paused" })
+    .eq("host_id", user.id)
+    .eq("id", id)
+    .eq("status", "published")
+    .select();
+
+  if (error) {
+    console.error("Error pausing listing", error);
+    throw new NotFoundError("Error pausing listing");
+  }
+
+  if (!data || data.length === 0) {
+    throw new NotFoundError("Could not pause listing");
+  }
+}

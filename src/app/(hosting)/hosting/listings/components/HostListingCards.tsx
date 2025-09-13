@@ -1,9 +1,12 @@
 "use client";
 
+import { pauseListing } from "@/lib/api/server/api";
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "nextjs-toploader/app";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { FaMapMarkerAlt, FaPause, FaPlus } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
@@ -66,6 +69,7 @@ export default function HostListingCards({ listings }: { listings: Listing[] }) 
 
 export function HostListingCard({ listing }: { listing: Listing }) {
   const router = useRouter();
+  const [listingStatus, setListingStatus] = useState<string>(listing.status);
 
   const handleEdit = () => {
     router.push(`/hosting/listings/edit/${listing.id}`);
@@ -90,6 +94,21 @@ export function HostListingCard({ listing }: { listing: Listing }) {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
+  const handlePauseListing = async () => {
+    try {
+      setListingStatus("paused");
+      await pauseListing(listing.id);
+      toast.success("Listing paused");
+    } catch (error) {
+      setListingStatus(listing.status);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error pausing listing");
+      }
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -110,7 +129,7 @@ export function HostListingCard({ listing }: { listing: Listing }) {
 
         {/* Status Badge */}
         <div className="absolute top-3 left-3">
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(listing.status)}`}>{getStatusText(listing.status)}</span>
+          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(listingStatus)}`}>{getStatusText(listingStatus)}</span>
         </div>
 
         {/* Gradient Overlay */}
@@ -152,10 +171,15 @@ export function HostListingCard({ listing }: { listing: Listing }) {
             <MdEdit className="w-4 h-4" />
             Edit
           </button>
-          <button className="w-full px-4 py-3 text-sm font-medium text-white bg-[#E0C04F] rounded-lg hover:bg-myGreenBold transition-colors duration-200 flex items-center justify-center gap-2 hover:cursor-pointer">
-            <FaPause className="w-4 h-4" />
-            Pause
-          </button>
+          {listingStatus === "published" && (
+            <button
+              className="w-full px-4 py-3 text-sm font-medium text-white bg-[#E0C04F] rounded-lg hover:bg-myGreenBold transition-colors duration-200 flex items-center justify-center gap-2 hover:cursor-pointer"
+              onClick={handlePauseListing}
+            >
+              <FaPause className="w-4 h-4" />
+              Pause
+            </button>
+          )}
         </div>
       </div>
     </motion.div>
