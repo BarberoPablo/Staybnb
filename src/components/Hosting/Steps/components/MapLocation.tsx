@@ -12,9 +12,10 @@ type MapLocationProps = {
   lng: number;
   formattedLocation: string;
   handleChangeLocation: (address: Location) => void;
+  zIndex?: number;
 };
 
-export default function MapLocation({ lat, lng, formattedLocation, handleChangeLocation }: MapLocationProps) {
+export default function MapLocation({ lat, lng, formattedLocation, handleChangeLocation, zIndex }: MapLocationProps) {
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(lat && lng ? [lat, lng] : null);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -66,7 +67,7 @@ export default function MapLocation({ lat, lng, formattedLocation, handleChangeL
 
   return (
     <div>
-      <MapContainer center={markerPosition} zoom={13} scrollWheelZoom={true} className="rounded-xl" style={{ height: "300px", width: "100%" }}>
+      <MapContainer center={markerPosition} zoom={13} scrollWheelZoom={true} className="rounded-xl" style={{ height: "300px", width: "100%", zIndex }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap contributors" />
         <Marker
           position={markerPosition}

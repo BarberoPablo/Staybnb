@@ -47,6 +47,7 @@ export default function LocationSection() {
         name="location"
         render={({ field }) => (
           <MapLocationNoSSR
+            zIndex={0}
             lat={field.value.lat}
             lng={field.value.lng}
             formattedLocation={field.value.formatted}

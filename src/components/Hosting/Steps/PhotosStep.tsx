@@ -9,7 +9,7 @@ import { SortableImageGrid } from "./components/SortableImageGrid";
 import Title from "./components/Title";
 
 export type PreviewImage = {
-  file: File;
+  file: File | null;
   url: string;
 };
 

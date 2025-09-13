@@ -186,10 +186,19 @@ export function cleanString(value?: unknown): string {
 export function isValidUrl(url: string) {
   try {
     new URL(url);
-    return true;
+    return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
   } catch {
     return false;
   }
+}
+
+export function checkImageUrl(url: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(true); // La imagen cargó bien
+    img.onerror = () => resolve(false); // Link roto o no es imagen
+    img.src = url;
+  });
 }
 
 export function verifyCreateProfileData(profileData: CreateProfile): CreateProfile {

@@ -1,9 +1,9 @@
 "use client";
 
+import { errorClass, inputClass, labelClass } from "@/lib/styles";
 import { EditListing } from "@/lib/types/listing";
-import { useFormContext, useFieldArray } from "react-hook-form";
-import { FaPlus, FaTrash, FaPercent } from "react-icons/fa";
-import { inputClass, labelClass, errorClass } from "@/lib/styles";
+import { useFieldArray, useFormContext } from "react-hook-form";
+import { FaPercent, FaPlus, FaTrashAlt } from "react-icons/fa";
 
 export default function PromotionsSection() {
   const {
@@ -28,7 +28,7 @@ export default function PromotionsSection() {
 
       <div className="space-y-4">
         {fields.map((field, index) => (
-          <div key={field.id} className="p-4 border border-gray-200 rounded-xl bg-white/90 backdrop-blur-sm">
+          <div key={field.id} className="p-4 border border-gray-200 rounded-xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Min Nights */}
               <div>
@@ -68,9 +68,9 @@ export default function PromotionsSection() {
                 <button
                   type="button"
                   onClick={() => remove(index)}
-                  className="w-12 h-12.5 px-4 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors flex items-center justify-center hover:cursor-pointer"
+                  className="w-12 h-12.5 px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 hover:shadow-md hover:scale-105 transition-all hover:cursor-pointer"
                 >
-                  <FaTrash className="w-4 h-4" />
+                  <FaTrashAlt className="w-4 h-4" />
                 </button>
               </div>
             </div>
