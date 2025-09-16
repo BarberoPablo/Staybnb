@@ -41,6 +41,7 @@ export const createListingSchema = z.object({
     infant: z.object({ min: z.number().min(0), max: z.number().min(0) }),
     pets: z.object({ min: z.number().min(0), max: z.number().min(0) }),
   }),
+  currentStep: z.number().min(0),
 });
 
 // Partial schema for initialization (everything optional)

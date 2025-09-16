@@ -1,16 +1,16 @@
 "use server";
 
 import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
+import { parseCreateListingToDB, parseDraftListingFromDB } from "@/lib/parsers/draftListings";
 import { prisma } from "@/lib/prisma";
+import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { AmenityDB } from "@/lib/types/amenities";
+import { DraftListingDB } from "@/lib/types/draftListing";
 import { EditListing, ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { createClient } from "../../supabase/server";
 import { NotFoundError, ReservationError } from "./errors";
 import { ParsedFilters, buildSearchListingsWhereClause } from "./utils";
-import { CreateListingForm } from "@/lib/schemas/createListingSchema";
-import { parseDraftListingFromDB } from "@/lib/parsers/draftListings";
-import { DraftListingDB } from "@/lib/types/draftListing";
 
 export async function getListingWithReservations(id: number) {
   const supabase = await createClient();
@@ -336,19 +336,19 @@ export async function updateDraftListing(id: number, data: Partial<CreateListing
     }
 
     // Update the draft with new data
-    const updatedDraft = await prisma.draft_listings.update({
+    const parsedData = parseCreateListingToDB(data);
+    await prisma.draft_listings.update({
       where: {
         id: id,
         host_id: user.id,
       },
       data: {
-        ...data,
+        ...parsedData,
       },
     });
 
     return {
       success: true,
-      data: updatedDraft,
     };
   } catch (error) {
     console.error("Error updating draft listing", error);
