@@ -5,6 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { MdCabin } from "react-icons/md";
 import { PiBuildingApartmentLight, PiHouseLineLight, PiSailboatLight } from "react-icons/pi";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
+import toast from "react-hot-toast";
 
 const propertyTypes: {
   icon: React.JSX.Element;
@@ -34,7 +35,6 @@ const propertyTypes: {
 ];
 
 export default function PropertyTypeStep() {
-  // ✅ Access the shared form context from layout
   const {
     watch,
     setValue,
@@ -47,6 +47,10 @@ export default function PropertyTypeStep() {
     setValue("propertyType", propertyType, { shouldValidate: true });
   };
 
+  if (errors.propertyType && errors.propertyType.message) {
+    toast.error(errors.propertyType.message);
+  }
+
   return (
     <div className="w-full p-2 sm:px-12 py-10">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="mb-8">
@@ -56,7 +60,6 @@ export default function PropertyTypeStep() {
         </div>
       </motion.div>
 
-      {/* Form */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="max-w-4xl mx-auto">
         <div className="rounded-2xl p-8 shadow-lg border border-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -76,12 +79,6 @@ export default function PropertyTypeStep() {
               </button>
             ))}
           </div>
-
-          {errors.propertyType && (
-            <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200">
-              <p className="text-sm text-red-600">{errors.propertyType.message}</p>
-            </div>
-          )}
         </div>
       </motion.div>
     </div>
