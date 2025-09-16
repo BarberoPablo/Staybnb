@@ -1,14 +1,14 @@
-export const hostingSteps = [
-  "property-type",
-  "privacy-type",
+import { CreateListingForm } from "../schemas/createListingSchema";
+
+export const hostingSteps: (keyof CreateListingForm)[] = [
+  "propertyType",
+  "privacyType",
   "location",
-  "checkin-checkout",
   "structure",
-  "photos",
+  "amenities",
+  "images",
   "title",
   "description",
-  "price",
+  "nightPrice",
   "promotions",
-] as const;
-
-export type HostingStep = (typeof hostingSteps)[number];
+];

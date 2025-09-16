@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { FaMapMarkerAlt, FaPause, FaPlus } from "react-icons/fa";
+import { FaCheckCircle, FaMapMarkerAlt, FaPause, FaPlus } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
 export default function HostListingCards({ listings }: { listings: Listing[] }) {
@@ -71,10 +71,6 @@ export function HostListingCard({ listing }: { listing: Listing }) {
   const router = useRouter();
   const [listingStatus, setListingStatus] = useState<string>(listing.status);
 
-  const handleEdit = () => {
-    router.push(`/hosting/listings/edit/${listing.id}`);
-  };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "published":
@@ -92,6 +88,14 @@ export function HostListingCard({ listing }: { listing: Listing }) {
 
   const getStatusText = (status: string) => {
     return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
+  const handleEdit = () => {
+    router.push(`/hosting/listings/edit/${listing.id}`);
+  };
+
+  const handleCompleteListing = () => {
+    router.push(`/hosting/create?id=${listing.id}`);
   };
 
   const handlePauseListing = async () => {
@@ -163,14 +167,28 @@ export function HostListingCard({ listing }: { listing: Listing }) {
         </div>
 
         {/* Edit Action */}
+        {/* "published""draft""paused""pending"*/}
         <div className="flex gap-2 mt-4">
-          <button
-            onClick={handleEdit}
-            className="w-full px-4 py-3 text-sm font-medium text-white bg-myGreenSemiBold rounded-lg hover:bg-myGreenBold transition-colors duration-200 flex items-center justify-center gap-2 hover:cursor-pointer"
-          >
-            <MdEdit className="w-4 h-4" />
-            Edit
-          </button>
+          {["published", "paused", "pending"].includes(listingStatus) && (
+            <button
+              onClick={handleEdit}
+              className="w-full px-4 py-3 text-sm font-medium text-white bg-myGreenSemiBold rounded-lg hover:bg-myGreenBold transition-colors duration-200 flex items-center justify-center gap-2 hover:cursor-pointer"
+            >
+              <MdEdit className="w-4 h-4" />
+              Edit
+            </button>
+          )}
+
+          {listingStatus === "draft" && (
+            <button
+              className="w-full px-4 py-3 text-sm font-medium text-white bg-myGreenSemiBold rounded-lg hover:bg-myGreenBold transition-colors duration-200 flex items-center justify-center gap-2 hover:cursor-pointer"
+              onClick={handleCompleteListing}
+            >
+              <FaCheckCircle className="w-4 h-4" />
+              Complete Listing
+            </button>
+          )}
+
           {listingStatus === "published" && (
             <button
               className="w-full px-4 py-3 text-sm font-medium text-white bg-[#E0C04F] rounded-lg hover:bg-myGreenBold transition-colors duration-200 flex items-center justify-center gap-2 hover:cursor-pointer"
