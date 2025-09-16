@@ -1,21 +1,14 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { FaPeopleRoof } from "react-icons/fa6";
 import { PiDoorOpenLight, PiHouseLineLight } from "react-icons/pi";
-import { z } from "zod";
-
-const privacyTypeSchema = z.object({
-  privacyType: z.enum(["Entire", "Private", "Shared"]),
-});
-
-type PrivacyTypeForm = z.infer<typeof privacyTypeSchema>;
+import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 
 const privacyTypes: {
   icon: React.JSX.Element;
-  name: PrivacyTypeForm["privacyType"];
+  name: CreateListingForm["privacyType"];
   title: string;
   description: string;
 }[] = [
@@ -40,19 +33,16 @@ const privacyTypes: {
 ];
 
 export default function PrivacyTypeStep() {
-  const methods = useForm<PrivacyTypeForm>({
-    resolver: zodResolver(privacyTypeSchema),
-    mode: "onChange",
-  });
-
+  // ✅ Access the shared form context from layout
   const {
     watch,
     setValue,
     formState: { errors },
-  } = methods;
+  } = useFormContext<CreateListingForm>();
+
   const selectedPrivacyType = watch("privacyType");
 
-  const handleSelectPrivacyType = (privacyType: PrivacyTypeForm["privacyType"]) => {
+  const handleSelectPrivacyType = (privacyType: CreateListingForm["privacyType"]) => {
     setValue("privacyType", privacyType, { shouldValidate: true });
   };
 

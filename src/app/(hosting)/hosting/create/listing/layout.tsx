@@ -40,5 +40,12 @@ export default function CreateListingFormProvider({ children, draftData }: Creat
     defaultValues: draftData ? { ...getDefaultValues(), ...draftData } : getDefaultValues(),
   });
 
-  return <FormProvider {...methods}>{children}</FormProvider>;
+  return (
+    <FormProvider {...methods}>
+      <div>
+        <h1>Future navigation bar</h1>
+        {children}
+      </div>
+    </FormProvider>
+  );
 }

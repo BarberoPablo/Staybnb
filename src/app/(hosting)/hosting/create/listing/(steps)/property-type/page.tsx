@@ -1,21 +1,14 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { MdCabin } from "react-icons/md";
 import { PiBuildingApartmentLight, PiHouseLineLight, PiSailboatLight } from "react-icons/pi";
-import { z } from "zod";
-
-const propertyTypeSchema = z.object({
-  propertyType: z.enum(["House", "Apartment", "Cabin", "Boat"]),
-});
-
-type PropertyTypeForm = z.infer<typeof propertyTypeSchema>;
+import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 
 const propertyTypes: {
   icon: React.JSX.Element;
-  name: PropertyTypeForm["propertyType"];
+  name: CreateListingForm["propertyType"];
   description: string;
 }[] = [
   {
@@ -41,19 +34,16 @@ const propertyTypes: {
 ];
 
 export default function PropertyTypeStep() {
-  const methods = useForm<PropertyTypeForm>({
-    resolver: zodResolver(propertyTypeSchema),
-    mode: "onChange",
-  });
-
+  // ✅ Access the shared form context from layout
   const {
     watch,
     setValue,
     formState: { errors },
-  } = methods;
+  } = useFormContext<CreateListingForm>();
+
   const selectedPropertyType = watch("propertyType");
 
-  const handleSelectPropertyType = (propertyType: PropertyTypeForm["propertyType"]) => {
+  const handleSelectPropertyType = (propertyType: CreateListingForm["propertyType"]) => {
     setValue("propertyType", propertyType, { shouldValidate: true });
   };
 
