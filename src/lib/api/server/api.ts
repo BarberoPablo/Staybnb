@@ -1,7 +1,7 @@
 "use server";
 
 import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
-import { parseCreateListingToDB, parseDraftListingFromDB } from "@/lib/parsers/draftListings";
+import { parseCreateListingToDB, parseDraftListingFromDB, parseDraftListingToCreateListingDB } from "@/lib/parsers/draftListings";
 import { prisma } from "@/lib/prisma";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { AmenityDB } from "@/lib/types/amenities";
@@ -399,7 +399,7 @@ export async function getDraftListing(id?: number) {
   }
 }
 
-/* export async function completeDraftListing(id: number) {
+export async function completeDraftListing(id: number) {
   const supabase = await createClient();
 
   const {
@@ -412,57 +412,53 @@ export async function getDraftListing(id?: number) {
     throw new NotFoundError();
   }
 
+  const draftData = await prisma.draft_listings.findUnique({
+    where: {
+      id: id,
+      host_id: user.id,
+    },
+  });
+
+  if (!draftData) {
+    throw new NotFoundError("Draft listing not found");
+  }
+
+  const listingData = parseDraftListingToCreateListingDB(draftData as unknown as DraftListingDB);
+
   try {
-    const draftData = await prisma.draft_listings.findFirst({
-      where: {
-        id: id,
-        host_id: user.id,
-      },
-    });
-
-    if (!draftData) {
-      throw new NotFoundError("Draft listing not found");
-    }
-
-    const newListing = await prisma.listings.create({
-      data: {
-        host_id: user.id,
-        status: "pending",
-        property_type: draftData.property_type,
-        privacy_type: draftData.privacy_type,
-        title: draftData.title,
-        description: draftData.description,
-        night_price: draftData.night_price,
-        check_in_time: draftData.check_in_time,
-        check_out_time: draftData.check_out_time,
-        min_cancel_days: draftData.min_cancel_days,
-        promotions: draftData.promotions,
-        images: draftData.images,
-        structure: draftData.structure,
-        guest_limits: draftData.guest_limits,
-        location: draftData.location,
-        amenities: draftData.amenities,
-        safety_items: [],
-        score: {
-          value: 0,
-          reviews: [],
+    const result = await prisma.$transaction(async (tx) => {
+      const newListing = await tx.listings.create({
+        data: {
+          host_id: user.id,
+          ...listingData,
         },
-      },
-    });
+      });
 
-    await prisma.draft_listings.delete({
-      where: {
-        id: id,
-        host_id: user.id,
-      },
+      if (draftData.amenities && Array.isArray(draftData.amenities) && draftData.amenities.length > 0) {
+        await tx.listingAmenities.createMany({
+          data: draftData.amenities.map((amenityId) => ({
+            listing_id: newListing.id,
+            amenity_id: amenityId,
+          })),
+        });
+      }
+
+      await tx.draft_listings.delete({
+        where: {
+          id: id,
+          host_id: user.id,
+        },
+      });
+
+      return newListing;
     });
 
     return {
       success: true,
-      listingId: newListing.id,
+      listingId: result.id,
     };
   } catch (error) {
     console.error("Error completing draft listing", error);
     throw new NotFoundError("Failed to complete draft listing");
   }
-} */
+}

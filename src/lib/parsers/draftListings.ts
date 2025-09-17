@@ -1,5 +1,8 @@
 import { CreateListingForm } from "../schemas/createListingSchema";
 import { DraftListing, DraftListingDB } from "../types/draftListing";
+import { CreateListingDB, PrivacyType, PropertyType } from "../types/listing";
+
+type CreateListingForPrisma = Omit<CreateListingDB, "amenities">;
 
 export function parseDraftListingFromDB(dbDraft: DraftListingDB): DraftListing {
   const parsedPromotions = dbDraft.promotions?.map((promotion) => ({
@@ -54,5 +57,30 @@ export function parseCreateListingToDB(draftListing: Partial<CreateListingForm>)
     images: draftListing.images,
     min_cancel_days: draftListing.minCancelDays,
     current_step: draftListing.currentStep,
+  };
+}
+
+export function parseDraftListingToCreateListingDB(draftData: DraftListingDB): CreateListingForPrisma {
+  return {
+    property_type: draftData.property_type as PropertyType,
+    privacy_type: draftData.privacy_type as PrivacyType,
+    title: draftData.title!,
+    description: draftData.description!,
+    location: draftData.location!,
+    check_in_time: draftData.check_in_time!,
+    check_out_time: draftData.check_out_time!,
+    night_price: Number(draftData.night_price!),
+    promotions: draftData.promotions ?? [],
+    images: draftData.images!,
+    structure: draftData.structure!,
+    guest_limits: draftData.guest_limits!,
+    safety_items: [],
+    score: {
+      value: 0,
+      reviews: [],
+    },
+    min_cancel_days: draftData.min_cancel_days!,
+    status: "pending",
+    // amenities are handled separately through listingAmenities relationship
   };
 }
