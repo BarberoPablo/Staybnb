@@ -1,7 +1,7 @@
 "use client";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { updateDraftListing } from "@/lib/api/server/api";
+import { completeDraftListing, updateDraftListing } from "@/lib/api/server/api";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
@@ -22,18 +22,15 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
   const canGoNext = currentStepIndex < hostingSteps.length - 1;
   const isLastStep = currentStepIndex === hostingSteps.length - 1;
 
+  const schemaFields = createListingSchema.keyof().options as (keyof CreateListingForm)[];
+  const formFields = schemaFields.filter((field) => !["id", "hostId", "createdAt", "updatedAt"].includes(field as string));
+
   const getCurrentFormData = (): Partial<CreateListingForm> => {
     const allValues = getValues();
-    const formData: Partial<CreateListingForm> = {};
-    const fieldsToSave = createListingSchema.keyof().options as (keyof CreateListingForm)[];
 
-    fieldsToSave.forEach((field) => {
-      if (allValues[field] !== undefined) {
-        (formData[field] as CreateListingForm[typeof field] | undefined) = allValues[field];
-      }
-    });
-
-    return formData;
+    return Object.fromEntries(
+      formFields.filter((field) => allValues[field] !== undefined).map((field) => [field, allValues[field]])
+    ) as Partial<CreateListingForm>;
   };
 
   const goBack = () => {
@@ -72,12 +69,49 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
       const formData = getCurrentFormData();
       await updateDraftListing(listingId, formData);
 
-      // TODO: Implement complete listing functionality
-      console.log("Complete listing clicked");
-      router.push("/hosting/listings");
+      const isValid = await trigger();
+      if (!isValid) {
+        // Get current form values and manually validate each field
+        const formValues = getValues();
+
+        const validationErrors = formFields.filter((field) => {
+          return !createListingSchema.shape[field]?.safeParse(formValues[field]).success;
+        });
+
+        console.log("Form values:", formValues);
+        console.log("Validation errors:", validationErrors);
+
+        if (validationErrors.length > 0) {
+          const firstErrorField = validationErrors[0] as keyof CreateListingForm;
+          const stepIndex = hostingSteps.findIndex((step) => step === firstErrorField);
+
+          console.log({ firstErrorField });
+          console.log({ hostingSteps });
+          console.log({ stepIndex });
+
+          if (stepIndex !== -1) {
+            const stepName = hostingSteps[stepIndex];
+            toast.error(`Please complete the ${stepName} step before finishing`);
+            router.push(`/hosting/create/listing/${listingId}/${stepName}`);
+            return;
+          }
+        }
+
+        toast.error("Please complete all required fields before finishing");
+        return;
+      }
+
+      const result = await completeDraftListing(listingId);
+
+      if (result.success) {
+        toast.success("Listing created successfully!");
+        router.push("/hosting/listings");
+      } else {
+        toast.error("Failed to create listing. Please try again.");
+      }
     } catch (error) {
-      console.error("Error saving draft:", error);
-      toast.error("Failed to save changes. Please try again.");
+      console.error("Error completing listing:", error);
+      toast.error("Failed to create listing. Please try again.");
     }
   };
 
