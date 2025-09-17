@@ -24,7 +24,7 @@ export const createListingSchema = z.object({
     guests: z.number().min(1),
     bedrooms: z.number().min(0),
     beds: z.number().min(0),
-    bathrooms: z.number().min(1),
+    bathrooms: z.number().min(0),
   }),
   amenities: z.array(z.number()),
   images: z.array(z.string()).min(1, "At least one image is required"),
