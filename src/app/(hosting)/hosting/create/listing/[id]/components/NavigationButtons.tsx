@@ -1,7 +1,7 @@
 "use client";
 
 import { updateDraftListing } from "@/lib/api/server/api";
-import { CreateListingForm } from "@/lib/schemas/createListingSchema";
+import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
@@ -20,6 +20,20 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
   const canGoNext = currentStepIndex < hostingSteps.length - 1;
   const isLastStep = currentStepIndex === hostingSteps.length - 1;
 
+  const getCurrentFormData = (): Partial<CreateListingForm> => {
+    const allValues = getValues();
+    const formData: Partial<CreateListingForm> = {};
+    const fieldsToSave = createListingSchema.keyof().options as (keyof CreateListingForm)[];
+
+    fieldsToSave.forEach((field) => {
+      if (allValues[field] !== undefined) {
+        (formData[field] as CreateListingForm[typeof field] | undefined) = allValues[field];
+      }
+    });
+
+    return formData;
+  };
+
   const goBack = () => {
     if (canGoBack) {
       router.push(`/hosting/create/listing/${listingId}/${hostingSteps[currentStepIndex - 1]}`);
@@ -31,6 +45,7 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
 
     const currentField = hostingSteps[currentStepIndex];
     const isValid = await trigger(currentField);
+
     if (isValid) {
       router.push(`/hosting/create/listing/${listingId}/${hostingSteps[currentStepIndex + 1]}`);
     }
@@ -38,24 +53,30 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
 
   const handleSaveAndExit = async () => {
     try {
-      const formData = getValues();
+      const formData = getCurrentFormData();
       const { success } = await updateDraftListing(listingId, formData);
       if (success) {
-        toast.success("Draft listing saved successfully");
-        setTimeout(() => {
-          router.push("/hosting/create");
-        }, 1000);
-      } else {
-        toast.error("Error saving draft listing");
+        toast.success("Draft saved successfully!");
+        router.push("/hosting/create");
       }
     } catch (error) {
-      console.error("Error saving draft listing:", error);
+      console.error("Error saving draft:", error);
+      toast.error("Failed to save changes. Please try again.");
     }
   };
 
   const handleComplete = async () => {
-    // TODO: Implement complete listing functionality
-    console.log("Complete listing clicked");
+    try {
+      const formData = getCurrentFormData();
+      await updateDraftListing(listingId, formData);
+
+      // TODO: Implement complete listing functionality
+      console.log("Complete listing clicked");
+      router.push("/hosting/listings");
+    } catch (error) {
+      console.error("Error saving draft:", error);
+      toast.error("Failed to save changes. Please try again.");
+    }
   };
 
   return (

@@ -1,11 +1,11 @@
 "use server";
 
 import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
-import { parseDraftListingFromDB, parseDraftListingToDB } from "@/lib/parsers/draftListings";
+import { parseCreateListingToDB, parseDraftListingFromDB } from "@/lib/parsers/draftListings";
 import { prisma } from "@/lib/prisma";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { AmenityDB } from "@/lib/types/amenities";
-import { DraftListing, DraftListingDB } from "@/lib/types/draftListing";
+import { DraftListingDB } from "@/lib/types/draftListing";
 import { EditListing, ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { createClient } from "../../supabase/server";
@@ -332,8 +332,7 @@ export async function updateDraftListing(id: number, data: Partial<CreateListing
       throw new NotFoundError("Draft listing not found");
     }
 
-    const parsedData = parseDraftListingToDB(data as DraftListing);
-
+    const parsedData = parseCreateListingToDB(data);
     await prisma.draft_listings.update({
       where: {
         id: id,

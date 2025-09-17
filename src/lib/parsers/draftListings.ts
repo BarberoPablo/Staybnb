@@ -1,3 +1,4 @@
+import { CreateListingForm } from "../schemas/createListingSchema";
 import { DraftListing, DraftListingDB } from "../types/draftListing";
 
 export function parseDraftListingFromDB(dbDraft: DraftListingDB): DraftListing {
@@ -7,7 +8,7 @@ export function parseDraftListingFromDB(dbDraft: DraftListingDB): DraftListing {
     description: promotion.description,
   }));
 
-  const draftListing = {
+  return {
     id: dbDraft.id,
     hostId: dbDraft.host_id,
     propertyType: dbDraft.property_type,
@@ -28,34 +29,30 @@ export function parseDraftListingFromDB(dbDraft: DraftListingDB): DraftListing {
     createdAt: new Date(dbDraft.created_at),
     updatedAt: new Date(dbDraft.updated_at),
   };
-
-  return draftListing;
 }
 
-export function parseDraftListingToDB(draftListingData: DraftListing): Partial<DraftListingDB> {
-  const parsedPromotions = draftListingData.promotions?.map((promotion) => ({
+export function parseCreateListingToDB(draftListing: Partial<CreateListingForm>): Partial<DraftListingDB> {
+  const parsedPromotions = draftListing.promotions?.map((promotion) => ({
     min_nights: promotion.minNights,
     discount_percentage: promotion.discountPercentage,
     description: promotion.description,
   }));
 
-  const parsedData = {
-    property_type: draftListingData.propertyType,
-    privacy_type: draftListingData.privacyType,
-    location: draftListingData.location,
-    check_in_time: draftListingData.checkInTime,
-    check_out_time: draftListingData.checkOutTime,
-    title: draftListingData.title,
-    description: draftListingData.description,
-    night_price: Number(draftListingData.nightPrice),
+  return {
+    property_type: draftListing.propertyType,
+    privacy_type: draftListing.privacyType,
+    location: draftListing.location,
+    check_in_time: draftListing.checkInTime,
+    check_out_time: draftListing.checkOutTime,
+    title: draftListing.title,
+    description: draftListing.description,
+    night_price: draftListing.nightPrice ? Number(draftListing.nightPrice) : undefined,
     promotions: parsedPromotions,
-    structure: draftListingData.structure,
-    guest_limits: draftListingData.guestLimits,
-    amenities: draftListingData.amenities,
-    images: draftListingData.images,
-    min_cancel_days: draftListingData.minCancelDays,
-    current_step: draftListingData.currentStep,
+    structure: draftListing.structure,
+    guest_limits: draftListing.guestLimits,
+    amenities: draftListing.amenities,
+    images: draftListing.images,
+    min_cancel_days: draftListing.minCancelDays,
+    current_step: draftListing.currentStep,
   };
-
-  return parsedData;
 }
