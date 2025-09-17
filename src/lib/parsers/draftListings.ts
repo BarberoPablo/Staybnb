@@ -31,3 +31,31 @@ export function parseDraftListingFromDB(dbDraft: DraftListingDB): DraftListing {
 
   return draftListing;
 }
+
+export function parseDraftListingToDB(draftListingData: DraftListing): Partial<DraftListingDB> {
+  const parsedPromotions = draftListingData.promotions?.map((promotion) => ({
+    min_nights: promotion.minNights,
+    discount_percentage: promotion.discountPercentage,
+    description: promotion.description,
+  }));
+
+  const parsedData = {
+    property_type: draftListingData.propertyType,
+    privacy_type: draftListingData.privacyType,
+    location: draftListingData.location,
+    check_in_time: draftListingData.checkInTime,
+    check_out_time: draftListingData.checkOutTime,
+    title: draftListingData.title,
+    description: draftListingData.description,
+    night_price: Number(draftListingData.nightPrice),
+    promotions: parsedPromotions,
+    structure: draftListingData.structure,
+    guest_limits: draftListingData.guestLimits,
+    amenities: draftListingData.amenities,
+    images: draftListingData.images,
+    min_cancel_days: draftListingData.minCancelDays,
+    current_step: draftListingData.currentStep,
+  };
+
+  return parsedData;
+}

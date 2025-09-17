@@ -1,16 +1,16 @@
 "use server";
 
 import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
+import { parseDraftListingFromDB, parseDraftListingToDB } from "@/lib/parsers/draftListings";
 import { prisma } from "@/lib/prisma";
+import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { AmenityDB } from "@/lib/types/amenities";
+import { DraftListing, DraftListingDB } from "@/lib/types/draftListing";
 import { EditListing, ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { createClient } from "../../supabase/server";
 import { NotFoundError, ReservationError } from "./errors";
 import { ParsedFilters, buildSearchListingsWhereClause } from "./utils";
-import { CreateListingForm } from "@/lib/schemas/createListingSchema";
-import { parseDraftListingFromDB } from "@/lib/parsers/draftListings";
-import { DraftListingDB } from "@/lib/types/draftListing";
 
 export async function getListingWithReservations(id: number) {
   const supabase = await createClient();
@@ -242,7 +242,6 @@ export async function createDraftListing() {
   }
 
   try {
-    // Check if user already has too many drafts (limit to 5)
     const existingDrafts = await prisma.draft_listings.count({
       where: {
         host_id: user.id,
@@ -253,7 +252,6 @@ export async function createDraftListing() {
       throw new Error("Maximum number of draft listings reached (5)");
     }
 
-    // Create new draft listing
     const draftListing = await prisma.draft_listings.create({
       data: {
         host_id: user.id,
@@ -323,7 +321,6 @@ export async function updateDraftListing(id: number, data: Partial<CreateListing
   }
 
   try {
-    // Verify the draft belongs to the user
     const existingDraft = await prisma.draft_listings.findFirst({
       where: {
         id: id,
@@ -335,20 +332,20 @@ export async function updateDraftListing(id: number, data: Partial<CreateListing
       throw new NotFoundError("Draft listing not found");
     }
 
-    // Update the draft with new data
-    const updatedDraft = await prisma.draft_listings.update({
+    const parsedData = parseDraftListingToDB(data as DraftListing);
+
+    await prisma.draft_listings.update({
       where: {
         id: id,
         host_id: user.id,
       },
       data: {
-        ...data,
+        ...parsedData,
       },
     });
 
     return {
       success: true,
-      data: updatedDraft,
     };
   } catch (error) {
     console.error("Error updating draft listing", error);
@@ -417,7 +414,6 @@ export async function getDraftListing(id?: number) {
   }
 
   try {
-    // Get the draft data
     const draftData = await prisma.draft_listings.findFirst({
       where: {
         id: id,
@@ -429,7 +425,6 @@ export async function getDraftListing(id?: number) {
       throw new NotFoundError("Draft listing not found");
     }
 
-    // Create the actual listing from draft data
     const newListing = await prisma.listings.create({
       data: {
         host_id: user.id,
@@ -456,7 +451,6 @@ export async function getDraftListing(id?: number) {
       },
     });
 
-    // Delete the draft
     await prisma.draft_listings.delete({
       where: {
         id: id,

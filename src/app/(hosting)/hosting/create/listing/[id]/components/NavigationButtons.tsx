@@ -1,17 +1,19 @@
 "use client";
 
+import { updateDraftListing } from "@/lib/api/server/api";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { useFormContext } from "react-hook-form";
+import toast from "react-hot-toast";
 import { FaArrowLeft, FaArrowRight, FaSave } from "react-icons/fa";
 
 export default function NavigationButtons({ listingId }: { listingId: number }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { trigger } = useFormContext<CreateListingForm>();
+  const { trigger, getValues } = useFormContext<CreateListingForm>();
 
   const currentStepIndex = hostingSteps.findIndex((step) => pathname.includes(step));
   const canGoBack = currentStepIndex > 0;
@@ -35,9 +37,20 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
   };
 
   const handleSaveAndExit = async () => {
-    // TODO: Implement save draft functionality
-    console.log("Save and exit clicked");
-    router.push("/hosting/create");
+    try {
+      const formData = getValues();
+      const { success } = await updateDraftListing(listingId, formData);
+      if (success) {
+        toast.success("Draft listing saved successfully");
+        setTimeout(() => {
+          router.push("/hosting/create");
+        }, 1000);
+      } else {
+        toast.error("Error saving draft listing");
+      }
+    } catch (error) {
+      console.error("Error saving draft listing:", error);
+    }
   };
 
   const handleComplete = async () => {
