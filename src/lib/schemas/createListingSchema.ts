@@ -24,10 +24,10 @@ export const createListingSchema = z.object({
     guests: z.number().min(1),
     bedrooms: z.number().min(0),
     beds: z.number().min(0),
-    bathrooms: z.number().min(1),
+    bathrooms: z.number().min(0),
   }),
   amenities: z.array(z.number()),
-  images: z.array(z.string()).min(1, "At least one image is required"),
+  images: z.array(z.string()).min(3, "At least three images are required"),
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   nightPrice: z.number().min(0, "Price must be positive"),
@@ -41,6 +41,7 @@ export const createListingSchema = z.object({
     infant: z.object({ min: z.number().min(0), max: z.number().min(0) }),
     pets: z.object({ min: z.number().min(0), max: z.number().min(0) }),
   }),
+  currentStep: z.number().min(0),
 });
 
 // Partial schema for initialization (everything optional)

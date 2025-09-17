@@ -13,9 +13,10 @@ type MapLocationProps = {
   formattedLocation: string;
   handleChangeLocation: (address: Location) => void;
   zIndex?: number;
+  displayLocation?: boolean;
 };
 
-export default function MapLocation({ lat, lng, formattedLocation, handleChangeLocation, zIndex }: MapLocationProps) {
+export default function MapLocation({ lat, lng, formattedLocation, handleChangeLocation, zIndex, displayLocation = true }: MapLocationProps) {
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(lat && lng ? [lat, lng] : null);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -82,9 +83,11 @@ export default function MapLocation({ lat, lng, formattedLocation, handleChangeL
         />
         <DraggableMarker onMove={handleMove} />
       </MapContainer>
-      <p className="text-sm text-gray-500 mt-2">
-        Current location: {formattedLocation || `${markerPosition[0].toFixed(4)}, ${markerPosition[1].toFixed(4)}`}
-      </p>
+      {displayLocation && (
+        <p className="text-sm text-gray-500 mt-2">
+          Current location: {formattedLocation || `${markerPosition[0].toFixed(4)}, ${markerPosition[1].toFixed(4)}`}
+        </p>
+      )}
     </div>
   );
 }
