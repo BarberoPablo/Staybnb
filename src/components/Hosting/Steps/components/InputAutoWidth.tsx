@@ -14,7 +14,6 @@ export function InputAutoWidth({
   const spanRef = useRef<HTMLSpanElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Adjusts the width of the input when the value changes
   useEffect(() => {
     if (spanRef.current && inputRef.current) {
       inputRef.current.style.width = `${spanRef.current.offsetWidth}px`;
@@ -23,8 +22,14 @@ export function InputAutoWidth({
 
   const validateInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    if (value === "") return;
-    const numberValue = Number(value);
+    if (value === "") {
+      handleOnChange(0);
+      return;
+    }
+
+    const cleanValue = value.replace(/^0+/, "") || "0";
+    const numberValue = Number(cleanValue);
+
     if (numberValue < 1 || !Number.isInteger(numberValue)) return;
 
     handleOnChange(numberValue);
@@ -49,6 +54,15 @@ export function InputAutoWidth({
         ref={inputRef}
         className={`no-spinner font-bold text-center outline-none bg-transparent ${!editable && "hover:cursor-not-allowed"}`}
         onChange={validateInput}
+        onInput={(e) => {
+          const target = e.target as HTMLInputElement;
+          const value = target.value;
+          if (value.length > 1 && value.startsWith("0")) {
+            const cleanValue = value.replace(/^0+/, "") || "0";
+            target.value = cleanValue;
+            validateInput(e as React.ChangeEvent<HTMLInputElement>);
+          }
+        }}
         value={nightPrice}
         onKeyDown={(e) => {
           if (e.key === "-" || e.key === "e" || e.key === "," || e.key === ".") {
