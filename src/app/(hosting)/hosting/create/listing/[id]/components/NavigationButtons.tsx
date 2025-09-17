@@ -1,5 +1,6 @@
 "use client";
 
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { updateDraftListing } from "@/lib/api/server/api";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { hostingSteps } from "@/lib/types/hostingSteps";
@@ -14,6 +15,7 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
   const router = useRouter();
   const pathname = usePathname();
   const { trigger, getValues } = useFormContext<CreateListingForm>();
+  const xs = useMediaQuery("(max-width: 500px)");
 
   const currentStepIndex = hostingSteps.findIndex((step) => pathname.includes(step));
   const canGoBack = currentStepIndex > 0;
@@ -102,10 +104,10 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
 
         <button
           onClick={handleSaveAndExit}
-          className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium bg-myGray text-white hover:bg-myGrayDark hover:cursor-pointer transition-all duration-200"
+          className="flex items-center gap-2 h-12 px-6 py-3 rounded-lg font-medium bg-myGray text-white hover:bg-myGrayDark hover:cursor-pointer transition-all duration-200"
         >
           <FaSave className="w-4 h-4" />
-          Save & Exit
+          {xs ? "" : "Save & Exit"}
         </button>
 
         <button
