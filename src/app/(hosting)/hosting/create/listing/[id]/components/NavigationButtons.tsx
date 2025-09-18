@@ -3,7 +3,7 @@
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { completeDraftListing, updateDraftListing } from "@/lib/api/server/api";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
-import { hostingSteps } from "@/lib/types/hostingSteps";
+import { getStepFields, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
@@ -42,9 +42,10 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
   const goNext = async () => {
     if (!canGoNext) return;
 
-    const currentField = hostingSteps[currentStepIndex];
-    const isValid = await trigger(currentField);
+    const currentStep = hostingSteps[currentStepIndex];
+    const fieldsToValidate = getStepFields(currentStep);
 
+    const isValid = await trigger(fieldsToValidate);
     if (isValid) {
       router.push(`/hosting/create/listing/${listingId}/${hostingSteps[currentStepIndex + 1]}`);
     }
@@ -53,7 +54,7 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
   const handleSaveAndExit = async () => {
     try {
       const formData = getCurrentFormData();
-      const { success } = await updateDraftListing(listingId, formData);
+      const { success } = await updateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
       if (success) {
         toast.success("Draft saved successfully!");
         router.push("/hosting/create");
@@ -78,21 +79,15 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
           return !createListingSchema.shape[field]?.safeParse(formValues[field]).success;
         });
 
-        console.log("Form values:", formValues);
-        console.log("Validation errors:", validationErrors);
-
         if (validationErrors.length > 0) {
           const firstErrorField = validationErrors[0] as keyof CreateListingForm;
-          const stepIndex = hostingSteps.findIndex((step) => step === firstErrorField);
 
-          console.log({ firstErrorField });
-          console.log({ hostingSteps });
-          console.log({ stepIndex });
+          // Find which step contains this field
+          const stepConfig = hostingStepsConfig.find((step) => step.fields.includes(firstErrorField));
 
-          if (stepIndex !== -1) {
-            const stepName = hostingSteps[stepIndex];
-            toast.error(`Please complete the ${stepName} step before finishing`);
-            router.push(`/hosting/create/listing/${listingId}/${stepName}`);
+          if (stepConfig) {
+            toast.error(`Please complete the ${stepConfig.name} step before finishing`);
+            router.push(`/hosting/create/listing/${listingId}/${stepConfig.path}`);
             return;
           }
         }
@@ -146,10 +141,16 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
 
         <button
           onClick={isLastStep ? handleComplete : goNext}
-          className="flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-myGreenSemiBold text-white hover:bg-myGreenBold hover:cursor-pointer"
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-myGreenSemiBold text-white hover:bg-myGreenBold hover:cursor-pointer`}
         >
-          {isLastStep ? "Complete Listing" : "Next"}
-          {!isLastStep && <FaArrowRight className="w-4 h-4" />}
+          {isLastStep ? (
+            <>Complete</>
+          ) : (
+            <>
+              Next
+              <FaArrowRight className="w-4 h-4" />
+            </>
+          )}
         </button>
       </div>
     </motion.div>
