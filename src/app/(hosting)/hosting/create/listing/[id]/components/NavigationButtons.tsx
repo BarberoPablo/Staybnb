@@ -124,7 +124,7 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="sticky bottom-0 left-0 w-full border-t border-gray-200 px-4 py-4 bg-background"
+      className="sticky z-40 bottom-0 left-0 w-full border-t border-gray-200 px-4 py-4 bg-background"
     >
       <div className="flex w-full justify-between items-center max-w-4xl mx-auto">
         <button

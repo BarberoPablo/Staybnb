@@ -9,7 +9,7 @@ import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-hot-toast";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { FaCheck, FaPlus, FaTrashAlt } from "react-icons/fa";
+import { FaCheck, FaTrashAlt } from "react-icons/fa";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { PreviewImage } from "../PhotosStep";
 
@@ -26,7 +26,7 @@ export default function PhotosUploadModal({
 }) {
   const [previews, setPreviews] = useState<PreviewImage[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [imagesWithUrl, setImagesWithUrl] = useState<PreviewImage[]>([]);
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -73,7 +73,7 @@ export default function PhotosUploadModal({
 
       handleSetField("images", [...images, ...allImages]);
       setPreviews([]);
-      setImagesWithUrl([]);
+      setImageUrl("");
       toast.success("Upload completed!");
       onClose();
     } catch (error) {
@@ -90,26 +90,22 @@ export default function PhotosUploadModal({
 
   const handleClose = () => {
     if (!isUploading) {
-      setImagesWithUrl([]);
+      setImageUrl("");
       setPreviews([]);
       onClose();
     }
   };
 
-  const handleAddImageWithUrl = () => {
-    setImagesWithUrl((prev) => [...prev, { url: "", file: null }]);
+  const handleUrlChange = (value: string) => {
+    setImageUrl(value);
   };
 
-  const handleRemoveImageWithUrl = (index: number) => {
-    setImagesWithUrl((prev) => prev.filter((_, i) => i !== index));
-  };
+  const handleConfirmUrl = async () => {
+    if (!imageUrl.trim()) {
+      toast.error("Please enter an image URL");
+      return;
+    }
 
-  const handleUrlChange = (index: number, value: string) => {
-    setImagesWithUrl((prev) => prev.map((url, i) => (i === index ? { ...url, url: value } : url)));
-  };
-
-  const handleConfirmUrl = async (index: number) => {
-    const imageUrl = imagesWithUrl[index].url;
     const validUrl = await checkImageUrl(imageUrl);
 
     if (!validUrl) {
@@ -130,12 +126,14 @@ export default function PhotosUploadModal({
     };
 
     setPreviews((prev) => [...prev, newPreview]);
-    setImagesWithUrl((prev) => prev.filter((_, i) => i !== index));
+    setImageUrl("");
 
     toast.success("Image URL added!");
   };
 
-  const canAddNewUrl = imagesWithUrl.length === 0 || imagesWithUrl[imagesWithUrl.length - 1].url !== "";
+  const handleClearUrl = () => {
+    setImageUrl("");
+  };
 
   return (
     <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
@@ -169,49 +167,35 @@ export default function PhotosUploadModal({
 
           <section className={"flex flex-col w-full p-6 gap-6"}>
             <div className="flex flex-col gap-6">
-              {imagesWithUrl.map((imageWithUrl, index) => (
-                <div className="flex flex-col" key={"image-with-url-" + index}>
-                  <label className={labelClass}>Url Image: {index + 1}</label>
-                  <div className="flex gap-4">
-                    <input
-                      type="url"
-                      className={inputClass}
-                      value={imageWithUrl.url}
-                      onChange={(e) => handleUrlChange(index, e.target.value)}
-                      placeholder="Enter image URL (jpg, png, gif, webp, svg)"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleConfirmUrl(index)}
-                      className="flex items-center justify-center w-12 h-12 p-4 bg-myGreenSemiBold text-white rounded-lg hover:bg-myGreenBold transition-all duration-200 hover:shadow-md hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
-                      disabled={isUploading}
-                    >
-                      <FaCheck className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImageWithUrl(index)}
-                      disabled={isUploading}
-                      className="flex items-center justify-center w-12 h-12 p-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 hover:shadow-md hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
-                    >
-                      <FaTrashAlt className="w-4 h-4" />
-                    </button>
-                  </div>
+              <div className="flex flex-col">
+                <label className={labelClass}>Add Image with URL</label>
+                <div className="flex gap-4">
+                  <input
+                    type="url"
+                    className={inputClass}
+                    value={imageUrl}
+                    onChange={(e) => handleUrlChange(e.target.value)}
+                    placeholder="Enter image URL (jpg, png, gif, webp, svg)"
+                    disabled={isUploading}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleConfirmUrl}
+                    className="flex items-center justify-center w-12 h-12 p-4 bg-myGreenSemiBold text-white rounded-lg hover:bg-myGreenBold transition-all duration-200 hover:shadow-md hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
+                    disabled={isUploading || !imageUrl.trim()}
+                  >
+                    <FaCheck className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleClearUrl}
+                    disabled={isUploading || !imageUrl.trim()}
+                    className="flex items-center justify-center w-12 h-12 p-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 hover:shadow-md hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
+                  >
+                    <FaTrashAlt className="w-4 h-4" />
+                  </button>
                 </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => handleAddImageWithUrl()}
-                disabled={!canAddNewUrl || isUploading}
-                className={`flex w-fit items-center gap-2 px-4 py-3 border-2 border-dashed rounded-xl transition-colors ${
-                  canAddNewUrl && !isUploading
-                    ? "border-gray-300 text-myGray hover:border-myGreen hover:text-myGreen hover:cursor-pointer"
-                    : "border-gray-200 text-gray-400 cursor-not-allowed"
-                }`}
-              >
-                <FaPlus className="w-4 h-4" />
-                Add Image with URL
-              </button>
+              </div>
             </div>
 
             <div
