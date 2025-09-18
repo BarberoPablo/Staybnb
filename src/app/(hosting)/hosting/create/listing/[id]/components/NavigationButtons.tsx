@@ -47,7 +47,16 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
 
     const isValid = await trigger(fieldsToValidate);
     if (isValid) {
-      router.push(`/hosting/create/listing/${listingId}/${hostingSteps[currentStepIndex + 1]}`);
+      try {
+        const formData = getCurrentFormData();
+        const { success } = await updateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
+        if (success) {
+          router.push(`/hosting/create/listing/${listingId}/${hostingSteps[currentStepIndex + 1]}`);
+        }
+      } catch (error) {
+        console.error("Error saving draft:", error);
+        toast.error("Failed to save changes. Please try again.");
+      }
     }
   };
 
