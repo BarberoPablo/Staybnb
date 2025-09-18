@@ -7,15 +7,17 @@ import { getStepFields, hostingSteps, hostingStepsConfig } from "@/lib/types/hos
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
+import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import toast from "react-hot-toast";
-import { FaArrowLeft, FaArrowRight, FaSave } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaSave, FaSpinner } from "react-icons/fa";
 
 export default function NavigationButtons({ listingId }: { listingId: number }) {
   const router = useRouter();
   const pathname = usePathname();
   const { trigger, getValues } = useFormContext<CreateListingForm>();
   const xs = useMediaQuery("(max-width: 500px)");
+  const [isCompleting, setIsCompleting] = useState(false);
 
   const currentStepIndex = hostingSteps.findIndex((step) => pathname.includes(step));
   const canGoBack = currentStepIndex > 0;
@@ -75,6 +77,7 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
   };
 
   const handleComplete = async () => {
+    setIsCompleting(true);
     try {
       const formData = getCurrentFormData();
       await updateDraftListing(listingId, formData);
@@ -116,6 +119,8 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
     } catch (error) {
       console.error("Error completing listing:", error);
       toast.error("Failed to create listing. Please try again.");
+    } finally {
+      setIsCompleting(false);
     }
   };
 
@@ -150,10 +155,24 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
 
         <button
           onClick={isLastStep ? handleComplete : goNext}
-          className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 bg-myGreenSemiBold text-white hover:bg-myGreenBold hover:cursor-pointer`}
+          disabled={isCompleting}
+          className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+            isCompleting
+              ? "bg-myGreenSemiBold text-white cursor-not-allowed opacity-75"
+              : "bg-myGreenSemiBold text-white hover:bg-myGreenBold hover:cursor-pointer"
+          }`}
         >
           {isLastStep ? (
-            <>Complete</>
+            <>
+              {isCompleting ? (
+                <>
+                  <FaSpinner className="w-4 h-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>Complete</>
+              )}
+            </>
           ) : (
             <>
               Next
