@@ -1,6 +1,6 @@
 "use client";
 
-import { UploadPhotos } from "@/components/Hosting/Steps/PhotosStep";
+import { UploadPhotos } from "@/app/(hosting)/hosting/create/components/UploadPhotos";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";

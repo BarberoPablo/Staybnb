@@ -1,6 +1,6 @@
 "use client";
 
-import { PreviewImage } from "@/components/Hosting/Steps/PhotosStep";
+import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
 import { api } from "@/lib/api/api";
 import { basicButton } from "@/lib/styles";
 import { createClient } from "@/lib/supabase/client";

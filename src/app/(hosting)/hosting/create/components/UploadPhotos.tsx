@@ -1,39 +1,15 @@
 "use client";
 
-import { ListingForm, useListingForm } from "@/store/useListingForm";
 import Image from "next/image";
 import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
-import PhotosUploadModal from "./components/PhotosUploadModal";
-import { SortableImageGrid } from "./components/SortableImageGrid";
-import Title from "./components/Title";
+import PhotosUploadModal from "./PhotosUploadModal";
+import { SortableImageGrid } from "./SortableImageGrid";
 
 export type PreviewImage = {
   file: File | null;
   url: string;
 };
-
-export default function PhotosStep() {
-  const images = useListingForm((state) => state.images);
-  const setField = useListingForm((state) => state.setField);
-
-  const handleSetField = (field: string, value: string[]) => {
-    setField(field as keyof ListingForm, value);
-  };
-
-  return (
-    <div className="flex flex-col gap-8 w-full">
-      {images.length === 0 && (
-        <Title className="flex flex-col gap-2">
-          <h1>Add some photos of your place.</h1>
-          <p className="text-lg font-medium text-myGray">To start, you´ll need 5 photos. You can add more or make changes later.</p>
-        </Title>
-      )}
-
-      <UploadPhotos images={images} handleSetField={handleSetField} />
-    </div>
-  );
-}
 
 export function UploadPhotos({ images, handleSetField }: { images: string[]; handleSetField: (field: string, value: string[]) => void }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,7 +20,7 @@ export function UploadPhotos({ images, handleSetField }: { images: string[]; han
         <>
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
-              <h2 className="text-xl font-semibold text-myGrayDark">Upload at least 5 photos</h2>
+              <h2 className="text-xl font-semibold text-myGrayDark">Upload at least 3 photos</h2>
               <p className="text-sm text-myGray">Drag a photo to reorder</p>
             </div>
 

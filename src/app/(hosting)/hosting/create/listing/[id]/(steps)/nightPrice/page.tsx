@@ -1,12 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useFormContext } from "react-hook-form";
-import { PiCurrencyDollarLight } from "react-icons/pi";
+import { InputAutoWidth } from "@/app/(hosting)/hosting/create/components/InputAutoWidth";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
-import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { InputAutoWidth } from "@/components/Hosting/Steps/components/InputAutoWidth";
+import { useFormContext } from "react-hook-form";
+import toast from "react-hot-toast";
+import { PiCurrencyDollarLight } from "react-icons/pi";
 
 export default function NightPriceStep() {
   const {
