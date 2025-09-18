@@ -11,7 +11,7 @@ import dynamic from "next/dynamic";
 import { errorClass, inputClass, labelClass } from "@/lib/styles";
 
 // Dynamic import for map to avoid SSR issues
-const MapLocationNoSSR = dynamic(() => import("@/components/Hosting/Steps/components/MapLocation"), { ssr: false });
+const MapLocationNoSSR = dynamic(() => import("@/app/(hosting)/hosting/create/components/MapLocation"), { ssr: false });
 
 type LocationField = {
   key: keyof CreateListingForm["location"];

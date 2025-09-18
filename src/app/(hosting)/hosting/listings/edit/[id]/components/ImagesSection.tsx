@@ -1,6 +1,6 @@
 "use client";
 
-import { UploadPhotos } from "@/components/Hosting/Steps/PhotosStep";
+import { UploadPhotos } from "@/app/(hosting)/hosting/create/components/UploadPhotos";
 import { Controller, useFormContext } from "react-hook-form";
 import { FaImages } from "react-icons/fa";
 

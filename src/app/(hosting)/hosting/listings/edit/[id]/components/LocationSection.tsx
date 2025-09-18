@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import { Controller, useFormContext } from "react-hook-form";
 import { FaMapMarkerAlt } from "react-icons/fa";
 
-const MapLocationNoSSR = dynamic(() => import("@/components/Hosting/Steps/components/MapLocation"), { ssr: false });
+const MapLocationNoSSR = dynamic(() => import("@/app/(hosting)/hosting/create/components/MapLocation"), { ssr: false });
 
 type LocationField = {
   key: keyof EditListing["location"];

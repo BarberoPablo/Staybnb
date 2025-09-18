@@ -1,6 +1,6 @@
 "use client";
 
-import { PreviewImage } from "@/components/Hosting/Steps/PhotosStep";
+import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
 import { api } from "@/lib/api/api";
 import type { Profile, UpdateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";

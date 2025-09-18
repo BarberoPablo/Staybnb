@@ -27,7 +27,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   };
 
   return (
-    <div className="w-full px-12 py-10 min-h-screen bg-background max-w-[1250px]">
+    <div className="w-full px-12 py-10 min-h-screen bg-background max-w-7xl mx-auto">
       <div className="flex gap-8 w-full">
         {/* Left Sidebar */}
         <motion.div

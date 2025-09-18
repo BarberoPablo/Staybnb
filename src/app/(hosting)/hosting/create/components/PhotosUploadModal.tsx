@@ -11,7 +11,11 @@ import { toast } from "react-hot-toast";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FaCheck, FaTrashAlt } from "react-icons/fa";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
-import { PreviewImage } from "../PhotosStep";
+
+export type PreviewImage = {
+  file: File | null;
+  url: string;
+};
 
 export default function PhotosUploadModal({
   images,
