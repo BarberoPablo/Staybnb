@@ -11,6 +11,7 @@ export const hostingStepsConfig: StepConfig[] = [
   { name: "privacyType", fields: ["privacyType"], path: "privacyType" },
   { name: "location", fields: ["location"], path: "location" },
   { name: "structure", fields: ["structure"], path: "structure" },
+  { name: "guests", fields: ["guestLimits"], path: "guests" },
   { name: "amenities", fields: ["amenities"], path: "amenities" },
   { name: "images", fields: ["images"], path: "images" },
   { name: "title", fields: ["title"], path: "title" },
