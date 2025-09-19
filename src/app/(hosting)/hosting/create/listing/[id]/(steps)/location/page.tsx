@@ -1,14 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useFormContext } from "react-hook-form";
-import { PiMapPinLight } from "react-icons/pi";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
+import { errorClass, inputClass, labelClass } from "@/lib/styles";
 import { Location } from "@/lib/types/listing";
 import { reverseGeocode } from "@/lib/utils";
-import { useCallback, useEffect } from "react";
+import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
-import { errorClass, inputClass, labelClass } from "@/lib/styles";
+import { useCallback, useEffect, useRef } from "react";
+import { FieldError, useFormContext } from "react-hook-form";
+import toast from "react-hot-toast";
+import { PiMapPinLight } from "react-icons/pi";
 
 // Dynamic import for map to avoid SSR issues
 const MapLocationNoSSR = dynamic(() => import("@/app/(hosting)/hosting/create/components/MapLocation"), { ssr: false });
@@ -28,14 +29,16 @@ export default function LocationStep() {
   } = useFormContext<CreateListingForm>();
 
   const location = watch("location");
+  const isFirstRender = useRef(true);
 
   const locationFields: LocationField[] = [
     { key: "formatted", label: "Formatted Address *", placeholder: "123 Main St, City, State 12345" },
-    { key: "street", label: "Street *", placeholder: "Main St" },
+    { key: "country", label: "Country *", placeholder: "Country" },
     { key: "city", label: "City *", placeholder: "City" },
     { key: "state", label: "State *", placeholder: "State" },
+    { key: "street", label: "Street *", placeholder: "Main St" },
+    { key: "housenumber", label: "Housenumber *", placeholder: "Housenumber" },
     { key: "postcode", label: "Postcode *", placeholder: "12345" },
-    { key: "country", label: "Country *", placeholder: "Country" },
   ];
   const handleChangeLocation = useCallback(
     (address: Location) => {
@@ -43,6 +46,22 @@ export default function LocationStep() {
     },
     [setValue]
   );
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (errors.location) {
+      const locationErrors = Object.values(errors.location).filter((error) => error && typeof error === "object" && "message" in error) as FieldError[];
+      console.log(locationErrors);
+      if (locationErrors.length > 0) {
+        const firstError = locationErrors[0];
+        toast.error(firstError.message || "Please complete all location fields");
+      }
+    }
+  }, [errors.location]);
 
   useEffect(() => {
     if (!location?.lat && !location?.lng && typeof window !== "undefined" && navigator.geolocation) {
