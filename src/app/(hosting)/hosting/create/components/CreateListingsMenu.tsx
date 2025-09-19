@@ -101,8 +101,9 @@ function DraftListingCard({ draft, index }: { draft: DraftListing; index: number
   const router = useRouter();
 
   const totalSteps = hostingSteps.length;
+  const visitedSteps = draft.visitedSteps?.length || 0;
   const currentStep = draft.currentStep || 0;
-  const progress = Math.round((currentStep / totalSteps) * 100);
+  const progress = Math.round((visitedSteps / totalSteps) * 100);
 
   // Formatea el nombre del step (camelCase → con espacio)
   const currentStepName = hostingSteps[currentStep]?.replace(/([a-z])([A-Z])/g, "$1 $2") || "Complete";
