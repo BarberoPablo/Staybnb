@@ -39,6 +39,7 @@ export type DraftListingDB = {
   images?: string[];
   min_cancel_days?: number;
   current_step?: number;
+  visited_steps?: number[];
   created_at: string;
   updated_at: string;
 };
@@ -82,6 +83,7 @@ export type DraftListing = {
   images?: string[];
   minCancelDays?: number;
   currentStep?: number;
+  visitedSteps?: number[];
   createdAt: Date;
   updatedAt: Date;
 };

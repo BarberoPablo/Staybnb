@@ -15,7 +15,7 @@ import { FaArrowLeft, FaArrowRight, FaSave, FaSpinner } from "react-icons/fa";
 export default function NavigationButtons({ listingId }: { listingId: number }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { trigger, getValues } = useFormContext<CreateListingForm>();
+  const { trigger, getValues, setValue } = useFormContext<CreateListingForm>();
   const xs = useMediaQuery("(max-width: 500px)");
   const [isCompleting, setIsCompleting] = useState(false);
 
@@ -35,9 +35,29 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
     ) as Partial<CreateListingForm>;
   };
 
-  const goBack = () => {
+  const markStepAsVisited = (stepIndex: number) => {
+    const currentValues = getValues();
+    const visitedSteps = currentValues.visitedSteps || [];
+
+    if (!visitedSteps.includes(stepIndex)) {
+      const updatedVisitedSteps = [...visitedSteps, stepIndex];
+      setValue("visitedSteps", updatedVisitedSteps);
+    }
+  };
+
+  const goBack = async () => {
     if (canGoBack) {
-      router.push(`/hosting/create/listing/${listingId}/${hostingSteps[currentStepIndex - 1]}`);
+      markStepAsVisited(currentStepIndex);
+      const nextStepIndex = currentStepIndex - 1;
+
+      try {
+        const formData = getCurrentFormData();
+        await updateDraftListing(listingId, { ...formData, currentStep: nextStepIndex });
+        router.push(`/hosting/create/listing/${listingId}/${hostingSteps[nextStepIndex]}`);
+      } catch (error) {
+        console.error("Error saving draft:", error);
+        toast.error("Failed to save changes. Please try again.");
+      }
     }
   };
 
@@ -50,10 +70,12 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
     const isValid = await trigger(fieldsToValidate);
     if (isValid) {
       try {
+        markStepAsVisited(currentStepIndex);
         const formData = getCurrentFormData();
+        const nextStepIndex = currentStepIndex + 1;
         const { success } = await updateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
         if (success) {
-          router.push(`/hosting/create/listing/${listingId}/${hostingSteps[currentStepIndex + 1]}`);
+          router.push(`/hosting/create/listing/${listingId}/${hostingSteps[nextStepIndex]}`);
         }
       } catch (error) {
         console.error("Error saving draft:", error);
