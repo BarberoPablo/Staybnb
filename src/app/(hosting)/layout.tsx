@@ -1,4 +1,4 @@
-import Navbar from "@/components/Navbar";
+import NavbarWrapper from "@/components/NavbarWrapper";
 import AuthGuard from "../(site)/auth/components/AuthGuard";
 
 export default function HostingLayout({
@@ -9,7 +9,7 @@ export default function HostingLayout({
   return (
     <AuthGuard>
       <header>
-        <Navbar search={false} />
+        <NavbarWrapper search={false} />
       </header>
       <main className="w-full flex-grow min-h-screen max-w-7xl mx-auto">{children}</main>
     </AuthGuard>
