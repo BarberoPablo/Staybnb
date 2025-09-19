@@ -16,7 +16,7 @@ import { MdEdit } from "react-icons/md";
 import { SkeletonProfile } from "./components/SkeletonProfile";
 
 export default function ProfileInfo() {
-  const [userProfile, setUserProfile] = useState<Profile | null>(null);
+  const [userProfile, setUserProfile] = useState<Profile>();
   const [isEditing, setIsEditing] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [updatingProfile, setUpdatingProfile] = useState(false);
@@ -67,18 +67,35 @@ export default function ProfileInfo() {
 
   const handleSave = async () => {
     setUpdatingProfile(true);
+
+    const originalProfile = userProfile;
+
+    const avatarUrl = await handleUploadImage();
+    const data = verifyUpdateProfileData({ ...updateProfile, avatarUrl });
+
+    setUserProfile((prevState) => {
+      if (!prevState) return prevState;
+      return {
+        ...prevState,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        bio: data.bio ?? null,
+        avatarUrl: data.avatarUrl || prevState.avatarUrl,
+      };
+    });
+
     try {
-      const avatarUrl = await handleUploadImage();
-      const data = verifyUpdateProfileData({ ...updateProfile, avatarUrl });
       const updateResponse = await api.updateProfile(data);
 
       if (updateResponse.success) {
         toast.success("Profile information updated", { duration: 2000 });
-        setUserProfile((prevState) => mergeProfile(prevState, data));
       } else {
+        setUserProfile(originalProfile);
         toast.error(updateResponse.message || "Error");
       }
     } catch (error) {
+      setUserProfile(originalProfile);
+
       if (error instanceof Error) {
         toast.error(error.message, { duration: 4000 });
       } else {
@@ -105,7 +122,6 @@ export default function ProfileInfo() {
 
   if (loadingProfile && !userProfile) return <SkeletonProfile />;
 
-  /* This should not happen, profileInfo should always be within a layout with AuthGuard */
   if (!userProfile) return <div>Profile not found, please log in</div>;
 
   return (
@@ -115,7 +131,7 @@ export default function ProfileInfo() {
         {!isEditing && (
           <motion.button
             onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-myGreenLight text-myGrayDark rounded-lg hover:bg-myGreen transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-myGreenLight text-myGrayDark rounded-lg hover:bg-myGreen transition-colors hover:cursor-pointer"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -147,7 +163,7 @@ export default function ProfileInfo() {
                   <Image src={profileImage.url} alt="Profile" width={96} height={96} className={`rounded-full object-cover`} />
                 ) : (
                   <>
-                    <FiCamera className="w-20 h-20 text-myGreenBold group-hover:text-myGreenSemiBold" />
+                    <FiCamera className="w-20 h-20 text-myGreenSemiBold group-hover:text-myGreenBold" />
                     <p className="text-xs text-myGreenBold">Upload</p>
                   </>
                 )}
@@ -283,14 +299,4 @@ export default function ProfileInfo() {
       )}
     </div>
   );
-}
-
-export function mergeProfile(prev: Profile | null, updates: UpdateProfile): Profile | null {
-  if (!prev) return prev;
-
-  return {
-    ...prev,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ...Object.fromEntries(Object.entries(updates).filter(([_, value]) => value !== undefined && value !== null)),
-  };
 }
