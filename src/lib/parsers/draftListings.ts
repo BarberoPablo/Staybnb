@@ -29,6 +29,7 @@ export function parseDraftListingFromDB(dbDraft: DraftListingDB): DraftListing {
     images: dbDraft.images,
     minCancelDays: dbDraft.min_cancel_days,
     currentStep: dbDraft.current_step,
+    visitedSteps: dbDraft.visited_steps || [],
     createdAt: new Date(dbDraft.created_at),
     updatedAt: new Date(dbDraft.updated_at),
   };
@@ -57,6 +58,7 @@ export function parseCreateListingToDB(draftListing: Partial<CreateListingForm>)
     images: draftListing.images,
     min_cancel_days: draftListing.minCancelDays,
     current_step: draftListing.currentStep,
+    visited_steps: draftListing.visitedSteps,
   };
 }
 

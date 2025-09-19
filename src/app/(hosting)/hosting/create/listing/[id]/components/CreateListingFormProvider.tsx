@@ -19,12 +19,13 @@ export default function CreateListingFormProvider({ children, defaultValues, lis
     shouldUnregister: false,
     defaultValues: defaultValues,
   });
+
   return (
     <FormProvider {...methods}>
       <div className="min-h-screen flex flex-col">
         <div className="w-full px-4 pt-6">
           <div className="max-w-4xl mx-auto">
-            <ProgressBar />
+            <ProgressBar listingId={listingId} />
           </div>
         </div>
 
