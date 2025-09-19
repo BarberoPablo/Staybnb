@@ -109,7 +109,6 @@ export default function PromotionsStep() {
               </div>
             </div>
 
-            {/* Add New Promotion Form */}
             <div className="space-y-4">
               <h4 className="text-lg font-semibold text-myGrayDark">Create New Promotion</h4>
               <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
@@ -163,7 +162,6 @@ export default function PromotionsStep() {
               </div>
             </div>
 
-            {/* Existing Promotions */}
             <AnimatePresence>
               {promotions.length > 0 && (
                 <motion.div

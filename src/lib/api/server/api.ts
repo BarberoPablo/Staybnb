@@ -321,18 +321,8 @@ export async function updateDraftListing(id: number, data: Partial<CreateListing
   }
 
   try {
-    const existingDraft = await prisma.draft_listings.findFirst({
-      where: {
-        id: id,
-        host_id: user.id,
-      },
-    });
-
-    if (!existingDraft) {
-      throw new NotFoundError("Draft listing not found");
-    }
-
     const parsedData = parseCreateListingToDB(data);
+
     await prisma.draft_listings.update({
       where: {
         id: id,
@@ -353,6 +343,7 @@ export async function updateDraftListing(id: number, data: Partial<CreateListing
 }
 
 export async function getDraftListing(id?: number) {
+  console.log("Triggering getDraftListing");
   const supabase = await createClient();
 
   const {
