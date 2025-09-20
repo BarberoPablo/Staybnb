@@ -16,7 +16,7 @@ export default function ProgressBar({ listingId }: { listingId: number }) {
   const router = useRouter();
   const { getValues, setValue } = useFormContext<CreateListingForm>();
   const [currentStepIndex, setCurrentStepIndex] = useState(hostingSteps.findIndex((step) => pathname.includes(step)));
-  const progress = ((currentStepIndex + 1) / hostingSteps.length) * 100;
+  const progress = (currentStepIndex / (hostingSteps.length - 1)) * 99;
   const [isFormLoaded, setIsFormLoaded] = useState(false);
 
   useEffect(() => {
@@ -74,15 +74,15 @@ export default function ProgressBar({ listingId }: { listingId: number }) {
 
   const getStepButtonStyle = (stepIndex: number, status: "unvisited" | "completed" | "error"): string => {
     if (stepIndex === currentStepIndex) {
-      return "flex items-center justify-center w-8 h-8 text-sm font-medium border-2 border-myGreenSemiBold text-myGreenSemiBold bg-white rounded-full hover:cursor-pointer transition-all duration-300";
+      return "flex items-center justify-center w-4 h-4 sm:h-8 sm:w-8 text-sm font-medium border-2 border-myGreenSemiBold text-myGreenSemiBold bg-white rounded-full hover:cursor-pointer transition-all duration-300";
     }
     if (status === "completed") {
-      return "flex items-center justify-center w-8 h-8 text-sm font-medium bg-myGreenSemiBold text-white border border-myGreenSemiBold rounded-full hover:bg-myGreenBold hover:cursor-pointer transition-all duration-300";
+      return "flex items-center justify-center w-4 h-4 sm:h-8 sm:w-8 text-sm font-medium bg-myGreenSemiBold text-white border border-myGreenSemiBold rounded-full hover:bg-myGreenBold hover:cursor-pointer transition-all duration-300";
     }
     if (status === "error") {
-      return "flex items-center justify-center w-8 h-8 text-sm font-medium bg-red-500 text-white border border-red-500 rounded-full hover:bg-red-600 hover:cursor-pointer transition-all duration-300";
+      return "flex items-center justify-center w-4 h-4 sm:h-8 sm:w-8 text-sm font-medium bg-red-500 text-white border border-red-500 rounded-full hover:bg-red-600 hover:cursor-pointer transition-all duration-300";
     }
-    return "flex items-center justify-center w-8 h-8 text-sm font-medium border border-gray-300 text-gray-400 bg-gray-50 rounded-full hover:cursor-pointer transition-all duration-300";
+    return "flex items-center justify-center w-4 h-4 sm:h-8 sm:w-8 text-sm font-medium border border-gray-300 text-gray-400 bg-gray-50 rounded-full hover:cursor-pointer transition-all duration-300";
   };
 
   const getStepButtonContent = (stepIndex: number, status: "unvisited" | "completed" | "error") => {
@@ -90,15 +90,14 @@ export default function ProgressBar({ listingId }: { listingId: number }) {
       return stepIndex + 1;
     }
     if (status === "completed") {
-      return <FaCheck className="w-4 h-4" />;
+      return <FaCheck className="sm:w-4 sm:h-4 w-2 h-2" />;
     } else if (status === "error") {
-      return <FaTimes className="w-4 h-4" />;
+      return <FaTimes className="sm:w-4 sm:h-4 w-2 h-2" />;
     } else {
       return stepIndex + 1;
     }
   };
 
-  // For rendering, we need a synchronous version that doesn't use trigger
   const getStepValidationStatusSync = (stepIndex: number): "unvisited" | "completed" | "error" => {
     if (!isFormLoaded) return "unvisited";
 
@@ -118,7 +117,7 @@ export default function ProgressBar({ listingId }: { listingId: number }) {
 
   return (
     <div className="relative w-full bg-gray-200 rounded-full h-2 mb-6">
-      <div className="absolute top-5 flex items-center justify-between gap-2 w-full">
+      <div className="absolute top-[-6px] sm:top-[-12px] flex items-center justify-between gap-2 w-full">
         {Array.from({ length: hostingSteps.length }).map((_, index) => {
           const status = getStepValidationStatusSync(index);
           return (
@@ -134,7 +133,7 @@ export default function ProgressBar({ listingId }: { listingId: number }) {
         })}
       </div>
       <motion.div
-        className="bg-myGreenSemiBold h-2 rounded-full transition-all duration-500"
+        className="bg-myGreen h-2 rounded-full transition-all duration-500"
         initial={{ width: 0 }}
         animate={{ width: `${progress}%` }}
         transition={{ duration: 0.5, ease: "easeOut" }}
