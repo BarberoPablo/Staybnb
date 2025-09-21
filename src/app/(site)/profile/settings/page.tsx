@@ -34,7 +34,7 @@ export default function SettingsSection() {
     }));
   };
 
-  const handlePrivacyChange = (key: keyof typeof privacy, value: any) => {
+  const handlePrivacyChange = (key: keyof typeof privacy, value: string | boolean) => {
     setPrivacy((prev) => ({
       ...prev,
       [key]: value,
