@@ -63,7 +63,7 @@ export default function PrivacyTypeStep() {
               <button
                 key={privacy.name}
                 onClick={() => handleSelectPrivacyType(privacy.name)}
-                className={`w-full flex items-center justify-between p-6 rounded-xl border-2 transition-all duration-200 hover:shadow-md ${
+                className={`w-full flex items-center justify-between p-6 rounded-xl border-2 transition-all duration-200 hover:shadow-md hover:cursor-pointer ${
                   selectedPrivacyType === privacy.name
                     ? "border-myGreenSemiBold bg-myGreenExtraLight shadow-md"
                     : "border-gray-300 hover:border-myGreenLight"
