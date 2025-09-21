@@ -1,6 +1,5 @@
 "use client";
 
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { completeDraftListing, updateDraftListing } from "@/lib/api/server/api";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { getStepFields, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
@@ -10,13 +9,12 @@ import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import toast from "react-hot-toast";
-import { FaArrowLeft, FaArrowRight, FaSave, FaSpinner } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaSpinner } from "react-icons/fa";
 
 export default function NavigationButtons({ listingId }: { listingId: number }) {
   const router = useRouter();
   const pathname = usePathname();
   const { trigger, getValues, setValue } = useFormContext<CreateListingForm>();
-  const xs = useMediaQuery("(max-width: 500px)");
   const [isCompleting, setIsCompleting] = useState(false);
 
   const currentStepIndex = hostingSteps.findIndex((step) => pathname.includes(step));
@@ -84,20 +82,6 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
     }
   };
 
-  const handleSaveAndExit = async () => {
-    try {
-      const formData = getCurrentFormData();
-      const { success } = await updateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
-      if (success) {
-        toast.success("Draft saved successfully!");
-        router.push("/hosting/create");
-      }
-    } catch (error) {
-      console.error("Error saving draft:", error);
-      toast.error("Failed to save changes. Please try again.");
-    }
-  };
-
   const handleComplete = async () => {
     setIsCompleting(true);
     try {
@@ -106,7 +90,6 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
 
       const isValid = await trigger();
       if (!isValid) {
-        // Get current form values and manually validate each field
         const formValues = getValues();
 
         const validationErrors = formFields.filter((field) => {
@@ -116,7 +99,6 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
         if (validationErrors.length > 0) {
           const firstErrorField = validationErrors[0] as keyof CreateListingForm;
 
-          // Find which step contains this field
           const stepConfig = hostingStepsConfig.find((step) => step.fields.includes(firstErrorField));
 
           if (stepConfig) {
@@ -165,14 +147,6 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
         >
           <FaArrowLeft className="w-4 h-4" />
           Back
-        </button>
-
-        <button
-          onClick={handleSaveAndExit}
-          className="flex items-center gap-2 h-12 px-6 py-3 rounded-lg font-medium bg-myGray text-white hover:bg-myGrayDark hover:cursor-pointer transition-all duration-200"
-        >
-          <FaSave className="w-4 h-4" />
-          {xs ? "" : "Save & Exit"}
         </button>
 
         <button

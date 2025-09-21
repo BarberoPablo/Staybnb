@@ -67,7 +67,7 @@ export default function PropertyTypeStep() {
               <button
                 key={property.name}
                 onClick={() => handleSelectPropertyType(property.name)}
-                className={`flex flex-col items-center justify-center p-6 h-32 rounded-xl border-2 transition-all duration-200 hover:shadow-md ${
+                className={`flex flex-col items-center justify-center p-6 h-32 rounded-xl border-2 transition-all duration-200 hover:shadow-md hover:cursor-pointer ${
                   selectedPropertyType === property.name
                     ? "border-myGreenSemiBold bg-myGreenExtraLight shadow-md"
                     : "border-gray-300 hover:border-myGreenLight"
