@@ -6,14 +6,17 @@ import { hostingSteps } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "nextjs-toploader/app";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaCalendarAlt, FaDollarSign, FaHome, FaMapMarkerAlt, FaPlus } from "react-icons/fa";
 
 export default function CreateListingsMenu({ draftListings }: { draftListings: DraftListing[] }) {
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
 
   const handleCreateNewListing = async () => {
     try {
+      setIsRedirecting(true);
       const { success, id } = await createDraftListing();
       if (success) {
         router.push(`/hosting/create/listing/${id}/${hostingSteps[0]}`);
@@ -45,7 +48,10 @@ export default function CreateListingsMenu({ draftListings }: { draftListings: D
             <button
               type="button"
               onClick={handleCreateNewListing}
-              className="group bg-myGreenSemiBold hover:bg-myGreenBold text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-3 text-lg font-semibold hover:cursor-pointer"
+              disabled={isRedirecting}
+              className={`group bg-myGreenSemiBold hover:bg-myGreenBold text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-3 text-lg font-semibold ${
+                isRedirecting ? "opacity-50 cursor-not-allowed" : "hover:cursor-pointer"
+              }`}
             >
               <FaPlus className="text-xl group-hover:rotate-90 transition-transform duration-300" />
               Create New Listing
@@ -63,7 +69,7 @@ export default function CreateListingsMenu({ draftListings }: { draftListings: D
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {draftListings.map((draft, i) => (
-                <DraftListingCard key={draft.id} draft={draft} index={i} />
+                <DraftListingCard isRedirecting={isRedirecting} setIsRedirecting={setIsRedirecting} key={draft.id} draft={draft} index={i} />
               ))}
             </div>
           </motion.div>
@@ -84,8 +90,12 @@ export default function CreateListingsMenu({ draftListings }: { draftListings: D
               <h3 className="text-xl font-semibold text-myGrayDark mb-3">No Draft Listings Yet</h3>
               <p className="text-myGray mb-6">Start creating your first listing to begin your hosting journey.</p>
               <button
+                type="button"
+                disabled={isRedirecting}
                 onClick={handleCreateNewListing}
-                className="bg-myGreenSemiBold hover:bg-myGreenBold text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 hover:cursor-pointer"
+                className={`bg-myGreenSemiBold hover:bg-myGreenBold text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 ${
+                  isRedirecting ? "opacity-50 cursor-not-allowed" : "hover:cursor-pointer"
+                }`}
               >
                 Create Your First Listing
               </button>
@@ -97,7 +107,17 @@ export default function CreateListingsMenu({ draftListings }: { draftListings: D
   );
 }
 
-function DraftListingCard({ draft, index }: { draft: DraftListing; index: number }) {
+function DraftListingCard({
+  draft,
+  index,
+  isRedirecting,
+  setIsRedirecting,
+}: {
+  draft: DraftListing;
+  index: number;
+  isRedirecting: boolean;
+  setIsRedirecting: (isRedirecting: boolean) => void;
+}) {
   const router = useRouter();
 
   const totalSteps = hostingSteps.length;
@@ -105,10 +125,10 @@ function DraftListingCard({ draft, index }: { draft: DraftListing; index: number
   const currentStep = draft.currentStep || 0;
   const progress = Math.round((visitedSteps / totalSteps) * 100);
 
-  // Formatea el nombre del step (camelCase → con espacio)
   const currentStepName = hostingSteps[currentStep]?.replace(/([a-z])([A-Z])/g, "$1 $2") || "Complete";
 
   const handleContinue = () => {
+    setIsRedirecting(true);
     const stepKey = hostingSteps[currentStep];
     router.push(`/hosting/create/listing/${draft.id}/${stepKey}`);
   };
@@ -190,10 +210,14 @@ function DraftListingCard({ draft, index }: { draft: DraftListing; index: number
         </div>
 
         <button
+          type="button"
+          disabled={isRedirecting}
           onClick={handleContinue}
-          className="w-full bg-myGreenSemiBold hover:bg-myGreenBold text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200 group-hover:shadow-md hover:cursor-pointer"
+          className={`w-full bg-myGreenSemiBold hover:bg-myGreenBold text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200 group-hover:shadow-md ${
+            isRedirecting ? "opacity-50 cursor-not-allowed" : "hover:cursor-pointer"
+          }`}
         >
-          {progress === 100 ? "Review & Publish" : "Continue Setup"}
+          Continue Setup
         </button>
       </div>
     </motion.div>
