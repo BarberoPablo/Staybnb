@@ -11,7 +11,7 @@ export default function HostingLayout({
       <header>
         <NavbarWrapper search={false} />
       </header>
-      <main className="w-full flex-grow min-h-screen max-w-7xl mx-auto">{children}</main>
+      <main className="w-full flex-grow min-h-[calc(100vh-177px)] max-w-7xl mx-auto">{children}</main>
     </AuthGuard>
   );
 }
