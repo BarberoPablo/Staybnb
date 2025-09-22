@@ -29,7 +29,7 @@ export function parseListingFromDB(listingDB: ListingDB): Listing {
     nightPrice: Number(listingDB.night_price),
     promotions: listingDB.promotions?.map((promo) => ({
       minNights: promo.min_nights,
-      discountPercentage: promo.discount_percentage,
+      discountPercentage: Number(promo.discount_percentage),
       description: promo.description,
     })),
     structure: listingDB.structure,
@@ -86,7 +86,7 @@ export function parseListingFormData(listingForm: ListingForm): CreateListingDB 
     night_price: listingForm.nightPrice,
     promotions: listingForm.promotions.map((p) => ({
       min_nights: p.minNights,
-      discount_percentage: p.discountPercentage,
+      discount_percentage: Number(p.discountPercentage),
       description: p.description,
     })),
     images: listingForm.images,
@@ -116,7 +116,7 @@ export function parseEditListingToDB(listingProps: EditListing) {
     night_price: listingProps.nightPrice,
     promotions: listingProps.promotions?.map((p) => ({
       min_nights: p.minNights,
-      discount_percentage: p.discountPercentage,
+      discount_percentage: Number(p.discountPercentage),
       description: p.description,
     })),
     property_type: listingProps.propertyType,

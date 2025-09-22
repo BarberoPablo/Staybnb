@@ -14,7 +14,7 @@ export function ParseGuests(guests: Record<Guests, number>, id: string) {
   return (
     <div className="flex gap-1">
       {Object.entries(guests).map(([guestType, count]) => (
-        <div key={`${id}-guests`} className={`flex justify-center items-center w-full`}>
+        <div key={`${id}-${guestType}`} className={`flex justify-center items-center w-full`}>
           {count} {guestIcons[guestType as Guests].body}
         </div>
       ))}
