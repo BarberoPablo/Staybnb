@@ -4,11 +4,14 @@ import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
 import { parseCreateListingToDB, parseDraftListingFromDB, parseDraftListingToCreateListingDB } from "@/lib/parsers/draftListings";
 import { prisma } from "@/lib/prisma";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
+import { getEffectiveStatus } from "@/lib/server-utils";
 import { AmenityDB } from "@/lib/types/amenities";
 import { DraftListingDB } from "@/lib/types/draftListing";
 import { EditListing, ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
+import { parseReservationsFromDB } from "../../parsers/reservation";
 import { createClient } from "../../supabase/server";
+import { ReservationDB } from "../../types/reservation";
 import { NotFoundError, ReservationError } from "./errors";
 import { ParsedFilters, buildSearchListingsWhereClause } from "./utils";
 
@@ -248,8 +251,8 @@ export async function createDraftListing() {
       },
     });
 
-    if (existingDrafts >= 5) {
-      throw new Error("Maximum number of draft listings reached (5)");
+    if (existingDrafts >= 3) {
+      throw new Error("Maximum number of draft listings reached (3)");
     }
 
     const draftListing = await prisma.draft_listings.create({
@@ -343,7 +346,6 @@ export async function updateDraftListing(id: number, data: Partial<CreateListing
 }
 
 export async function getDraftListing(id?: number) {
-  console.log("Triggering getDraftListing");
   const supabase = await createClient();
 
   const {
@@ -451,5 +453,54 @@ export async function completeDraftListing(id: number) {
   } catch (error) {
     console.error("Error completing draft listing", error);
     throw new NotFoundError("Failed to complete draft listing");
+  }
+}
+
+export async function getHostReservationsGroupedByListing() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const listings = await prisma.listings.findMany({
+      where: {
+        host_id: user.id,
+      },
+      include: {
+        reservations: {
+          orderBy: {
+            start_date: "desc",
+          },
+        },
+      },
+    });
+
+    const listingsWithReservations = listings.map((listing) => {
+      const validatedReservations = listing.reservations.map((reservation) => ({
+        ...reservation,
+        status: getEffectiveStatus(reservation.status, reservation.start_date.toISOString(), reservation.end_date.toISOString()),
+      }));
+
+      const parsedListing = parseListingFromDB(listing as unknown as ListingDB);
+      const parsedReservations = parseReservationsFromDB(validatedReservations as unknown as ReservationDB[]);
+
+      return {
+        listing: parsedListing,
+        reservations: parsedReservations,
+      };
+    });
+
+    return listingsWithReservations;
+  } catch (error) {
+    console.error("Error fetching host reservations", error);
+    throw new NotFoundError("Failed to fetch host reservations");
   }
 }
