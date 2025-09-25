@@ -15,7 +15,8 @@
     "normalize:image:url": "tsx scripts/normalize-image-url.tsx",
     "normalize:images": "tsx scripts/normalize-listing-images.ts",
     "add:promotions": "tsx scripts/add-promotions.ts",
-    "seed:reservations": "tsx scripts/seed-reservations.ts"
+    "seed:reservations": "tsx scripts/seed-reservations.ts",
+    "populate:listing:scores": "tsx scripts/populate-listing-scores.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",

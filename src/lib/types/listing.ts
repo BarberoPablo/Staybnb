@@ -94,7 +94,16 @@ export type Score = {
   reviews: {
     score: number;
     message: string;
-    guest: string;
+    userId: string;
+  }[];
+};
+
+export type ScoreDB = {
+  value: number;
+  reviews: {
+    score: number;
+    message: string;
+    user_id: string;
   }[];
 };
 
@@ -117,7 +126,7 @@ export type CreateListingDB = {
     };
   };
   safety_items: string[];
-  score: Score;
+  score: ScoreDB;
   min_cancel_days: number;
   status: ListingStatus;
   amenities: AmenityId[];

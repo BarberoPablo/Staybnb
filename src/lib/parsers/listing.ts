@@ -34,7 +34,14 @@ export function parseListingFromDB(listingDB: ListingDB): Listing {
     })),
     structure: listingDB.structure,
     guestLimits: listingDB.guest_limits,
-    score: listingDB.score,
+    score: {
+      value: listingDB.score.value,
+      reviews: listingDB.score.reviews.map((review) => ({
+        score: review.score,
+        message: review.message,
+        userId: review.user_id,
+      })),
+    },
     images: listingDB.images,
     minCancelDays: listingDB.min_cancel_days,
     status: listingDB.status,
@@ -94,7 +101,14 @@ export function parseListingFormData(listingForm: ListingForm): CreateListingDB 
     guest_limits: listingForm.guestLimits,
     amenities: listingForm.amenities,
     safety_items: listingForm.safetyItems,
-    score: listingForm.score,
+    score: {
+      value: listingForm.score.value,
+      reviews: listingForm.score.reviews.map((review) => ({
+        score: review.score,
+        message: review.message,
+        user_id: review.userId,
+      })),
+    },
     min_cancel_days: listingForm.minCancelDays,
     status: "pending",
   };

@@ -63,7 +63,7 @@ export default function ListingResume({
 
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 bg-myGreenExtraLight px-2 py-1 rounded-full">
-                <IoStar className="w-4 h-4 text-yellow-500 fill-current" />
+                <IoStar className="w-4 h-4 text-myGreenBold fill-current" />
                 <span className="text-sm font-semibold text-myGrayDark">{listingData.listing.score.value.toFixed(1)}</span>
               </div>
               <span className="text-sm text-myGray">({listingData.listing.score.reviews.length} reviews)</span>
