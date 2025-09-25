@@ -116,11 +116,12 @@ function DraftListingCard({
       <div className="relative h-48 bg-gradient-to-br from-myGreenExtraLight to-myGreenLight">
         {draft.images && draft.images.length > 0 ? (
           <Image
-            src={draft.images[0]}
+            priority
+            src={draft.images[0] + "&w=400"}
             alt={draft.title || "Draft listing"}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="100%"
           />
         ) : (
           <div className="flex items-center justify-center h-full">

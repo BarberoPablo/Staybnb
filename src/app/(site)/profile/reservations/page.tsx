@@ -123,7 +123,14 @@ export default function ReservationsSection() {
               <div className="flex flex-col lg:flex-row gap-6">
                 {/* Image */}
                 <div className="relative w-full lg:w-48 h-32 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                  <Image src={reservation.listing.images[0]} alt={reservation.listing.title + " main image"} fill className="object-cover" />
+                  <Image
+                    priority
+                    src={reservation.listing.images[0] + "&w=400"}
+                    alt={reservation.listing.title + " main image"}
+                    fill
+                    className="object-cover"
+                    sizes="100%"
+                  />
                 </div>
 
                 {/* Content */}
