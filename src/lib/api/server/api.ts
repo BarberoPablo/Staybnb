@@ -12,42 +12,62 @@ import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsA
 import { parseReservationsFromDB } from "../../parsers/reservation";
 import { createClient } from "../../supabase/server";
 import { ReservationDB } from "../../types/reservation";
-import { NotFoundError, ReservationError } from "./errors";
+import { NotFoundError } from "./errors";
 import { ParsedFilters, buildSearchListingsWhereClause } from "./utils";
 
 export async function getListingWithReservations(id: number) {
-  const supabase = await createClient();
+  try {
+    const listing = await prisma.listings.findUnique({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        listing_amenities: {
+          include: {
+            amenities: true,
+          },
+        },
+        reservations: {
+          where: {
+            status: "upcoming",
+            end_date: {
+              gte: new Date(),
+            },
+          },
+          select: {
+            start_date: true,
+            end_date: true,
+          },
+        },
+      },
+    });
 
-  const { data: listing, error: listingError } = await supabase
-    .from("listings")
-    .select("*, host:profiles(first_name, last_name, avatar_url)")
-    .eq("id", Number(id))
-    .single();
+    if (!listing) {
+      throw new NotFoundError();
+    }
 
-  if (listingError || !listing) {
+    const host = await prisma.profiles.findUnique({
+      where: {
+        id: listing.host_id,
+      },
+      select: {
+        first_name: true,
+        last_name: true,
+        avatar_url: true,
+      },
+    });
+
+    const rawData = {
+      ...listing,
+      host,
+      amenities: parseAmenitiesFromDB(listing.listing_amenities as unknown as AmenityDB[]),
+    };
+
+    return parseListingWithReservationsAndHostFromDB(rawData as unknown as ListingWithReservationsAndHostDB);
+  } catch (error) {
+    console.error("Error fetching listing with reservations", error);
     throw new NotFoundError();
   }
-
-  const today = new Date().toISOString().split("T")[0];
-
-  const { data: reservations, error: reservationsError } = await supabase
-    .from("reservations")
-    .select("start_date, end_date")
-    .eq("listing_id", Number(id))
-    .eq("status", "upcoming")
-    .gte("end_date", today);
-
-  if (reservationsError) {
-    console.error("Error fetching reservations", reservationsError);
-    throw new ReservationError();
-  }
-
-  const rawData = {
-    ...listing,
-    reservations: reservations || [],
-  };
-
-  return parseListingWithReservationsAndHostFromDB(rawData as ListingWithReservationsAndHostDB);
 }
 
 export async function searchListings(
