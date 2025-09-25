@@ -9,7 +9,13 @@
     "lint": "next lint",
     "generate:amenities": "tsx scripts/generate-amenities.ts",
     "seed:users:with-auth": "tsx scripts/seed-users-with-auth.ts",
-    "cleanup:users": "tsx scripts/cleanup-users.ts"
+    "cleanup:users": "tsx scripts/cleanup-users.ts",
+    "seed:listings": "tsx scripts/seed-listings.ts",
+    "get:listings:images": "tsx scripts/get-listings-images.ts",
+    "normalize:image:url": "tsx scripts/normalize-image-url.tsx",
+    "normalize:images": "tsx scripts/normalize-listing-images.ts",
+    "add:promotions": "tsx scripts/add-promotions.ts",
+    "seed:reservations": "tsx scripts/seed-reservations.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",

@@ -99,7 +99,7 @@ export default function ImagesSlider({
             {images.map((image, index) => (
               <div key={image} className={`keen-slider__slide number-slide${index + 1} relative h-[300px] min-w-full`}>
                 {image ? (
-                  <ImageWithFallback src={image} alt={`listing secondary image`} priority fill className="object-cover" sizes="100%" />
+                  <ImageWithFallback src={image + "&w=480"} alt={`listing secondary image`} priority fill className="object-cover" sizes="100%" />
                 ) : (
                   <FallbackIcon />
                 )}

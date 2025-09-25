@@ -27,10 +27,6 @@ export function ImagesLayout({ images }: { images: string[] }) {
           ) : (
             <FallbackIcon />
           )}
-          {/* 
-          <Image src={image} alt={`listing secondary image`} fill className="object-cover" sizes="(min-width: 640px) 25vw, (max-width: 639px) 0px" />
-
-          */}
         </div>
       ))}
     </div>

@@ -124,7 +124,7 @@ export function HostListingCard({ listing }: { listing: Listing }) {
       {/* Image Container */}
       <div className="relative h-48 overflow-hidden">
         <Image
-          src={listing.images[0]}
+          src={listing.images[0] + "&w=400"}
           alt={listing.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"

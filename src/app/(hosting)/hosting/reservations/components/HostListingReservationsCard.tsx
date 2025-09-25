@@ -45,7 +45,7 @@ export default function HostListingReservationsCard({ listing, reservations }: H
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 flex-1 min-w-0">
             <div className="relative w-20 h-20 sm:w-32 sm:h-32 rounded-xl overflow-hidden flex-shrink-0">
-              <Image src={listing.images[0]} alt={listing.title} fill className="object-cover" sizes="(max-width: 640px) 80px, 128px" />
+              <Image src={listing.images[0] + "&w=400"} alt={listing.title} priority fill className="object-cover" sizes="100%" />
             </div>
             <div className="flex-1 min-w-0">
               <h2 className="text-xl sm:text-2xl font-bold text-myGrayDark mb-1 break-words">{listing.title}</h2>

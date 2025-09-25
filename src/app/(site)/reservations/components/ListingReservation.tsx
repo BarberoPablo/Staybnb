@@ -20,7 +20,7 @@ export default function ListingReservation({ reservation, eventKey }: { reservat
           <div className="flex flex-col">
             <h2>{reservation.listing.title}</h2>
             <div className="w-80 h-45 relative">
-              <Image src={reservation.listing.images[0]} alt="listing main image" priority fill className="object-cover" sizes="100%" />
+              <Image src={reservation.listing.images[0] + "&w=400"} alt="listing main image" priority fill className="object-cover" sizes="100%" />
             </div>
           </div>
           <div className="flex flex-col pt-5">

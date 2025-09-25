@@ -8,7 +8,6 @@ import { PageHeader } from "../components/PageHeader";
 import { SearchBar } from "../components/SearchBar";
 import { SkeletonFavorites } from "../components/SkeletonFavorites";
 import { FavoriteCard } from "./components/FavoriteCard";
-import { FavoritesSummary } from "./components/FavoritesSummary";
 
 export default function FavoritesSection() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,8 +62,6 @@ export default function FavoritesSection() {
           ))}
         </div>
       )}
-
-      {favorites.length > 0 && <FavoritesSummary favoritesCount={favorites.length} />}
     </div>
   );
 }
