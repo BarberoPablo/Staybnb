@@ -18,7 +18,6 @@ export default function ListingDetails({ listing }: { listing: ListingWithReserv
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Listing Header */}
       <div className="space-y-4">
         <h1 className="text-4xl font-bold text-myGrayDark leading-tight">{listing.title}</h1>
         <ListingSubtitle listingDetails={listing} />
@@ -26,12 +25,10 @@ export default function ListingDetails({ listing }: { listing: ListingWithReserv
 
       <div className="border-t border-gray-200"></div>
 
-      {/* Host Information - Placeholder for future implementation */}
       <HostInformation host={listing.host} />
 
       <div className="border-t border-gray-200" />
 
-      {/* Description */}
       <div className="space-y-4">
         <h3 className="text-2xl font-semibold text-myGrayDark">About this place</h3>
         <p className="text-myGray leading-relaxed text-lg">{listing.description}</p>
@@ -39,8 +36,11 @@ export default function ListingDetails({ listing }: { listing: ListingWithReserv
 
       <div className="border-t border-gray-200" />
 
-      {/* Amenities Section */}
       <AmenitiesSection amenities={listing.amenities} />
+
+      <div className="border-t border-gray-200" />
+
+      <ReviewsSection reviews={listing.score.reviews} />
 
       <div className="border-t border-gray-200" />
     </motion.div>
@@ -161,6 +161,63 @@ function AmenitiesSection({ amenities }: { amenities: number[] }) {
                   <span className="text-myGrayDark font-medium text-sm">{amenity.name}</span>
                 </motion.div>
               ))}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ReviewsSection({ reviews }: { reviews: { score: number; message: string; userId: string }[] }) {
+  const topReviews = reviews.sort((a, b) => b.score - a.score).slice(0, 3);
+
+  if (topReviews.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="text-2xl font-semibold text-myGrayDark">What guests are saying</h3>
+        <span className="text-sm text-myGray bg-myGrayLight px-3 py-1 rounded-full">
+          {reviews.length} review{reviews.length !== 1 ? "s" : ""}
+        </span>
+      </div>
+
+      <div className="space-y-4">
+        {topReviews.map((review, index) => (
+          <motion.div
+            key={`${review.userId}-${index}`}
+            className="bg-gradient-to-r from-myGreenExtraLight/20 to-myGreenLight/10 border border-myGreenLight/30 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-200"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.1 }}
+            whileHover={{ scale: 1.01 }}
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-myGreenLight to-myGreenBold rounded-full flex items-center justify-center">
+                <CiUser className="w-6 h-6 text-white" />
+              </div>
+
+              <div className="flex-1 space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <IoStar key={i} className={`w-4 h-4 ${i < review.score ? "text-yellow-500 fill-current" : "text-gray-300"}`} />
+                    ))}
+                  </div>
+                  <span className="text-sm font-semibold text-myGrayDark">{review.score}.0</span>
+                </div>
+
+                <p className="text-myGray leading-relaxed text-base">{review.message}</p>
+
+                <div className="flex items-center gap-2 text-sm text-myGray">
+                  <span className="font-medium">Guest</span>
+                  <span>•</span>
+                  <span>Verified stay</span>
+                </div>
+              </div>
             </div>
           </motion.div>
         ))}
