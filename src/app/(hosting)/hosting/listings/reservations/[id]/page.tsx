@@ -1,6 +1,6 @@
 "use client";
 
-import { CancelReservationDialog } from "@/app/(site)/reservations/components/CancelReservationDialog";
+import { CancelReservationDialog } from "@/components/Reservations/CancelReservationDialog";
 import { SkeletonReservationsPage } from "@/components/Skeleton/SkeletonReservationsPage";
 import { api } from "@/lib/api/api";
 import { Reservation } from "@/lib/types/reservation";

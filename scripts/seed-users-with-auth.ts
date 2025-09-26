@@ -1,6 +1,7 @@
-import { createClient } from "@supabase/supabase-js";
 import { faker } from "@faker-js/faker";
 import { PrismaClient } from "@prisma/client";
+import { createClient } from "@supabase/supabase-js";
+import { US_CITIES } from "./utils";
 
 const prisma = new PrismaClient();
 
@@ -51,16 +52,6 @@ const WOMEN_PROFILE_IMAGES = [
   "https://mockmind-api.uifaces.co/content/human/166.jpg",
   "https://mockmind-api.uifaces.co/content/human/165.jpg",
   "https://mockmind-api.uifaces.co/content/human/164.jpg",
-];
-
-// Popular US cities with realistic coordinates
-const US_CITIES = [
-  { name: "New York", state: "New York", lat: 40.7128, lng: -74.006, timezone: "America/New_York" },
-  { name: "Los Angeles", state: "California", lat: 34.0522, lng: -118.2437, timezone: "America/Los_Angeles" },
-  { name: "Chicago", state: "Illinois", lat: 41.8781, lng: -87.6298, timezone: "America/Chicago" },
-  { name: "Houston", state: "Texas", lat: 29.7604, lng: -95.3698, timezone: "America/Chicago" },
-  { name: "Miami", state: "Florida", lat: 25.7617, lng: -80.1918, timezone: "America/New_York" },
-  { name: "San Francisco", state: "California", lat: 37.7749, lng: -122.4194, timezone: "America/Los_Angeles" },
 ];
 
 // Realistic bio templates
