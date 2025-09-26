@@ -142,7 +142,7 @@ export default function ProfileInfo() {
       </div>
 
       {/* Profile Header */}
-      <div className="flex items-center gap-6 p-6 bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20">
+      <div className="flex items-center gap-6 py-6 sm:p-6 bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20">
         <div className="relative w-24 h-24 bg-myGreenLight rounded-full flex items-center justify-center">
           {userProfile.avatarUrl ? (
             <Image
@@ -158,13 +158,13 @@ export default function ProfileInfo() {
           )}
           {isEditing && (
             <div className="absolute top-0 left-0 transform z-2">
-              <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-myGreen rounded-full cursor-pointer hover:border-myGreenSemiBold transition-colors group">
+              <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-myGreen rounded-full cursor-pointer hover:border-myGrayDark transition-colors group">
                 {profileImage && profileImage.url ? (
                   <Image src={profileImage.url} alt="Profile" width={96} height={96} className={`rounded-full object-cover`} />
                 ) : (
                   <>
-                    <FiCamera className="w-20 h-20 text-myGreenSemiBold group-hover:text-myGreenBold" />
-                    <p className="text-xs text-myGreenBold">Upload</p>
+                    <FiCamera className="w-12 h-12 text-myGray group-hover:text-myGrayDark" />
+                    <p className="text-xs text-myGrayDark">Upload</p>
                   </>
                 )}
                 <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
@@ -239,7 +239,7 @@ export default function ProfileInfo() {
               <IoMail className="w-5 h-5 text-myGray" />
               <div>
                 <p className="text-sm text-myGray">Email</p>
-                <p className="text-myGrayDark font-medium">{userProfile.id || "..."}</p>
+                <p className="text-myGrayDark font-medium">{userProfile.createdAt.toLocaleDateString() || "..."}</p>
               </div>
             </div>
 
