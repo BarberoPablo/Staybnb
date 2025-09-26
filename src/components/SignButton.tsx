@@ -41,11 +41,11 @@ export function SignButton() {
   if (!user) {
     return (
       <button
-        className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-myGreenSemiBold to-myGreenBold hover:from-myGreenBold hover:to-myGreenSemiBold transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer`}
+        className={`flex items-center sm:gap-2 px-4 py-2 h-10 text-sm font-semibold rounded-full sm:rounded-lg text-myGrayDark bg-gradient-to-r from-myGreenLight to-myGreen hover:from-myGreen hover:to-myGreenLight transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer`}
         onClick={handleLogin}
       >
         <MdOutlineLogin className="w-4 h-4" />
-        Login
+        <span className="hidden sm:block">Sign in</span>
       </button>
     );
   }
