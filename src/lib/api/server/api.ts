@@ -9,9 +9,9 @@ import { AmenityDB } from "@/lib/types/amenities";
 import { DraftListingDB } from "@/lib/types/draftListing";
 import { EditListing, ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
-import { parseReservationsFromDB } from "../../parsers/reservation";
+import { parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../../parsers/reservation";
 import { createClient } from "../../supabase/server";
-import { ReservationDB } from "../../types/reservation";
+import { ReservationDB, ResumedReservationWithListingDB } from "../../types/reservation";
 import { NotFoundError } from "./errors";
 import { ParsedFilters, buildSearchListingsWhereClause } from "./utils";
 
@@ -522,5 +522,59 @@ export async function getHostReservationsGroupedByListing() {
   } catch (error) {
     console.error("Error fetching host reservations", error);
     throw new NotFoundError("Failed to fetch host reservations");
+  }
+}
+
+export async function getUserReservations() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const reservations = await prisma.reservations.findMany({
+      where: {
+        user_id: user.id,
+      },
+      include: {
+        listings: {
+          select: {
+            id: true,
+            title: true,
+            location: true,
+            night_price: true,
+            images: true,
+            property_type: true,
+            privacy_type: true,
+            check_in_time: true,
+            check_out_time: true,
+            score: true,
+          },
+        },
+      },
+      orderBy: {
+        start_date: "asc",
+      },
+    });
+    const validatedReservations = reservations.map((reservation) => {
+      const { listings, ...reservationWithoutListings } = reservation;
+      return {
+        ...reservationWithoutListings,
+        listing: listings, // Map listings to listing
+        status: getEffectiveStatus(reservation.status, reservation.start_date.toISOString(), reservation.end_date.toISOString()),
+      };
+    });
+
+    return parseResumedReservationWithListingFromDB(validatedReservations as unknown as ResumedReservationWithListingDB[]);
+  } catch (error) {
+    console.error("Error fetching user reservations", error);
+    throw new NotFoundError("Failed to fetch user reservations");
   }
 }
