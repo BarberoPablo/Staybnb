@@ -7,7 +7,7 @@ import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { getEffectiveStatus } from "@/lib/server-utils";
 import { AmenityDB } from "@/lib/types/amenities";
 import { DraftListingDB } from "@/lib/types/draftListing";
-import { EditListing, ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
+import { EditListing, ListingDB, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../../parsers/reservation";
 import { createClient } from "../../supabase/server";
@@ -563,11 +563,22 @@ export async function getUserReservations() {
         start_date: "asc",
       },
     });
+
     const validatedReservations = reservations.map((reservation) => {
       const { listings, ...reservationWithoutListings } = reservation;
+
+      const scoreData = listings.score as ScoreDB;
+      const userReview = scoreData?.reviews?.find((review: ReviewDB) => review.user_id === user.id) || null;
+
       return {
         ...reservationWithoutListings,
-        listing: listings, // Map listings to listing
+        listing: {
+          ...listings,
+          score: {
+            value: scoreData?.value || 0,
+            user_review: userReview,
+          },
+        },
         status: getEffectiveStatus(reservation.status, reservation.start_date.toISOString(), reservation.end_date.toISOString()),
       };
     });
@@ -576,5 +587,77 @@ export async function getUserReservations() {
   } catch (error) {
     console.error("Error fetching user reservations", error);
     throw new NotFoundError("Failed to fetch user reservations");
+  }
+}
+
+export async function addReviewToListing(listingId: number, score: number, message: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const listing = await prisma.listings.findUnique({
+      where: {
+        id: listingId,
+      },
+      select: {
+        score: true,
+      },
+    });
+
+    if (!listing) {
+      throw new NotFoundError("Listing not found");
+    }
+
+    const currentScoreData = (listing.score as ScoreDB) || { value: 0, reviews: [] };
+
+    const existingReviewIndex = currentScoreData.reviews.findIndex((review) => review.user_id === user.id);
+
+    const newReview: ReviewDB = {
+      score,
+      message,
+      user_id: user.id,
+    };
+
+    let updatedReviews: ReviewDB[];
+    if (existingReviewIndex >= 0) {
+      updatedReviews = [...currentScoreData.reviews];
+      updatedReviews[existingReviewIndex] = newReview;
+    } else {
+      updatedReviews = [...currentScoreData.reviews, newReview];
+    }
+
+    const totalScore = updatedReviews.reduce((sum, review) => sum + review.score, 0);
+    const newAverageScore = updatedReviews.length > 0 ? totalScore / updatedReviews.length : 0;
+
+    const updatedScoreData: ScoreDB = {
+      value: Math.round(newAverageScore * 10) / 10,
+      reviews: updatedReviews,
+    };
+
+    await prisma.listings.update({
+      where: {
+        id: listingId,
+      },
+      data: {
+        score: updatedScoreData,
+      },
+    });
+
+    return {
+      success: true,
+      message: "Review added successfully",
+    };
+  } catch (error) {
+    console.error("Error adding review", error);
+    throw new NotFoundError("Failed to add review");
   }
 }
