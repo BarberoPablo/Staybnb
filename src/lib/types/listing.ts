@@ -62,12 +62,28 @@ export type ListingWithReservationsAndHost = ListingWithReservations & {
 export type ResumedListingDB = Pick<
   ListingDB,
   "id" | "title" | "images" | "location" | "night_price" | "property_type" | "privacy_type" | "check_in_time" | "check_out_time"
->;
+> &
+  UserReservationScoreDB;
+
+export type UserReservationScoreDB = {
+  score: {
+    value: number;
+    user_review: ReviewDB | null;
+  };
+};
 
 export type ResumedListing = Pick<
   Listing,
   "id" | "title" | "images" | "location" | "nightPrice" | "propertyType" | "privacyType" | "checkInTime" | "checkOutTime"
->;
+> &
+  UserReservationScore;
+
+export type UserReservationScore = {
+  score: {
+    value: number;
+    userReview: Review | null;
+  };
+};
 
 export type PromotionDB = {
   min_nights: number;
@@ -91,20 +107,24 @@ export type Structure = Record<"guests" | "bedrooms" | "beds" | "bathrooms", num
 
 export type Score = {
   value: number;
-  reviews: {
-    score: number;
-    message: string;
-    userId: string;
-  }[];
+  reviews: Review[];
+};
+
+export type Review = {
+  score: number;
+  message: string;
+  userId: string;
 };
 
 export type ScoreDB = {
   value: number;
-  reviews: {
-    score: number;
-    message: string;
-    user_id: string;
-  }[];
+  reviews: ReviewDB[];
+};
+
+export type ReviewDB = {
+  score: number;
+  message: string;
+  user_id: string;
 };
 
 export type CreateListingDB = {

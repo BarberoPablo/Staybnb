@@ -6,10 +6,11 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
-import { IoCalendar, IoFilter, IoLocation, IoPerson, IoTime } from "react-icons/io5";
+import { IoCalendar, IoFilter, IoLocation, IoPerson, IoStar, IoTime } from "react-icons/io5";
 import { CancelReservationDialog } from "../../../../../components/Reservations/CancelReservationDialog";
 import { PageHeader } from "../../components/PageHeader";
 import { SearchBar } from "../../components/SearchBar";
+import { AddReviewDialog } from "./AddReviewDialog";
 
 type ReservationStatus = "all" | "upcoming" | "completed" | "canceled" | "canceledByHost";
 
@@ -32,15 +33,48 @@ export default function ReservationsClient({ initialReservations }: { initialRes
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<ReservationStatus>("all");
   const [openCancelResevationDialog, setOpenCancelResevationDialog] = useState(false);
+  const [openAddReviewDialog, setOpenAddReviewDialog] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState<ResumedReservationWithListing | null>(null);
+  const [reservations, setReservations] = useState<ResumedReservationWithListing[]>(initialReservations);
   const router = useRouter();
 
-  const filteredReservations = initialReservations.filter((reservation) => {
+  const filteredReservations = reservations.filter((reservation) => {
     const matchesSearch =
       reservation.listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       `${reservation.listing.location.country} ${reservation.listing.location.city}`.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || reservation.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+
+  const handleReviewAction = (reservation: ResumedReservationWithListing) => {
+    setSelectedReservation(reservation);
+    setOpenAddReviewDialog(true);
+  };
+
+  const handleReviewAdded = (listingId: number, newScore: number, newMessage: string) => {
+    setReservations((prevReservations) =>
+      prevReservations.map((reservation) => {
+        if (reservation.listing.id === listingId) {
+          return {
+            ...reservation,
+            listing: {
+              ...reservation.listing,
+              score: {
+                ...reservation.listing.score,
+                userReview: {
+                  score: newScore,
+                  message: newMessage,
+                  userId: reservation.listing.score?.userReview?.userId || "",
+                },
+                value: reservation.listing.score?.value || 0,
+              },
+            },
+          };
+        }
+        return reservation;
+      })
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -152,12 +186,33 @@ export default function ReservationsClient({ initialReservations }: { initialRes
                     >
                       Visit Listing
                     </button>
+
                     {reservation.status === "upcoming" && (
                       <button
                         className="px-4 py-2 border border-red-300 text-red-600 bg-red-100 rounded-lg hover:bg-red-50 hover:cursor-pointer transition-colors text-sm"
                         onClick={() => setOpenCancelResevationDialog(true)}
                       >
                         Cancel
+                      </button>
+                    )}
+
+                    {reservation.status === "completed" && !reservation.listing.score?.userReview && (
+                      <button
+                        className="flex items-center gap-2 px-4 py-2 bg-myGreenLight text-myGrayDark rounded-lg hover:bg-myGreen hover:cursor-pointer transition-colors text-sm border border-myGreenSemiBold"
+                        onClick={() => handleReviewAction(reservation)}
+                      >
+                        <IoStar className="w-4 h-4" />
+                        Add Review
+                      </button>
+                    )}
+
+                    {reservation.status === "completed" && reservation.listing.score?.userReview && (
+                      <button
+                        className="flex items-center gap-2 px-4 py-2 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg hover:bg-yellow-100 hover:cursor-pointer transition-colors text-sm"
+                        onClick={() => handleReviewAction(reservation)}
+                      >
+                        <IoStar className="w-4 h-4 text-yellow-500" />
+                        <span>Edit Review ({reservation.listing.score.userReview.score}/5)</span>
                       </button>
                     )}
                   </div>
@@ -168,6 +223,17 @@ export default function ReservationsClient({ initialReservations }: { initialRes
           ))
         )}
       </div>
+
+      {selectedReservation && (
+        <AddReviewDialog
+          isOpen={openAddReviewDialog}
+          setIsOpen={setOpenAddReviewDialog}
+          listingId={selectedReservation.listing.id}
+          listingTitle={selectedReservation.listing.title}
+          existingReview={selectedReservation.listing.score?.userReview}
+          onReviewAdded={handleReviewAdded}
+        />
+      )}
     </div>
   );
 }

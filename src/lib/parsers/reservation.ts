@@ -52,6 +52,16 @@ export function parseResumedReservationWithListingFromDB(reservations: ResumedRe
         nightPrice: Number(reservation.listing.night_price),
         checkInTime: reservation.listing.check_in_time,
         checkOutTime: reservation.listing.check_out_time,
+        score: {
+          value: reservation.listing.score.value,
+          userReview: reservation.listing.score.user_review
+            ? {
+                score: reservation.listing.score.user_review?.score || 0,
+                message: reservation.listing.score.user_review?.message || "",
+                userId: reservation.listing.score.user_review?.user_id || "",
+              }
+            : null,
+        },
       },
     };
   });
