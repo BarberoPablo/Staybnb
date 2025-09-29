@@ -1,9 +1,9 @@
 "use client";
 
+import ImageWithFallback from "@/components/ImageWithFallback";
 import { pauseListing } from "@/lib/api/server/api";
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -123,12 +123,13 @@ export function HostListingCard({ listing }: { listing: Listing }) {
     >
       {/* Image Container */}
       <div className="relative h-48 overflow-hidden">
-        <Image
+        <ImageWithFallback
           src={listing.images[0] + "&w=400"}
           alt={listing.title}
+          priority
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+          sizes="100%"
         />
 
         {/* Status Badge */}
