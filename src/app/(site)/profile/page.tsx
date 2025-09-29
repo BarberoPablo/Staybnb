@@ -4,7 +4,7 @@ import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUp
 import { api } from "@/lib/api/api";
 import type { Profile, UpdateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";
-import { verifyUpdateProfileData } from "@/lib/utils";
+import { verifyUpdateProfileData, checkImageUrl } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -29,11 +29,19 @@ export default function ProfileInfo() {
 
       if (profile) {
         setLoadingProfile(false);
-        setUserProfile(profile);
+
+        // Check if avatar URL is valid before setting it
+        let validAvatarUrl = "";
+        if (profile.avatarUrl) {
+          const isValid = await checkImageUrl(profile.avatarUrl);
+          validAvatarUrl = isValid ? profile.avatarUrl : "";
+        }
+
+        setUserProfile({ ...profile, avatarUrl: validAvatarUrl });
         setUpdateProfile({
           firstName: profile.firstName,
           lastName: profile.lastName,
-          avatarUrl: profile.avatarUrl ?? "",
+          avatarUrl: validAvatarUrl,
           bio: profile.bio ?? "",
         });
       }
