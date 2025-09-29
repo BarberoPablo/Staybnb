@@ -89,9 +89,7 @@ function ListingSubtitle({ listingDetails }: { listingDetails: Listing }) {
           <IoStar className="w-4 h-4 text-myGreenBold fill-current" />
           <span className="text-sm font-semibold text-myGrayDark">{listingDetails.score.value.toFixed(1)}</span>
         </div>
-        <span className="text-myGray font-medium underline cursor-pointer hover:text-myGrayDark transition-colors">
-          {listingDetails.score.reviews.length} reviews
-        </span>
+        <span className="text-myGray font-medium underline">{listingDetails.score.reviews.length} reviews</span>
       </div>
     </div>
   );

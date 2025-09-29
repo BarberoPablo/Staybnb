@@ -1,7 +1,7 @@
+import ImageWithFallback from "@/components/ImageWithFallback";
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import Image from "next/image";
 import { CiImageOn } from "react-icons/ci";
 import { FaTrashAlt } from "react-icons/fa";
 import { IoAddSharp } from "react-icons/io5";
@@ -50,7 +50,7 @@ export function SortableImageGrid({
 
           {images.map((img, index) => (
             <div key={img} className={`relative group ${index === 0 ? "h-[300px] col-span-2" : "h-[200px] col-span-1"}`}>
-              <SortableImage url={img} />
+              <SortableImage url={img} resolution={index === 0 ? "1080" : "480"} />
               <button
                 type="button"
                 onClick={(e) => {
@@ -81,7 +81,7 @@ export function SortableImageGrid({
   );
 }
 
-function SortableImage({ url }: { url: string }) {
+function SortableImage({ url, resolution }: { url: string; resolution: "480" | "720" | "1080" }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: url });
 
   const style = {
@@ -97,7 +97,7 @@ function SortableImage({ url }: { url: string }) {
       style={style}
       className="relative w-full h-full rounded-xl bg-myGreenExtraLight/30 hover:cursor-grab active:cursor-grabbing overflow-hidden hover:shadow-lg transition-shadow duration-200"
     >
-      <Image src={url} alt="Listing image" fill className="object-cover" />
+      <ImageWithFallback src={url + `&w=${resolution}`} alt={`listing secondary image`} priority fill className="object-cover" sizes="100%" />
     </div>
   );
 }

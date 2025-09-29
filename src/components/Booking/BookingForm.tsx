@@ -112,7 +112,19 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
   };
 
   const handleGuest = (type: Guests, amount: number) => {
-    setGuests((prevState) => ({ ...prevState, [type]: prevState[type] + amount }));
+    const newGuests = { ...guests, [type]: guests[type] + amount };
+    const totalGuests = newGuests.adults + newGuests.children + newGuests.infant;
+
+    // Check if total exceeds structure.guests
+    if (totalGuests > listing.structure.guests) {
+      setErrors({
+        ...errors,
+        [type]: `Maximum ${listing.structure.guests} guests allowed. Current total: ${totalGuests}`,
+      });
+      return;
+    }
+
+    setGuests(newGuests);
     setErrors({});
   };
 
@@ -145,7 +157,10 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
         <div className="flex items-center gap-2 text-lg font-semibold text-myGrayDark">
           <IoPeople className="w-5 h-5 text-myGreenSemiBold" />
           Guests
+          <span className="text-sm font-normal text-myGray">(max {listing.structure.guests})</span>
         </div>
+
+        <p className="text-xs text-myGray">Note: Pets do not count toward the guest limit</p>
 
         <div className="space-y-3">
           {listingGuests.map((type) => (
@@ -169,7 +184,11 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
 
                 <button
                   type="button"
-                  disabled={guests[type] >= listing.guestLimits[type].max}
+                  disabled={
+                    guests[type] >= listing.guestLimits[type].max ||
+                    guests.adults + guests.children + guests.infant + (type === "adults" ? 1 : type === "children" ? 1 : type === "infant" ? 1 : 0) >
+                      listing.structure.guests
+                  }
                   className="w-8 h-8 bg-myGreenExtraLight hover:bg-myGreen hover:cursor-pointer text-myGrayDark hover:text-white rounded-full flex items-center justify-center font-bold text-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => handleGuest(type, 1)}
                 >
