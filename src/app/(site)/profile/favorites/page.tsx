@@ -1,6 +1,6 @@
 "use client";
 
-import { useFavorites } from "@/hooks/useFavorites";
+import { useFavoritesOptimistic } from "@/hooks/useFavoritesOptimistic";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { EmptyState } from "../components/EmptyState";
@@ -11,7 +11,7 @@ import { FavoriteCard } from "./components/FavoriteCard";
 
 export default function FavoritesSection() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { favorites, loading, error, removeFromFavorites } = useFavorites();
+  const { favorites, loading, error, toggleFavorite } = useFavoritesOptimistic();
   const router = useRouter();
 
   const filteredFavorites = favorites.filter(
@@ -22,7 +22,7 @@ export default function FavoritesSection() {
   );
 
   const handleRemoveFavorite = async (listingId: number) => {
-    await removeFromFavorites(listingId);
+    await toggleFavorite(listingId);
   };
 
   const handleViewListing = (listingId: number) => {
