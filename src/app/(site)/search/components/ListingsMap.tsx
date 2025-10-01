@@ -19,11 +19,15 @@ export default function ListingsMap({
   locateListing,
   cityCenter,
   setListings,
+  searchTriggered,
+  onSearchComplete,
 }: {
   listings: Listing[];
   locateListing: number;
   cityCenter: { lat: number; lng: number } | null;
   setListings: (listings: Listing[]) => void;
+  searchTriggered: boolean;
+  onSearchComplete: () => void;
 }) {
   const searchParams = useSearchParams();
   const city = searchParams.get("city") || undefined;
@@ -37,19 +41,23 @@ export default function ListingsMap({
   const [listingPopup, setListingPopup] = useState<Listing | null>(null);
   const [mapEnabled, setMapEnabled] = useState(true);
   const [shouldFlyTo, setShouldFlyTo] = useState(false);
-  const prevCityRef = useRef<string | undefined>(city);
 
   useEffect(() => {
-    if (prevCityRef.current !== city) {
-      prevCityRef.current = city;
+    if (searchTriggered && cityCenter) {
       setShouldFlyTo(true);
+      onSearchComplete();
     }
-  }, [city]);
+  }, [searchTriggered, cityCenter, onSearchComplete]);
 
+  // Update center when cityCenter changes (new city selected)
   useEffect(() => {
     if (cityCenter) {
       setCenter([cityCenter.lat, cityCenter.lng]);
-    } else if (listings.length > 0) {
+    }
+  }, [cityCenter]);
+
+  useEffect(() => {
+    if (!cityCenter && listings.length > 0) {
       const bounds = calculateBoundsFromListings(listings);
       if (bounds) {
         setCenter(bounds.center);
@@ -141,7 +149,7 @@ function ChangeView({ center, shouldFlyTo, onFlyComplete }: { center: [number, n
   const prevCenterRef = useRef<[number, number] | null>(null);
 
   useEffect(() => {
-    if (shouldFlyTo && prevCenterRef.current && (prevCenterRef.current[0] !== center[0] || prevCenterRef.current[1] !== center[1])) {
+    if (shouldFlyTo) {
       map.flyTo(center, 11, {
         duration: 3,
         easeLinearity: 0.25,
