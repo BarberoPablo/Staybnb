@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { getEffectiveStatus } from "@/lib/server-utils";
 import { AmenityDB } from "@/lib/types/amenities";
+import { City } from "@/lib/types/cities";
 import { DraftListingDB } from "@/lib/types/draftListing";
 import { EditListing, ListingDB, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
 import { ProfileDB } from "@/lib/types/profile";
@@ -133,15 +134,7 @@ export async function searchListings(
   }
 }
 
-export async function searchCities(searchTerm: string): Promise<
-  Array<{
-    name: string;
-    state: string | null;
-    country: string | null;
-    lat: number;
-    lng: number;
-  }>
-> {
+export async function searchCities(searchTerm: string): Promise<City[]> {
   try {
     const cities = await prisma.cities.findMany({
       where: {
@@ -153,10 +146,11 @@ export async function searchCities(searchTerm: string): Promise<
       orderBy: {
         name: "asc",
       },
-      take: 10, // Limit to 10 suggestions
+      take: 10,
     });
 
     return cities.map((city) => ({
+      id: city.id,
       name: city.name,
       state: city.state,
       country: city.country,
@@ -165,6 +159,29 @@ export async function searchCities(searchTerm: string): Promise<
     }));
   } catch (error) {
     console.error("Error searching cities:", error);
+    return [];
+  }
+}
+
+export async function getAllCities(): Promise<City[]> {
+  try {
+    const cities = await prisma.cities.findMany({
+      orderBy: {
+        name: "asc",
+      },
+      take: 50,
+    });
+
+    return cities.map((city) => ({
+      id: city.id,
+      name: city.name,
+      state: city.state,
+      country: city.country,
+      lat: Number(city.lat),
+      lng: Number(city.lng),
+    }));
+  } catch (error) {
+    console.error("Error fetching all cities:", error);
     return [];
   }
 }
