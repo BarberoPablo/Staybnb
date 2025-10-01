@@ -2,16 +2,17 @@
 
 import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
 import { api } from "@/lib/api/api";
+import { getProfile } from "@/lib/api/server/api";
 import type { Profile, UpdateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";
-import { verifyUpdateProfileData, checkImageUrl } from "@/lib/utils";
+import { checkImageUrl, verifyUpdateProfileData } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FiCamera } from "react-icons/fi";
-import { IoCheckmark, IoClose, IoLocation, IoMail, IoPerson } from "react-icons/io5";
+import { IoCheckmark, IoClose, IoMail, IoPerson } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import { SkeletonProfile } from "./components/SkeletonProfile";
 
@@ -25,11 +26,9 @@ export default function ProfileInfo() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const profile = await api.getProfile();
+      const profile = await getProfile();
 
       if (profile) {
-        setLoadingProfile(false);
-
         // Check if avatar URL is valid before setting it
         let validAvatarUrl = "";
         if (profile.avatarUrl) {
@@ -45,6 +44,8 @@ export default function ProfileInfo() {
           bio: profile.bio ?? "",
         });
       }
+
+      setLoadingProfile(false);
     };
 
     fetchUser();
@@ -204,7 +205,7 @@ export default function ProfileInfo() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                 />
               ) : (
-                <p className="px-3 py-2 bg-gray-50 rounded-lg text-myGrayDark">{userProfile.firstName || "Not provided"}</p>
+                <p className="px-3 py-2 bg-gray-100 rounded-lg text-myGrayDark">{userProfile.firstName || "Not provided"}</p>
               )}
             </div>
 
@@ -218,7 +219,7 @@ export default function ProfileInfo() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                 />
               ) : (
-                <p className="px-3 py-2 bg-gray-50 rounded-lg text-myGrayDark">{userProfile.lastName || "Not provided"}</p>
+                <p className="px-3 py-2 bg-gray-100 rounded-lg text-myGrayDark">{userProfile.lastName || "Not provided"}</p>
               )}
             </div>
 
@@ -233,7 +234,7 @@ export default function ProfileInfo() {
                   placeholder="Tell us about yourself..."
                 />
               ) : (
-                <p className="px-3 py-2 bg-gray-50 rounded-lg text-myGrayDark">{userProfile.bio || "No bio provided"}</p>
+                <p className="px-3 py-2 bg-gray-100 rounded-lg text-myGrayDark">{userProfile.bio || "No bio provided"}</p>
               )}
             </div>
           </div>
@@ -243,27 +244,19 @@ export default function ProfileInfo() {
           <h3 className="text-xl font-semibold text-myGrayDark mb-4">Account Details</h3>
 
           <div className="space-y-4">
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-100">
               <IoMail className="w-5 h-5 text-myGray" />
               <div>
-                <p className="text-sm text-myGray">Email</p>
-                <p className="text-myGrayDark font-medium">{userProfile.createdAt.toLocaleDateString() || "..."}</p>
+                <p className="text-sm font-medium text-myGray">Email</p>
+                <p className="text-myGrayDark">{userProfile.email}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-100">
               <IoPerson className="w-5 h-5 text-myGray" />
               <div>
-                <p className="text-sm text-myGray">Role</p>
-                <p className="text-myGrayDark font-medium capitalize">{userProfile.role || "..."}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <IoLocation className="w-5 h-5 text-myGray" />
-              <div>
-                <p className="text-sm text-myGray">Location</p>
-                <p className="text-myGrayDark font-medium">Not specified</p>
+                <p className="text-sm font-medium text-myGray">Role</p>
+                <p className="text-myGrayDark capitalize">{userProfile.role || "..."}</p>
               </div>
             </div>
           </div>
