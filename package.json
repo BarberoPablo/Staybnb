@@ -17,7 +17,8 @@
     "add:promotions": "tsx scripts/add-promotions.ts",
     "seed:reservations": "tsx scripts/seed-reservations.ts",
     "populate:listing:scores": "tsx scripts/populate-listing-scores.ts",
-    "fix:guest:capacity": "tsx scripts/fix-guest-capacity.ts"
+    "fix:guest:capacity": "tsx scripts/fix-guest-capacity.ts",
+    "populate:cities": "tsx scripts/populate-cities.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",
@@ -46,6 +47,7 @@
     "react-hot-toast": "2.5.2",
     "react-icons": "5.5.0",
     "react-leaflet": "^4.2.1",
+    "react-leaflet-cluster": "^3.1.1",
     "rsuite": "5.83.1",
     "tailwindcss": "4.1.10",
     "uploadthing": "7.7.3",
@@ -59,6 +61,7 @@
     "@types/geojson": "^7946.0.16",
     "@types/jsdom": "^21.1.7",
     "@types/leaflet": "1.9.19",
+    "@types/leaflet.markercluster": "^1.5.6",
     "@types/node": "20.0.0",
     "@types/react": "18.2.12",
     "@types/react-date-range": "1.4.10",

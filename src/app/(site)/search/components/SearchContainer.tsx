@@ -10,7 +10,15 @@ import { ListingCards } from "./ListingCards";
 
 const ListingsMapNoSSR = dynamic(() => import("./ListingsMap"), { ssr: false });
 
-export default function SearchContainer({ listings, city }: { listings: Listing[]; city: string | undefined }) {
+export default function SearchContainer({
+  listings,
+  city,
+  cityCenter,
+}: {
+  listings: Listing[];
+  city: string | undefined;
+  cityCenter: { lat: number; lng: number } | null;
+}) {
   const [locateListing, setLocateListing] = useState(-1);
   const [filteredListings, setFilteredListings] = useState<Listing[]>(listings);
   const layoutKey = getLayoutCategory(filteredListings.length);
@@ -45,7 +53,7 @@ export default function SearchContainer({ listings, city }: { listings: Listing[
 
             {/* Map Section */}
             <div className="lg:col-span-4 xl:col-span-5 flex flex-col sticky top-10 h-[calc(100vh-177px)] flex-1 bg-white rounded-xl overflow-hidden shadow-lg">
-              <ListingsMapNoSSR listings={filteredListings} locateListing={locateListing} setListings={setFilteredListings} />
+              <ListingsMapNoSSR listings={filteredListings} locateListing={locateListing} setListings={setFilteredListings} cityCenter={cityCenter} />
             </div>
           </div>
         </motion.div>
@@ -59,11 +67,3 @@ function getLayoutCategory(count: number) {
   if (count === 2) return "double-col";
   return "triple-col";
 }
-
-/*  ListingCards key={layoutKey} ↓
-To ensure the listing layout re-renders only when necessary, we assign a specific key to <ListingCards> based on the number of columns it should display.
-This avoids layout glitches (e.g., with Keen slider) that occur when the column count changes but React doesn't remount the component.
-
-We don't use `key={filteredListings.length}` because that would trigger a full remount every time the number of listings changes, even if the column layout remains the same.
-Instead, this function maps listing counts to layout categories (single, double, triple column), ensuring remounting happens *only* when the visual layout needs to adapt.
-*/
