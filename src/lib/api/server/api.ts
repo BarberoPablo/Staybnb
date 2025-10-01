@@ -2,12 +2,14 @@
 
 import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
 import { parseCreateListingToDB, parseDraftListingFromDB, parseDraftListingToCreateListingDB } from "@/lib/parsers/draftListings";
+import { parseProfileFromDB } from "@/lib/parsers/profile";
 import { prisma } from "@/lib/prisma";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { getEffectiveStatus } from "@/lib/server-utils";
 import { AmenityDB } from "@/lib/types/amenities";
 import { DraftListingDB } from "@/lib/types/draftListing";
 import { EditListing, ListingDB, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
+import { ProfileDB } from "@/lib/types/profile";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../../parsers/reservation";
 import { createClient } from "../../supabase/server";
@@ -659,5 +661,39 @@ export async function addReviewToListing(listingId: number, score: number, messa
   } catch (error) {
     console.error("Error adding review", error);
     throw new NotFoundError("Failed to add review");
+  }
+}
+
+export async function getProfile() {
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+      error: authErr,
+    } = await supabase.auth.getUser();
+
+    if (authErr || !user) {
+      console.error("Auth error:", authErr, user);
+      throw new NotFoundError();
+    }
+
+    const profile = await prisma.profiles.findUnique({
+      where: {
+        id: user.id,
+      },
+    });
+
+    if (!profile) {
+      return null;
+    }
+
+    return parseProfileFromDB({ ...profile, email: user.email } as unknown as ProfileDB);
+  } catch (error) {
+    // If profile was not found, return null (not an error)
+    if (error instanceof Error && error.message === "Profile not found") {
+      return null;
+    }
+    throw error;
   }
 }

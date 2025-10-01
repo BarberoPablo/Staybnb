@@ -8,6 +8,7 @@ export function parseProfileFromDB(profileDB: ProfileDB): Profile {
     avatarUrl: profileDB.avatar_url,
     role: profileDB.role,
     bio: profileDB.bio,
+    email: profileDB.email,
     createdAt: new Date(profileDB.created_at),
     updatedAt: new Date(profileDB.updated_at),
   };
