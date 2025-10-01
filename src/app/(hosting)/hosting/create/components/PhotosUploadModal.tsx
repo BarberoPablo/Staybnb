@@ -110,6 +110,25 @@ export default function PhotosUploadModal({
       return;
     }
 
+    // Check if URL is a base64 data URL
+    if (imageUrl.startsWith("data:")) {
+      toast.error("Base64 data URLs are not allowed. Please use a direct image URL.");
+      return;
+    }
+
+    // Check if URL is a valid HTTP/HTTPS URL
+    try {
+      const url = new URL(imageUrl);
+      if (!["http:", "https:"].includes(url.protocol)) {
+        toast.error("Please enter a valid HTTP or HTTPS URL");
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking URL", error);
+      toast.error("Please enter a valid URL");
+      return;
+    }
+
     const validUrl = await checkImageUrl(imageUrl);
 
     if (!validUrl) {
