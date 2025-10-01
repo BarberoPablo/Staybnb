@@ -78,22 +78,94 @@ export async function searchListings(
   mapCoordinates?: { zoom: number; northEast: { lat: number; lng: number }; southWest: { lat: number; lng: number } }
 ) {
   if (!city) {
-    return [];
+    return { listings: [], cityCenter: null };
   }
 
   try {
-    const whereClause = buildSearchListingsWhereClause(city, filters, mapCoordinates);
+    let cityCenter = null;
+    let actualCityName = city;
 
-    const listings = await prisma.listings.findMany({
-      where: whereClause,
-    });
+    if (mapCoordinates) {
+      // Map movement search - search for listings within the visible area that match the city search term
+      const whereClause = buildSearchListingsWhereClause(city, filters, mapCoordinates);
 
-    const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+      const listings = await prisma.listings.findMany({
+        where: whereClause,
+      });
 
-    return parsedListings;
+      const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+
+      return { listings: parsedListings, cityCenter };
+    } else {
+      // Initial city search - use database-first approach
+      const matchingCities = await searchCities(city);
+
+      if (matchingCities.length === 0) {
+        return { listings: [], cityCenter: null };
+      } else if (matchingCities.length === 1) {
+        cityCenter = {
+          lat: matchingCities[0].lat,
+          lng: matchingCities[0].lng,
+        };
+        actualCityName = matchingCities[0].name;
+      } else {
+        cityCenter = {
+          lat: matchingCities[0].lat,
+          lng: matchingCities[0].lng,
+        };
+        actualCityName = matchingCities[0].name;
+      }
+
+      // Search listings using the actual city name
+      const whereClause = buildSearchListingsWhereClause(actualCityName, filters);
+
+      const listings = await prisma.listings.findMany({
+        where: whereClause,
+      });
+
+      const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+
+      return { listings: parsedListings, cityCenter };
+    }
   } catch (error) {
     console.error("Error fetching listings", error);
     throw new NotFoundError();
+  }
+}
+
+export async function searchCities(searchTerm: string): Promise<
+  Array<{
+    name: string;
+    state: string | null;
+    country: string | null;
+    lat: number;
+    lng: number;
+  }>
+> {
+  try {
+    const cities = await prisma.cities.findMany({
+      where: {
+        name: {
+          contains: searchTerm,
+          mode: "insensitive",
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+      take: 10, // Limit to 10 suggestions
+    });
+
+    return cities.map((city) => ({
+      name: city.name,
+      state: city.state,
+      country: city.country,
+      lat: Number(city.lat),
+      lng: Number(city.lng),
+    }));
+  } catch (error) {
+    console.error("Error searching cities:", error);
+    return [];
   }
 }
 

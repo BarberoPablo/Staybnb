@@ -6,11 +6,10 @@ type SearchPageParams = Record<string, string | string[] | undefined>;
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<SearchPageParams> }) {
   const params = await searchParams;
-
   const city = typeof params.city === "string" ? params.city : undefined;
   const filters = parseFilters(params);
 
-  const listings = await searchListings(city, filters);
+  const { listings, cityCenter } = await searchListings(city, filters);
 
-  return <SearchContainer listings={listings} city={city} />;
+  return <SearchContainer listings={listings} city={city} cityCenter={cityCenter} />;
 }

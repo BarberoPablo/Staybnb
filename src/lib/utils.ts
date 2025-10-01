@@ -162,6 +162,32 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Location
   }
 }
 
+export async function geocodeCity(cityName: string): Promise<{ lat: number; lng: number } | null> {
+  try {
+    const api_key = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY;
+    const response = await fetch(`https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(cityName)}&apiKey=${api_key}&limit=1`);
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+
+    if (data.features && data.features.length > 0) {
+      const feature = data.features[0];
+      return {
+        lat: feature.properties.lat,
+        lng: feature.properties.lon,
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error("City geocoding error:", error);
+    return null;
+  }
+}
+
 // Converts local date and time strings in a given timezone to a UTC Date object
 export function createUTCDate(date: string, time: string, timezone: string) {
   const dateTimeString = `${date}T${time}:00`;
