@@ -21,7 +21,6 @@ export const endpoint = {
   signUp: `${baseUrl}/api/signUp`,
   // reservations
   getListingReservations: (listingId: number) => `${baseUrl}/api/reservations/${listingId}`,
-  cancelReservation: (id: string) => `${baseUrl}/api/reservations/${id}/cancel`,
 };
 
 export const api = {
@@ -64,9 +63,6 @@ export const api = {
     const { data } = await customFetch.get<ListingReservedDatesDB>(endpoint.getListingReservations(listingId));
     const parsedData = parseListingReservedDatesDB(data);
     return parsedData;
-  },
-  async cancelReservation(id: string) {
-    return await customFetch.patch(endpoint.cancelReservation(id));
   },
   async getHostListingReservations(ListingId: number) {
     const { data } = await customFetch.get<ReservationDB[]>(endpoint.getHostListingReservations(ListingId));

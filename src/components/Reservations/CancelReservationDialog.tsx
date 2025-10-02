@@ -1,4 +1,4 @@
-import { api } from "@/lib/api/api";
+import { cancelReservation } from "@/lib/api/server/api";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -24,7 +24,7 @@ export function CancelReservationDialog({
   const handleCancelReservation = async () => {
     setLoading(true);
     try {
-      const response = await api.cancelReservation(reservationId);
+      const response = await cancelReservation(reservationId);
 
       if (response.success) {
         toast.success("Reservation canceled", { duration: 2000 });
@@ -71,7 +71,7 @@ export function CancelReservationDialog({
             scale: { duration: 0.2 },
           }}
         >
-          <DialogPanel className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full border border-gray-100">
+          <DialogPanel className="relative bg-white rounded-2xl shadow-2xl max-w-[310px] w-full border border-gray-100">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <div className="flex items-center gap-3">

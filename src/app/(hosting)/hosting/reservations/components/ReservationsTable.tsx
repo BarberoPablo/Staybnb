@@ -1,5 +1,6 @@
 "use client";
 
+import { CancelReservationDialog } from "@/components/Reservations/CancelReservationDialog";
 import { Reservation, ReservationStatus } from "@/lib/types/reservation";
 import { showUTCDate } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -85,6 +86,8 @@ export default function ReservationsTable({ reservations }: ReservationsTablePro
     field: SortField | null;
     direction: SortDirection;
   }>({ field: null, direction: null });
+  const [openCancelResevationDialog, setOpenCancelResevationDialog] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState<string>("");
 
   const handleSort = (field: SortField) => {
     setSort((prev) => {
@@ -107,9 +110,9 @@ export default function ReservationsTable({ reservations }: ReservationsTablePro
     });
   }, [sort, reservations]);
 
-  const handleCancelReservation = (reservationId: string) => {
-    // TODO: Implement cancel reservation functionality
-    console.log("Cancel reservation:", reservationId);
+  const handleCancelReservation = async (reservationId: string) => {
+    setSelectedReservation(reservationId);
+    setOpenCancelResevationDialog(true);
   };
 
   return (
@@ -180,6 +183,7 @@ export default function ReservationsTable({ reservations }: ReservationsTablePro
           </AnimatePresence>
         </tbody>
       </table>
+      <CancelReservationDialog reservationId={selectedReservation} isOpen={openCancelResevationDialog} setIsOpen={setOpenCancelResevationDialog} />
     </div>
   );
 }
