@@ -21,14 +21,6 @@ export default function SelectGuests({ guests, setGuests }: SelectGuestsProps) {
   console.log({ guests });
   return (
     <div className="flex flex-col flex-1 w-full">
-      {(guests.adults !== 1 || guests.children !== 0 || guests.infant !== 0 || guests.pets !== 0) && (
-        <div className="sticky top-0 bg-white border-b border-gray-200 mb-4 pb-2 z-10 flex justify-end items-center">
-          <button onClick={handleClearDates} className="text-sm text-red-600 hover:text-red-800 hover:underline hover:cursor-pointer">
-            Reset guests
-          </button>
-        </div>
-      )}
-
       <div className="space-y-3 w-full overflow-y-auto max-h-72">
         {listingGuests.map((type) => (
           <div key={type} className="flex items-center justify-between w-full p-3 bg-white rounded-lg border border-gray-200">
@@ -60,6 +52,13 @@ export default function SelectGuests({ guests, setGuests }: SelectGuestsProps) {
           </div>
         ))}
       </div>
+      {(guests.adults !== 1 || guests.children !== 0 || guests.infant !== 0 || guests.pets !== 0) && (
+        <div className="sticky top-0 bg-white mb-t pt-2 z-10 flex justify-end items-center">
+          <button onClick={handleClearDates} className="text-sm text-red-600 hover:text-red-800 hover:underline hover:cursor-pointer">
+            Reset guests
+          </button>
+        </div>
+      )}
     </div>
   );
 }
