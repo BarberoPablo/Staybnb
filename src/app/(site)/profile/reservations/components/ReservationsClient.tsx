@@ -35,6 +35,7 @@ export default function ReservationsClient({ initialReservations }: { initialRes
   const [openCancelResevationDialog, setOpenCancelResevationDialog] = useState(false);
   const [openAddReviewDialog, setOpenAddReviewDialog] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<ResumedReservationWithListing | null>(null);
+  const [selectedReservationForCancel, setSelectedReservationForCancel] = useState<string | null>(null);
   const [reservations, setReservations] = useState<ResumedReservationWithListing[]>(initialReservations);
   const router = useRouter();
 
@@ -74,6 +75,11 @@ export default function ReservationsClient({ initialReservations }: { initialRes
         return reservation;
       })
     );
+  };
+
+  const handleCancelReservation = (reservationId: string) => {
+    setSelectedReservationForCancel(reservationId);
+    setOpenCancelResevationDialog(true);
   };
 
   return (
@@ -190,7 +196,7 @@ export default function ReservationsClient({ initialReservations }: { initialRes
                     {reservation.status === "upcoming" && (
                       <button
                         className="px-4 py-2 border border-red-300 text-red-600 bg-red-100 rounded-lg hover:bg-red-50 hover:cursor-pointer transition-colors text-sm"
-                        onClick={() => setOpenCancelResevationDialog(true)}
+                        onClick={() => handleCancelReservation(reservation.id)}
                       >
                         Cancel
                       </button>
@@ -218,7 +224,6 @@ export default function ReservationsClient({ initialReservations }: { initialRes
                   </div>
                 </div>
               </div>
-              <CancelReservationDialog reservationId={reservation.id} isOpen={openCancelResevationDialog} setIsOpen={setOpenCancelResevationDialog} />
             </motion.div>
           ))
         )}
@@ -232,6 +237,14 @@ export default function ReservationsClient({ initialReservations }: { initialRes
           listingTitle={selectedReservation.listing.title}
           existingReview={selectedReservation.listing.score?.userReview}
           onReviewAdded={handleReviewAdded}
+        />
+      )}
+
+      {selectedReservationForCancel && (
+        <CancelReservationDialog
+          reservationId={selectedReservationForCancel}
+          isOpen={openCancelResevationDialog}
+          setIsOpen={setOpenCancelResevationDialog}
         />
       )}
     </div>
