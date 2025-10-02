@@ -3,7 +3,7 @@ import { parseCreateProfile, parseProfileFromDB, parseUpdateProfile } from "../p
 import { parseListingReservedDatesDB, parseReservationsFromDB } from "../parsers/reservation";
 import { FavoriteWithListing, FavoriteWithListingDB } from "../types/favorites";
 import { CreateProfile, Profile, ProfileDB, UpdateProfile } from "../types/profile";
-import { CreateReservation, ListingReservedDatesDB, ReservationDB } from "../types/reservation";
+import { ListingReservedDatesDB, ReservationDB } from "../types/reservation";
 import customFetch from "./fetch";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
@@ -21,7 +21,6 @@ export const endpoint = {
   signUp: `${baseUrl}/api/signUp`,
   // reservations
   getListingReservations: (listingId: number) => `${baseUrl}/api/reservations/${listingId}`,
-  createReservation: `${baseUrl}/api/reservations`,
   cancelReservation: (id: string) => `${baseUrl}/api/reservations/${id}/cancel`,
 };
 
@@ -65,9 +64,6 @@ export const api = {
     const { data } = await customFetch.get<ListingReservedDatesDB>(endpoint.getListingReservations(listingId));
     const parsedData = parseListingReservedDatesDB(data);
     return parsedData;
-  },
-  async createReservation(data: CreateReservation) {
-    return await customFetch.post(endpoint.createReservation, { ...data });
   },
   async cancelReservation(id: string) {
     return await customFetch.patch(endpoint.cancelReservation(id));

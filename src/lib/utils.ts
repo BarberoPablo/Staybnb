@@ -2,7 +2,7 @@ import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import DOMPurify from "dompurify";
 import { Guests, ListingSearchParams } from "./types";
-import { Listing, Location, Promotion } from "./types/listing";
+import { Listing, ListingDB, Location, Promotion, PromotionDB } from "./types/listing";
 import { CreateProfile, UpdateProfile } from "./types/profile";
 import { ReservedDate } from "./types/reservation";
 
@@ -114,6 +114,12 @@ export function calculateNights(startDate: Date, endDate: Date) {
 export function getListingPromotion(listing: Listing, nights: number): Promotion | null {
   const sortedPromotions = [...listing.promotions].sort((a, b) => a.minNights - b.minNights);
   const promos = sortedPromotions?.filter((promo) => promo.minNights <= nights);
+  return promos.length > 0 ? promos[promos.length - 1] : null;
+}
+
+export function getListingPromotionDB(listing: ListingDB, nights: number): PromotionDB | null {
+  const sortedPromotions = [...listing.promotions].sort((a, b) => a.min_nights - b.min_nights);
+  const promos = sortedPromotions?.filter((promo) => promo.min_nights <= nights);
   return promos.length > 0 ? promos[promos.length - 1] : null;
 }
 

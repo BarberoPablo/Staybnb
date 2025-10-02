@@ -154,12 +154,12 @@ export default function DateRangeSelector({
           <div className="flex gap-3 p-6 border-t border-gray-100 bg-gray-50">
             <button
               onClick={onClose}
-              className="flex-1 bg-white hover:bg-gray-50 text-myGrayDark font-medium py-3 px-4 rounded-xl border border-gray-200 transition-all duration-200 hover:border-gray-300"
+              className="flex-1 bg-white hover:bg-gray-50 text-myGrayDark font-medium py-3 px-4 rounded-xl border border-gray-200 transition-all duration-200 hover:border-gray-300 cursor-pointer"
             >
               Cancel
             </button>
             <button
-              className="flex-1 bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2"
+              className="flex-1 bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
               disabled={dateRange.startDate === dateRange.endDate}
               onClick={handleConfirm}
             >
