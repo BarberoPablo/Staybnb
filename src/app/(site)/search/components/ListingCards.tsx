@@ -5,7 +5,7 @@ import { Listing } from "@/lib/types/listing";
 import ListingCard from "./ListingCard";
 
 export function ListingCards({ listings, setLocateListing }: { listings: Listing[]; setLocateListing: (listingId: number) => void }) {
-  const is2xl = useMediaQuery("(min-width:1536px)");
+  const is2xl = useMediaQuery("(min-width: 1536px)");
   const isMd = useMediaQuery("(min-width: 768px)");
 
   let columns = 1;

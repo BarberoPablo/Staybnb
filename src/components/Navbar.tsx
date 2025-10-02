@@ -6,7 +6,6 @@ import { parseFilters } from "@/lib/api/server/utils";
 import { AmenityId } from "@/lib/constants/amenities";
 import { Dates, Guests } from "@/lib/types";
 import { logoUrl } from "@/lib/utils";
-import { Menu, MenuButton, MenuItems } from "@headlessui/react";
 import { motion } from "framer-motion";
 import { SearchParams } from "next/dist/server/request/search-params";
 import Image from "next/image";
@@ -14,8 +13,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { lazy, useEffect, useState } from "react";
-import { IoMenu, IoSearch } from "react-icons/io5";
-import ChangeViewButton from "./ChangeViewButton";
+import { IoSearch } from "react-icons/io5";
 import { SignButton } from "./SignButton";
 
 const FiltersDialog = lazy(() => import("./Navbar/FiltersDialog"));
@@ -133,7 +131,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
 
   return (
     <nav className="flex items-center justify-center bg-myGreenComplement shadow-sm border border-gray-200 h-full w-full p-0 m-0">
-      <Container noPadding className="flex items-center justify-around sticky top-0 sm:justify-between w-full px-0.5 py-4 sm:px-12">
+      <Container noPadding className="flex items-center justify-around sticky z-50 top-0 sm:justify-between w-full px-0.5 py-4 sm:px-12">
         <div className="hidden sm:block">
           <Link href={`${hosting ? "/hosting" : "/"}`}>
             <Image src={logoUrl} alt="logo" className="object-cover" width={80} height={63} />
@@ -224,36 +222,11 @@ export default function Navbar({ search = true }: { search?: boolean }) {
             </motion.div>
           )}
         </div>
-        <div className="">
-          <div className="hidden md:flex gap-2">
-            <ChangeViewButton />
-            <SignButton />
-          </div>
-          <DropDownNavbarMenu />
+        <div className="mr-4">
+          <SignButton />
         </div>
       </Container>
     </nav>
-  );
-}
-
-function DropDownNavbarMenu() {
-  return (
-    <div className="text-right md:hidden">
-      <Menu>
-        <MenuButton className="rounded-lg bg-myGreenExtraLight p-2">
-          <IoMenu className="w-6 h-6 text-myGrayDark" />
-        </MenuButton>
-
-        <MenuItems
-          transition
-          anchor="bottom end"
-          className="w-46 origin-top-right rounded-xl border border-myGrayDark/5 bg-background/80 p-1 text-sm/6 text-myGrayDark transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
-        >
-          <SignButton isMobile={true} />
-          <ChangeViewButton isMobile={true} />
-        </MenuItems>
-      </Menu>
-    </div>
   );
 }
 

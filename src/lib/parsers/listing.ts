@@ -29,12 +29,19 @@ export function parseListingFromDB(listingDB: ListingDB): Listing {
     nightPrice: Number(listingDB.night_price),
     promotions: listingDB.promotions?.map((promo) => ({
       minNights: promo.min_nights,
-      discountPercentage: promo.discount_percentage,
+      discountPercentage: Number(promo.discount_percentage),
       description: promo.description,
     })),
     structure: listingDB.structure,
     guestLimits: listingDB.guest_limits,
-    score: listingDB.score,
+    score: {
+      value: listingDB.score.value,
+      reviews: listingDB.score.reviews.map((review) => ({
+        score: review.score,
+        message: review.message,
+        userId: review.user_id,
+      })),
+    },
     images: listingDB.images,
     minCancelDays: listingDB.min_cancel_days,
     status: listingDB.status,
@@ -86,7 +93,7 @@ export function parseListingFormData(listingForm: ListingForm): CreateListingDB 
     night_price: listingForm.nightPrice,
     promotions: listingForm.promotions.map((p) => ({
       min_nights: p.minNights,
-      discount_percentage: p.discountPercentage,
+      discount_percentage: Number(p.discountPercentage),
       description: p.description,
     })),
     images: listingForm.images,
@@ -94,7 +101,14 @@ export function parseListingFormData(listingForm: ListingForm): CreateListingDB 
     guest_limits: listingForm.guestLimits,
     amenities: listingForm.amenities,
     safety_items: listingForm.safetyItems,
-    score: listingForm.score,
+    score: {
+      value: listingForm.score.value,
+      reviews: listingForm.score.reviews.map((review) => ({
+        score: review.score,
+        message: review.message,
+        user_id: review.userId,
+      })),
+    },
     min_cancel_days: listingForm.minCancelDays,
     status: "pending",
   };
@@ -116,7 +130,7 @@ export function parseEditListingToDB(listingProps: EditListing) {
     night_price: listingProps.nightPrice,
     promotions: listingProps.promotions?.map((p) => ({
       min_nights: p.minNights,
-      discount_percentage: p.discountPercentage,
+      discount_percentage: Number(p.discountPercentage),
       description: p.description,
     })),
     property_type: listingProps.propertyType,

@@ -2,16 +2,17 @@
 
 import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
 import { api } from "@/lib/api/api";
+import { getProfile } from "@/lib/api/server/api";
 import type { Profile, UpdateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";
-import { verifyUpdateProfileData } from "@/lib/utils";
+import { checkImageUrl, verifyUpdateProfileData } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { FiCamera } from "react-icons/fi";
-import { IoCheckmark, IoClose, IoLocation, IoMail, IoPerson } from "react-icons/io5";
+import { IoCheckmark, IoClose, IoMail, IoPerson } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
 import { SkeletonProfile } from "./components/SkeletonProfile";
 
@@ -25,18 +26,26 @@ export default function ProfileInfo() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const profile = await api.getProfile();
+      const profile = await getProfile();
 
       if (profile) {
-        setLoadingProfile(false);
-        setUserProfile(profile);
+        // Check if avatar URL is valid before setting it
+        let validAvatarUrl = "";
+        if (profile.avatarUrl) {
+          const isValid = await checkImageUrl(profile.avatarUrl);
+          validAvatarUrl = isValid ? profile.avatarUrl : "";
+        }
+
+        setUserProfile({ ...profile, avatarUrl: validAvatarUrl });
         setUpdateProfile({
           firstName: profile.firstName,
           lastName: profile.lastName,
-          avatarUrl: profile.avatarUrl ?? "",
+          avatarUrl: validAvatarUrl,
           bio: profile.bio ?? "",
         });
       }
+
+      setLoadingProfile(false);
     };
 
     fetchUser();
@@ -142,7 +151,7 @@ export default function ProfileInfo() {
       </div>
 
       {/* Profile Header */}
-      <div className="flex items-center gap-6 p-6 bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20">
+      <div className="flex items-center gap-6 py-6 sm:p-6 bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20">
         <div className="relative w-24 h-24 bg-myGreenLight rounded-full flex items-center justify-center">
           {userProfile.avatarUrl ? (
             <Image
@@ -158,13 +167,13 @@ export default function ProfileInfo() {
           )}
           {isEditing && (
             <div className="absolute top-0 left-0 transform z-2">
-              <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-myGreen rounded-full cursor-pointer hover:border-myGreenSemiBold transition-colors group">
+              <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-myGreen rounded-full cursor-pointer hover:border-myGrayDark transition-colors group">
                 {profileImage && profileImage.url ? (
                   <Image src={profileImage.url} alt="Profile" width={96} height={96} className={`rounded-full object-cover`} />
                 ) : (
                   <>
-                    <FiCamera className="w-20 h-20 text-myGreenSemiBold group-hover:text-myGreenBold" />
-                    <p className="text-xs text-myGreenBold">Upload</p>
+                    <FiCamera className="w-12 h-12 text-myGray group-hover:text-myGrayDark" />
+                    <p className="text-xs text-myGrayDark">Upload</p>
                   </>
                 )}
                 <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
@@ -196,7 +205,7 @@ export default function ProfileInfo() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                 />
               ) : (
-                <p className="px-3 py-2 bg-gray-50 rounded-lg text-myGrayDark">{userProfile.firstName || "Not provided"}</p>
+                <p className="px-3 py-2 bg-gray-100 rounded-lg text-myGrayDark">{userProfile.firstName || "Not provided"}</p>
               )}
             </div>
 
@@ -210,7 +219,7 @@ export default function ProfileInfo() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                 />
               ) : (
-                <p className="px-3 py-2 bg-gray-50 rounded-lg text-myGrayDark">{userProfile.lastName || "Not provided"}</p>
+                <p className="px-3 py-2 bg-gray-100 rounded-lg text-myGrayDark">{userProfile.lastName || "Not provided"}</p>
               )}
             </div>
 
@@ -225,7 +234,7 @@ export default function ProfileInfo() {
                   placeholder="Tell us about yourself..."
                 />
               ) : (
-                <p className="px-3 py-2 bg-gray-50 rounded-lg text-myGrayDark">{userProfile.bio || "No bio provided"}</p>
+                <p className="px-3 py-2 bg-gray-100 rounded-lg text-myGrayDark">{userProfile.bio || "No bio provided"}</p>
               )}
             </div>
           </div>
@@ -235,27 +244,19 @@ export default function ProfileInfo() {
           <h3 className="text-xl font-semibold text-myGrayDark mb-4">Account Details</h3>
 
           <div className="space-y-4">
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-100">
               <IoMail className="w-5 h-5 text-myGray" />
               <div>
-                <p className="text-sm text-myGray">Email</p>
-                <p className="text-myGrayDark font-medium">{userProfile.id || "..."}</p>
+                <p className="text-sm font-medium text-myGray">Email</p>
+                <p className="text-myGrayDark">{userProfile.email}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-100">
               <IoPerson className="w-5 h-5 text-myGray" />
               <div>
-                <p className="text-sm text-myGray">Role</p>
-                <p className="text-myGrayDark font-medium capitalize">{userProfile.role || "..."}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <IoLocation className="w-5 h-5 text-myGray" />
-              <div>
-                <p className="text-sm text-myGray">Location</p>
-                <p className="text-myGrayDark font-medium">Not specified</p>
+                <p className="text-sm font-medium text-myGray">Role</p>
+                <p className="text-myGrayDark capitalize">{userProfile.role || "..."}</p>
               </div>
             </div>
           </div>

@@ -2,7 +2,7 @@ import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import DOMPurify from "dompurify";
 import { Guests, ListingSearchParams } from "./types";
-import { Listing, Location, Promotion } from "./types/listing";
+import { Listing, ListingDB, Location, Promotion, PromotionDB } from "./types/listing";
 import { CreateProfile, UpdateProfile } from "./types/profile";
 import { ReservedDate } from "./types/reservation";
 
@@ -117,6 +117,12 @@ export function getListingPromotion(listing: Listing, nights: number): Promotion
   return promos.length > 0 ? promos[promos.length - 1] : null;
 }
 
+export function getListingPromotionDB(listing: ListingDB, nights: number): PromotionDB | null {
+  const sortedPromotions = [...listing.promotions].sort((a, b) => a.min_nights - b.min_nights);
+  const promos = sortedPromotions?.filter((promo) => promo.min_nights <= nights);
+  return promos.length > 0 ? promos[promos.length - 1] : null;
+}
+
 export function getPromotion(promotions: Promotion[], nights: number): Promotion | null {
   const sortedPromotions = [...promotions].sort((a, b) => a.minNights - b.minNights);
   const promos = sortedPromotions?.filter((promo) => promo.minNights <= nights);
@@ -162,6 +168,32 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Location
   }
 }
 
+export async function geocodeCity(cityName: string): Promise<{ lat: number; lng: number } | null> {
+  try {
+    const api_key = process.env.NEXT_PUBLIC_GEOAPIFY_API_KEY;
+    const response = await fetch(`https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(cityName)}&apiKey=${api_key}&limit=1`);
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+
+    if (data.features && data.features.length > 0) {
+      const feature = data.features[0];
+      return {
+        lat: feature.properties.lat,
+        lng: feature.properties.lon,
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error("City geocoding error:", error);
+    return null;
+  }
+}
+
 // Converts local date and time strings in a given timezone to a UTC Date object
 export function createUTCDate(date: string, time: string, timezone: string) {
   const dateTimeString = `${date}T${time}:00`;
@@ -186,7 +218,7 @@ export function cleanString(value?: unknown): string {
 export function isValidUrl(url: string) {
   try {
     new URL(url);
-    return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
+    return true;
   } catch {
     return false;
   }
@@ -195,8 +227,8 @@ export function isValidUrl(url: string) {
 export function checkImageUrl(url: string): Promise<boolean> {
   return new Promise((resolve) => {
     const img = new Image();
-    img.onload = () => resolve(true); // La imagen cargó bien
-    img.onerror = () => resolve(false); // Link roto o no es imagen
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
     img.src = url;
   });
 }
@@ -213,7 +245,6 @@ export function verifyCreateProfileData(profileData: CreateProfile): CreateProfi
 
 export function verifyUpdateProfileData(profileData: UpdateProfile): UpdateProfile {
   const data = verifyCreateProfileData(profileData);
-
   return {
     ...data,
   };

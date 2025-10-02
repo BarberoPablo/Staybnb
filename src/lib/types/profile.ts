@@ -7,6 +7,7 @@ export type ProfileDB = {
   avatar_url: string | null;
   role: UserRole;
   bio: string | null;
+  email: string;
   created_at: string;
   updated_at: string;
 };
@@ -18,6 +19,7 @@ export type Profile = {
   avatarUrl: string | null;
   role: UserRole;
   bio: string | null;
+  email: string;
   createdAt: Date;
   updatedAt: Date;
 };

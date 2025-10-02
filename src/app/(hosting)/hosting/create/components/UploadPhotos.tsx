@@ -39,7 +39,7 @@ export function UploadPhotos({ images, handleSetField }: { images: string[]; han
 
       {images.length === 0 && (
         <div className="flex flex-col justify-center items-center h-[380px] border-2 border-dashed border-myGray/30 bg-myGreenExtraLight/30 rounded-xl gap-4">
-          <Image src="https://i.postimg.cc/FHQPFG3C/c83b2a87-3be4-43c9-ad47-12dd2aee24c4.avif" alt="upload icon" priority width={182} height={182} />
+          <Image src="https://j1l1utk0xl.ufs.sh/f/8xgIemAiVMedBPus5j8iugbL1RUJaXQCp9yjPztFcZs3mIG2" alt="upload icon" priority width={182} height={182} />
           <button
             type="button"
             className="px-6 py-3 text-sm font-medium border border-myGreenSemiBold rounded-xl bg-white text-myGreenSemiBold hover:bg-myGreenSemiBold hover:text-white transition-all duration-200 hover:cursor-pointer"

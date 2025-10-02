@@ -1,7 +1,7 @@
 "use client";
 
 import { PriceSummary } from "@/components/Booking/PriceSummary";
-import { api } from "@/lib/api/api";
+import { createReservation } from "@/lib/api/server/api";
 import { CreateReservation } from "@/lib/types/reservation";
 import { calculateNights } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -23,8 +23,6 @@ const reserve = {
   message: {
     loading: "Please wait while we make the reservation",
     confirmed: "An email with the details has been sent to your inbox.",
-    error: "Selected dates are not available.",
-    serverError: "Something went wrong. Please try again.",
   },
   button: {
     loading: <AiOutlineLoading3Quarters className="animate-spin" />,
@@ -38,6 +36,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
   const [isOpen, setIsOpen] = useState(false);
   const [confirmationState, setConfirmationState] = useState<ConfirmationState>("loading");
   const nights = calculateNights(listingData.startDate, listingData.endDate);
+  const [errorMessage, setErrorMessage] = useState<string | null>("");
 
   const router = useRouter();
 
@@ -52,7 +51,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
     };
 
     try {
-      const response = await api.createReservation(reservationData);
+      const response = await createReservation(reservationData);
 
       if (response.success) {
         setConfirmationState("confirmed");
@@ -62,6 +61,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
     } catch (error) {
       const errorMessage = (error as Error).message;
       setConfirmationState(errorMessage.includes("available") ? "error" : "serverError");
+      setErrorMessage(errorMessage);
     }
   };
 
@@ -72,7 +72,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
   };
 
   const handleRedirect = () => {
-    if (confirmationState === "error") {
+    if (confirmationState === "error" || confirmationState === "serverError") {
       window.location.reload();
     } else {
       router.push("/profile/reservations");
@@ -159,7 +159,11 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
             </DialogTitle>
 
             <div id="dialog-description" className="text-center text-myGray mb-8">
-              {reserve.message[confirmationState]}
+              {confirmationState === "serverError" || confirmationState === "error" ? (
+                <p className="text-red-500">{errorMessage}</p>
+              ) : (
+                reserve.message[confirmationState]
+              )}
             </div>
 
             <button

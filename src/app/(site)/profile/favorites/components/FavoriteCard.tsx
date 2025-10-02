@@ -21,10 +21,12 @@ export function FavoriteCard({ favorite, index, onViewListing, onRemoveFavorite 
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
         <Image
-          src={favorite.listing.images[0] || "/placeholder-image.jpg"}
+          priority
+          src={favorite.listing.images[0] + "&w=400"}
           alt={favorite.listing.title}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
+          sizes="100%"
         />
 
         {/* Price */}

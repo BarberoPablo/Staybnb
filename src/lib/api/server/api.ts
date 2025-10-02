@@ -2,49 +2,77 @@
 
 import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
 import { parseCreateListingToDB, parseDraftListingFromDB, parseDraftListingToCreateListingDB } from "@/lib/parsers/draftListings";
+import { parseProfileFromDB } from "@/lib/parsers/profile";
 import { prisma } from "@/lib/prisma";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
+import { getEffectiveStatus } from "@/lib/server-utils";
+import { Guests } from "@/lib/types";
 import { AmenityDB } from "@/lib/types/amenities";
+import { City } from "@/lib/types/cities";
 import { DraftListingDB } from "@/lib/types/draftListing";
-import { EditListing, ListingDB, ListingWithReservationsAndHostDB } from "@/lib/types/listing";
+import { EditListing, ListingDB, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB, Structure } from "@/lib/types/listing";
+import { ProfileDB } from "@/lib/types/profile";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
+import { parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../../parsers/reservation";
 import { createClient } from "../../supabase/server";
-import { NotFoundError, ReservationError } from "./errors";
+import { CreateReservation, ReservationDB, ResumedReservationWithListingDB } from "../../types/reservation";
+import { calculateNights, getListingPromotionDB, getTotalGuests, twoDecimals } from "../../utils";
+import { NotFoundError } from "./errors";
 import { ParsedFilters, buildSearchListingsWhereClause } from "./utils";
 
 export async function getListingWithReservations(id: number) {
-  const supabase = await createClient();
+  try {
+    const listing = await prisma.listings.findUnique({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        listing_amenities: {
+          include: {
+            amenities: true,
+          },
+        },
+        reservations: {
+          where: {
+            status: "upcoming",
+            end_date: {
+              gte: new Date(),
+            },
+          },
+          select: {
+            start_date: true,
+            end_date: true,
+          },
+        },
+      },
+    });
 
-  const { data: listing, error: listingError } = await supabase
-    .from("listings")
-    .select("*, host:profiles(first_name, last_name, avatar_url)")
-    .eq("id", Number(id))
-    .single();
+    if (!listing) {
+      throw new NotFoundError();
+    }
 
-  if (listingError || !listing) {
+    const host = await prisma.profiles.findUnique({
+      where: {
+        id: listing.host_id,
+      },
+      select: {
+        first_name: true,
+        last_name: true,
+        avatar_url: true,
+      },
+    });
+
+    const rawData = {
+      ...listing,
+      host,
+      amenities: parseAmenitiesFromDB(listing.listing_amenities as unknown as AmenityDB[]),
+    };
+
+    return parseListingWithReservationsAndHostFromDB(rawData as unknown as ListingWithReservationsAndHostDB);
+  } catch (error) {
+    console.error("Error fetching listing with reservations", error);
     throw new NotFoundError();
   }
-
-  const today = new Date().toISOString().split("T")[0];
-
-  const { data: reservations, error: reservationsError } = await supabase
-    .from("reservations")
-    .select("start_date, end_date")
-    .eq("listing_id", Number(id))
-    .eq("status", "upcoming")
-    .gte("end_date", today);
-
-  if (reservationsError) {
-    console.error("Error fetching reservations", reservationsError);
-    throw new ReservationError();
-  }
-
-  const rawData = {
-    ...listing,
-    reservations: reservations || [],
-  };
-
-  return parseListingWithReservationsAndHostFromDB(rawData as ListingWithReservationsAndHostDB);
 }
 
 export async function searchListings(
@@ -53,22 +81,110 @@ export async function searchListings(
   mapCoordinates?: { zoom: number; northEast: { lat: number; lng: number }; southWest: { lat: number; lng: number } }
 ) {
   if (!city) {
-    return [];
+    return { listings: [], cityCenter: null };
   }
 
   try {
-    const whereClause = buildSearchListingsWhereClause(city, filters, mapCoordinates);
+    let cityCenter = null;
+    let actualCityName = city;
 
-    const listings = await prisma.listings.findMany({
-      where: whereClause,
-    });
+    if (mapCoordinates) {
+      // Map movement search - search for listings within the visible area that match the city search term
+      const whereClause = buildSearchListingsWhereClause(city, filters, mapCoordinates);
 
-    const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+      const listings = await prisma.listings.findMany({
+        where: whereClause,
+      });
 
-    return parsedListings;
+      const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+
+      return { listings: parsedListings, cityCenter };
+    } else {
+      // Initial city search - use database-first approach
+      const matchingCities = await searchCities(city);
+
+      if (matchingCities.length === 0) {
+        return { listings: [], cityCenter: null };
+      } else if (matchingCities.length === 1) {
+        cityCenter = {
+          lat: matchingCities[0].lat,
+          lng: matchingCities[0].lng,
+        };
+        actualCityName = matchingCities[0].name;
+      } else {
+        cityCenter = {
+          lat: matchingCities[0].lat,
+          lng: matchingCities[0].lng,
+        };
+        actualCityName = matchingCities[0].name;
+      }
+
+      // Search listings using the actual city name
+      const whereClause = buildSearchListingsWhereClause(actualCityName, filters);
+
+      const listings = await prisma.listings.findMany({
+        where: whereClause,
+      });
+
+      const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+
+      return { listings: parsedListings, cityCenter };
+    }
   } catch (error) {
     console.error("Error fetching listings", error);
     throw new NotFoundError();
+  }
+}
+
+export async function searchCities(searchTerm: string): Promise<City[]> {
+  try {
+    const cities = await prisma.cities.findMany({
+      where: {
+        name: {
+          contains: searchTerm,
+          mode: "insensitive",
+        },
+      },
+      orderBy: {
+        name: "asc",
+      },
+      take: 10,
+    });
+
+    return cities.map((city) => ({
+      id: city.id,
+      name: city.name,
+      state: city.state,
+      country: city.country,
+      lat: Number(city.lat),
+      lng: Number(city.lng),
+    }));
+  } catch (error) {
+    console.error("Error searching cities:", error);
+    return [];
+  }
+}
+
+export async function getAllCities(): Promise<City[]> {
+  try {
+    const cities = await prisma.cities.findMany({
+      orderBy: {
+        name: "asc",
+      },
+      take: 50,
+    });
+
+    return cities.map((city) => ({
+      id: city.id,
+      name: city.name,
+      state: city.state,
+      country: city.country,
+      lat: Number(city.lat),
+      lng: Number(city.lng),
+    }));
+  } catch (error) {
+    console.error("Error fetching all cities:", error);
+    return [];
   }
 }
 
@@ -248,8 +364,8 @@ export async function createDraftListing() {
       },
     });
 
-    if (existingDrafts >= 5) {
-      throw new Error("Maximum number of draft listings reached (5)");
+    if (existingDrafts >= 3) {
+      throw new Error("Maximum number of draft listings reached (3)");
     }
 
     const draftListing = await prisma.draft_listings.create({
@@ -343,7 +459,6 @@ export async function updateDraftListing(id: number, data: Partial<CreateListing
 }
 
 export async function getDraftListing(id?: number) {
-  console.log("Triggering getDraftListing");
   const supabase = await createClient();
 
   const {
@@ -451,5 +566,447 @@ export async function completeDraftListing(id: number) {
   } catch (error) {
     console.error("Error completing draft listing", error);
     throw new NotFoundError("Failed to complete draft listing");
+  }
+}
+
+export async function getHostReservationsGroupedByListing() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const listings = await prisma.listings.findMany({
+      where: {
+        host_id: user.id,
+      },
+      include: {
+        reservations: {
+          orderBy: {
+            start_date: "desc",
+          },
+        },
+      },
+    });
+
+    const listingsWithReservations = listings.map((listing) => {
+      const validatedReservations = listing.reservations.map((reservation) => ({
+        ...reservation,
+        status: getEffectiveStatus(reservation.status, reservation.start_date.toISOString(), reservation.end_date.toISOString()),
+      }));
+
+      const parsedListing = parseListingFromDB(listing as unknown as ListingDB);
+      const parsedReservations = parseReservationsFromDB(validatedReservations as unknown as ReservationDB[]);
+
+      return {
+        listing: parsedListing,
+        reservations: parsedReservations,
+      };
+    });
+
+    return listingsWithReservations;
+  } catch (error) {
+    console.error("Error fetching host reservations", error);
+    throw new NotFoundError("Failed to fetch host reservations");
+  }
+}
+
+export async function getUserReservations() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const reservations = await prisma.reservations.findMany({
+      where: {
+        user_id: user.id,
+      },
+      include: {
+        listings: {
+          select: {
+            id: true,
+            title: true,
+            location: true,
+            night_price: true,
+            images: true,
+            property_type: true,
+            privacy_type: true,
+            check_in_time: true,
+            check_out_time: true,
+            score: true,
+          },
+        },
+      },
+      orderBy: {
+        start_date: "asc",
+      },
+    });
+
+    const validatedReservations = reservations.map((reservation) => {
+      const { listings, ...reservationWithoutListings } = reservation;
+
+      const scoreData = listings.score as ScoreDB;
+      const userReview = scoreData?.reviews?.find((review: ReviewDB) => review.user_id === user.id) || null;
+
+      return {
+        ...reservationWithoutListings,
+        listing: {
+          ...listings,
+          score: {
+            value: scoreData?.value || 0,
+            user_review: userReview,
+          },
+        },
+        status: getEffectiveStatus(reservation.status, reservation.start_date.toISOString(), reservation.end_date.toISOString()),
+      };
+    });
+
+    return parseResumedReservationWithListingFromDB(validatedReservations as unknown as ResumedReservationWithListingDB[]);
+  } catch (error) {
+    console.error("Error fetching user reservations", error);
+    throw new NotFoundError("Failed to fetch user reservations");
+  }
+}
+
+export async function addReviewToListing(listingId: number, score: number, message: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const listing = await prisma.listings.findUnique({
+      where: {
+        id: listingId,
+      },
+      select: {
+        score: true,
+      },
+    });
+
+    if (!listing) {
+      throw new NotFoundError("Listing not found");
+    }
+
+    const currentScoreData = (listing.score as ScoreDB) || { value: 0, reviews: [] };
+
+    const existingReviewIndex = currentScoreData.reviews.findIndex((review) => review.user_id === user.id);
+
+    const newReview: ReviewDB = {
+      score,
+      message,
+      user_id: user.id,
+    };
+
+    let updatedReviews: ReviewDB[];
+    if (existingReviewIndex >= 0) {
+      updatedReviews = [...currentScoreData.reviews];
+      updatedReviews[existingReviewIndex] = newReview;
+    } else {
+      updatedReviews = [...currentScoreData.reviews, newReview];
+    }
+
+    const totalScore = updatedReviews.reduce((sum, review) => sum + review.score, 0);
+    const newAverageScore = updatedReviews.length > 0 ? totalScore / updatedReviews.length : 0;
+
+    const updatedScoreData: ScoreDB = {
+      value: Math.round(newAverageScore * 10) / 10,
+      reviews: updatedReviews,
+    };
+
+    await prisma.listings.update({
+      where: {
+        id: listingId,
+      },
+      data: {
+        score: updatedScoreData,
+      },
+    });
+
+    return {
+      success: true,
+      message: "Review added successfully",
+    };
+  } catch (error) {
+    console.error("Error adding review", error);
+    throw new NotFoundError("Failed to add review");
+  }
+}
+
+export async function getProfile() {
+  try {
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+      error: authErr,
+    } = await supabase.auth.getUser();
+
+    if (authErr || !user) {
+      console.error("Auth error:", authErr, user);
+      throw new NotFoundError();
+    }
+
+    const profile = await prisma.profiles.findUnique({
+      where: {
+        id: user.id,
+      },
+    });
+
+    if (!profile) {
+      return null;
+    }
+
+    return parseProfileFromDB({ ...profile, email: user.email } as unknown as ProfileDB);
+  } catch (error) {
+    // If profile was not found, return null (not an error)
+    if (error instanceof Error && error.message === "Profile not found") {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function createReservation(reservationData: CreateReservation) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    // Validate dates are in the future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day for comparison
+
+    if (reservationData.startDate < today) {
+      throw new Error("Start date must be in the future");
+    }
+
+    if (reservationData.endDate <= reservationData.startDate) {
+      throw new Error("End date must be after start date");
+    }
+
+    // Get the listing to verify it exists and get pricing info
+    const listing = await prisma.listings.findUnique({
+      where: {
+        id: reservationData.listingId,
+      },
+      select: {
+        id: true,
+        night_price: true,
+        promotions: true,
+        status: true,
+        host_id: true,
+        guest_limits: true,
+        structure: true,
+      },
+    });
+
+    if (!listing) {
+      throw new NotFoundError("Listing not found");
+    }
+
+    // Check if listing is published
+    if (listing.status !== "published") {
+      throw new Error("Listing is not available for booking");
+    }
+
+    // Prevent users from booking their own listings
+    if (listing.host_id === user.id) {
+      throw new Error("You cannot book your own listing");
+    }
+
+    // Validate guest limits
+    const guestLimits = listing.guest_limits as { [key in Guests]: { min: number; max: number } };
+
+    // Check each guest type against limits
+    for (const [guestType, count] of Object.entries(reservationData.guests)) {
+      if (count > 0) {
+        const limit = guestLimits[guestType as Guests];
+        if (count < limit.min || count > limit.max) {
+          throw new Error(`Invalid number of ${guestType}: must be between ${limit.min} and ${limit.max}`);
+        }
+      }
+    }
+
+    // Check total guests against structure limits
+    const totalGuests = getTotalGuests(reservationData.guests);
+    const structure = listing.structure as Structure;
+    const maxTotalGuests = structure.guests;
+    if (totalGuests > maxTotalGuests) {
+      throw new Error(`Total guests (${totalGuests}) exceeds maximum capacity (${maxTotalGuests})`);
+    }
+
+    // Check for conflicting reservations
+    const conflictingReservations = await prisma.reservations.findMany({
+      where: {
+        listing_id: reservationData.listingId,
+        status: "upcoming",
+        OR: [
+          {
+            AND: [{ start_date: { lte: reservationData.startDate } }, { end_date: { gt: reservationData.startDate } }],
+          },
+          {
+            AND: [{ start_date: { lt: reservationData.endDate } }, { end_date: { gte: reservationData.endDate } }],
+          },
+          {
+            AND: [{ start_date: { gte: reservationData.startDate } }, { end_date: { lte: reservationData.endDate } }],
+          },
+        ],
+      },
+    });
+
+    if (conflictingReservations.length > 0) {
+      throw new Error("Selected dates are not available");
+    }
+
+    // Calculate nights and pricing
+    const nights = calculateNights(reservationData.startDate, reservationData.endDate);
+
+    // Get applicable promotion
+    const promotion = getListingPromotionDB(listing as unknown as ListingDB, nights);
+
+    // Calculate pricing
+    const discountPercentage = promotion?.discount_percentage || 0;
+    const basePrice = Number(listing.night_price) * nights;
+    const discount = discountPercentage > 0 ? (basePrice * discountPercentage) / 100 : 0;
+    const totalPrice = twoDecimals(basePrice - discount);
+
+    // Create the reservation
+    const reservation = await prisma.reservations.create({
+      data: {
+        user_id: user.id,
+        listing_id: reservationData.listingId,
+        start_date: reservationData.startDate,
+        end_date: reservationData.endDate,
+        guests: reservationData.guests,
+        total_price: totalPrice,
+        total_nights: nights,
+        night_price: Number(listing.night_price),
+        discount: discount > 0 ? twoDecimals(discount) : null,
+        discount_percentage: discountPercentage > 0 ? discountPercentage : null,
+        status: "upcoming",
+      },
+    });
+
+    return {
+      success: true,
+      reservationId: reservation.id,
+      message: "Reservation created successfully",
+    };
+  } catch (error) {
+    console.error("Error creating reservation", error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new NotFoundError("Failed to create reservation");
+  }
+}
+
+export async function cancelReservation(reservationId: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const reservation = await prisma.reservations.findUnique({
+      where: {
+        id: reservationId,
+      },
+      include: {
+        listings: {
+          select: {
+            host_id: true,
+            min_cancel_days: true,
+          },
+        },
+      },
+    });
+
+    if (!reservation) {
+      throw new NotFoundError("Reservation not found");
+    }
+
+    const isGuest = reservation.user_id === user.id;
+    const isHost = reservation.listings.host_id === user.id;
+
+    if (!isGuest && !isHost) {
+      throw new NotFoundError("Unauthorized");
+    }
+
+    if (reservation.status !== "upcoming") {
+      throw new NotFoundError("Can only cancel upcoming reservations");
+    }
+
+    if (isGuest) {
+      const minCancelDays = reservation.listings.min_cancel_days;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const daysUntilCheckIn = Math.ceil((reservation.start_date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+      if (daysUntilCheckIn < minCancelDays) {
+        throw new Error(`Cannot cancel reservation. Must cancel at least ${minCancelDays} days before check-in.`);
+      }
+    }
+
+    await prisma.reservations.update({
+      where: {
+        id: reservationId,
+      },
+      data: {
+        status: isGuest ? "canceled" : "canceled_by_host",
+        canceled_at: new Date(),
+      },
+    });
+
+    return {
+      success: true,
+      message: "Reservation canceled successfully",
+      canceledBy: isGuest ? "guest" : "host",
+    };
+  } catch (error) {
+    console.error("Error canceling reservation", error);
+    if (error instanceof Error && error.message.includes("Cannot cancel reservation")) {
+      throw error;
+    }
+    throw new NotFoundError("Failed to cancel reservation");
   }
 }

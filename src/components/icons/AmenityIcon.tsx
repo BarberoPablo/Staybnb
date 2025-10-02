@@ -31,7 +31,6 @@ import {
   FaSeedling,
   FaFire,
 } from "react-icons/fa";
-import { FaElevator } from "react-icons/fa6";
 import { MdKitchen, MdRestaurant, MdBed, MdBathroom, MdSecurity, MdSportsEsports, MdLocalLaundryService, MdAcUnit } from "react-icons/md";
 
 interface AmenityIconProps {
@@ -61,7 +60,7 @@ const AmenityIcon = ({ icon, className = "w-5 h-5" }: AmenityIconProps) => {
           case "FaKey":
             return FaKey;
           case "FaElevator":
-            return FaElevator;
+            return FaHome;
           case "FaCoffee":
             return FaCoffee;
           case "FaTv":
@@ -118,7 +117,7 @@ const AmenityIcon = ({ icon, className = "w-5 h-5" }: AmenityIconProps) => {
       case "fa6":
         switch (name) {
           case "FaElevator":
-            return FaElevator;
+            return FaHome;
           default:
             return FaSnowflake; // fallback
         }

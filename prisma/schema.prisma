@@ -569,3 +569,17 @@ enum user_role {
 
   @@schema("public")
 }
+
+model cities {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(255)
+  state      String?  @db.VarChar(100)
+  country    String?  @db.VarChar(100)
+  lat        Decimal  @db.Decimal(10, 8)
+  lng        Decimal  @db.Decimal(11, 8)
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([name, state, country])
+  @@index([name])
+  @@schema("public")
+}

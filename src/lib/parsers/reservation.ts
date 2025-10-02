@@ -24,11 +24,11 @@ export function parseReservationsFromDB(reservations: ReservationDB[]): Reservat
     userId: reservation.user_id,
     listingId: reservation.listing_id,
     guests: reservation.guests,
-    totalPrice: reservation.total_price,
+    totalPrice: Number(reservation.total_price),
     totalNights: reservation.total_nights,
     nightPrice: Number(reservation.night_price),
-    discount: reservation.discount || 0,
-    discountPercentage: reservation.discount_percentage || 0,
+    discount: Number(reservation.discount) || 0,
+    discountPercentage: Number(reservation.discount_percentage) || 0,
     createdAt: new Date(reservation.created_at),
     status: reservationStatus[reservation.status],
     startDate: new Date(reservation.start_date),
@@ -52,6 +52,16 @@ export function parseResumedReservationWithListingFromDB(reservations: ResumedRe
         nightPrice: Number(reservation.listing.night_price),
         checkInTime: reservation.listing.check_in_time,
         checkOutTime: reservation.listing.check_out_time,
+        score: {
+          value: reservation.listing.score.value,
+          userReview: reservation.listing.score.user_review
+            ? {
+                score: reservation.listing.score.user_review?.score || 0,
+                message: reservation.listing.score.user_review?.message || "",
+                userId: reservation.listing.score.user_review?.user_id || "",
+              }
+            : null,
+        },
       },
     };
   });

@@ -4,6 +4,7 @@ import { DateRangeKey, Dates } from "@/lib/types";
 import { normalizeDate } from "@/lib/utils";
 import { useState } from "react";
 import { DateRange, RangeKeyDict } from "react-date-range";
+import { IoClose } from "react-icons/io5";
 
 export default function SelectDays({ dates, setDates }: { dates: Dates; setDates: (dates: Dates) => void }) {
   const [dateRange, setDateRange] = useState<DateRangeKey>({
@@ -31,13 +32,15 @@ export default function SelectDays({ dates, setDates }: { dates: Dates; setDates
   };
 
   return (
-    <div className="text-center text-myGray w-full">
+    <div className="text-center text-myGray w-full relative">
       {dateRange.startDate.toISOString() !== dateRange.endDate.toISOString() && (
-        <div className="sticky top-0 bg-white border-b border-gray-200 mb-4 pb-2 z-10 flex justify-end items-center">
-          <button onClick={handleClearDates} className="text-sm text-red-600 hover:text-red-800 hover:underline hover:cursor-pointer">
-            Clear dates
-          </button>
-        </div>
+        <button
+          onClick={handleClearDates}
+          className="absolute top-0 right-0 z-20 bg-white rounded-full p-1 shadow-md hover:shadow-lg transition-shadow duration-200 hover:bg-gray-50 cursor-pointer"
+          title="Clear dates"
+        >
+          <IoClose className="w-5 h-5 text-red-500 hover:text-red-600" />
+        </button>
       )}
       <div className="overflow-y-auto overflow-x-hidden w-full">
         <DateRange ranges={[dateRange]} onChange={handleChangeDateRange} minDate={new Date()} rangeColors={["#3ecf8e"]} showDateDisplay={true} />

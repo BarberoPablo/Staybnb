@@ -2,13 +2,13 @@
 
 import { logout } from "@/app/(site)/auth/components/auth";
 import { useUser } from "@/hooks/useUser";
-import { basicButton } from "@/lib/styles";
-import { MenuItem } from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useRouter } from "nextjs-toploader/app";
-import { FaUserCircle } from "react-icons/fa";
-import { MdOutlineLogin, MdOutlineLogout } from "react-icons/md";
+import { CiUser } from "react-icons/ci";
+import { FaHome, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
+import { MdKeyboardArrowDown, MdOutlineLogin } from "react-icons/md";
 
-export function SignButton({ isMobile = false }: { isMobile?: boolean }) {
+export function SignButton() {
   const router = useRouter();
   const { user, loading } = useUser();
 
@@ -25,53 +25,113 @@ export function SignButton({ isMobile = false }: { isMobile?: boolean }) {
     router.push("/profile");
   };
 
-  if (loading) return <button className="w-20 rounded-lg overflow-hidden bg-gray-100 animate-pulse"></button>;
+  const handleHosting = () => {
+    router.push("/hosting");
+  };
 
-  if (isMobile) {
-    return user ? (
-      <div>
-        <MenuItem>
-          <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreen/70" onClick={handleProfile}>
-            <FaUserCircle className="size-4 fill-GrayDark" />
-            Profile
-          </button>
-        </MenuItem>
-        <MenuItem>
-          <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreen/70" onClick={handleLogout}>
-            <MdOutlineLogout className="size-4 fill-GrayDark" />
-            Logout
-          </button>
-        </MenuItem>
+  if (loading) {
+    return (
+      <div className="flex items-center gap-2">
+        <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse"></div>
+        <div className="w-16 h-8 rounded-lg bg-gray-200 animate-pulse"></div>
       </div>
-    ) : (
-      <MenuItem>
-        <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-myGreen/70" onClick={handleLogin}>
-          <MdOutlineLogin className="size-4 fill-GrayDark" />
-          Login
-        </button>
-      </MenuItem>
     );
   }
 
-  return user ? (
-    <div className="flex items-center gap-2">
+  if (!user) {
+    return (
       <button
-        className="w-20 px-4 py-2 text-sm font-medium rounded-lg text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200 hover:cursor-pointer"
-        onClick={handleLogout}
+        className={`flex items-center sm:gap-2 px-4 py-2 h-10 text-sm font-semibold rounded-full sm:rounded-lg text-myGrayDark bg-gradient-to-r from-myGreenLight to-myGreen hover:from-myGreen hover:to-myGreenLight transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer`}
+        onClick={handleLogin}
       >
-        Logout
+        <MdOutlineLogin className="w-4 h-4" />
+        <span className="hidden sm:block">Sign in</span>
       </button>
+    );
+  }
 
-      <button className={`${basicButton}`} onClick={handleProfile}>
-        <FaUserCircle className="rounded-full text-4xl text-myGreen bg-white hover:bg-myGreenExtraLight transition-colors duration-200" />
-      </button>
-    </div>
-  ) : (
-    <button
-      className="w-20 px-4 py-2 text-sm font-medium rounded-lg text-myGrayDark bg-myGreenExtraLight hover:bg-myGreen transition-colors duration-200 hover:cursor-pointer"
-      onClick={handleLogin}
-    >
-      Login
-    </button>
+  return (
+    <Menu as="div" className="relative">
+      <MenuButton
+        className={`flex items-center gap-2 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer hover:bg-myGreenExtraLight/30 p-1`}
+      >
+        <div className="w-10 h-10 bg-gradient-to-br from-myGreenLight to-myGreenBold rounded-full flex items-center justify-center shadow-sm">
+          <CiUser className="w-6 h-6 text-white" />
+        </div>
+        <div className="hidden sm:flex items-center gap-2">
+          <span className="text-myGrayDark font-medium text-sm">Profile</span>
+          <MdKeyboardArrowDown className="w-4 h-4 text-myGray" />
+        </div>
+      </MenuButton>
+
+      <MenuItems
+        className={`absolute right-0 z-[9999] mt-2 w-64 origin-top-right rounded-2xl bg-white shadow-xl ring-1 ring-gray-200 focus:outline-none`}
+        transition
+      >
+        <div className="p-4">
+          {/* Menu Items */}
+          <div className="space-y-1">
+            <MenuItem>
+              {({ focus }) => (
+                <button
+                  className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
+                    focus ? "bg-myGreenExtraLight/60 text-myGreenBold" : "hover:bg-myGreenExtraLight/40 text-myGrayDark"
+                  }`}
+                  onClick={handleProfile}
+                >
+                  <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-sm">
+                    <FaUserCircle className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <span className="font-medium">My Profile</span>
+                    <p className="text-xs text-myGray group-hover:text-myGreenBold transition-colors">Manage your account</p>
+                  </div>
+                </button>
+              )}
+            </MenuItem>
+
+            <MenuItem>
+              {({ focus }) => (
+                <button
+                  className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
+                    focus ? "bg-orange-50 text-orange-700" : "hover:bg-orange-50 text-myGrayDark"
+                  }`}
+                  onClick={handleHosting}
+                >
+                  <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-sm">
+                    <FaHome className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <span className="font-medium">Switch to Hosting</span>
+                    <p className="text-xs text-myGray group-hover:text-orange-700 transition-colors">Manage your listings</p>
+                  </div>
+                </button>
+              )}
+            </MenuItem>
+
+            <div className="pt-2">
+              <MenuItem>
+                {({ focus }) => (
+                  <button
+                    className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
+                      focus ? "bg-red-50 text-red-700" : "hover:bg-red-50 text-myGrayDark"
+                    }`}
+                    onClick={handleLogout}
+                  >
+                    <div className="w-9 h-9 bg-gradient-to-br from-red-400 to-red-600 rounded-xl flex items-center justify-center shadow-sm">
+                      <FaSignOutAlt className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <span className="font-medium">Sign Out</span>
+                      <p className="text-xs text-myGray group-hover:text-red-700 transition-colors">End your session</p>
+                    </div>
+                  </button>
+                )}
+              </MenuItem>
+            </div>
+          </div>
+        </div>
+      </MenuItems>
+    </Menu>
   );
 }

@@ -66,6 +66,60 @@ A modern, full-featured Airbnb clone built with Next.js 15, TypeScript, and Supa
 - **Timezone Support**: Proper handling of different timezones
 - **Form Validation**: Comprehensive client and server-side validation
 
+## 🚀 Performance & Quality Optimizations
+
+### **Smart Guest Management System**
+
+The booking system implements intelligent guest capacity management with comprehensive validation:
+
+- **Multi-Type Guest Support**: Separate handling for adults, children, infants, and pets
+- **Dynamic Capacity Validation**: Real-time checking against property guest limits
+- **Smart Error Handling**: Contextual error messages with current guest counts
+- **Flexible Guest Rules**: Pets don't count toward guest limits, infants have special considerations
+- **URL State Persistence**: Guest selections maintained across page navigation
+
+```typescript
+// Example: Guest validation with capacity checking
+const handleGuest = (type: Guests, amount: number) => {
+  const newGuests = { ...guests, [type]: guests[type] + amount };
+  const totalGuests = newGuests.adults + newGuests.children + newGuests.infant;
+
+  if (totalGuests > listing.structure.guests) {
+    setErrors({
+      [type]: `Maximum ${listing.structure.guests} guests allowed. Current total: ${totalGuests}`,
+    });
+    return;
+  }
+  setGuests(newGuests);
+};
+```
+
+### **Advanced Image Resolution Management**
+
+Optimized image loading system for better performance and quality:
+
+- **Responsive Image Loading**: Different resolutions based on display context
+  - **Cover Images**: 1080px for main property photos
+  - **Grid Images**: 720px for primary display areas
+  - **Thumbnail Images**: 480px for secondary/smaller displays
+- **Progressive Loading**: Smooth loading states with spinners and fallbacks
+- **Error Handling**: Graceful fallback to placeholder icons when images fail
+- **Drag & Drop Reordering**: Sortable image grid with visual feedback
+- **Upload Optimization**: Efficient file handling with preview generation
+
+```typescript
+// Example: Context-aware image resolution
+<ImageWithFallback src={url + `&w=${resolution}`} alt="listing image" priority={index === 0} fill className="object-cover" sizes="100%" />
+```
+
+### **Enhanced User Experience**
+
+- **Loading States**: Visual feedback during image and data loading
+- **Error Recovery**: Automatic fallback mechanisms for failed operations
+- **Smooth Animations**: Framer Motion powered transitions
+- **Accessibility**: WCAG compliant components with proper ARIA labels
+- **Mobile Optimization**: Touch-friendly interfaces with responsive layouts
+
 ## 🛠️ Tech Stack
 
 ### **Frontend**
@@ -91,6 +145,7 @@ A modern, full-featured Airbnb clone built with Next.js 15, TypeScript, and Supa
 - **React Leaflet** - Interactive maps
 - **React Hot Toast** - Toast notifications
 - **Zustand** - State management
+- **DnD Kit** - Drag and drop functionality
 
 ### **Development Tools**
 

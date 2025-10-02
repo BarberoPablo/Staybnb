@@ -7,7 +7,7 @@ type CreateListingForPrisma = Omit<CreateListingDB, "amenities">;
 export function parseDraftListingFromDB(dbDraft: DraftListingDB): DraftListing {
   const parsedPromotions = dbDraft.promotions?.map((promotion) => ({
     minNights: promotion.min_nights,
-    discountPercentage: promotion.discount_percentage,
+    discountPercentage: Number(promotion.discount_percentage),
     description: promotion.description,
   }));
 
@@ -38,7 +38,7 @@ export function parseDraftListingFromDB(dbDraft: DraftListingDB): DraftListing {
 export function parseCreateListingToDB(draftListing: Partial<CreateListingForm>): Partial<DraftListingDB> {
   const parsedPromotions = draftListing.promotions?.map((promotion) => ({
     min_nights: promotion.minNights,
-    discount_percentage: promotion.discountPercentage,
+    discount_percentage: Number(promotion.discountPercentage),
     description: promotion.description,
   }));
 
