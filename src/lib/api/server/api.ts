@@ -6,15 +6,17 @@ import { parseProfileFromDB } from "@/lib/parsers/profile";
 import { prisma } from "@/lib/prisma";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { getEffectiveStatus } from "@/lib/server-utils";
+import { Guests } from "@/lib/types";
 import { AmenityDB } from "@/lib/types/amenities";
 import { City } from "@/lib/types/cities";
 import { DraftListingDB } from "@/lib/types/draftListing";
-import { EditListing, ListingDB, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
+import { EditListing, ListingDB, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB, Structure } from "@/lib/types/listing";
 import { ProfileDB } from "@/lib/types/profile";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../../parsers/reservation";
 import { createClient } from "../../supabase/server";
-import { ReservationDB, ResumedReservationWithListingDB } from "../../types/reservation";
+import { CreateReservation, ReservationDB, ResumedReservationWithListingDB } from "../../types/reservation";
+import { calculateNights, getListingPromotionDB, getTotalGuests, twoDecimals } from "../../utils";
 import { NotFoundError } from "./errors";
 import { ParsedFilters, buildSearchListingsWhereClause } from "./utils";
 
@@ -784,5 +786,148 @@ export async function getProfile() {
       return null;
     }
     throw error;
+  }
+}
+
+export async function createReservation(reservationData: CreateReservation) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    // Validate dates are in the future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day for comparison
+
+    if (reservationData.startDate < today) {
+      throw new Error("Start date must be in the future");
+    }
+
+    if (reservationData.endDate <= reservationData.startDate) {
+      throw new Error("End date must be after start date");
+    }
+
+    // Get the listing to verify it exists and get pricing info
+    const listing = await prisma.listings.findUnique({
+      where: {
+        id: reservationData.listingId,
+      },
+      select: {
+        id: true,
+        night_price: true,
+        promotions: true,
+        status: true,
+        host_id: true,
+        guest_limits: true,
+        structure: true,
+      },
+    });
+
+    if (!listing) {
+      throw new NotFoundError("Listing not found");
+    }
+
+    // Check if listing is published
+    if (listing.status !== "published") {
+      throw new Error("Listing is not available for booking");
+    }
+
+    // Prevent users from booking their own listings
+    if (listing.host_id === user.id) {
+      throw new Error("You cannot book your own listing");
+    }
+
+    // Validate guest limits
+    const guestLimits = listing.guest_limits as { [key in Guests]: { min: number; max: number } };
+
+    // Check each guest type against limits
+    for (const [guestType, count] of Object.entries(reservationData.guests)) {
+      if (count > 0) {
+        const limit = guestLimits[guestType as Guests];
+        if (count < limit.min || count > limit.max) {
+          throw new Error(`Invalid number of ${guestType}: must be between ${limit.min} and ${limit.max}`);
+        }
+      }
+    }
+
+    // Check total guests against structure limits
+    const totalGuests = getTotalGuests(reservationData.guests);
+    const structure = listing.structure as Structure;
+    const maxTotalGuests = structure.guests;
+    if (totalGuests > maxTotalGuests) {
+      throw new Error(`Total guests (${totalGuests}) exceeds maximum capacity (${maxTotalGuests})`);
+    }
+
+    // Check for conflicting reservations
+    const conflictingReservations = await prisma.reservations.findMany({
+      where: {
+        listing_id: reservationData.listingId,
+        status: "upcoming",
+        OR: [
+          {
+            AND: [{ start_date: { lte: reservationData.startDate } }, { end_date: { gt: reservationData.startDate } }],
+          },
+          {
+            AND: [{ start_date: { lt: reservationData.endDate } }, { end_date: { gte: reservationData.endDate } }],
+          },
+          {
+            AND: [{ start_date: { gte: reservationData.startDate } }, { end_date: { lte: reservationData.endDate } }],
+          },
+        ],
+      },
+    });
+
+    if (conflictingReservations.length > 0) {
+      throw new Error("Selected dates are not available");
+    }
+
+    // Calculate nights and pricing
+    const nights = calculateNights(reservationData.startDate, reservationData.endDate);
+
+    // Get applicable promotion
+    const promotion = getListingPromotionDB(listing as unknown as ListingDB, nights);
+
+    // Calculate pricing
+    const discountPercentage = promotion?.discount_percentage || 0;
+    const basePrice = Number(listing.night_price) * nights;
+    const discount = discountPercentage > 0 ? (basePrice * discountPercentage) / 100 : 0;
+    const totalPrice = twoDecimals(basePrice - discount);
+
+    // Create the reservation
+    const reservation = await prisma.reservations.create({
+      data: {
+        user_id: user.id,
+        listing_id: reservationData.listingId,
+        start_date: reservationData.startDate,
+        end_date: reservationData.endDate,
+        guests: reservationData.guests,
+        total_price: totalPrice,
+        total_nights: nights,
+        night_price: Number(listing.night_price),
+        discount: discount > 0 ? twoDecimals(discount) : null,
+        discount_percentage: discountPercentage > 0 ? discountPercentage : null,
+        status: "upcoming",
+      },
+    });
+
+    return {
+      success: true,
+      reservationId: reservation.id,
+      message: "Reservation created successfully",
+    };
+  } catch (error) {
+    console.error("Error creating reservation", error);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new NotFoundError("Failed to create reservation");
   }
 }

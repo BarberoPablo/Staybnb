@@ -3,6 +3,7 @@
 import ListingResume from "@/app/(site)/checkout/[listingId]/components/ListingResume";
 import PaymentSection from "@/app/(site)/checkout/[listingId]/components/PaymentSection";
 import { Container } from "@/app/(site)/components/Container";
+import ListingStatusBanner from "@/components/ListingStatusBanner";
 import { Guests, ListingSearchParams } from "@/lib/types";
 import { Listing, Promotion } from "@/lib/types/listing";
 import { calculateNights, getGuestsFromParams, getListingPromotion } from "@/lib/utils";
@@ -33,6 +34,9 @@ export default function Checkout({ listing, searchParams }: { listing: Listing; 
 
   return (
     <Container>
+      {/* Listing Status Banner */}
+      <ListingStatusBanner status={listing.status} />
+
       {/* Page Header */}
       <motion.div className="text-center" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
         <h1 className="text-4xl font-bold text-myGrayDark mb-2">Complete Your Booking</h1>
@@ -40,7 +44,6 @@ export default function Checkout({ listing, searchParams }: { listing: Listing; 
       </motion.div>
 
       {/* Main Content Grid */}
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
         {/* Payment Section */}
         <motion.div
