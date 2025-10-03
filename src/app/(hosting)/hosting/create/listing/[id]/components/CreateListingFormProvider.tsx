@@ -59,7 +59,6 @@ export default function CreateListingFormProvider({ children, defaultValues, lis
       if (!visited.includes(stepIndex)) {
         const newVisitedSteps = [...visited, stepIndex];
         setValue("visitedSteps", newVisitedSteps);
-        console.log(`Marked step ${stepIndex} as visited. Visited steps:`, newVisitedSteps);
       }
     },
     [getValues, setValue]

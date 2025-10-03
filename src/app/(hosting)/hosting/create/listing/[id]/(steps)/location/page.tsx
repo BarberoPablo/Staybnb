@@ -55,7 +55,6 @@ export default function LocationStep() {
 
     if (errors.location) {
       const locationErrors = Object.values(errors.location).filter((error) => error && typeof error === "object" && "message" in error) as FieldError[];
-      console.log(locationErrors);
       if (locationErrors.length > 0) {
         const firstError = locationErrors[0];
         toast.error(firstError.message || "Please complete all location fields");
