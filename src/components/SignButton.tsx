@@ -6,9 +6,9 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useRouter } from "nextjs-toploader/app";
 import { CiUser } from "react-icons/ci";
 import { FaHome, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
-import { MdKeyboardArrowDown, MdOutlineLogin } from "react-icons/md";
+import { MdKeyboardArrowDown, MdOutlineLogin, MdOutlineTravelExplore } from "react-icons/md";
 
-export function SignButton() {
+export function SignButton({ hosting }: { hosting: boolean }) {
   const router = useRouter();
   const { user, loading } = useUser();
 
@@ -27,6 +27,10 @@ export function SignButton() {
 
   const handleHosting = () => {
     router.push("/hosting");
+  };
+
+  const handleTraveling = () => {
+    router.push("/");
   };
 
   if (loading) {
@@ -90,24 +94,47 @@ export function SignButton() {
               )}
             </MenuItem>
 
-            <MenuItem>
-              {({ focus }) => (
-                <button
-                  className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
-                    focus ? "bg-orange-50 text-orange-700" : "hover:bg-orange-50 text-myGrayDark"
-                  }`}
-                  onClick={handleHosting}
-                >
-                  <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-sm">
-                    <FaHome className="w-4 h-4 text-white" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <span className="font-medium">Switch to Hosting</span>
-                    <p className="text-xs text-myGray group-hover:text-orange-700 transition-colors">Manage your listings</p>
-                  </div>
-                </button>
-              )}
-            </MenuItem>
+            {!hosting && (
+              <MenuItem>
+                {({ focus }) => (
+                  <button
+                    className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
+                      focus ? "bg-orange-50 text-orange-700" : "hover:bg-orange-50 text-myGrayDark"
+                    }`}
+                    onClick={handleHosting}
+                  >
+                    <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-sm">
+                      <FaHome className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <span className="font-medium">Switch to Hosting</span>
+                      <p className="text-xs text-myGray group-hover:text-orange-700 transition-colors">Manage your listings</p>
+                    </div>
+                  </button>
+                )}
+              </MenuItem>
+            )}
+
+            {hosting && (
+              <MenuItem>
+                {({ focus }) => (
+                  <button
+                    className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
+                      focus ? "bg-blue-50 text-blue-700" : "hover:bg-blue-50 text-myGrayDark"
+                    }`}
+                    onClick={handleTraveling}
+                  >
+                    <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-sm">
+                      <MdOutlineTravelExplore className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <span className="font-medium">Switch to Traveling</span>
+                      <p className="text-xs text-myGray group-hover:text-blue-700 transition-colors">Browse and book stays</p>
+                    </div>
+                  </button>
+                )}
+              </MenuItem>
+            )}
 
             <div className="pt-2">
               <MenuItem>

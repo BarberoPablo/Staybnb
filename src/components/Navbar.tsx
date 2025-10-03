@@ -223,7 +223,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
           )}
         </div>
         <div className="mr-4">
-          <SignButton />
+          <SignButton hosting={!!hosting} />
         </div>
       </Container>
     </nav>
