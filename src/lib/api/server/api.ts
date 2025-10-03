@@ -1010,3 +1010,48 @@ export async function cancelReservation(reservationId: string) {
     throw new NotFoundError("Failed to cancel reservation");
   }
 }
+
+export async function deleteDraftListing(id: number) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authErr,
+  } = await supabase.auth.getUser();
+
+  if (authErr || !user) {
+    console.error("Auth error:", authErr, user);
+    throw new NotFoundError();
+  }
+
+  try {
+    const draftListing = await prisma.draft_listings.findFirst({
+      where: {
+        id: id,
+        host_id: user.id,
+      },
+    });
+
+    if (!draftListing) {
+      throw new NotFoundError("Draft listing not found or you don't have permission to delete it");
+    }
+
+    await prisma.draft_listings.delete({
+      where: {
+        id: id,
+        host_id: user.id,
+      },
+    });
+
+    return {
+      success: true,
+      message: "Draft listing deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting draft listing", error);
+    if (error instanceof Error && error.message.includes("not found")) {
+      throw error;
+    }
+    throw new NotFoundError("Failed to delete draft listing");
+  }
+}
