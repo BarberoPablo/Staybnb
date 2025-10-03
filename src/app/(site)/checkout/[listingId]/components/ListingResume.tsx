@@ -1,9 +1,9 @@
 "use client";
 
+import ImageWithFallback from "@/components/ImageWithFallback";
 import ReservationDate from "@/components/ReservationDate";
 import { Guests } from "@/lib/types";
 import { displayGuestLabel } from "@/lib/utils";
-import Image from "next/image";
 import { useState } from "react";
 import { BsFillHouseCheckFill } from "react-icons/bs";
 import { IoCalendar, IoLocation, IoPeople, IoStar } from "react-icons/io5";
@@ -37,8 +37,8 @@ export default function ListingResume({
       <div className="border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
         {/* Listing Image and Basic Info */}
         <div className="relative">
-          <Image
-            src={listingData.listing.images[0]}
+          <ImageWithFallback
+            src={listingData.listing.images[0] + "&w=480"}
             alt="listing main image"
             priority
             className="object-cover w-full h-48"

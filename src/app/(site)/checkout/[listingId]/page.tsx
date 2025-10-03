@@ -1,6 +1,7 @@
 import { getListingWithReservations } from "@/lib/api/server/api";
 import { ListingSearchParams } from "@/lib/types";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import Checkout from "./components/Checkout";
 
 export default async function CheckoutPage({
@@ -16,7 +17,12 @@ export default async function CheckoutPage({
   const listingId = parseInt(resolvedParams.listingId ?? "");
   const { startDate, endDate, adults } = resolvedSearchParams;
 
-  const listing = await getListingWithReservations(listingId);
+  let listing;
+  try {
+    listing = await getListingWithReservations(listingId);
+  } catch {
+    redirect("/");
+  }
 
   const isInvalid = !listingId || !startDate || !endDate || !adults || !listing;
 
