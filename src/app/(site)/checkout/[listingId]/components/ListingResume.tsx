@@ -1,12 +1,10 @@
 "use client";
 
 import ImageWithFallback from "@/components/ImageWithFallback";
-import ReservationDate from "@/components/ReservationDate";
-import { Guests } from "@/lib/types";
-import { displayGuestLabel } from "@/lib/utils";
+import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { BsFillHouseCheckFill } from "react-icons/bs";
-import { IoCalendar, IoLocation, IoPeople, IoStar } from "react-icons/io5";
+import { IoHome, IoLocation, IoShieldCheckmark, IoStar } from "react-icons/io5";
 import { ListingData } from "./Checkout";
 import DateRangeSelector from "./DateRangeSelector";
 
@@ -18,9 +16,14 @@ export default function ListingResume({
   setListingData: React.Dispatch<React.SetStateAction<ListingData>>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const openDateSelector = () => {
     setIsOpen(true);
+  };
+
+  const goToListing = () => {
+    router.push(`/listing/${listingData.listing.id}`);
   };
 
   return (
@@ -47,13 +50,21 @@ export default function ListingResume({
             sizes="(max-width: 640px) 100vw, 400px"
           />
 
-          {/* Edit Button Overlay */}
-          <button
-            className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm hover:bg-white text-myGrayDark px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-md hover:cursor-pointer"
-            onClick={openDateSelector}
-          >
-            Edit Dates
-          </button>
+          {/* Button Overlays */}
+          <div className="absolute top-3 left-3 right-3 flex justify-between">
+            <button
+              className="bg-white/90 backdrop-blur-sm hover:bg-white text-myGrayDark px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-md hover:cursor-pointer"
+              onClick={goToListing}
+            >
+              View Listing
+            </button>
+            <button
+              className="bg-white/90 backdrop-blur-sm hover:bg-white text-myGrayDark px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-md hover:cursor-pointer"
+              onClick={openDateSelector}
+            >
+              Edit Dates
+            </button>
+          </div>
         </div>
 
         <div className="p-6 space-y-6">
@@ -63,7 +74,7 @@ export default function ListingResume({
 
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 bg-myGreenExtraLight px-2 py-1 rounded-full">
-                <IoStar className="w-4 h-4 text-myGreenBold fill-current" />
+                <IoStar className="w-4 h-4 text-yellow-400 fill-current" />
                 <span className="text-sm font-semibold text-myGrayDark">{listingData.listing.score.value.toFixed(1)}</span>
               </div>
               <span className="text-sm text-myGray">({listingData.listing.score.reviews.length} reviews)</span>
@@ -75,30 +86,39 @@ export default function ListingResume({
             </div>
           </div>
 
-          {/* Trip Information */}
+          {/* Property Details */}
           <div className="bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20 p-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 bg-myGreen rounded-full flex items-center justify-center">
-                <IoCalendar className="w-4 h-4 text-myGrayDark" />
+                <IoHome className="w-4 h-4 text-myGrayDark" />
               </div>
-              <h3 className="text-lg font-semibold text-myGrayDark">Trip Information</h3>
+              <h3 className="text-lg font-semibold text-myGrayDark">Property Details</h3>
             </div>
 
-            <div className="space-y-3">
-              <ReservationDate
-                startDate={listingData.startDate}
-                endDate={listingData.endDate}
-                timezone={listingData.listing.location.timezone}
-                className="bg-white text-myGrayDark border border-myGreenSemiBold/20"
-              />
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="bg-white rounded-lg p-3 text-center">
+                <div className="font-semibold text-myGrayDark">{listingData.listing.propertyType}</div>
+                <div className="text-myGray text-xs">Property Type</div>
+              </div>
+              <div className="bg-white rounded-lg p-3 text-center">
+                <div className="font-semibold text-myGrayDark">{listingData.listing.privacyType}</div>
+                <div className="text-myGray text-xs">Privacy Level</div>
+              </div>
+            </div>
+          </div>
 
-              <div className="flex items-center gap-2 text-sm text-myGray">
-                <IoPeople className="w-4 h-4" />
-                <span>
-                  {Object.entries(listingData.guests)
-                    .map(([guest, value]) => displayGuestLabel(guest as Guests, Number(value)))
-                    .join(", ")}
-                </span>
+          {/* Cancellation Policy */}
+          <div className="bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20 p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-8 bg-myGreen rounded-full flex items-center justify-center">
+                <IoShieldCheckmark className="w-4 h-4 text-myGrayDark" />
+              </div>
+              <h3 className="text-lg font-semibold text-myGrayDark">Cancellation Policy</h3>
+            </div>
+
+            <div className="bg-white rounded-lg p-3">
+              <div className="text-sm text-myGray">
+                Free cancellation up to <span className="font-semibold text-myGrayDark">{listingData.listing.minCancelDays} days</span> before check-in
               </div>
             </div>
           </div>

@@ -3,12 +3,13 @@
 import { PriceSummary } from "@/components/Booking/PriceSummary";
 import { createReservation } from "@/lib/api/server/api";
 import { CreateReservation } from "@/lib/types/reservation";
-import { calculateNights } from "@/lib/utils";
+import { Guests } from "@/lib/types";
+import { calculateNights, displayGuestLabel } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { IoCalendar, IoCard, IoCheckmarkCircle } from "react-icons/io5";
+import { IoCalendar, IoCard, IoCheckmarkCircle, IoPeople } from "react-icons/io5";
 import { ListingData } from "./Checkout";
 
 type ConfirmationState = "loading" | "confirmed" | "error" | "serverError";
@@ -90,34 +91,47 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
         <p className="text-myGray">Complete your booking securely</p>
       </div>
 
-      {/* Trip Dates */}
+      {/* Trip Information */}
       <div className="rounded-xl border bg-gradient-to-r p-6 from-myGreenExtraLight to-myGreenExtraLight/60 border-myGreenSemiBold/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 bg-myGreen rounded-full flex items-center justify-center">
             <IoCalendar className="w-5 h-5 text-myGrayDark" />
           </div>
-          <h2 className="text-xl font-semibold text-myGrayDark">Trip Dates</h2>
+          <h2 className="text-xl font-semibold text-myGrayDark">Trip Information</h2>
         </div>
 
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3 bg-white rounded-lg">
             <span className="text-myGray font-medium">Check-in:</span>
-            <span className="font-semibold text-myGrayDark">
+            <span className="font-semibold text-myGrayDark text-sm sm:text-base">
               {listingData.startDate.toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
               })}
+              <span className="text-xs sm:text-sm text-myGray font-normal ml-1">at {listingData.listing.checkInTime}</span>
             </span>
           </div>
           <div className="flex items-center justify-between p-3 bg-white rounded-lg">
             <span className="text-myGray font-medium">Check-out:</span>
-            <span className="font-semibold text-myGrayDark">
+            <span className="font-semibold text-myGrayDark text-sm sm:text-base">
               {listingData.endDate.toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
               })}
+              <span className="text-xs sm:text-sm text-myGray font-normal ml-1">at {listingData.listing.checkOutTime}</span>
+            </span>
+          </div>
+
+          {/* Guests Information */}
+          <div className="flex items-center gap-2 p-3 bg-white rounded-lg">
+            <IoPeople className="w-4 h-4 text-myGray" />
+            <span className="text-myGray font-medium">Guests:</span>
+            <span className="font-semibold text-myGrayDark text-sm sm:text-base ml-auto">
+              {Object.entries(listingData.guests)
+                .map(([guest, value]) => displayGuestLabel(guest as Guests, Number(value)))
+                .join(", ")}
             </span>
           </div>
         </div>
@@ -132,7 +146,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
       {/* Payment Button */}
       <button
         disabled={listingData.startDate.getTime() >= listingData.endDate.getTime()}
-        className="w-full bg-myGreenSemiBold hover:bg-myGreen text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] hover:cursor-pointer"
+        className="w-full bg-myGreen hover:bg-myGreenSemiBold text-myGrayDark font-semibold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] hover:cursor-pointer"
         onClick={handleConfirmPayment}
       >
         Confirm and Pay

@@ -18,7 +18,8 @@
     "seed:reservations": "tsx scripts/seed-reservations.ts",
     "populate:listing:scores": "tsx scripts/populate-listing-scores.ts",
     "fix:guest:capacity": "tsx scripts/fix-guest-capacity.ts",
-    "populate:cities": "tsx scripts/populate-cities.ts"
+    "populate:cities": "tsx scripts/populate-cities.ts",
+    "fix:reservation:times": "tsx scripts/fix-reservation-times.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",
