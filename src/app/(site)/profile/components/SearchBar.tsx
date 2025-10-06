@@ -1,4 +1,4 @@
-import { IoSearch } from "react-icons/io5";
+import { IoClose, IoSearch } from "react-icons/io5";
 
 interface SearchBarProps {
   searchTerm: string;
@@ -19,6 +19,12 @@ export function SearchBar({ searchTerm, onSearchChange, placeholder, variant = "
     <div className={`${baseClasses} ${className}`}>
       <IoSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-myGray w-5 h-5" />
       <input type="text" placeholder={placeholder} value={searchTerm} onChange={(e) => onSearchChange(e.target.value)} className={inputClasses} />
+      {searchTerm && (
+        <IoClose
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-myGray w-5 h-5 cursor-pointer hover:bg-myGray/10 rounded-full"
+          onClick={() => onSearchChange("")}
+        />
+      )}
     </div>
   );
 }

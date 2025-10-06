@@ -376,8 +376,8 @@ export function ReservationConfirmationEmailPreview({
             <a
               href={
                 process.env.NEXT_PUBLIC_NODE_ENV === "development"
-                  ? "http://localhost:3000/profile/reservations"
-                  : "https://your-domain.com/profile/reservations"
+                  ? "http://localhost:3000/profile/reservations?id=" + reservationId
+                  : "https://your-domain.com/profile/reservations?id=" + reservationId
               }
               style={{
                 display: "inline-block",
@@ -772,8 +772,8 @@ export function ReservationConfirmationEmail({
                 <a
                   href={
                     process.env.NEXT_PUBLIC_NODE_ENV === "development"
-                      ? "http://localhost:3000/profile/reservations"
-                      : "https://your-domain.com/profile/reservations"
+                      ? "http://localhost:3000/profile/reservations?id=" + reservationId
+                      : "https://your-domain.com/profile/reservations?id=" + reservationId
                   }
                   style={{
                     display: "inline-block",

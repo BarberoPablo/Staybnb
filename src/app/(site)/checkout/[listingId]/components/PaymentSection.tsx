@@ -38,6 +38,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
   const [confirmationState, setConfirmationState] = useState<ConfirmationState>("loading");
   const nights = calculateNights(listingData.startDate, listingData.endDate);
   const [errorMessage, setErrorMessage] = useState<string | null>("");
+  const [reservationId, setReservationId] = useState<string>("");
 
   const router = useRouter();
 
@@ -56,6 +57,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
 
       if (response.success) {
         setConfirmationState("confirmed");
+        setReservationId(response.reservationId);
       } else {
         throw new Error(response.message);
       }
@@ -76,7 +78,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
     if (confirmationState === "error" || confirmationState === "serverError") {
       window.location.reload();
     } else {
-      router.push("/profile/reservations");
+      router.push("/profile/reservations?id=" + reservationId);
     }
   };
 
