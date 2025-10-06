@@ -3,6 +3,7 @@
 import { useFavoritesOptimistic } from "@/hooks/useFavoritesOptimistic";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
+import { FaHeart } from "react-icons/fa";
 import { EmptyState } from "../components/EmptyState";
 import { PageHeader } from "../components/PageHeader";
 import { SearchBar } from "../components/SearchBar";
@@ -18,7 +19,7 @@ export default function FavoritesSection() {
     (favorite) =>
       favorite.listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       favorite.listing.location?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      favorite.listing.location?.formatted?.toLowerCase().includes(searchTerm.toLowerCase())
+      favorite.listing.location?.formatted?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleRemoveFavorite = async (listingId: number) => {
@@ -37,7 +38,7 @@ export default function FavoritesSection() {
     return (
       <div className="space-y-6">
         <PageHeader title="My Favorites" description="Your saved places and dream destinations" />
-        <EmptyState icon="❤️" title="Error loading favorites" description={error} />
+        <EmptyState icon={<FaHeart className="w-8 h-8 text-red-400" />} title="Error loading favorites" description={error} />
       </div>
     );
   }
@@ -51,7 +52,7 @@ export default function FavoritesSection() {
       {/* Favorites Grid */}
       {filteredFavorites.length === 0 ? (
         <EmptyState
-          icon="❤️"
+          icon={<FaHeart className="w-8 h-8 text-red-400" />}
           title={searchTerm ? "No favorites found" : "No favorites yet"}
           description={searchTerm ? "Try adjusting your search terms" : "Start exploring and save places you love"}
         />
