@@ -1,5 +1,7 @@
 "use server";
 
+import { formatGuestsForEmail, sendReservationConfirmationEmail } from "@/lib/email";
+import type { ReservationEmailData } from "@/lib/email/types";
 import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
 import { parseCreateListingToDB, parseDraftListingFromDB, parseDraftListingToCreateListingDB } from "@/lib/parsers/draftListings";
 import { parseProfileFromDB } from "@/lib/parsers/profile";
@@ -10,7 +12,7 @@ import { Guests } from "@/lib/types";
 import { AmenityDB } from "@/lib/types/amenities";
 import { City } from "@/lib/types/cities";
 import { DraftListingDB } from "@/lib/types/draftListing";
-import { EditListing, ListingDB, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB, Structure } from "@/lib/types/listing";
+import { EditListing, ListingDB, ListingWithReservationsAndHostDB, Location, ReviewDB, ScoreDB, Structure } from "@/lib/types/listing";
 import { ProfileDB } from "@/lib/types/profile";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../parsers/listing";
 import { parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../../parsers/reservation";
@@ -78,7 +80,7 @@ export async function getListingWithReservations(id: number) {
 export async function searchListings(
   city: string | undefined,
   filters: ParsedFilters,
-  mapCoordinates?: { zoom: number; northEast: { lat: number; lng: number }; southWest: { lat: number; lng: number } }
+  mapCoordinates?: { zoom: number; northEast: { lat: number; lng: number }; southWest: { lat: number; lng: number } },
 ) {
   if (!city) {
     return { listings: [], cityCenter: null };
@@ -822,12 +824,17 @@ export async function createReservation(reservationData: CreateReservation) {
       },
       select: {
         id: true,
+        title: true,
         night_price: true,
         promotions: true,
         status: true,
         host_id: true,
         guest_limits: true,
         structure: true,
+        location: true,
+        images: true,
+        check_in_time: true,
+        check_out_time: true,
       },
     });
 
@@ -917,6 +924,62 @@ export async function createReservation(reservationData: CreateReservation) {
         status: "upcoming",
       },
     });
+
+    // Send confirmation email
+    try {
+      const userProfile = await prisma.profiles.findUnique({
+        where: { id: user.id },
+        select: { first_name: true, last_name: true },
+      });
+
+      const hostProfile = await prisma.profiles.findUnique({
+        where: { id: listing.host_id },
+        select: { first_name: true, last_name: true, avatar_url: true },
+      });
+
+      const location = listing.location as unknown as Location;
+      const listingImages = Array.isArray(listing.images) ? listing.images : [];
+
+      const emailData: ReservationEmailData = {
+        // User information
+        userEmail: user.email!,
+        userName: userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : "Guest",
+
+        // Reservation details
+        reservationId: reservation.id,
+        startDate: reservationData.startDate,
+        endDate: reservationData.endDate,
+        guests: formatGuestsForEmail(reservationData.guests),
+        totalNights: nights,
+        totalPrice: totalPrice,
+        nightPrice: Number(listing.night_price),
+        discount: discount > 0 ? discount : undefined,
+        discountPercentage: discountPercentage > 0 ? discountPercentage : undefined,
+
+        // Listing information
+        listingId: listing.id,
+        listingTitle: listing.title,
+        listingImages: listingImages,
+        listingAddress: location.formatted || `${location.city || ""}, ${location.country || ""}`.trim(),
+        checkInTime: listing.check_in_time || "Flexible",
+        checkOutTime: listing.check_out_time || "Flexible",
+
+        // Host information
+        hostName: hostProfile ? `${hostProfile.first_name} ${hostProfile.last_name}` : "Host",
+        hostAvatarUrl: hostProfile?.avatar_url,
+      };
+
+      // Send email asynchronously
+      console.log({ emailData });
+
+      sendReservationConfirmationEmail(emailData).catch((emailError) => {
+        // Don't throw error - email failure shouldn't break reservation creation
+        console.error("Failed to send reservation confirmation email:", emailError);
+      });
+    } catch (emailError) {
+      // Don't throw error - email failure shouldn't break reservation creation
+      console.error("Error preparing email data:", emailError);
+    }
 
     return {
       success: true,

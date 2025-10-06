@@ -1,6 +1,6 @@
-# 🏠 Airbnb Clone - Full-Stack Rental Platform
+# 🏠 Staybnb - Full-Stack Rental Platform
 
-A modern, full-featured Airbnb clone built with Next.js 15, TypeScript, and Supabase. This platform provides a complete rental experience for both hosts and guests, featuring advanced booking systems, interactive maps, and a seamless user experience.
+A modern, full-featured Staybnb built with Next.js 15, TypeScript, and Supabase. This platform provides a complete rental experience for both hosts and guests, featuring advanced booking systems, interactive maps, and a seamless user experience.
 
 ![Next.js](https://img.shields.io/badge/Next.js-15.3.4-black?style=for-the-badge&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
