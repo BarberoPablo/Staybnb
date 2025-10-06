@@ -4,8 +4,7 @@ import { logout } from "@/app/(site)/auth/components/auth";
 import { useUser } from "@/hooks/useUser";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useRouter } from "nextjs-toploader/app";
-import { CiUser } from "react-icons/ci";
-import { FaHome, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
+import { FaHome, FaSignOutAlt, FaUser, FaUserCircle } from "react-icons/fa";
 import { MdKeyboardArrowDown, MdOutlineLogin, MdOutlineTravelExplore } from "react-icons/md";
 
 export function SignButton({ hosting }: { hosting: boolean }) {
@@ -59,8 +58,8 @@ export function SignButton({ hosting }: { hosting: boolean }) {
       <MenuButton
         className={`flex items-center gap-2 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer hover:bg-myGreenExtraLight/30 p-1`}
       >
-        <div className="w-10 h-10 bg-gradient-to-br from-myGreenLight to-myGreenBold rounded-full flex items-center justify-center shadow-sm">
-          <CiUser className="w-6 h-6 text-white" />
+        <div className="w-10 h-10 bg-myGreen rounded-full flex items-center justify-center shadow-sm">
+          <FaUser className="w-6 h-6 text-myGrayDark" />
         </div>
         <div className="hidden sm:flex items-center gap-2">
           <span className="text-myGrayDark font-medium text-sm">Profile</span>
@@ -83,8 +82,8 @@ export function SignButton({ hosting }: { hosting: boolean }) {
                   }`}
                   onClick={handleProfile}
                 >
-                  <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-sm">
-                    <FaUserCircle className="w-4 h-4 text-white" />
+                  <div className="w-9 h-9 bg-gradient-to-br from-myGreen/60 to-myGreen rounded-xl flex items-center justify-center shadow-sm">
+                    <FaUserCircle className="w-4 h-4 text-myGrayDark" />
                   </div>
                   <div className="flex-1 text-left">
                     <span className="font-medium">My Profile</span>
@@ -99,16 +98,16 @@ export function SignButton({ hosting }: { hosting: boolean }) {
                 {({ focus }) => (
                   <button
                     className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
-                      focus ? "bg-orange-50 text-orange-700" : "hover:bg-orange-50 text-myGrayDark"
+                      focus ? "bg-myPurple/60 text-myPurpleBold" : "hover:bg-myPurple/40 text-myGrayDark"
                     }`}
                     onClick={handleHosting}
                   >
-                    <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-sm">
-                      <FaHome className="w-4 h-4 text-white" />
+                    <div className="w-9 h-9 bg-gradient-to-br from-myGreenComplement to-myPurple rounded-xl flex items-center justify-center shadow-sm">
+                      <FaHome className="w-4 h-4 text-myGrayDark" />
                     </div>
                     <div className="flex-1 text-left">
                       <span className="font-medium">Switch to Hosting</span>
-                      <p className="text-xs text-myGray group-hover:text-orange-700 transition-colors">Manage your listings</p>
+                      <p className="text-xs text-myGray group-hover:text-myPurpleBold transition-colors">Manage your listings</p>
                     </div>
                   </button>
                 )}
@@ -120,16 +119,16 @@ export function SignButton({ hosting }: { hosting: boolean }) {
                 {({ focus }) => (
                   <button
                     className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
-                      focus ? "bg-blue-50 text-blue-700" : "hover:bg-blue-50 text-myGrayDark"
+                      focus ? "bg-myPurple/60 text-myPurpleBold" : "hover:bg-myPurple/40 text-myGrayDark"
                     }`}
                     onClick={handleTraveling}
                   >
-                    <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-sm">
-                      <MdOutlineTravelExplore className="w-4 h-4 text-white" />
+                    <div className="w-9 h-9 bg-gradient-to-br from-myGreenComplement to-myPurple rounded-xl flex items-center justify-center shadow-sm">
+                      <MdOutlineTravelExplore className="w-4 h-4 text-myGrayDark" />
                     </div>
                     <div className="flex-1 text-left">
                       <span className="font-medium">Switch to Traveling</span>
-                      <p className="text-xs text-myGray group-hover:text-blue-700 transition-colors">Browse and book stays</p>
+                      <p className="text-xs text-myGray group-hover:text-myPurpleBold transition-colors">Browse and book stays</p>
                     </div>
                   </button>
                 )}
@@ -141,7 +140,7 @@ export function SignButton({ hosting }: { hosting: boolean }) {
                 {({ focus }) => (
                   <button
                     className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
-                      focus ? "bg-red-50 text-red-700" : "hover:bg-red-50 text-myGrayDark"
+                      focus ? "bg-red-100 text-red-700" : "hover:bg-red-50 text-myGrayDark"
                     }`}
                     onClick={handleLogout}
                   >

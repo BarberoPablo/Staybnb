@@ -5,7 +5,7 @@ import { excludeDate, getCustomDayContent } from "@/components/Booking/bookingFo
 import Tooltip from "@/components/Tooltip";
 import { api } from "@/lib/api/api";
 import { DateRangeKey, UnavailableDates } from "@/lib/types";
-import { createUTCDate, getDisabledDates, validateDateRange } from "@/lib/utils";
+import { calculateNights, createUTCDate, getDisabledDates, getListingPromotion, validateDateRange } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import { DateRange, RangeKeyDict } from "react-date-range";
@@ -109,8 +109,16 @@ export default function DateRangeSelector({
     }
 
     updateURLParams(dateRange.startDate, dateRange.endDate);
+    const nights = calculateNights(dateRange.startDate, dateRange.endDate);
 
-    setListingData((prevState) => ({ ...prevState, startDate: dateRange.startDate, endDate: dateRange.endDate }));
+    setListingData((prevState) => ({
+      ...prevState,
+      startDate: dateRange.startDate,
+      endDate: dateRange.endDate,
+      nights,
+      promo: getListingPromotion(prevState.listing, nights),
+    }));
+
     onClose();
   };
 
