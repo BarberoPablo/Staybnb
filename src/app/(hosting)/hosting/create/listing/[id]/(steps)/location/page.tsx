@@ -7,7 +7,7 @@ import { reverseGeocode } from "@/lib/utils";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef } from "react";
-import { FieldError, useFormContext } from "react-hook-form";
+import { FieldError, useFormContext, useWatch, Controller } from "react-hook-form";
 import toast from "react-hot-toast";
 import { PiMapPinLight } from "react-icons/pi";
 
@@ -20,19 +20,31 @@ type LocationField = {
   placeholder?: string;
 };
 
+// Function to build formatted address from individual fields
+const buildFormattedAddress = (locationData: CreateListingForm["location"]) => {
+  const parts = [];
+
+  if (locationData.housenumber) parts.push(locationData.housenumber);
+  if (locationData.street) parts.push(locationData.street);
+  if (locationData.city) parts.push(locationData.city);
+  if (locationData.state) parts.push(locationData.state);
+  if (locationData.postcode) parts.push(locationData.postcode);
+  if (locationData.country) parts.push(locationData.country);
+
+  return parts.join(", ");
+};
+
 export default function LocationStep() {
   const {
-    watch,
     setValue,
-    register,
+    control,
     formState: { errors },
   } = useFormContext<CreateListingForm>();
 
-  const location = watch("location");
+  const location = useWatch({ control, name: "location" });
   const isFirstRender = useRef(true);
 
   const locationFields: LocationField[] = [
-    { key: "formatted", label: "Formatted Address *", placeholder: "123 Main St, City, State 12345" },
     { key: "country", label: "Country *", placeholder: "Country" },
     { key: "city", label: "City *", placeholder: "City" },
     { key: "state", label: "State *", placeholder: "State" },
@@ -44,7 +56,7 @@ export default function LocationStep() {
     (address: Location) => {
       setValue("location", address, { shouldValidate: true });
     },
-    [setValue]
+    [setValue],
   );
 
   useEffect(() => {
@@ -79,10 +91,20 @@ export default function LocationStep() {
           if (typeof address !== "string") {
             handleChangeLocation(address);
           }
-        }
+        },
       );
     }
   }, [location?.lat, location?.lng, handleChangeLocation]);
+
+  useEffect(() => {
+    if (!location) return;
+
+    const newFormattedAddress = buildFormattedAddress(location);
+
+    if (newFormattedAddress && newFormattedAddress !== location.formatted) {
+      setValue("location.formatted", newFormattedAddress, { shouldValidate: true });
+    }
+  }, [location, setValue]);
 
   return (
     <div className="w-full p-2 sm:px-12 py-10">
@@ -119,18 +141,14 @@ export default function LocationStep() {
               )}
             </div>
 
-            {/* Location Details */}
-            {location?.formatted && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="p-4 bg-myGreenExtraLight rounded-xl border border-myGreenLight"
-              >
-                <h4 className="font-semibold text-myGrayDark mb-2">Selected Location:</h4>
-                <p className="text-myGrayDark">{location.formatted}</p>
-              </motion.div>
-            )}
+            {/* Display formatted address (read-only) */}
+            <div className="bg-myGreenExtraLight rounded-xl border border-myGreenLight p-4">
+              <label className={labelClass}>Formatted Address (Auto-generated)</label>
+              <div className="text-myGrayDark font-medium bg-white rounded-lg p-3 border border-gray-200">
+                {location?.formatted || "Address will be generated from the fields below"}
+              </div>
+              <p className="text-xs text-myGray mt-2">This is how your address will appear to guests</p>
+            </div>
 
             {/* Location Input Fields */}
             <div className="space-y-4">
@@ -143,7 +161,23 @@ export default function LocationStep() {
                 {locationFields.map(({ key, label, placeholder }) => (
                   <div key={key}>
                     <label className={labelClass}>{label}</label>
-                    <input {...register(`location.${key}`)} value={location?.[key] ?? ""} type="text" placeholder={placeholder} className={inputClass} />
+                    <Controller
+                      control={control}
+                      name={`location.${key}`}
+                      render={({ field }) => (
+                        <input
+                          {...field}
+                          type="text"
+                          placeholder={placeholder}
+                          className={inputClass}
+                          value={location?.[key] ?? ""}
+                          onChange={(e) => {
+                            field.onChange(e.target.value);
+                            setValue(`location.${key}`, e.target.value, { shouldValidate: true });
+                          }}
+                        />
+                      )}
+                    />
                     {errors.location?.[key] && <p className={errorClass}>{errors.location[key]?.message}</p>}
                   </div>
                 ))}
