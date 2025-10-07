@@ -1,15 +1,12 @@
 import { parseFavoritesWithListingFromDB, parseFavoriteWithListingFromDB } from "../parsers/favorites";
 import { parseCreateProfile, parseProfileFromDB, parseUpdateProfile } from "../parsers/profile";
-import { parseListingReservedDatesDB, parseReservationsFromDB } from "../parsers/reservation";
 import { FavoriteWithListing, FavoriteWithListingDB } from "../types/favorites";
 import { CreateProfile, Profile, ProfileDB, UpdateProfile } from "../types/profile";
-import { ListingReservedDatesDB, ReservationDB } from "../types/reservation";
 import customFetch from "./fetch";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
 export const endpoint = {
-  getHostListingReservations: (id: number) => `${baseUrl}/api/host/listings/${id}/reservations`,
   // profile
   getProfile: `${baseUrl}/api/profile`,
   updateProfile: `${baseUrl}/api/profile`,
@@ -19,8 +16,6 @@ export const endpoint = {
   deleteFavorites: (id: number) => `${baseUrl}/api/favorites/${id}`,
   // auth
   signUp: `${baseUrl}/api/signUp`,
-  // reservations
-  getListingReservations: (listingId: number) => `${baseUrl}/api/reservations/${listingId}`,
 };
 
 export const api = {
@@ -58,15 +53,5 @@ export const api = {
   async signUp(userData: CreateProfile) {
     const parsedUserData = parseCreateProfile(userData);
     return await customFetch.post(endpoint.signUp, { ...parsedUserData });
-  },
-  async getListingReservations(listingId: number) {
-    const { data } = await customFetch.get<ListingReservedDatesDB>(endpoint.getListingReservations(listingId));
-    const parsedData = parseListingReservedDatesDB(data);
-    return parsedData;
-  },
-  async getHostListingReservations(ListingId: number) {
-    const { data } = await customFetch.get<ReservationDB[]>(endpoint.getHostListingReservations(ListingId));
-    const parsedHostListings = parseReservationsFromDB(data);
-    return parsedHostListings;
   },
 };

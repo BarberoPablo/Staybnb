@@ -1,4 +1,4 @@
-import { getListingWithReservations } from "@/lib/api/server/api";
+import { getListingWithReservations } from "@/lib/api/server/endpoints/listings";
 import { ListingSearchParams } from "@/lib/types";
 import Link from "next/link";
 import { redirect } from "next/navigation";

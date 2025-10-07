@@ -1,7 +1,7 @@
+import { getHostListings } from "@/lib/api/server/endpoints/listings";
 import HostListingCards from "./components/HostListingCards";
 import HostListingsHeader from "./components/HostListingsHeader";
 import HostListingsStatus from "./components/HostListingsStatus";
-import { getHostListings } from "@/lib/api/server/api";
 
 export default async function HostListingPage() {
   const listings = await getHostListings();

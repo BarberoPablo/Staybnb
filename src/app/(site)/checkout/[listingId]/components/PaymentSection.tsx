@@ -1,9 +1,9 @@
 "use client";
 
 import { PriceSummary } from "@/components/Booking/PriceSummary";
-import { createReservation } from "@/lib/api/server/api";
-import { CreateReservation } from "@/lib/types/reservation";
+import { createReservation } from "@/lib/api/server/endpoints/reservations";
 import { Guests } from "@/lib/types";
+import { CreateReservation } from "@/lib/types/reservation";
 import { calculateNights, displayGuestLabel } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRouter } from "nextjs-toploader/app";

@@ -3,7 +3,7 @@
 import MapEventsHandler from "@/app/(site)/search/components/MapEventsHandler";
 import { RoundButton } from "@/components/Button/RoundButton";
 import ImagesSlider from "@/components/ImagesSlider";
-import { searchListings } from "@/lib/api/server/api";
+import { searchListings } from "@/lib/api/server/endpoints/listings";
 import { parseFilters } from "@/lib/api/server/utils";
 import { MapCoordinates } from "@/lib/types";
 import { Listing } from "@/lib/types/listing";

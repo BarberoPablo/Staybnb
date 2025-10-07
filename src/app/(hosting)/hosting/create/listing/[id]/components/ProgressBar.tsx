@@ -1,6 +1,6 @@
 "use client";
 
-import { updateDraftListing } from "@/lib/api/server/api";
+import { updateDraftListing } from "@/lib/api/server/endpoints/daft-listings";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { getStepFields, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";

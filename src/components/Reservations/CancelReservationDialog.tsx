@@ -1,4 +1,4 @@
-import { cancelReservation } from "@/lib/api/server/api";
+import { cancelReservation } from "@/lib/api/server/endpoints/reservations";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { motion } from "framer-motion";
 import { useState } from "react";

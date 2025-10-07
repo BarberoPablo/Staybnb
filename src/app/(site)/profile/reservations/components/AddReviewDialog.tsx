@@ -1,6 +1,6 @@
 "use client";
 
-import { addReviewToListing } from "@/lib/api/server/api";
+import { addReviewToListing } from "@/lib/api/server/endpoints/listings";
 import { Review } from "@/lib/types/listing";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { motion } from "framer-motion";

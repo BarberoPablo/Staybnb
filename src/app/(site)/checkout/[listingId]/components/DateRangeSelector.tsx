@@ -3,7 +3,7 @@
 import { CalendarLegend } from "@/components/Booking/CalendarLegend";
 import { excludeDate, getCustomDayContent } from "@/components/Booking/bookingFormUtils";
 import Tooltip from "@/components/Tooltip";
-import { api } from "@/lib/api/api";
+import { getListingReservations } from "@/lib/api/server/endpoints/reservations";
 import { DateRangeKey, UnavailableDates } from "@/lib/types";
 import { calculateNights, createUTCDate, getDisabledDates, getListingPromotion, validateDateRange } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
@@ -57,7 +57,7 @@ export default function DateRangeSelector({
   useEffect(() => {
     const fetchReservedDates = async () => {
       try {
-        const { reservations, listing } = await api.getListingReservations(listingId);
+        const { reservations, listing } = await getListingReservations(listingId);
 
         const { unavailableCheckInDates: disabledCheckInDates, unavailableCheckOutDates: disabledCheckOutDates } = getDisabledDates(reservations);
 

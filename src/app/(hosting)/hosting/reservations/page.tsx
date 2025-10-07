@@ -1,4 +1,4 @@
-import { getHostReservationsGroupedByListing } from "@/lib/api/server/api";
+import { getHostReservationsGroupedByListing } from "@/lib/api/server/endpoints/reservations";
 import HostReservationsContainer from "./components/HostReservationsContainer";
 
 export default async function ReservationsPage() {

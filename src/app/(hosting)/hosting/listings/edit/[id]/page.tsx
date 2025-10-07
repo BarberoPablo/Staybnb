@@ -1,4 +1,4 @@
-import { getHostListing } from "@/lib/api/server/api";
+import { getHostListing } from "@/lib/api/server/endpoints/listings";
 import { notFound, redirect } from "next/navigation";
 import EditListingForm from "./components/EditListingForm";
 
