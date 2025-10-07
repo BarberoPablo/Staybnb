@@ -1,6 +1,5 @@
 "use client";
 
-import { FavoriteButton } from "@/components/FavoriteButton";
 import ImagesSlider from "@/components/ImagesSlider";
 import { buildQueryStringFromParams } from "@/components/Navbar";
 import { Listing } from "@/lib/types/listing";
@@ -39,11 +38,6 @@ export default function ListingCard({ listing, setLocateListing }: { listing: Li
         <div className="absolute bottom-3 left-3 bg-white px-3 py-1 rounded-full shadow-md border border-gray-100">
           <span className="font-semibold text-myGrayDark">${listing.nightPrice}</span>
           <span className="text-sm text-myGray">/night</span>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="absolute flex top-3 right-3 gap-2">
-          <FavoriteButton listingId={listing.id} />
         </div>
       </div>
 

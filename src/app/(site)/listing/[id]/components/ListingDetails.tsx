@@ -1,6 +1,7 @@
 "use client";
 
 import ImageWithFallback from "@/components/ImageWithFallback";
+import { ListingFavoriteButton } from "@/components/ListingFavoriteButton";
 import { ListBadges } from "@/components/ListBadges";
 import AmenityIcon from "@/components/icons/AmenityIcon";
 import { AMENITIES } from "@/lib/constants/amenities";
@@ -13,13 +14,15 @@ import { IoLocation, IoStar } from "react-icons/io5";
 export default function ListingDetails({ listing }: { listing: ListingWithReservationsAndHost }) {
   return (
     <motion.div
-      className="lg:col-span-7 space-y-8 border border-gray-200 rounded-2xl shadow-lg p-6"
+      className="relative lg:col-span-7 space-y-8 border border-gray-200 rounded-2xl shadow-lg p-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
       <div className="space-y-4">
-        <h1 className="text-4xl font-bold text-myGrayDark leading-tight">{listing.title}</h1>
+        <ListingFavoriteButton listingId={listing.id} className="absolute top-2 right-2" />
+        <h1 className="text-4xl font-bold text-myGrayDark leading-tight flex-1">{listing.title}</h1>
+
         <ListingSubtitle listingDetails={listing} />
       </div>
 
@@ -100,14 +103,17 @@ function AmenitiesSection({ amenities }: { amenities: number[] }) {
     .map((id) => AMENITIES.find((amenity) => amenity.id === id))
     .filter((amenity): amenity is NonNullable<typeof amenity> => amenity !== undefined);
 
-  const amenitiesByCategory = amenityObjects.reduce((acc, amenity) => {
-    const category = amenity.category;
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(amenity);
-    return acc;
-  }, {} as Record<string, typeof amenityObjects>);
+  const amenitiesByCategory = amenityObjects.reduce(
+    (acc, amenity) => {
+      const category = amenity.category;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(amenity);
+      return acc;
+    },
+    {} as Record<string, typeof amenityObjects>,
+  );
 
   const categoryLabels: Record<string, string> = {
     general: "Essentials",
