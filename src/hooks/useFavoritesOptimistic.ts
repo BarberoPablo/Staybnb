@@ -1,7 +1,7 @@
-import { useUser } from "./useUser";
-import { useState, useEffect, useCallback } from "react";
-import { api } from "@/lib/api/api";
+import { createFavorite, deleteFavorite, getFavorites } from "@/lib/api/server/endpoints/favorites";
 import { FavoriteWithListing } from "@/lib/types/favorites";
+import { useCallback, useEffect, useState } from "react";
+import { useUser } from "./useUser";
 
 export function useFavoritesOptimistic() {
   const { user } = useUser();
@@ -18,7 +18,10 @@ export function useFavoritesOptimistic() {
     setError(null);
 
     try {
-      const data = await api.getFavorites();
+      const { success, data } = await getFavorites();
+
+      if (!success || !data) return;
+
       setFavorites(data);
       setFavoriteIds(new Set(data.map((fav) => fav.listingId)));
     } catch (err) {
@@ -49,10 +52,13 @@ export function useFavoritesOptimistic() {
 
       try {
         if (wasFavorite) {
-          await api.deleteFavorite(listingId);
+          await deleteFavorite(listingId);
           setFavorites((prev) => prev.filter((fav) => fav.listingId !== listingId));
         } else {
-          const newFavorite = await api.createFavorite(listingId);
+          const { data: newFavorite } = await createFavorite(listingId);
+
+          if (!newFavorite) return false;
+
           setFavorites((prev) => [newFavorite, ...prev]);
         }
         return true;
@@ -78,21 +84,21 @@ export function useFavoritesOptimistic() {
         });
       }
     },
-    [user, favoriteIds, pendingOperations]
+    [user, favoriteIds, pendingOperations],
   );
 
   const isFavorite = useCallback(
     (listingId: number) => {
       return favoriteIds.has(listingId);
     },
-    [favoriteIds]
+    [favoriteIds],
   );
 
   const isPending = useCallback(
     (listingId: number) => {
       return pendingOperations.has(listingId);
     },
-    [pendingOperations]
+    [pendingOperations],
   );
 
   useEffect(() => {

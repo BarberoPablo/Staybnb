@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from "@/hooks/useUser";
-import { api } from "@/lib/api/api";
+import { getProfile } from "@/lib/api/server/endpoints/profile";
 import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 
@@ -19,7 +19,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
         // User authenticated, check if profile exists
         const checkProfile = async () => {
           try {
-            const profile = await api.getProfile();
+            const profile = await getProfile();
 
             if (profile) {
               setReady(true);

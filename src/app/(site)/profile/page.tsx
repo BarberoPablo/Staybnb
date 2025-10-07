@@ -1,8 +1,7 @@
 "use client";
 
 import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
-import { api } from "@/lib/api/api";
-import { getProfile } from "@/lib/api/server/endpoints/profile";
+import { getProfile, updateProfile } from "@/lib/api/server/endpoints/profile";
 import type { Profile, UpdateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";
 import { checkImageUrl, verifyUpdateProfileData } from "@/lib/utils";
@@ -21,7 +20,7 @@ export default function ProfileInfo() {
   const [isEditing, setIsEditing] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [updatingProfile, setUpdatingProfile] = useState(false);
-  const [updateProfile, setUpdateProfile] = useState<UpdateProfile>({ firstName: "", lastName: "", avatarUrl: "", bio: "" });
+  const [updatedProfile, setUpdatedProfile] = useState<UpdateProfile>({ firstName: "", lastName: "", avatarUrl: "", bio: "" });
   const [profileImage, setProfileImage] = useState<PreviewImage>();
 
   useEffect(() => {
@@ -37,7 +36,7 @@ export default function ProfileInfo() {
         }
 
         setUserProfile({ ...profile, avatarUrl: validAvatarUrl });
-        setUpdateProfile({
+        setUpdatedProfile({
           firstName: profile.firstName,
           lastName: profile.lastName,
           avatarUrl: validAvatarUrl,
@@ -80,7 +79,7 @@ export default function ProfileInfo() {
     const originalProfile = userProfile;
 
     const avatarUrl = await handleUploadImage();
-    const data = verifyUpdateProfileData({ ...updateProfile, avatarUrl });
+    const data = verifyUpdateProfileData({ ...updatedProfile, avatarUrl });
 
     setUserProfile((prevState) => {
       if (!prevState) return prevState;
@@ -94,7 +93,7 @@ export default function ProfileInfo() {
     });
 
     try {
-      const updateResponse = await api.updateProfile(data);
+      const updateResponse = await updateProfile(data);
 
       if (updateResponse.success) {
         toast.success("Profile information updated", { duration: 2000 });
@@ -119,7 +118,7 @@ export default function ProfileInfo() {
 
   const handleCancel = () => {
     if (userProfile) {
-      setUpdateProfile({
+      setUpdatedProfile({
         firstName: userProfile.firstName,
         lastName: userProfile.lastName,
         bio: userProfile.bio || "",
@@ -200,8 +199,8 @@ export default function ProfileInfo() {
               {isEditing ? (
                 <input
                   type="text"
-                  value={updateProfile.firstName}
-                  onChange={(e) => setUpdateProfile({ ...updateProfile, firstName: e.target.value })}
+                  value={updatedProfile.firstName}
+                  onChange={(e) => setUpdatedProfile({ ...updatedProfile, firstName: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                 />
               ) : (
@@ -214,8 +213,8 @@ export default function ProfileInfo() {
               {isEditing ? (
                 <input
                   type="text"
-                  value={updateProfile.lastName}
-                  onChange={(e) => setUpdateProfile({ ...updateProfile, lastName: e.target.value })}
+                  value={updatedProfile.lastName}
+                  onChange={(e) => setUpdatedProfile({ ...updatedProfile, lastName: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                 />
               ) : (
@@ -227,8 +226,8 @@ export default function ProfileInfo() {
               <label className="block text-sm font-medium text-myGray mb-2">Bio</label>
               {isEditing ? (
                 <textarea
-                  value={updateProfile.bio}
-                  onChange={(e) => setUpdateProfile({ ...updateProfile, bio: e.target.value })}
+                  value={updatedProfile.bio}
+                  onChange={(e) => setUpdatedProfile({ ...updatedProfile, bio: e.target.value })}
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
                   placeholder="Tell us about yourself..."

@@ -1,7 +1,7 @@
 "use client";
 
 import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
-import { api } from "@/lib/api/api";
+import { getProfile, signUp } from "@/lib/api/server/endpoints/profile";
 import { basicButton } from "@/lib/styles";
 import { createClient } from "@/lib/supabase/client";
 import { CreateProfile } from "@/lib/types/profile";
@@ -69,7 +69,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
 
         if (session?.user) {
           //  User is logged in
-          const profile = await api.getProfile();
+          const profile = await getProfile();
 
           if (profile) {
             toast.success("Profile is complete. Redirecting...", { duration: 3000 });
@@ -131,7 +131,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
     try {
       const avatarUrl = await handleUploadImage();
       const data = verifyCreateProfileData({ ...profileData, avatarUrl });
-      const signUpResponse = await api.signUp(data);
+      const signUpResponse = await signUp(data);
 
       if (signUpResponse?.success) {
         setStep("completed");
