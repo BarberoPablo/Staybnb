@@ -1,5 +1,5 @@
 import { SkeletonReservations } from "@/app/(site)/profile/components/SkeletonReservations";
-import { getUserReservations } from "@/lib/api/server/api";
+import { getUserReservations } from "@/lib/api/server/endpoints/reservations";
 import { Suspense } from "react";
 import ReservationsClient from "./components/ReservationsClient";
 

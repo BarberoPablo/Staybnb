@@ -1,7 +1,7 @@
 import BookingCalendarContainer from "@/components/Booking/BookingCalendarContainer";
 import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
-import { getListingWithReservations } from "@/lib/api/server/api";
+import { getListingWithReservations } from "@/lib/api/server/endpoints/listings";
 import { AuthError, NotFoundError } from "@/lib/api/server/errors";
 import { notFound, redirect } from "next/navigation";
 import { Container } from "../../components/Container";

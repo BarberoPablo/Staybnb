@@ -1,6 +1,6 @@
 "use client";
 
-import { createDraftListing, deleteDraftListing } from "@/lib/api/server/api";
+import { createDraftListing, deleteDraftListing } from "@/lib/api/server/endpoints/daft-listings";
 import { DraftListing } from "@/lib/types/draftListing";
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";

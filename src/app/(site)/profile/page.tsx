@@ -2,7 +2,7 @@
 
 import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
 import { api } from "@/lib/api/api";
-import { getProfile } from "@/lib/api/server/api";
+import { getProfile } from "@/lib/api/server/endpoints/profile";
 import type { Profile, UpdateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";
 import { checkImageUrl, verifyUpdateProfileData } from "@/lib/utils";

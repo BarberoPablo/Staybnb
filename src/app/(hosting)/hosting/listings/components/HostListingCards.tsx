@@ -1,7 +1,7 @@
 "use client";
 
 import ImageWithFallback from "@/components/ImageWithFallback";
-import { pauseListing } from "@/lib/api/server/api";
+import { pauseListing } from "@/lib/api/server/endpoints/listings";
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";

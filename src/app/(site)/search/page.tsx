@@ -1,4 +1,5 @@
-import { getAllCities, searchListings } from "@/lib/api/server/api";
+import { getAllCities } from "@/lib/api/server/endpoints/cities";
+import { searchListings } from "@/lib/api/server/endpoints/listings";
 import { parseFilters } from "@/lib/api/server/utils";
 import SearchContainer from "./components/SearchContainer";
 

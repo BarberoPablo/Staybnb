@@ -1,6 +1,6 @@
 "use client";
 
-import { updateDraftListing } from "@/lib/api/server/api";
+import { updateDraftListing } from "@/lib/api/server/endpoints/daft-listings";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,7 +61,7 @@ export default function CreateListingFormProvider({ children, defaultValues, lis
         setValue("visitedSteps", newVisitedSteps);
       }
     },
-    [getValues, setValue]
+    [getValues, setValue],
   );
 
   const getCurrentFormData = useCallback((): Partial<CreateListingForm> => {
@@ -70,7 +70,7 @@ export default function CreateListingFormProvider({ children, defaultValues, lis
     const formFields = schemaFields.filter((field) => !["id", "hostId", "createdAt", "updatedAt"].includes(field as string));
 
     return Object.fromEntries(
-      formFields.filter((field) => allValues[field] !== undefined).map((field) => [field, allValues[field]])
+      formFields.filter((field) => allValues[field] !== undefined).map((field) => [field, allValues[field]]),
     ) as Partial<CreateListingForm>;
   }, [getValues]);
 
@@ -97,7 +97,7 @@ export default function CreateListingFormProvider({ children, defaultValues, lis
         setIsRedirecting(false); // Reset immediately on error since navigation won't happen
       }
     },
-    [markStepAsVisited, getCurrentFormData, listingId, router, setValue, pathname]
+    [markStepAsVisited, getCurrentFormData, listingId, router, setValue, pathname],
   );
 
   const contextValue: ListingFormContextType = {
