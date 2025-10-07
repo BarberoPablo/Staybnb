@@ -1,5 +1,6 @@
 "use client";
 
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ParsedFilters } from "@/lib/api/server/utils";
 import { City } from "@/lib/types/cities";
 import { Listing } from "@/lib/types/listing";
@@ -29,6 +30,7 @@ export default function SearchContainer({
   const [filteredListings, setFilteredListings] = useState<Listing[]>(listings);
   const [searchTriggered, setSearchTriggered] = useState(false);
   const layoutKey = getLayoutCategory(filteredListings.length);
+  const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
   useEffect(() => {
     setFilteredListings(listings);
@@ -64,16 +66,18 @@ export default function SearchContainer({
             </div>
 
             {/* Map Section */}
-            <div className="lg:col-span-4 xl:col-span-5 flex flex-col sticky top-10 h-[calc(100vh-177px)] flex-1 bg-white rounded-xl overflow-hidden shadow-lg">
-              <ListingsMapNoSSR
-                listings={filteredListings}
-                locateListing={locateListing}
-                setListings={setFilteredListings}
-                cityCenter={cityCenter}
-                searchTriggered={searchTriggered}
-                onSearchComplete={handleSearchComplete}
-              />
-            </div>
+            {isLargeScreen && (
+              <div className="lg:col-span-4 xl:col-span-5 flex flex-col sticky top-10 h-[calc(100vh-177px)] flex-1 bg-white rounded-xl overflow-hidden shadow-lg">
+                <ListingsMapNoSSR
+                  listings={filteredListings}
+                  locateListing={locateListing}
+                  setListings={setFilteredListings}
+                  cityCenter={cityCenter}
+                  searchTriggered={searchTriggered}
+                  onSearchComplete={handleSearchComplete}
+                />
+              </div>
+            )}
           </div>
         </motion.div>
       </div>
