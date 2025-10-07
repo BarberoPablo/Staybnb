@@ -122,12 +122,12 @@ export default function ReservationsClient({ initialReservations }: { initialRes
             <p className="text-gray-400">Try adjusting your search or filter criteria</p>
           </div>
         ) : (
-          filteredReservations.map((reservation, index) => (
+          filteredReservations.map((reservation) => (
             <motion.div
               key={reservation.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
               className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow"
             >
               <div className="flex flex-col lg:flex-row gap-6">

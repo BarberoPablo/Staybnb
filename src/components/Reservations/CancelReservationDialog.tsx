@@ -71,7 +71,7 @@ export function CancelReservationDialog({
             scale: { duration: 0.2 },
           }}
         >
-          <DialogPanel className="relative bg-white rounded-2xl shadow-2xl max-w-[310px] w-full border border-gray-100">
+          <DialogPanel className="relative bg-white rounded-2xl shadow-2xl w-[min(400px,calc(100vw-2rem))] border border-gray-100">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <div className="flex items-center gap-3">
@@ -91,7 +91,7 @@ export function CancelReservationDialog({
 
             {/* Content */}
             <div className="p-6 space-y-4">
-              <div className="text-center">
+              <div className="flex items-center justify-center text-center h-20">
                 {reloading && (
                   <div className="space-y-2">
                     <div className="w-8 h-8 border-2 border-myGreenSemiBold border-t-transparent rounded-full animate-spin mx-auto"></div>
