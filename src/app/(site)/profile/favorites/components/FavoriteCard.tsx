@@ -5,17 +5,16 @@ import { FavoriteWithListing } from "@/lib/types/favorites";
 
 interface FavoriteCardProps {
   favorite: FavoriteWithListing;
-  index: number;
   onViewListing: (listingId: number) => void;
   onRemoveFavorite: (listingId: number) => void;
 }
 
-export function FavoriteCard({ favorite, index, onViewListing, onRemoveFavorite }: FavoriteCardProps) {
+export function FavoriteCard({ favorite, onViewListing, onRemoveFavorite }: FavoriteCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3, delay: index * 0.1 }}
+      transition={{ duration: 0.3, delay: 0.1 }}
       className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group"
     >
       {/* Image */}
