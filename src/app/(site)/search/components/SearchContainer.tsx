@@ -7,7 +7,9 @@ import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { FaMapMarkedAlt } from "react-icons/fa";
 import { Container } from "../../components/Container";
+import DialogMap from "./DialogMap";
 import { ListingCards } from "./ListingCards";
 import { NoListingsFound } from "./NoListingsFound";
 
@@ -31,6 +33,7 @@ export default function SearchContainer({
   const [searchTriggered, setSearchTriggered] = useState(false);
   const layoutKey = getLayoutCategory(filteredListings.length);
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
+  const [openMap, setOpenMap] = useState(false);
 
   useEffect(() => {
     setFilteredListings(listings);
@@ -43,6 +46,10 @@ export default function SearchContainer({
 
   const handleSearchComplete = () => {
     setSearchTriggered(false);
+  };
+
+  const handleOpenMap = () => {
+    setOpenMap(true);
   };
 
   return (
@@ -78,8 +85,26 @@ export default function SearchContainer({
                 />
               </div>
             )}
+            {!isLargeScreen && (
+              <button
+                className="flex items-center justify-center sticky bottom-6 left-1/2 transform -translate-x-1/2 w-15 h-15 text-2xl bg-myGreen rounded-full text-myGrayDark border-2 border-myGreenSemiBold cursor-pointer"
+                onClick={() => handleOpenMap()}
+              >
+                <FaMapMarkedAlt />
+              </button>
+            )}
           </div>
         </motion.div>
+        <DialogMap
+          open={openMap}
+          onClose={() => setOpenMap(false)}
+          listings={filteredListings}
+          locateListing={locateListing}
+          cityCenter={cityCenter}
+          setListings={setFilteredListings}
+          searchTriggered={searchTriggered}
+          onSearchComplete={handleSearchComplete}
+        />
       </div>
     </Container>
   );
