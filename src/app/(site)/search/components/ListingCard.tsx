@@ -35,7 +35,7 @@ export default function ListingCard({ listing, setLocateListing }: { listing: Li
         <ImagesSlider images={listing.images} href={buildHrefWithParams()} hoverEffect={true} containerClassName="rounded-t-xl" />
 
         {/* Price Badge */}
-        <div className="absolute bottom-3 left-3 bg-white px-3 py-1 rounded-full shadow-md border border-gray-100">
+        <div className="absolute bottom-3 left-1 bg-white px-3 py-1 rounded-full shadow-md border border-gray-100">
           <span className="font-semibold text-myGrayDark">${listing.nightPrice}</span>
           <span className="text-sm text-myGray">/night</span>
         </div>
