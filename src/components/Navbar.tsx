@@ -130,7 +130,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   };
 
   return (
-    <nav className="flex items-center justify-center bg-myGreenComplement shadow-sm border border-gray-200 h-full w-full p-0 m-0">
+    <nav className="flex items-center justify-center bg-myGreenComplement/50 shadow-sm h-full w-full p-0 m-0">
       <Container noPadding className="flex items-center justify-around sticky z-50 top-0 sm:justify-between w-full px-0.5 py-4 sm:px-12">
         <div className="hidden sm:block">
           <Link href={`${hosting ? "/hosting" : "/"}`}>

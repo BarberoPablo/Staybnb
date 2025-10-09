@@ -1,12 +1,26 @@
 "use client";
 
 import ImagesSlider from "@/components/ImagesSlider";
+import { buildQueryStringFromParams } from "@/components/Navbar";
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { IoLocation, IoStar } from "react-icons/io5";
 
-export default function HomeListingCard({ listing }: { listing: Listing }) {
+export default function HomeListingCard({ listing, setLocateListing }: { listing: Listing; setLocateListing?: (listingId: number) => void }) {
+  const searchParams = useSearchParams();
+  const urlParams = new URLSearchParams(searchParams.toString());
+
+  const buildHrefWithParams = () => {
+    const baseHref = `/listing/${listing.id}`;
+    const params = Object.fromEntries(urlParams.entries());
+
+    const queryString = buildQueryStringFromParams(params);
+
+    return queryString ? `${baseHref}?${queryString}` : baseHref;
+  };
+
   return (
     <motion.div
       className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group"
@@ -14,9 +28,11 @@ export default function HomeListingCard({ listing }: { listing: Listing }) {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.3 }}
+      onMouseEnter={() => setLocateListing?.(listing.id)}
+      onMouseLeave={() => setLocateListing?.(-1)}
     >
       <div className="relative">
-        <ImagesSlider images={listing.images} href={`/listing/${listing.id}`} hoverEffect={true} containerClassName="rounded-t-xl" />
+        <ImagesSlider images={listing.images} href={buildHrefWithParams()} hoverEffect={true} containerClassName="rounded-t-xl" />
 
         <div className="absolute bottom-3 left-3 bg-white px-3 py-1.5 rounded-full shadow-md border border-gray-100">
           <span className="font-semibold text-myGrayDark">${listing.nightPrice}</span>
@@ -24,7 +40,7 @@ export default function HomeListingCard({ listing }: { listing: Listing }) {
         </div>
       </div>
 
-      <Link href={`/listing/${listing.id}`}>
+      <Link href={buildHrefWithParams()}>
         <div className="p-4 space-y-3">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-semibold text-myGrayDark text-lg leading-tight line-clamp-2 flex-1">{listing.title}</h3>

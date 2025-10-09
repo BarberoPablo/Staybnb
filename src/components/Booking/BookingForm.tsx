@@ -208,15 +208,17 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
         </div>
         <div className="relative flex flex-col w-full justify-center items-center">
           <CalendarLegend />
-          <DateRange
-            ranges={[dateRange]}
-            onChange={handleChangeDateRange}
-            minDate={new Date()}
-            rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
-            showDateDisplay={true}
-            disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
-            dayContentRenderer={getCustomDayContent(disabledDates)}
-          />
+          <div className="min-h-[380px] flex flex-col items-center justify-start">
+            <DateRange
+              ranges={[dateRange]}
+              onChange={handleChangeDateRange}
+              minDate={new Date()}
+              rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
+              showDateDisplay={true}
+              disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
+              dayContentRenderer={getCustomDayContent(disabledDates)}
+            />
+          </div>
           {errors.dateRange && <Tooltip text={errors.dateRange} arrow={false} containerStyle={"top-[-6px]"} />}
         </div>
       </div>
