@@ -8,7 +8,7 @@ import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsA
 import { createClient } from "../../../supabase/server";
 import { NotFoundError } from "../errors";
 import { MapCoordinates } from "../types";
-import { buildSearchListingsWhereClause, ParsedFilters } from "../utils";
+import { buildSearchListingsWhereClause, ParsedFilters, sortByFeatured, sortByPopularity } from "../utils";
 import { searchCities } from "./cities";
 
 export async function getListingWithReservations(id: number) {
@@ -348,5 +348,84 @@ export async function addReviewToListing(listingId: number, score: number, messa
   } catch (error) {
     console.error("Error adding review", error);
     throw new NotFoundError("Failed to add review");
+  }
+}
+
+/**
+ * Get popular listings based on sophisticated scoring algorithm
+ * Factors: favorites (40%), reservations (35%), rating (25%)
+ * @param limit - Number of listings to return (default: 12)
+ * @param offset - Number of listings to skip for pagination (default: 0)
+ */
+export async function getPopularListings(limit: number = 12, offset: number = 0) {
+  try {
+    const listings = await prisma.listings.findMany({
+      where: {
+        status: "published",
+      },
+      include: {
+        _count: {
+          select: {
+            favorites: true,
+            reservations: {
+              where: {
+                status: {
+                  in: ["upcoming", "completed"],
+                },
+              },
+            },
+          },
+        },
+      },
+      take: 100,
+    });
+
+    const scoredListings = sortByPopularity(listings);
+
+    const paginatedListings = scoredListings.slice(offset, offset + limit);
+
+    return paginatedListings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+  } catch (error) {
+    console.error("Error fetching popular listings", error);
+    throw new NotFoundError("Failed to fetch popular listings");
+  }
+}
+
+/**
+ * Get featured listings based on sophisticated scoring algorithm
+ * Factors: rating (50%), review count (30%), image quality/count (15%)
+ * @param limit - Number of listings to return (default: 12)
+ * @param offset - Number of listings to skip for pagination (default: 0)
+ */
+export async function getFeaturedListings(limit: number = 12, offset: number = 0) {
+  try {
+    const listings = await prisma.listings.findMany({
+      where: {
+        status: "published",
+        score: {
+          path: ["value"],
+          gte: 4.0, // Minimum rating for featured
+        },
+      },
+      include: {
+        _count: {
+          select: {
+            favorites: true,
+            reservations: true,
+          },
+        },
+      },
+      take: 100,
+    });
+
+    // Apply scoring algorithm
+    const scoredListings = sortByFeatured(listings);
+
+    const paginatedListings = scoredListings.slice(offset, offset + limit);
+
+    return paginatedListings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
+  } catch (error) {
+    console.error("Error fetching featured listings", error);
+    throw new NotFoundError("Failed to fetch featured listings");
   }
 }
