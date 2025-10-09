@@ -1,4 +1,5 @@
 import { SearchParams } from "next/dist/server/request/search-params";
+import { ListingForScoring, ScoredListing } from "./types";
 
 type StructureFilters = { guests?: number; bedrooms?: number; beds?: number; bathrooms?: number };
 type GuestFilters = { adults?: number; children?: number; infant?: number; pets?: number };
@@ -80,7 +81,7 @@ export const toNumber = (value: string | string[] | undefined): number | undefin
 export function buildSearchListingsWhereClause(
   city: string,
   filters: ParsedFilters,
-  mapCoordinates?: { zoom: number; northEast: { lat: number; lng: number }; southWest: { lat: number; lng: number } }
+  mapCoordinates?: { zoom: number; northEast: { lat: number; lng: number }; southWest: { lat: number; lng: number } },
 ) {
   const { guests, bedrooms, beds, bathrooms, adults, children, infant, pets, minPrice, maxPrice, amenities, startDate, endDate } = filters;
 
@@ -200,3 +201,65 @@ function buildGuestLimitConditions(filters: GuestFilters) {
 }
 
 const toUtcMidnight = (d: Date) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+
+export function sortByPopularity<T extends ListingForScoring>(listings: T[]): ScoredListing<T>[] {
+  const scoredListings = listings.map((listing) => ({
+    ...listing,
+    popularityScore: calculatePopularityScore(listing),
+  }));
+
+  return scoredListings.sort((a, b) => b.popularityScore - a.popularityScore);
+}
+
+/**
+ * Calculate popularity score for a listing
+ * Based on: favorites (40%), reservations (35%), rating (25%)
+ */
+export function calculatePopularityScore(listing: ListingForScoring): number {
+  const favoritesCount = listing._count?.favorites ?? 0;
+  const reservationsCount = listing._count?.reservations ?? 0;
+  const scoreData = listing.score as { value: number; reviews: unknown[] } | null | undefined;
+  const rating = scoreData?.value ?? 0;
+
+  // Normalize favorites (assume max ~50 for normalization)
+  const favoritesScore = Math.min(favoritesCount / 50, 1) * 40;
+
+  // Normalize reservations (assume max ~30 for normalization)
+  const reservationsScore = Math.min(reservationsCount / 30, 1) * 35;
+
+  // Normalize rating (0-5 scale)
+  const ratingScore = (rating / 5) * 25;
+
+  return favoritesScore + reservationsScore + ratingScore;
+}
+
+export function sortByFeatured<T extends ListingForScoring>(listings: T[]): ScoredListing<T>[] {
+  const scoredListings = listings.map((listing) => ({
+    ...listing,
+    popularityScore: calculateFeaturedScore(listing),
+  }));
+
+  return scoredListings.sort((a, b) => b.popularityScore - a.popularityScore);
+}
+
+/**
+ * Calculate featured score for a listing
+ * Based on: rating (50%), review count (30%), image quality/count (15%)
+ */
+export function calculateFeaturedScore(listing: ListingForScoring): number {
+  const scoreData = listing.score as { value: number; reviews: unknown[] } | null | undefined;
+  const rating = scoreData?.value ?? 0;
+  const reviewCount = Array.isArray(scoreData?.reviews) ? scoreData.reviews.length : 0;
+  const imageCount = listing.images?.length ?? 0;
+
+  // Rating score (0-5 scale) - heavily weighted
+  const ratingScore = (rating / 5) * 50;
+
+  // Review count score (minimum 3 reviews for quality signal, normalize to ~20 reviews)
+  const reviewCountScore = reviewCount >= 3 ? Math.min(reviewCount / 20, 1) * 30 : 0;
+
+  // Image quality score (5+ images = good, 10+ = excellent)
+  const imageScore = Math.min(imageCount / 10, 1) * 15;
+
+  return ratingScore + reviewCountScore + imageScore;
+}
