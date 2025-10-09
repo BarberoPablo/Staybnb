@@ -38,11 +38,18 @@ export default function AuthFormContent() {
           setLoading(false);
         }, 3000);
       } else {
-        const { error: signUpError } = await signUp(userData.email, userData.password);
+        const { data, error: signUpError } = await signUp(userData.email, userData.password);
 
         if (signUpError) throw signUpError;
 
-        toast.success("Please confirm your email", { duration: 10000 });
+        if (data?.user?.identities?.length === 0) {
+          toast.error("This email is already registered. Please login instead.", { duration: 5000 });
+          setMode("login");
+        } else {
+          toast.success("Please confirm your email", { duration: 10000 });
+        }
+
+        setLoading(false);
       }
     } catch (error) {
       toast.error((error as Error).message);
