@@ -2,17 +2,10 @@ import { Suspense } from "react";
 import { Container } from "../../components/Container";
 import { AuthCallbackContent } from "./components/AuthCallbackContent";
 
-interface AuthCallbackProps {
-  searchParams: Promise<{ email?: string }>;
-}
-
-export default async function AuthCallback({ searchParams }: AuthCallbackProps) {
-  const params = await searchParams;
-  const userEmail = params.email || null;
-
+export default function AuthCallback() {
   return (
     <Suspense fallback={<AuthCallbackFallback />}>
-      <AuthCallbackContent userEmail={userEmail} />
+      <AuthCallbackContent />
     </Suspense>
   );
 }
