@@ -79,7 +79,7 @@ export default function AuthFormContent() {
             minLength={6}
             autoComplete="current-password"
           />
-          <button type="submit" disabled={loading} className="bg-myGreenLight text-myGrayDark py-2 rounded disabled:opacity-50">
+          <button type="submit" disabled={loading} className="bg-myGreenLight text-myGrayDark py-2 rounded disabled:opacity-50 cursor-pointer">
             {loading ? (mode === "login" ? "Logging in..." : "Registering...") : mode === "login" ? "Login" : "Register"}
           </button>
         </form>
@@ -88,7 +88,7 @@ export default function AuthFormContent() {
           onClick={() => {
             setMode(mode === "login" ? "register" : "login");
           }}
-          className="mt-4 text-sm underline text-myGrayDark"
+          className="mt-4 text-sm underline text-myGrayDark cursor-pointer"
         >
           {mode === "login" ? "Create an account" : "Have an account? Login"}
         </button>
