@@ -132,9 +132,9 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   return (
     <nav className="flex items-center justify-center bg-myGreenComplement/50 shadow-sm h-full w-full p-0 m-0">
       <Container noPadding className="flex items-center justify-around sticky z-50 top-0 sm:justify-between w-full px-0.5 py-4 sm:px-12">
-        <div className="hidden sm:block">
+        <div className="absolute top-1/2 transform -translate-y-1/2 hidden lg:block">
           <Link href={`${hosting ? "/hosting" : "/"}`}>
-            <Image src={logoUrl} alt="logo" className="object-cover" width={80} height={63} />
+            <Image src={logoUrl} alt="logo" className="object-cover" width={150} height={67} />
           </Link>
         </div>
         <div className="flex flex-1 justify-center">

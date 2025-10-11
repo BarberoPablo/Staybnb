@@ -33,6 +33,10 @@ export const metadata: Metadata = {
   creator: SITE_NAME,
   publisher: SITE_NAME,
   manifest: "/manifest.json",
+  icons: {
+    icon: "/logo-reduced-white.png",
+    apple: "/logo-reduced-white.png",
+  },
   robots: {
     index: true,
     follow: true,
