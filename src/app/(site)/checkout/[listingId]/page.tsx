@@ -1,8 +1,15 @@
 import { getListingWithReservations } from "@/lib/api/server/endpoints/listings";
+import { generateSEOMetadata } from "@/lib/seo";
 import { ListingSearchParams } from "@/lib/types";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Checkout from "./components/Checkout";
+
+export const metadata = generateSEOMetadata({
+  title: "Checkout",
+  description: "Complete your reservation and secure your vacation rental.",
+  noIndex: true,
+});
 
 export default async function CheckoutPage({
   params,

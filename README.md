@@ -65,6 +65,8 @@ A modern, full-featured Staybnb built with Next.js 15, TypeScript, and Supabase.
 - **Promotion System**: Configurable discounts for longer stays
 - **Timezone Support**: Proper handling of different timezones
 - **Form Validation**: Comprehensive client and server-side validation
+- **SEO Optimization**: Enterprise-level SEO with dynamic metadata and structured data
+- **PWA Support**: Installable as a Progressive Web App on mobile devices
 
 ## 🚀 Performance & Quality Optimizations
 
@@ -329,6 +331,60 @@ The application uses Supabase's SSR package for secure authentication:
 - Guest communication tools
 - Revenue tracking
 - Performance analytics
+
+## 🔍 SEO & Web Standards
+
+The application implements enterprise-level SEO optimization with professional best practices:
+
+### **SEO Core Files**
+
+- **`src/lib/seo.ts`** - Central SEO utility library with reusable functions for metadata generation, structured data (JSON-LD), and OpenGraph tags. Supports internationalization (i18n) and environment-based configuration. The `generateSEOMetadata()` function is used across **all pages** (both public and private) to ensure consistent metadata for browser tabs, social media sharing, and accessibility, while the `noIndex` parameter controls whether Google indexes the page.
+
+- **`src/app/robots.ts`** - Dynamic robots.txt generator that controls search engine crawling. Protects private pages (auth, checkout, profile, hosting) while allowing public content (listings, search) to be indexed.
+
+- **`src/app/sitemap.ts`** - Auto-generated XML sitemap that updates hourly with all published listings, city search pages, and static routes. Helps search engines discover and index content efficiently.
+
+- **`public/manifest.json`** - PWA manifest configuration enabling the app to be installed on mobile devices and desktop. Provides native app-like experience with custom icons, theme colors, and offline capabilities.
+
+### **Dynamic SEO Pages**
+
+Two pages implement **dynamic metadata generation** using `generateMetadata()` instead of static exports:
+
+- **`src/app/(site)/listing/[id]/page.tsx`** - Generates unique SEO metadata for each listing by fetching listing data (title, description, images, location, price). Implements `generateListingStructuredData()` for LodgingBusiness schema (enables price and rating display in search results) and `generateBreadcrumbStructuredData()` for navigation breadcrumbs.
+
+- **`src/app/(site)/search/page.tsx`** - Generates filter-aware metadata based on search parameters (city, guests, price range, property type). Each filter combination creates unique title, description, and keywords for better location-based search optimization.
+
+These pages use dynamic metadata because their content varies per request, ensuring each listing and search query has optimized, unique SEO that improves search rankings and click-through rates.
+
+### **SEO Features**
+
+- **Dynamic Metadata**: Unique, optimized titles and descriptions for every page
+- **Structured Data**: JSON-LD schemas (WebSite, Organization, LodgingBusiness, Breadcrumbs) for rich search results
+- **OpenGraph & Twitter Cards**: Beautiful social media previews with custom images
+- **Canonical URLs**: Prevent duplicate content issues
+- **Robots Directives**: Smart indexing rules (public pages indexed, private pages protected)
+- **Environment-Based Config**: Different SEO settings per environment (dev/staging/prod)
+- **i18n Ready**: Multi-language support with alternate language tags
+- **Mobile Optimization**: Viewport configuration and PWA manifest for optimal mobile SEO
+
+### **SEO Protection Layers**
+
+The application uses a **dual-layer protection system** for private pages:
+
+- **`robots.txt` (Disallow)** - First defense layer that tells search engine crawlers not to visit private routes like `/profile/*`, `/hosting/*`, `/checkout/*`. This prevents bots from wasting crawl budget on private content.
+
+- **`noIndex` Meta Tag** - Second defense layer that instructs search engines not to index a page even if they visit it. Used in all private pages as a backup protection in case bots ignore robots.txt or links are shared directly.
+
+**Why both?** Using `disallow` in robots.txt is efficient (bots don't even request the page), while `noIndex` provides a safety net for edge cases where bots might still access the page through direct links or social sharing.
+
+### **Documentation**
+
+Comprehensive SEO documentation is available in the project root:
+
+- `SEO_README.md` - Quick start guide
+- `SEO_DOCUMENTATION.md` - Complete technical reference
+- `SEO_ADVANCED_GUIDE.md` - Professional techniques and validation tools
+- `ENV_VARIABLES.md` - Environment variables configuration
 
 ## 🙏 Acknowledgments
 

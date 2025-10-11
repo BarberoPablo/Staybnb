@@ -1,5 +1,12 @@
 import { getHostReservationsGroupedByListing } from "@/lib/api/server/endpoints/reservations";
+import { generateSEOMetadata } from "@/lib/seo";
 import HostReservationsContainer from "./components/HostReservationsContainer";
+
+export const metadata = generateSEOMetadata({
+  title: "Host Reservations",
+  description: "Manage reservations across all your listings.",
+  noIndex: true,
+});
 
 export default async function ReservationsPage() {
   const listingsWithReservations = await getHostReservationsGroupedByListing();

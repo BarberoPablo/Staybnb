@@ -1,6 +1,13 @@
+import { generateSEOMetadata } from "@/lib/seo";
 import { Suspense } from "react";
 import { Container } from "../components/Container";
 import AuthFormContent from "./components/AuthFormContent";
+
+export const metadata = generateSEOMetadata({
+  title: "Sign In",
+  description: "Sign in to your account to book and manage your vacation rentals.",
+  noIndex: true,
+});
 
 export default function AuthForm() {
   return (
