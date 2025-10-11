@@ -2,11 +2,17 @@ import Link from "next/link";
 import { generateSEOMetadata } from "@/lib/seo";
 
 // 404 pages should not be indexed
-export const metadata = generateSEOMetadata({
-  title: "Page Not Found",
-  description: "The page you're looking for doesn't exist or has been moved.",
-  noIndex: true,
-});
+export const metadata = {
+  ...generateSEOMetadata({
+    title: "Page Not Found",
+    description: "The page you're looking for doesn't exist or has been moved.",
+    noIndex: true,
+  }),
+  icons: {
+    icon: "/logo-reduced-white.png",
+    apple: "/logo-reduced-white.png",
+  },
+};
 
 export default function NotFound() {
   return (
