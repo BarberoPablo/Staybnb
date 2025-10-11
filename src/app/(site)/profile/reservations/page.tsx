@@ -1,7 +1,14 @@
 import { SkeletonReservations } from "@/app/(site)/profile/components/SkeletonReservations";
 import { getUserReservations } from "@/lib/api/server/endpoints/reservations";
+import { generateSEOMetadata } from "@/lib/seo";
 import { Suspense } from "react";
 import ReservationsClient from "./components/ReservationsClient";
+
+export const metadata = generateSEOMetadata({
+  title: "My Reservations",
+  description: "View and manage your vacation rental reservations.",
+  noIndex: true,
+});
 
 export default async function ReservationsSection() {
   try {

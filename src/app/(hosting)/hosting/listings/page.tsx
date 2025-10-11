@@ -1,7 +1,14 @@
 import { getHostListings } from "@/lib/api/server/endpoints/listings";
+import { generateSEOMetadata } from "@/lib/seo";
 import HostListingCards from "./components/HostListingCards";
 import HostListingsHeader from "./components/HostListingsHeader";
 import HostListingsStatus from "./components/HostListingsStatus";
+
+export const metadata = generateSEOMetadata({
+  title: "My Listings",
+  description: "Manage your vacation rental listings.",
+  noIndex: true,
+});
 
 export default async function HostListingPage() {
   const listings = await getHostListings();

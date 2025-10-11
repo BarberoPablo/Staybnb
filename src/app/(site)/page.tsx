@@ -1,7 +1,6 @@
 import { getPopularDestinations } from "@/lib/api/server/endpoints/cities";
 import { getFeaturedListings, getPopularListings } from "@/lib/api/server/endpoints/listings";
-import { logoUrl } from "@/lib/utils";
-import { Metadata } from "next";
+import { generateOrganizationStructuredData, generateSEOMetadata, generateWebsiteStructuredData } from "@/lib/seo";
 import BecomeHostBanner from "./components/BecomeHostBanner";
 import { Container } from "./components/Container";
 import FeaturedListings from "./components/FeaturedListings";
@@ -12,19 +11,13 @@ import PopularListings from "./components/PopularListings";
 // This enables Incremental Static Regeneration (ISR) for optimal performance
 export const revalidate = 300;
 
-// SEO metadata for the home page
-export const metadata: Metadata = {
-  title: "Find your next stay | Airbnb Clone",
+export const metadata = generateSEOMetadata({
+  title: "Find Your Perfect Vacation Rental",
   description:
-    "Discover amazing places to stay around the world. Browse featured properties, popular destinations, and book your perfect vacation rental.",
-  keywords: ["vacation rentals", "hotels", "apartments", "accommodations", "travel", "booking", "staybnb", "airbnb"],
-  openGraph: {
-    title: "Find your next stay | Airbnb Clone",
-    description: "Discover amazing places to stay around the world",
-    images: [logoUrl],
-    type: "website",
-  },
-};
+    "Discover and book unique accommodations around the world. From cozy apartments to luxury villas, browse featured properties, popular destinations, and find your perfect vacation rental.",
+  keywords: ["featured properties", "popular destinations", "luxury villas", "cozy apartments", "worldwide accommodations", "best vacation rentals"],
+  path: "/",
+});
 
 export default async function Home() {
   const [featuredListings, popularListings, popularDestinations] = await Promise.all([
@@ -33,22 +26,32 @@ export default async function Home() {
     getPopularDestinations(6),
   ]);
 
+  // Generate structured data for SEO
+  const websiteStructuredData = generateWebsiteStructuredData();
+  const organizationStructuredData = generateOrganizationStructuredData();
+
   return (
-    <Container>
-      <div className="space-y-4">
-        <section className="text-center py-12">
-          <h1 className="text-5xl md:text-6xl font-bold text-myGrayDark mb-4">Find your next stay</h1>
-          <p className="text-xl text-myGray">Discover amazing places to stay around the world</p>
-        </section>
+    <>
+      {/* JSON-LD Structured Data for SEO */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteStructuredData) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationStructuredData) }} />
 
-        <FeaturedListings listings={featuredListings} />
+      <Container>
+        <div className="space-y-4">
+          <section className="text-center py-12">
+            <h1 className="text-5xl md:text-6xl font-bold text-myGrayDark mb-4">Find your next stay</h1>
+            <p className="text-xl text-myGray">Discover amazing places to stay around the world</p>
+          </section>
 
-        <PopularDestinations destinations={popularDestinations} />
+          <FeaturedListings listings={featuredListings} />
 
-        <PopularListings listings={popularListings} />
+          <PopularDestinations destinations={popularDestinations} />
 
-        <BecomeHostBanner />
-      </div>
-    </Container>
+          <PopularListings listings={popularListings} />
+
+          <BecomeHostBanner />
+        </div>
+      </Container>
+    </>
   );
 }

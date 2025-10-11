@@ -1,8 +1,15 @@
 import { getFavorites } from "@/lib/api/server/endpoints/favorites";
+import { generateSEOMetadata } from "@/lib/seo";
 import { FaHeart } from "react-icons/fa";
 import { EmptyState } from "../components/EmptyState";
 import { PageHeader } from "../components/PageHeader";
 import { FavoritesContent } from "./components/FavoritesContent";
+
+export const metadata = generateSEOMetadata({
+  title: "My Favorites",
+  description: "View and manage your favorite vacation rentals.",
+  noIndex: true,
+});
 
 export default async function FavoritesSection() {
   try {
