@@ -1,5 +1,6 @@
 "use client";
 
+import ImageWithFallback from "@/components/ImageWithFallback";
 import { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
@@ -19,7 +20,7 @@ export default function HomeBanner() {
   const scrollToFeatured = () => {
     // Scroll to the featured section (next section after banner)
     const isLargeScreen = window.innerWidth >= 1024; // lg breakpoint
-    const bannerHeight = isLargeScreen ? 600 : 560;
+    const bannerHeight = isLargeScreen ? 580 : 570;
     window.scrollTo({
       top: bannerHeight,
       behavior: "smooth",
@@ -35,15 +36,14 @@ export default function HomeBanner() {
 
   return (
     <section className="relative text-center py-32 md:py-40 -mx-12 -mt-10 mb-4 overflow-hidden">
-      <div
-        className="absolute inset-0 z-0 hero-bg-animate"
-        style={{
-          backgroundImage:
-            'url("https://deborainteriors.com/wp-content/uploads/2024/05/right-Living-Room-with-Large-Windows-and-Mid-Century-Modern-Furniture-by-Debora.webp")',
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
+      {/* Next.js optimized image */}
+      <ImageWithFallback
+        src="https://deborainteriors.com/wp-content/uploads/2024/05/right-Living-Room-with-Large-Windows-and-Mid-Century-Modern-Furniture-by-Debora.webp"
+        alt="Modern living room interior"
+        fill
+        priority
+        className="object-cover z-0 hero-bg-animate"
+        sizes="100vw"
       />
 
       {/* Dark Overlay for Text Readability */}
@@ -57,7 +57,6 @@ export default function HomeBanner() {
         </p>
       </div>
 
-      {/* Scroll Down Arrow - Only visible when at the top */}
       {!isScrolled && (
         <button
           onClick={scrollToFeatured}
@@ -71,7 +70,6 @@ export default function HomeBanner() {
         </button>
       )}
 
-      {/* Scroll to Top Arrow - Only visible when scrolled down */}
       {isScrolled && (
         <button
           onClick={scrollToTop}
