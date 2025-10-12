@@ -74,7 +74,7 @@ export default function SearchContainer({
 
             {/* Map Section */}
             {isLargeScreen && (
-              <div className="lg:col-span-4 xl:col-span-5 flex flex-col sticky top-10 h-[calc(100vh-177px)] flex-1 bg-white rounded-xl overflow-hidden shadow-lg">
+              <div className="lg:col-span-4 xl:col-span-5 flex flex-col sticky top-10 h-[calc(100vh-177px)] my-10 flex-1 bg-white rounded-xl overflow-hidden shadow-lg">
                 <ListingsMapNoSSR
                   listings={filteredListings}
                   locateListing={locateListing}

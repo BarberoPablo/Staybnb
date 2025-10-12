@@ -7,6 +7,8 @@ import { CreateProfile, UpdateProfile } from "./types/profile";
 import { ReservedDate } from "./types/reservation";
 
 export const logoUrl = "https://i.postimg.cc/65bvWcTY/logo.png";
+export const logoUrlReduced = "https://i.postimg.cc/WbfM7qCZ/logo-reduced.png";
+
 export const windowWidth = {
   full: 1920,
   short: 1280,

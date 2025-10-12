@@ -5,11 +5,10 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { parseFilters } from "@/lib/api/server/utils";
 import { AmenityId } from "@/lib/constants/amenities";
 import { Dates, Guests } from "@/lib/types";
-import { logoUrl } from "@/lib/utils";
+import { logoUrl, logoUrlReduced } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { SearchParams } from "next/dist/server/request/search-params";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { lazy, useEffect, useState } from "react";
@@ -51,7 +50,8 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
   const hosting = pathname.includes("/hosting");
-  const searchEffect = !useMediaQuery("(max-width: 500px)");
+  const isMobile = !useMediaQuery("(max-width: 768px)");
+  const searchEffect = isMobile;
 
   useEffect(() => {
     const isSearchPage = pathname.includes("/search");
@@ -132,11 +132,17 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   return (
     <nav className="flex items-center justify-center bg-myGreenComplement/50 shadow-sm h-full w-full p-0 m-0">
       <Container noPadding className="flex items-center justify-around sticky z-50 top-0 sm:justify-between w-full px-0.5 py-4 sm:px-12">
-        <div className="absolute top-1/2 transform -translate-y-1/2 hidden lg:block">
-          <Link href={`${hosting ? "/hosting" : "/"}`}>
-            <Image src={logoUrl} alt="logo" className="object-cover" width={150} height={67} />
-          </Link>
-        </div>
+        <button onClick={() => router.push(hosting ? "/hosting" : "/")} className="relative flex items-center justify-center">
+          {/* Logo grande para desktop */}
+          <div className="relative w-[150px] h-[67px] hidden lg:block">
+            <Image src={logoUrl} alt="logo" fill className="object-contain" sizes="100%" />
+          </div>
+
+          {/* Logo reducido para tablets */}
+          <div className="relative w-[108px] h-[46px] hidden md:block lg:hidden">
+            <Image src={logoUrlReduced} alt="logo" fill className="object-contain" sizes="100%" />
+          </div>
+        </button>
         <div className="flex flex-1 justify-center">
           {search && (
             <motion.div
