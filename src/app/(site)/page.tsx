@@ -1,8 +1,6 @@
 import { getPopularDestinations } from "@/lib/api/server/endpoints/cities";
 import { getFeaturedListings, getPopularListings } from "@/lib/api/server/endpoints/listings";
 import { generateOrganizationStructuredData, generateSEOMetadata, generateWebsiteStructuredData } from "@/lib/seo";
-import BecomeHostBanner from "./components/BecomeHostBanner";
-import { Container } from "./components/Container";
 import FeaturedListings from "./components/FeaturedListings";
 import PopularDestinations from "./components/PopularDestinations";
 import PopularListings from "./components/PopularListings";
@@ -36,22 +34,37 @@ export default async function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteStructuredData) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationStructuredData) }} />
 
-      <Container>
-        <div className="space-y-4">
-          <section className="text-center py-12">
-            <h1 className="text-5xl md:text-6xl font-bold text-myGrayDark mb-4">Find your next stay</h1>
-            <p className="text-xl text-myGray">Discover amazing places to stay around the world</p>
-          </section>
+      <div className="px-12 py-10 w-full space-y-4">
+        <section className="relative text-center py-32 md:py-40 -mx-12 -mt-10 mb-4 overflow-hidden">
+          <div
+            className="absolute inset-0 z-0 hero-bg-animate"
+            style={{
+              backgroundImage:
+                'url("https://deborainteriors.com/wp-content/uploads/2024/05/right-Living-Room-with-Large-Windows-and-Mid-Century-Modern-Furniture-by-Debora.webp")',
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          />
 
-          <FeaturedListings listings={featuredListings} />
+          {/* Dark Overlay for Text Readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60 z-10" />
 
-          <PopularDestinations destinations={popularDestinations} />
+          {/* Content */}
+          <div className="relative z-20 px-4">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 drop-shadow-2xl hero-title-animate">Find your next stay</h1>
+            <p className="text-xl md:text-2xl text-white/90 drop-shadow-lg max-w-2xl mx-auto hero-subtitle-animate">
+              Discover amazing places to stay around the world
+            </p>
+          </div>
+        </section>
 
-          <PopularListings listings={popularListings} />
+        <FeaturedListings listings={featuredListings} />
 
-          <BecomeHostBanner />
-        </div>
-      </Container>
+        <PopularDestinations destinations={popularDestinations} />
+
+        <PopularListings listings={popularListings} />
+      </div>
     </>
   );
 }
