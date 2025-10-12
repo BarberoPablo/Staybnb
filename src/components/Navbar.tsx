@@ -132,13 +132,11 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   return (
     <nav className="flex items-center justify-center bg-myGreenComplement/50 shadow-sm h-full w-full p-0 m-0">
       <Container noPadding className="flex items-center justify-around sticky z-50 top-0 sm:justify-between w-full px-0.5 py-4 sm:px-12">
-        <button onClick={() => router.push(hosting ? "/hosting" : "/")} className="relative flex items-center justify-center">
-          {/* Logo grande para desktop */}
+        <button onClick={() => router.push(hosting ? "/hosting" : "/")} className="relative flex items-center justify-center cursor-pointer">
           <div className="relative w-[150px] h-[67px] hidden lg:block">
             <Image src={logoUrl} alt="logo" fill className="object-contain" sizes="100%" />
           </div>
 
-          {/* Logo reducido para tablets */}
           <div className="relative w-[108px] h-[46px] hidden md:block lg:hidden">
             <Image src={logoUrlReduced} alt="logo" fill className="object-contain" sizes="100%" />
           </div>
@@ -237,52 +235,18 @@ export default function Navbar({ search = true }: { search?: boolean }) {
 }
 
 export function buildQueryStringFromParams(params: SearchParams): string {
-  const queryParts: string[] = [];
+  const query = new URLSearchParams();
 
-  if (params.startDate) {
-    queryParts.push(`startDate=${encodeURIComponent(params.startDate as string)}`);
-  }
-  if (params.endDate) {
-    queryParts.push(`endDate=${encodeURIComponent(params.endDate as string)}`);
-  }
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
 
-  if (params.adults) {
-    queryParts.push(`adults=${params.adults}`);
-  }
-  if (params.children) {
-    queryParts.push(`children=${params.children}`);
-  }
-  if (params.infant) {
-    queryParts.push(`infant=${params.infant}`);
-  }
-  if (params.pets) {
-    queryParts.push(`pets=${params.pets}`);
-  }
+    if (Array.isArray(value)) {
+      query.append(key, value.join(","));
+    } else {
+      query.append(key, String(value));
+    }
+  });
 
-  if (params.amenities) {
-    const amenitiesValue = Array.isArray(params.amenities) ? params.amenities.join(",") : params.amenities;
-    queryParts.push(`amenities=${encodeURIComponent(amenitiesValue)}`);
-  }
-
-  if (params.minPrice) {
-    queryParts.push(`minPrice=${params.minPrice}`);
-  }
-  if (params.maxPrice) {
-    queryParts.push(`maxPrice=${params.maxPrice}`);
-  }
-
-  if (params.guests) {
-    queryParts.push(`guests=${params.guests}`);
-  }
-  if (params.bedrooms) {
-    queryParts.push(`bedrooms=${params.bedrooms}`);
-  }
-  if (params.beds) {
-    queryParts.push(`beds=${params.beds}`);
-  }
-  if (params.bathrooms) {
-    queryParts.push(`bathrooms=${params.bathrooms}`);
-  }
-
-  return queryParts.length > 0 ? `&${queryParts.join("&")}` : "";
+  const queryString = query.toString();
+  return queryString ? `&${queryString}` : "";
 }

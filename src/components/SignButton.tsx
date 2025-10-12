@@ -55,15 +55,13 @@ export function SignButton({ hosting }: { hosting: boolean }) {
 
   return (
     <Menu as="div" className="relative">
-      <MenuButton
-        className={`flex items-center gap-2 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer hover:bg-myGreenExtraLight/30 p-1`}
-      >
-        <div className="w-10 h-10 bg-myGreen rounded-full flex items-center justify-center shadow-sm">
-          <FaUser className="w-6 h-6 text-myGrayDark" />
+      <MenuButton className={`flex items-center gap-2 rounded-lg cursor-pointer p-1 group`}>
+        <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm duration-200">
+          <FaUser className="w-6 h-6 text-myGrayDark duration-200" />
         </div>
         <div className="hidden sm:flex items-center gap-2">
-          <span className="text-myGrayDark font-medium text-sm">Profile</span>
-          <MdKeyboardArrowDown className="w-4 h-4 text-myGray" />
+          <span className="text-myGrayDark font-medium text-sm duration-200">Profile</span>
+          <MdKeyboardArrowDown className="w-4 h-4 text-myGreenBold" />
         </div>
       </MenuButton>
 
