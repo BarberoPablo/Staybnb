@@ -5,16 +5,31 @@ import { buildQueryStringFromParams } from "@/components/Navbar";
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { IoLocation, IoStar } from "react-icons/io5";
 
-export default function HomeListingCard({ listing, setLocateListing }: { listing: Listing; setLocateListing?: (listingId: number) => void }) {
-  const searchParams = useSearchParams();
-  const urlParams = new URLSearchParams(searchParams.toString());
-
+export default function HomeListingCard({
+  listing,
+  setLocateListing,
+  searchParams,
+}: {
+  listing: Listing;
+  setLocateListing?: (listingId: number) => void;
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const buildHrefWithParams = () => {
     const baseHref = `/listing/${listing.id}`;
-    const params = Object.fromEntries(urlParams.entries());
+
+    // Convert server-side searchParams to the format expected by buildQueryStringFromParams
+    const params: Record<string, string> = {};
+    Object.entries(searchParams).forEach(([key, value]) => {
+      if (value !== undefined) {
+        if (Array.isArray(value)) {
+          params[key] = value[0] || "";
+        } else {
+          params[key] = value;
+        }
+      }
+    });
 
     const queryString = buildQueryStringFromParams(params);
 

@@ -18,7 +18,7 @@ export const metadata = generateSEOMetadata({
   path: "/",
 });
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const [featuredListings, popularListings, popularDestinations] = await Promise.all([
     getFeaturedListings(12),
     getPopularListings(12),
@@ -38,11 +38,11 @@ export default async function Home() {
       <div className="px-12 py-10 w-full space-y-4">
         <HomeBanner />
 
-        <FeaturedListings listings={featuredListings} />
+        <FeaturedListings listings={featuredListings} searchParams={searchParams} />
 
         <PopularDestinations destinations={popularDestinations} />
 
-        <PopularListings listings={popularListings} />
+        <PopularListings listings={popularListings} searchParams={searchParams} />
       </div>
     </>
   );
