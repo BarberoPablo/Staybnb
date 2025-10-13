@@ -38,7 +38,7 @@ export default function HomeBanner() {
     <section className="relative text-center py-32 md:py-40 -mx-12 -mt-10 mb-4 overflow-hidden">
       {/* Next.js optimized image */}
       <ImageWithFallback
-        src="https://deborainteriors.com/wp-content/uploads/2024/05/right-Living-Room-with-Large-Windows-and-Mid-Century-Modern-Furniture-by-Debora.webp"
+        src="https://i.postimg.cc/W1MhXvG8/banner-image.webp"
         alt="Modern living room interior"
         fill
         priority

@@ -2,6 +2,7 @@
 
 import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
 import { getProfile, updateProfile } from "@/lib/api/server/endpoints/profile";
+import { parseUpdateProfile } from "@/lib/parsers/profile";
 import type { Profile, UpdateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";
 import { checkImageUrl, verifyUpdateProfileData } from "@/lib/utils";
@@ -93,7 +94,8 @@ export default function ProfileInfo() {
     });
 
     try {
-      const updateResponse = await updateProfile(data);
+      const parsedData = parseUpdateProfile(data);
+      const updateResponse = await updateProfile(parsedData);
 
       if (updateResponse.success) {
         toast.success("Profile information updated", { duration: 2000 });

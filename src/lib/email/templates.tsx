@@ -41,7 +41,6 @@ export function ReservationConfirmationEmailPreview({
   hostAvatarUrl,
   reservationId,
 }: ReservationConfirmationEmailProps) {
-  console.log({ hostAvatarUrl });
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
       weekday: "long",

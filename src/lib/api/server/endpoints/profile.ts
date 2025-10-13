@@ -90,7 +90,7 @@ export async function signUp(userData: CreateProfile) {
   }
 }
 
-export async function updateProfile(bodyJson: Partial<UpdateProfileDB>) {
+export async function updateProfile(profileData: Partial<UpdateProfileDB>) {
   try {
     const supabase = await createClient();
 
@@ -107,7 +107,7 @@ export async function updateProfile(bodyJson: Partial<UpdateProfileDB>) {
     const body: Partial<UpdateProfileDB> = {};
 
     for (const key of allowedKeys) {
-      const value = bodyJson[key];
+      const value = profileData[key];
 
       if (typeof value === "string") {
         if (key === "avatar_url") {
