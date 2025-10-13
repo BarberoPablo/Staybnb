@@ -1,6 +1,7 @@
 import { getPopularDestinations } from "@/lib/api/server/endpoints/cities";
 import { getFeaturedListings, getPopularListings } from "@/lib/api/server/endpoints/listings";
 import { generateOrganizationStructuredData, generateSEOMetadata, generateWebsiteStructuredData } from "@/lib/seo";
+import { Suspense } from "react";
 import FeaturedListings from "./components/FeaturedListings";
 import HomeBanner from "./components/HomeBanner";
 import PopularDestinations from "./components/PopularDestinations";
@@ -38,11 +39,15 @@ export default async function Home() {
       <div className="px-12 py-10 w-full space-y-4">
         <HomeBanner />
 
-        <FeaturedListings listings={featuredListings} />
+        <Suspense fallback={<div className="py-12 text-center">Loading featured stays...</div>}>
+          <FeaturedListings listings={featuredListings} />
+        </Suspense>
 
         <PopularDestinations destinations={popularDestinations} />
 
-        <PopularListings listings={popularListings} />
+        <Suspense fallback={<div className="py-12 text-center">Loading popular stays...</div>}>
+          <PopularListings listings={popularListings} />
+        </Suspense>
       </div>
     </>
   );
