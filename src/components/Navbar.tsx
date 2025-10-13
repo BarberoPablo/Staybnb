@@ -153,14 +153,14 @@ export default function Navbar({ search = true }: { search?: boolean }) {
                   <div className="flex flex-col">
                     <div
                       className={`flex items-center gap-2 h-10 border rounded-full transition-all duration-300 ${
-                        showCityError ? "border-red-500 bg-red-50 animate-pulse" : "border-myGreenSemiBold bg-myGreenExtraLight"
+                        showCityError ? "border-red-500 bg-red-50 animate-pulse" : "border-myGrayDark bg-myGray/10"
                       }`}
                     >
                       <input
                         type="text"
                         placeholder={showCityError ? "Please enter a city to search" : "Where do you want to go?"}
                         className={`rounded-full py-2 ${searchEffect ? "px-4" : "px-2"} text-sm focus:outline-none transition-colors duration-300 ${
-                          showCityError ? "bg-red-50 text-red-700 placeholder-red-400" : "focus:bg-myGreenLight hover:bg-myGreenLight"
+                          showCityError ? "bg-red-50 text-red-700 placeholder-red-400" : "focus:bg-myGray/10 hover:bg-myGray/10"
                         }`}
                         value={searchCity}
                         name="searchCity"
@@ -175,7 +175,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
                       {searchEffect ? (
                         <motion.button
                           className={`flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 ${
-                            showCityError ? "bg-red-300 text-red-700" : "bg-myGreenLight text-myGray"
+                            showCityError ? "bg-red-300 text-red-700" : "bg-myGray/10 text-myGrayDark"
                           }   overflow-hidden transition-colors hover:cursor-pointer`}
                           disabled={searchCity === ""}
                           onClick={handleSearchCity}
@@ -198,7 +198,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
                         </motion.button>
                       ) : (
                         <button
-                          className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGreenLight text-myGray overflow-hidden transition-colors hover:cursor-pointer"
+                          className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGray/10 text-myGrayDark overflow-hidden transition-colors hover:cursor-pointer"
                           disabled={searchCity === ""}
                           onClick={handleSearchCity}
                         >
