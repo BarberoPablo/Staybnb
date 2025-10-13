@@ -1,5 +1,7 @@
 import { Promotion } from "@/lib/types/listing";
 import { getPromotion } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { IoSparkles } from "react-icons/io5";
 
 interface PromotionsProgressBarProps {
   promotions: Promotion[];
@@ -27,18 +29,41 @@ export default function PromotionsProgressBar({ promotions, currentNights }: Pro
         )}
       </div>
 
-      {/* Current Status */}
-      {currentNights > 1 && (
-        <div className="text-center">
-          {activePromo && <div className="text-myGreenSemiBold font-medium">🎉 You&apos;re getting {activePromo.discountPercentage}% off!</div>}
-          {nextPromo && (
-            <div className="text-myGray text-sm">
-              Stay {nextPromo.minNights - currentNights} more night{nextPromo.minNights - currentNights > 1 ? "s" : ""} to unlock{" "}
-              {nextPromo.discountPercentage}% off
-            </div>
+      {/* Current Status - Fixed height container to prevent layout shift */}
+      <div className="text-center min-h-[3rem] flex flex-col items-center justify-center">
+        <AnimatePresence mode="wait">
+          {currentNights > 1 && (
+            <>
+              {activePromo && (
+                <motion.div
+                  key="active-promo"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="text-myGreenSemiBold font-medium flex items-center justify-center gap-1"
+                >
+                  <IoSparkles className="text-lg text-yellow-500" />
+                  You&apos;re getting {activePromo.discountPercentage}% off!
+                </motion.div>
+              )}
+              {nextPromo && (
+                <motion.div
+                  key="next-promo"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="text-myGray text-sm"
+                >
+                  Stay {nextPromo.minNights - currentNights} more night{nextPromo.minNights - currentNights > 1 ? "s" : ""} to unlock{" "}
+                  {nextPromo.discountPercentage}% off
+                </motion.div>
+              )}
+            </>
           )}
-        </div>
-      )}
+        </AnimatePresence>
+      </div>
 
       {/* Progress Bar */}
       <div className="relative">
@@ -66,8 +91,8 @@ export default function PromotionsProgressBar({ promotions, currentNights }: Pro
                     isActive
                       ? "bg-myGreenSemiBold border-myGreenBold shadow-lg"
                       : isNext
-                      ? "bg-background border-myGreenSemiBold"
-                      : "bg-background border-gray-300"
+                        ? "bg-background border-myGreenSemiBold"
+                        : "bg-background border-gray-300"
                   }
                 `}
                 />

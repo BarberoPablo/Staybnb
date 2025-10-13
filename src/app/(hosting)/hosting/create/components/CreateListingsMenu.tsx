@@ -1,6 +1,6 @@
 "use client";
 
-import { createDraftListing } from "@/lib/api/server/api";
+import { createDraftListing, deleteDraftListing } from "@/lib/api/server/endpoints/daft-listings";
 import { DraftListing } from "@/lib/types/draftListing";
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
@@ -8,10 +8,11 @@ import Image from "next/image";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { FaCalendarAlt, FaDollarSign, FaHome, FaMapMarkerAlt, FaPlus } from "react-icons/fa";
+import { FaCalendarAlt, FaDollarSign, FaHome, FaMapMarkerAlt, FaPlus, FaTrash } from "react-icons/fa";
 
-export default function CreateListingsMenu({ draftListings }: { draftListings: DraftListing[] }) {
+export default function CreateListingsMenu({ draftListings: initialDraftListings }: { draftListings: DraftListing[] }) {
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [draftListings, setDraftListings] = useState<DraftListing[]>(initialDraftListings);
   const router = useRouter();
 
   const handleCreateNewListing = async () => {
@@ -30,6 +31,23 @@ export default function CreateListingsMenu({ draftListings }: { draftListings: D
         toast.error("Something went wrong. Please try again.");
       }
       setIsRedirecting(false);
+    }
+  };
+
+  const handleDeleteDraft = async (draftId: number) => {
+    const originalDraftListings = [...draftListings];
+    setDraftListings((prev) => prev.filter((draft) => draft.id !== draftId));
+
+    try {
+      await deleteDraftListing(draftId);
+      toast.success("Draft listing deleted successfully");
+    } catch (error) {
+      setDraftListings(originalDraftListings);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to delete draft listing");
+      }
     }
   };
 
@@ -68,7 +86,14 @@ export default function CreateListingsMenu({ draftListings }: { draftListings: D
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {draftListings.map((draft, i) => (
-              <DraftListingCard isRedirecting={isRedirecting} setIsRedirecting={setIsRedirecting} key={draft.id} draft={draft} index={i} />
+              <DraftListingCard
+                isRedirecting={isRedirecting}
+                setIsRedirecting={setIsRedirecting}
+                key={draft.id}
+                draft={draft}
+                index={i}
+                onDelete={handleDeleteDraft}
+              />
             ))}
 
             {/* Add New Listing Card - only show if less than 3 draft listings */}
@@ -85,11 +110,13 @@ function DraftListingCard({
   index,
   isRedirecting,
   setIsRedirecting,
+  onDelete,
 }: {
   draft: DraftListing;
   index: number;
   isRedirecting: boolean;
   setIsRedirecting: (isRedirecting: boolean) => void;
+  onDelete: (draftId: number) => void;
 }) {
   const router = useRouter();
 
@@ -104,6 +131,11 @@ function DraftListingCard({
     setIsRedirecting(true);
     const stepKey = hostingSteps[currentStep];
     router.push(`/hosting/create/listing/${draft.id}/${stepKey}`);
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    onDelete(draft.id);
   };
 
   return (
@@ -132,8 +164,18 @@ function DraftListingCard({
           </div>
         )}
 
-        <div className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
-          <span className="text-sm font-semibold text-myGrayDark">{progress}%</span>
+        <div className="absolute top-3 right-3 flex gap-2">
+          <div className="bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
+            <span className="text-sm font-semibold text-myGrayDark">{progress}%</span>
+          </div>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="bg-red-500/90 hover:bg-red-600/90 backdrop-blur-sm py-2 px-2.5 rounded-full shadow-sm transition-colors duration-200 group cursor-pointer"
+            title="Delete draft listing"
+          >
+            <FaTrash className="text-white text-xs group-hover:scale-110 transition-transform duration-200" />
+          </button>
         </div>
       </div>
 
@@ -232,15 +274,13 @@ function AddNewListingCard({ isRedirecting, onClick, index }: { isRedirecting: b
           <h3 className="text-lg font-semibold text-myGrayDark mb-2">Create New Listing</h3>
           <p className="text-sm text-myGray mb-4">Start a new listing to expand your hosting portfolio</p>
 
-          <button
-            type="button"
-            disabled={isRedirecting || isCreating}
+          <div
             className={`w-full bg-myGreenSemiBold hover:bg-myGreenBold text-background py-3 px-4 rounded-lg font-medium transition-colors duration-200 group-hover:shadow-md ${
-              isRedirecting ? "opacity-50 cursor-not-allowed" : "hover:cursor-pointer"
+              isRedirecting || isCreating ? "opacity-50 cursor-not-allowed" : "hover:cursor-pointer"
             }`}
           >
             {isCreating ? "Creating..." : "Start New Listing"}
-          </button>
+          </div>
         </div>
       </div>
     </motion.button>

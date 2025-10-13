@@ -1,6 +1,6 @@
 "use client";
 
-import { editListing } from "@/lib/api/server/api";
+import { editListing } from "@/lib/api/server/endpoints/listings";
 import { editListingSchema } from "@/lib/schemas/editListingSchema";
 import { EditListing, Listing } from "@/lib/types/listing";
 import { zodResolver } from "@hookform/resolvers/zod";

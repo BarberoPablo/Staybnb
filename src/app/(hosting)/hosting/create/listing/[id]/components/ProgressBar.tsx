@@ -1,24 +1,25 @@
 "use client";
 
-import { updateDraftListing } from "@/lib/api/server/api";
+import { updateDraftListing } from "@/lib/api/server/endpoints/daft-listings";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { getStepFields, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaCheck, FaSave, FaTimes } from "react-icons/fa";
+import { useListingFormContext } from "./CreateListingFormProvider";
 
 export default function ProgressBar({ listingId }: { listingId: number }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { getValues, setValue } = useFormContext<CreateListingForm>();
-  const [currentStepIndex, setCurrentStepIndex] = useState(hostingSteps.findIndex((step) => pathname.includes(step)));
+  const { getValues } = useFormContext<CreateListingForm>();
+  const { markStepAsVisited, getCurrentFormData, handleStepClick, isRedirecting } = useListingFormContext();
+  const currentStepIndex = hostingSteps.findIndex((step) => pathname.includes(step));
   const progress = (currentStepIndex / (hostingSteps.length - 1)) * 99;
   const [isFormLoaded, setIsFormLoaded] = useState(false);
-  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     const formData = getValues();
@@ -28,56 +29,10 @@ export default function ProgressBar({ listingId }: { listingId: number }) {
   }, [getValues]);
 
   useEffect(() => {
-    setIsRedirecting(false);
-  }, [pathname]);
-
-  const markStepAsVisited = useCallback(
-    (stepIndex: number) => {
-      const currentValues = getValues();
-      const visited = currentValues.visitedSteps || [];
-      if (!visited.includes(stepIndex)) {
-        setValue("visitedSteps", [...visited, stepIndex]);
-      }
-    },
-    [getValues, setValue]
-  );
-
-  useEffect(() => {
     if (isFormLoaded) {
       markStepAsVisited(currentStepIndex);
     }
   }, [currentStepIndex, isFormLoaded, markStepAsVisited]);
-
-  const getCurrentFormData = (): Partial<CreateListingForm> => {
-    const allValues = getValues();
-    const schemaFields = createListingSchema.keyof().options as (keyof CreateListingForm)[];
-    const formFields = schemaFields.filter((field) => !["id", "hostId", "createdAt", "updatedAt"].includes(field as string));
-
-    return Object.fromEntries(
-      formFields.filter((field) => allValues[field] !== undefined).map((field) => [field, allValues[field]])
-    ) as Partial<CreateListingForm>;
-  };
-
-  const handleStepClick = async (stepIndex: number) => {
-    try {
-      setIsRedirecting(true);
-      markStepAsVisited(currentStepIndex);
-      setCurrentStepIndex(stepIndex);
-
-      const formData = getCurrentFormData();
-      await updateDraftListing(listingId, {
-        ...formData,
-        currentStep: currentStepIndex,
-      });
-
-      const stepPath = hostingSteps[stepIndex];
-      router.push(`/hosting/create/listing/${listingId}/${stepPath}`);
-    } catch (error) {
-      console.error("Error saving draft:", error);
-      toast.error("Failed to save changes. Please try again.");
-      setIsRedirecting(false); // Only reset on error
-    }
-  };
 
   const getStepButtonStyle = (stepIndex: number, status: "unvisited" | "completed" | "error"): string => {
     if (stepIndex === currentStepIndex) {
@@ -109,7 +64,11 @@ export default function ProgressBar({ listingId }: { listingId: number }) {
     if (!isFormLoaded) return "unvisited";
 
     const formValues = getValues();
-    if (!(formValues.visitedSteps || []).includes(stepIndex)) return "unvisited";
+    const visitedSteps = formValues.visitedSteps || [];
+
+    if (!visitedSteps.includes(stepIndex)) {
+      return "unvisited";
+    }
 
     const stepPath = hostingSteps[stepIndex];
     const stepFields = getStepFields(stepPath);
@@ -119,12 +78,12 @@ export default function ProgressBar({ listingId }: { listingId: number }) {
       return schema ? !schema.safeParse(formValues[field]).success : false;
     });
 
-    return hasErrors ? "error" : "completed";
+    const status = hasErrors ? "error" : "completed";
+    return status;
   };
 
   const handleSaveAndExit = async () => {
     try {
-      setIsRedirecting(true);
       const formData = getCurrentFormData();
       const { success } = await updateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
       if (success) {
@@ -134,8 +93,6 @@ export default function ProgressBar({ listingId }: { listingId: number }) {
     } catch (error) {
       console.error("Error saving draft:", error);
       toast.error("Failed to save changes. Please try again.");
-    } finally {
-      setIsRedirecting(false);
     }
   };
 

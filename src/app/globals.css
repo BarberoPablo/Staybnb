@@ -25,7 +25,9 @@
   --color-myGrayExtraLight: #222222;
   --color-myGray: #6A6A6A;
   --color-myGrayDark: #364153;
+  --color-myPurpleLight: #E0CFFA;
   --color-myPurple: #E0CFFA;
+  --color-myPurpleBold: #B08EFF;
 
 }
 
@@ -131,4 +133,66 @@ body {
     width: 24px !important;
     height: 24px !important;
   }
+}
+
+/* Screen reader only - for accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Hero section animations */
+@keyframes kenBurnsZoom {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUpDelay {
+
+  0%,
+  20% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-bg-animate {
+  animation: kenBurnsZoom 20s ease-out infinite alternate;
+}
+
+.hero-title-animate {
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+.hero-subtitle-animate {
+  animation: fadeInUpDelay 1.2s ease-out forwards;
 }

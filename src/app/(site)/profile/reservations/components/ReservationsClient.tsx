@@ -4,6 +4,7 @@ import { ResumedReservationWithListing } from "@/lib/types/reservation";
 import { getTotalGuests } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
 import { IoCalendar, IoFilter, IoLocation, IoPerson, IoStar, IoTime } from "react-icons/io5";
@@ -30,7 +31,8 @@ const getStatusColor = (status: string) => {
 };
 
 export default function ReservationsClient({ initialReservations }: { initialReservations: ResumedReservationWithListing[] }) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const searchParams = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("id") || "");
   const [statusFilter, setStatusFilter] = useState<ReservationStatus>("all");
   const [openCancelResevationDialog, setOpenCancelResevationDialog] = useState(false);
   const [openAddReviewDialog, setOpenAddReviewDialog] = useState(false);
@@ -42,6 +44,9 @@ export default function ReservationsClient({ initialReservations }: { initialRes
   const filteredReservations = reservations.filter((reservation) => {
     const matchesSearch =
       reservation.listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      reservation.id.toLowerCase() === searchTerm.toLowerCase() ||
+      reservation.startDate.toLocaleDateString().includes(searchTerm.toLowerCase()) ||
+      reservation.endDate.toLocaleDateString().includes(searchTerm.toLowerCase()) ||
       `${reservation.listing.location.country} ${reservation.listing.location.city}`.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || reservation.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -73,7 +78,7 @@ export default function ReservationsClient({ initialReservations }: { initialRes
           };
         }
         return reservation;
-      })
+      }),
     );
   };
 
@@ -117,12 +122,12 @@ export default function ReservationsClient({ initialReservations }: { initialRes
             <p className="text-gray-400">Try adjusting your search or filter criteria</p>
           </div>
         ) : (
-          filteredReservations.map((reservation, index) => (
+          filteredReservations.map((reservation) => (
             <motion.div
               key={reservation.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
               className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow"
             >
               <div className="flex flex-col lg:flex-row gap-6">

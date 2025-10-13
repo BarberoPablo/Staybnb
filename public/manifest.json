@@ -1,0 +1,17 @@
+{
+  "name": "StayBnb - Vacation Rentals",
+  "short_name": "StayBnb",
+  "description": "Discover and book unique accommodations around the world",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7FB069",
+  "icons": [
+    {
+      "src": "/logo-reduced-white.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

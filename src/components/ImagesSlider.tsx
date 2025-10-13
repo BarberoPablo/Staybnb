@@ -13,11 +13,13 @@ export default function ImagesSlider({
   containerClassName,
   href,
   hoverEffect,
+  insideMap = false,
 }: {
   images: string[];
   containerClassName?: string;
   href?: string;
   hoverEffect?: boolean;
+  insideMap?: boolean;
 }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -31,8 +33,8 @@ export default function ImagesSlider({
     },
   });
   const [isHovering, setIsHovering] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 768px)");
-  const hoverAnimation = !isMobile && hoverEffect && isHovering ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none";
+  const isMobile = useMediaQuery("(max-width: 1024px)");
+  const hoverAnimation = isMobile || (hoverEffect && isHovering) ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none";
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -107,7 +109,7 @@ export default function ImagesSlider({
             ))}
 
             {/* Image Counter Badge */}
-            <div className="absolute bottom-3 right-3 px-3 py-1.5 bg-white/90 backdrop-blur-sm border border-gray-200/50 text-sm rounded-full shadow-lg">
+            <div className="absolute bottom-3 right-1 px-3 py-1.5 bg-white/90 backdrop-blur-sm border border-gray-200/50 text-sm rounded-full shadow-lg">
               <span className="font-semibold text-myGrayDark">
                 {currentSlide + 1}/{images.length}
               </span>
@@ -121,7 +123,7 @@ export default function ImagesSlider({
         </ConditionalLink>
 
         {/* Navigation Arrows */}
-        {loaded && instanceRef.current && (
+        {(!isMobile || insideMap) && loaded && instanceRef.current && (
           <>
             <RoundButton
               className={`absolute left-3 top-1/2 transform -translate-y-1/2 text-xl transition-all duration-300 text-myGrayDark bg-white/90 hover:bg-white backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl hover:scale-105 ${hoverAnimation}`}
@@ -160,7 +162,7 @@ function Dots({ totalDots, currentSlide, onDotClick, hoverAnimation }: DotsProps
   if (totalDots <= maxVisibleDots) {
     // Show all dots if 3 or fewer images
     return (
-      <div className={`dots w-full absolute bottom-4 flex justify-center transition-all duration-300 ${hoverAnimation}`}>
+      <div className={`dots w-full absolute bottom-2 flex justify-center transition-all duration-300 ${hoverAnimation}`}>
         {[...Array(totalDots).keys()].map((idx) => (
           <button
             key={idx}
@@ -177,7 +179,7 @@ function Dots({ totalDots, currentSlide, onDotClick, hoverAnimation }: DotsProps
     const startIdx = Math.max(0, Math.min(currentSlide - 1, totalDots - maxVisibleDots));
 
     return (
-      <div className={`dots w-full absolute bottom-4 flex justify-center transition-all duration-300 ${hoverAnimation}`}>
+      <div className={`dots w-full absolute bottom-2 flex justify-center transition-all duration-300 ${hoverAnimation}`}>
         {[...Array(maxVisibleDots).keys()].map((dotIdx) => {
           const actualIdx = startIdx + dotIdx;
           const isActive = currentSlide === actualIdx;

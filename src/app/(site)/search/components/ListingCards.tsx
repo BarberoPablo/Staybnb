@@ -2,7 +2,7 @@
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Listing } from "@/lib/types/listing";
-import ListingCard from "./ListingCard";
+import HomeListingCard from "../../components/HomeListingCard";
 
 export function ListingCards({ listings, setLocateListing }: { listings: Listing[]; setLocateListing: (listingId: number) => void }) {
   const is2xl = useMediaQuery("(min-width: 1536px)");
@@ -36,7 +36,7 @@ export function ListingCards({ listings, setLocateListing }: { listings: Listing
         }}
       >
         {listings.map((listing) => (
-          <ListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} />
+          <HomeListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} />
         ))}
       </div>
     </div>

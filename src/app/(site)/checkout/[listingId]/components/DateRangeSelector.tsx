@@ -3,9 +3,9 @@
 import { CalendarLegend } from "@/components/Booking/CalendarLegend";
 import { excludeDate, getCustomDayContent } from "@/components/Booking/bookingFormUtils";
 import Tooltip from "@/components/Tooltip";
-import { api } from "@/lib/api/api";
+import { getListingReservations } from "@/lib/api/server/endpoints/reservations";
 import { DateRangeKey, UnavailableDates } from "@/lib/types";
-import { createUTCDate, getDisabledDates, validateDateRange } from "@/lib/utils";
+import { calculateNights, createUTCDate, getDisabledDates, getListingPromotion, validateDateRange } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import { DateRange, RangeKeyDict } from "react-date-range";
@@ -44,10 +44,20 @@ export default function DateRangeSelector({
     timezone: "",
   });
 
+  const updateURLParams = (startDate: Date, endDate: Date) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("startDate", startDate.toISOString());
+    params.set("endDate", endDate.toISOString());
+
+    const newURL = `${window.location.pathname}?${params.toString()}`;
+
+    window.history.replaceState(null, "", newURL);
+  };
+
   useEffect(() => {
     const fetchReservedDates = async () => {
       try {
-        const { reservations, listing } = await api.getListingReservations(listingId);
+        const { reservations, listing } = await getListingReservations(listingId);
 
         const { unavailableCheckInDates: disabledCheckInDates, unavailableCheckOutDates: disabledCheckOutDates } = getDisabledDates(reservations);
 
@@ -74,6 +84,7 @@ export default function DateRangeSelector({
       const timezoneEndDate = createUTCDate(endDate.toISOString().substring(0, 10), listingTimes.checkOutTime, listingTimes.timezone);
 
       setDateRange({ startDate: timezoneStartDate, endDate: timezoneEndDate, key });
+
       setDisabledDates((prevState) => {
         const filteredDates = { ...prevState };
 
@@ -97,12 +108,32 @@ export default function DateRangeSelector({
       return;
     }
 
-    setListingData((prevState) => ({ ...prevState, startDate: dateRange.startDate, endDate: dateRange.endDate }));
+    updateURLParams(dateRange.startDate, dateRange.endDate);
+    const nights = calculateNights(dateRange.startDate, dateRange.endDate);
+
+    setListingData((prevState) => ({
+      ...prevState,
+      startDate: dateRange.startDate,
+      endDate: dateRange.endDate,
+      nights,
+      promo: getListingPromotion(prevState.listing, nights),
+    }));
+
+    onClose();
+  };
+
+  const handleClose = () => {
+    setDateRange({
+      startDate: startDate,
+      endDate: endDate,
+      key: "selection",
+    });
+    setError("");
     onClose();
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
+    <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <DialogPanel
@@ -124,8 +155,8 @@ export default function DateRangeSelector({
               </div>
             </div>
             <button
-              onClick={onClose}
-              className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-myGray hover:text-myGrayDark transition-colors duration-200"
+              onClick={handleClose}
+              className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-myGray hover:text-myGrayDark transition-colors duration-200 cursor-pointer"
             >
               <IoClose className="w-4 h-4" />
             </button>
@@ -153,7 +184,7 @@ export default function DateRangeSelector({
           {/* Actions */}
           <div className="flex gap-3 p-6 border-t border-gray-100 bg-gray-50">
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1 bg-white hover:bg-gray-50 text-myGrayDark font-medium py-3 px-4 rounded-xl border border-gray-200 transition-all duration-200 hover:border-gray-300 cursor-pointer"
             >
               Cancel

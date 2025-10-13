@@ -6,7 +6,9 @@ import { Listing, ListingDB, Location, Promotion, PromotionDB } from "./types/li
 import { CreateProfile, UpdateProfile } from "./types/profile";
 import { ReservedDate } from "./types/reservation";
 
-export const logoUrl = "https://i.postimg.cc/152jT0ZW/logo80x63.png";
+export const logoUrl = "https://i.postimg.cc/65bvWcTY/logo.png";
+export const logoUrlReduced = "https://i.postimg.cc/WbfM7qCZ/logo-reduced.png";
+
 export const windowWidth = {
   full: 1920,
   short: 1280,
@@ -55,7 +57,7 @@ export function getGuestsFromParams(params: ListingSearchParams) {
   const guests = Object.fromEntries(
     Object.entries(params)
       .filter(([key, value]) => listingGuests.includes(key as Guests) && value !== "0")
-      .map(([key, value]) => [key, Number(value)])
+      .map(([key, value]) => [key, Number(value)]),
   ) as Record<Guests, number>;
 
   return guests;

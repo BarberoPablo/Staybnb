@@ -5,11 +5,10 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { parseFilters } from "@/lib/api/server/utils";
 import { AmenityId } from "@/lib/constants/amenities";
 import { Dates, Guests } from "@/lib/types";
-import { logoUrl } from "@/lib/utils";
+import { logoUrl, logoUrlReduced } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { SearchParams } from "next/dist/server/request/search-params";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
 import { lazy, useEffect, useState } from "react";
@@ -51,7 +50,8 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
   const hosting = pathname.includes("/hosting");
-  const searchEffect = !useMediaQuery("(max-width: 500px)");
+  const isMobile = !useMediaQuery("(max-width: 768px)");
+  const searchEffect = isMobile;
 
   useEffect(() => {
     const isSearchPage = pathname.includes("/search");
@@ -130,13 +130,17 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   };
 
   return (
-    <nav className="flex items-center justify-center bg-myGreenComplement shadow-sm border border-gray-200 h-full w-full p-0 m-0">
+    <nav className="flex items-center justify-center bg-myGreenComplement/50 shadow-sm h-full w-full p-0 m-0">
       <Container noPadding className="flex items-center justify-around sticky z-50 top-0 sm:justify-between w-full px-0.5 py-4 sm:px-12">
-        <div className="hidden sm:block">
-          <Link href={`${hosting ? "/hosting" : "/"}`}>
-            <Image src={logoUrl} alt="logo" className="object-cover" width={80} height={63} />
-          </Link>
-        </div>
+        <button onClick={() => router.push(hosting ? "/hosting" : "/")} className="relative flex items-center justify-center cursor-pointer">
+          <div className="relative w-[150px] h-[67px] hidden lg:block">
+            <Image src={logoUrl} alt="logo" fill className="object-contain" sizes="100%" />
+          </div>
+
+          <div className="relative w-[108px] h-[46px] hidden md:block lg:hidden">
+            <Image src={logoUrlReduced} alt="logo" fill className="object-contain" sizes="100%" />
+          </div>
+        </button>
         <div className="flex flex-1 justify-center">
           {search && (
             <motion.div
@@ -149,14 +153,14 @@ export default function Navbar({ search = true }: { search?: boolean }) {
                   <div className="flex flex-col">
                     <div
                       className={`flex items-center gap-2 h-10 border rounded-full transition-all duration-300 ${
-                        showCityError ? "border-red-500 bg-red-50 animate-pulse" : "border-myGreenSemiBold bg-myGreenExtraLight"
+                        showCityError ? "border-red-500 bg-red-50 animate-pulse" : "border-myGrayDark bg-myGray/10"
                       }`}
                     >
                       <input
                         type="text"
                         placeholder={showCityError ? "Please enter a city to search" : "Where do you want to go?"}
                         className={`rounded-full py-2 ${searchEffect ? "px-4" : "px-2"} text-sm focus:outline-none transition-colors duration-300 ${
-                          showCityError ? "bg-red-50 text-red-700 placeholder-red-400" : "focus:bg-myGreenLight hover:bg-myGreenLight"
+                          showCityError ? "bg-red-50 text-red-700 placeholder-red-400" : "focus:bg-myGray/10 hover:bg-myGray/10"
                         }`}
                         value={searchCity}
                         name="searchCity"
@@ -171,7 +175,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
                       {searchEffect ? (
                         <motion.button
                           className={`flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 ${
-                            showCityError ? "bg-red-300 text-red-700" : "bg-myGreenLight text-myGray"
+                            showCityError ? "bg-red-300 text-red-700" : "bg-myGray/10 text-myGrayDark"
                           }   overflow-hidden transition-colors hover:cursor-pointer`}
                           disabled={searchCity === ""}
                           onClick={handleSearchCity}
@@ -194,7 +198,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
                         </motion.button>
                       ) : (
                         <button
-                          className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGreenLight text-myGray overflow-hidden transition-colors hover:cursor-pointer"
+                          className="flex flex-row w-full h-full items-center justify-center font-medium rounded-full p-2 gap-2 bg-myGray/10 text-myGrayDark overflow-hidden transition-colors hover:cursor-pointer"
                           disabled={searchCity === ""}
                           onClick={handleSearchCity}
                         >
@@ -223,7 +227,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
           )}
         </div>
         <div className="mr-4">
-          <SignButton />
+          <SignButton hosting={!!hosting} />
         </div>
       </Container>
     </nav>
@@ -231,52 +235,18 @@ export default function Navbar({ search = true }: { search?: boolean }) {
 }
 
 export function buildQueryStringFromParams(params: SearchParams): string {
-  const queryParts: string[] = [];
+  const query = new URLSearchParams();
 
-  if (params.startDate) {
-    queryParts.push(`startDate=${encodeURIComponent(params.startDate as string)}`);
-  }
-  if (params.endDate) {
-    queryParts.push(`endDate=${encodeURIComponent(params.endDate as string)}`);
-  }
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
 
-  if (params.adults) {
-    queryParts.push(`adults=${params.adults}`);
-  }
-  if (params.children) {
-    queryParts.push(`children=${params.children}`);
-  }
-  if (params.infant) {
-    queryParts.push(`infant=${params.infant}`);
-  }
-  if (params.pets) {
-    queryParts.push(`pets=${params.pets}`);
-  }
+    if (Array.isArray(value)) {
+      query.append(key, value.join(","));
+    } else {
+      query.append(key, String(value));
+    }
+  });
 
-  if (params.amenities) {
-    const amenitiesValue = Array.isArray(params.amenities) ? params.amenities.join(",") : params.amenities;
-    queryParts.push(`amenities=${encodeURIComponent(amenitiesValue)}`);
-  }
-
-  if (params.minPrice) {
-    queryParts.push(`minPrice=${params.minPrice}`);
-  }
-  if (params.maxPrice) {
-    queryParts.push(`maxPrice=${params.maxPrice}`);
-  }
-
-  if (params.guests) {
-    queryParts.push(`guests=${params.guests}`);
-  }
-  if (params.bedrooms) {
-    queryParts.push(`bedrooms=${params.bedrooms}`);
-  }
-  if (params.beds) {
-    queryParts.push(`beds=${params.beds}`);
-  }
-  if (params.bathrooms) {
-    queryParts.push(`bathrooms=${params.bathrooms}`);
-  }
-
-  return queryParts.length > 0 ? `&${queryParts.join("&")}` : "";
+  const queryString = query.toString();
+  return queryString ? `&${queryString}` : "";
 }

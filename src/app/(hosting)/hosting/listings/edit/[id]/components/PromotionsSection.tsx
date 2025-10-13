@@ -29,8 +29,7 @@ export default function PromotionsSection() {
       <div className="space-y-4">
         {fields.map((field, index) => (
           <div key={field.id} className="p-4 border border-gray-200 rounded-xl">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Min Nights */}
+            <div className="grid grid-cols-3 sm:grid-cols-3 gap-4">
               <div>
                 <label className={labelClass}>Min Nights</label>
                 <input
@@ -46,7 +45,6 @@ export default function PromotionsSection() {
                 {errors.promotions?.[index]?.minNights && <p className={errorClass}>{errors.promotions[index]?.minNights?.message}</p>}
               </div>
 
-              {/* Discount % */}
               <div>
                 <label className={labelClass}>Discount %</label>
                 <input
@@ -75,7 +73,6 @@ export default function PromotionsSection() {
               </div>
             </div>
 
-            {/* Description */}
             <div className="mt-4">
               <label className={labelClass}>Description</label>
               <input {...register(`promotions.${index}.description`)} type="text" placeholder="Promotion description" className={inputClass} />
@@ -83,7 +80,6 @@ export default function PromotionsSection() {
           </div>
         ))}
 
-        {/* Add Promotion Button */}
         <button
           type="button"
           onClick={() => append({ minNights: 1, discountPercentage: 0, description: "" })}

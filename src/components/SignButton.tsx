@@ -4,11 +4,10 @@ import { logout } from "@/app/(site)/auth/components/auth";
 import { useUser } from "@/hooks/useUser";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useRouter } from "nextjs-toploader/app";
-import { CiUser } from "react-icons/ci";
-import { FaHome, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
-import { MdKeyboardArrowDown, MdOutlineLogin } from "react-icons/md";
+import { FaHome, FaSignOutAlt, FaUser, FaUserCircle } from "react-icons/fa";
+import { MdKeyboardArrowDown, MdOutlineLogin, MdOutlineTravelExplore } from "react-icons/md";
 
-export function SignButton() {
+export function SignButton({ hosting }: { hosting: boolean }) {
   const router = useRouter();
   const { user, loading } = useUser();
 
@@ -27,6 +26,10 @@ export function SignButton() {
 
   const handleHosting = () => {
     router.push("/hosting");
+  };
+
+  const handleTraveling = () => {
+    router.push("/");
   };
 
   if (loading) {
@@ -52,15 +55,13 @@ export function SignButton() {
 
   return (
     <Menu as="div" className="relative">
-      <MenuButton
-        className={`flex items-center gap-2 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer hover:bg-myGreenExtraLight/30 p-1`}
-      >
-        <div className="w-10 h-10 bg-gradient-to-br from-myGreenLight to-myGreenBold rounded-full flex items-center justify-center shadow-sm">
-          <CiUser className="w-6 h-6 text-white" />
+      <MenuButton className={`flex items-center gap-2 rounded-lg cursor-pointer p-1 group`}>
+        <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm duration-200">
+          <FaUser className="w-6 h-6 text-myGrayDark duration-200" />
         </div>
         <div className="hidden sm:flex items-center gap-2">
-          <span className="text-myGrayDark font-medium text-sm">Profile</span>
-          <MdKeyboardArrowDown className="w-4 h-4 text-myGray" />
+          <span className="text-myGrayDark font-medium text-sm duration-200">Profile</span>
+          <MdKeyboardArrowDown className="w-4 h-4 text-myGreenBold" />
         </div>
       </MenuButton>
 
@@ -79,8 +80,8 @@ export function SignButton() {
                   }`}
                   onClick={handleProfile}
                 >
-                  <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-sm">
-                    <FaUserCircle className="w-4 h-4 text-white" />
+                  <div className="w-9 h-9 bg-gradient-to-br from-myGreen/60 to-myGreen rounded-xl flex items-center justify-center shadow-sm">
+                    <FaUserCircle className="w-4 h-4 text-myGrayDark" />
                   </div>
                   <div className="flex-1 text-left">
                     <span className="font-medium">My Profile</span>
@@ -90,31 +91,54 @@ export function SignButton() {
               )}
             </MenuItem>
 
-            <MenuItem>
-              {({ focus }) => (
-                <button
-                  className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
-                    focus ? "bg-orange-50 text-orange-700" : "hover:bg-orange-50 text-myGrayDark"
-                  }`}
-                  onClick={handleHosting}
-                >
-                  <div className="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-sm">
-                    <FaHome className="w-4 h-4 text-white" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <span className="font-medium">Switch to Hosting</span>
-                    <p className="text-xs text-myGray group-hover:text-orange-700 transition-colors">Manage your listings</p>
-                  </div>
-                </button>
-              )}
-            </MenuItem>
+            {!hosting && (
+              <MenuItem>
+                {({ focus }) => (
+                  <button
+                    className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
+                      focus ? "bg-myPurple/60 text-myPurpleBold" : "hover:bg-myPurple/40 text-myGrayDark"
+                    }`}
+                    onClick={handleHosting}
+                  >
+                    <div className="w-9 h-9 bg-gradient-to-br from-myGreenComplement to-myPurple rounded-xl flex items-center justify-center shadow-sm">
+                      <FaHome className="w-4 h-4 text-myGrayDark" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <span className="font-medium">Switch to Hosting</span>
+                      <p className="text-xs text-myGray group-hover:text-myPurpleBold transition-colors">Manage your listings</p>
+                    </div>
+                  </button>
+                )}
+              </MenuItem>
+            )}
+
+            {hosting && (
+              <MenuItem>
+                {({ focus }) => (
+                  <button
+                    className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
+                      focus ? "bg-myPurple/60 text-myPurpleBold" : "hover:bg-myPurple/40 text-myGrayDark"
+                    }`}
+                    onClick={handleTraveling}
+                  >
+                    <div className="w-9 h-9 bg-gradient-to-br from-myGreenComplement to-myPurple rounded-xl flex items-center justify-center shadow-sm">
+                      <MdOutlineTravelExplore className="w-4 h-4 text-myGrayDark" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <span className="font-medium">Switch to Traveling</span>
+                      <p className="text-xs text-myGray group-hover:text-myPurpleBold transition-colors">Browse and book stays</p>
+                    </div>
+                  </button>
+                )}
+              </MenuItem>
+            )}
 
             <div className="pt-2">
               <MenuItem>
                 {({ focus }) => (
                   <button
                     className={`group flex w-full items-center gap-3 px-3 py-3 text-sm rounded-xl transition-all duration-200 cursor-pointer ${
-                      focus ? "bg-red-50 text-red-700" : "hover:bg-red-50 text-myGrayDark"
+                      focus ? "bg-red-100 text-red-700" : "hover:bg-red-50 text-myGrayDark"
                     }`}
                     onClick={handleLogout}
                   >

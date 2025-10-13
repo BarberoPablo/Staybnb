@@ -1,7 +1,7 @@
 "use client";
 
 import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
-import { api } from "@/lib/api/api";
+import { getProfile, signUp } from "@/lib/api/server/endpoints/profile";
 import { basicButton } from "@/lib/styles";
 import { createClient } from "@/lib/supabase/client";
 import { CreateProfile } from "@/lib/types/profile";
@@ -17,11 +17,7 @@ import { Container } from "../../../components/Container";
 
 const supabase = createClient();
 
-interface AuthCallbackContentProps {
-  userEmail: string | null;
-}
-
-export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
+export function AuthCallbackContent() {
   const router = useRouter();
   const [step, setStep] = useState<"verifying" | "profile" | "completed">("verifying");
   const [profileImage, setProfileImage] = useState<PreviewImage>();
@@ -31,14 +27,16 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
     bio: "",
   });
   const [loading, setLoading] = useState(false);
+  const [hasRun, setHasRun] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || hasRun) return;
     const hash = window.location.hash;
     const params = new URLSearchParams(hash.substring(1));
     const emailExpired = params.get("error_code")?.includes("expired");
 
     const handleAuthCallback = async () => {
+      setHasRun(true);
       try {
         const {
           data: { session },
@@ -69,7 +67,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
 
         if (session?.user) {
           //  User is logged in
-          const profile = await api.getProfile();
+          const profile = await getProfile();
 
           if (profile) {
             toast.success("Profile is complete. Redirecting...", { duration: 3000 });
@@ -95,7 +93,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
     };
 
     handleAuthCallback();
-  }, [router, userEmail]);
+  }, [hasRun, router]);
 
   const handleInputChange = (field: keyof CreateProfile, value: string | File | null) => {
     setProfileData((prev) => ({ ...prev, [field]: value }));
@@ -131,7 +129,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
     try {
       const avatarUrl = await handleUploadImage();
       const data = verifyCreateProfileData({ ...profileData, avatarUrl });
-      const signUpResponse = await api.signUp(data);
+      const signUpResponse = await signUp(data);
 
       if (signUpResponse?.success) {
         setStep("completed");
@@ -142,7 +140,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
         }, 2000);
       } else {
         throw new Error("Failed to create account");
-      } // triggering infinite dialogs
+      }
     } catch (error) {
       toast.error((error as Error).message, { duration: 3000 });
       router.replace("/");
@@ -212,7 +210,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.4, type: "spring", stiffness: 300 }}
+                transition={{ delay: 0.1, duration: 0.4, type: "spring", stiffness: 300 }}
                 className="w-16 h-16 bg-myGreenSemiBold rounded-full flex items-center justify-center mx-auto mb-4"
               >
                 <FiUser className="w-8 h-8 text-white" />
@@ -220,7 +218,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
               <motion.h1
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.4 }}
+                transition={{ delay: 0.15, duration: 0.4 }}
                 className="text-2xl font-semibold text-myGrayDark mb-2"
               >
                 Complete your profile
@@ -236,7 +234,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
                 className="space-y-3"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.8, duration: 0.4 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
               >
                 <label className="block text-sm font-medium text-myGrayDark">Profile picture (optional)</label>
                 <div className="flex items-center justify-center w-full">
@@ -257,7 +255,12 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
               </motion.div>
 
               {/* First name input */}
-              <motion.div className="space-y-2" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.9, duration: 0.4 }}>
+              <motion.div
+                className="space-y-2"
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.21, duration: 0.4 }}
+              >
                 <label className="block text-sm font-medium text-myGrayDark">First name *</label>
                 <input
                   type="text"
@@ -270,7 +273,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
               </motion.div>
 
               {/* Last name input */}
-              <motion.div className="space-y-2" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 1.0, duration: 0.4 }}>
+              <motion.div className="space-y-2" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.22, duration: 0.4 }}>
                 <label className="block text-sm font-medium text-myGrayDark">Last name *</label>
                 <input
                   type="text"
@@ -283,7 +286,7 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
               </motion.div>
 
               {/* Biography textarea */}
-              <motion.div className="space-y-2" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 1.1, duration: 0.4 }}>
+              <motion.div className="space-y-2" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.23, duration: 0.4 }}>
                 <label className="block text-sm font-medium text-myGrayDark">Biography (optional)</label>
                 <textarea
                   value={profileData.bio}
@@ -298,12 +301,12 @@ export function AuthCallbackContent({ userEmail }: AuthCallbackContentProps) {
               <motion.button
                 type="submit"
                 disabled={loading || !profileData.firstName || !profileData.lastName}
-                className={`${basicButton} w-full bg-myGreenSemiBold text-myGrayDark py-3 px-6 rounded-lg font-medium hover:bg-myGreen transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2`}
+                className={`${basicButton} w-full bg-myGreen hover:bg-myGreenSemiBold text-myGrayDark font-medium py-3 px-6 rounded-lg disabled:cursor-not-allowed disabled:opacity-50 flex items-center justify-center gap-2 transform hover:scale-[1.02] hover:shadow-lg transition-all duration-300`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2, duration: 0.3 }}
+                animate={{ opacity: loading || !profileData.firstName || !profileData.lastName ? 0.5 : 1 }}
+                transition={{ delay: 0.3, duration: 0.3 }}
               >
                 {loading ? (
                   <>

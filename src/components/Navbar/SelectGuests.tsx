@@ -18,7 +18,6 @@ export default function SelectGuests({ guests, setGuests }: SelectGuestsProps) {
     setGuests({ adults: 1, children: 0, infant: 0, pets: 0 });
   };
 
-  console.log({ guests });
   return (
     <div className="flex flex-col flex-1 w-full">
       <div className="space-y-3 w-full overflow-y-auto max-h-72">

@@ -1,6 +1,6 @@
 "use client";
 
-import { completeDraftListing, updateDraftListing } from "@/lib/api/server/api";
+import { completeDraftListing, updateDraftListing } from "@/lib/api/server/endpoints/daft-listings";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { getStepFields, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
@@ -10,11 +10,13 @@ import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import toast from "react-hot-toast";
 import { FaArrowLeft, FaArrowRight, FaSpinner } from "react-icons/fa";
+import { useListingFormContext } from "./CreateListingFormProvider";
 
 export default function NavigationButtons({ listingId }: { listingId: number }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { trigger, getValues, setValue } = useFormContext<CreateListingForm>();
+  const { trigger, getValues } = useFormContext<CreateListingForm>();
+  const { markStepAsVisited, getCurrentFormData, isRedirecting } = useListingFormContext();
   const [isCompleting, setIsCompleting] = useState(false);
 
   const currentStepIndex = hostingSteps.findIndex((step) => pathname.includes(step));
@@ -24,24 +26,6 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
 
   const schemaFields = createListingSchema.keyof().options as (keyof CreateListingForm)[];
   const formFields = schemaFields.filter((field) => !["id", "hostId", "createdAt", "updatedAt"].includes(field as string));
-
-  const getCurrentFormData = (): Partial<CreateListingForm> => {
-    const allValues = getValues();
-
-    return Object.fromEntries(
-      formFields.filter((field) => allValues[field] !== undefined).map((field) => [field, allValues[field]])
-    ) as Partial<CreateListingForm>;
-  };
-
-  const markStepAsVisited = (stepIndex: number) => {
-    const currentValues = getValues();
-    const visitedSteps = currentValues.visitedSteps || [];
-
-    if (!visitedSteps.includes(stepIndex)) {
-      const updatedVisitedSteps = [...visitedSteps, stepIndex];
-      setValue("visitedSteps", updatedVisitedSteps);
-    }
-  };
 
   const goBack = async () => {
     if (canGoBack) {
@@ -138,9 +122,9 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
       <div className="flex w-full justify-between items-center max-w-4xl mx-auto">
         <button
           onClick={goBack}
-          disabled={!canGoBack}
+          disabled={!canGoBack || isRedirecting}
           className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-            canGoBack
+            canGoBack && !isRedirecting
               ? "bg-gray-100 text-myGrayDark hover:bg-gray-200 border border-gray-300 hover:cursor-pointer"
               : "bg-gray-50 text-gray-400 hover:cursor-not-allowed border border-gray-200"
           }`}
@@ -151,9 +135,9 @@ export default function NavigationButtons({ listingId }: { listingId: number }) 
 
         <button
           onClick={isLastStep ? handleComplete : goNext}
-          disabled={isCompleting}
+          disabled={isCompleting || isRedirecting}
           className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-            isCompleting
+            isCompleting || isRedirecting
               ? "bg-myGreenSemiBold text-white cursor-not-allowed opacity-75"
               : "bg-myGreenSemiBold text-white hover:bg-myGreenBold hover:cursor-pointer"
           }`}

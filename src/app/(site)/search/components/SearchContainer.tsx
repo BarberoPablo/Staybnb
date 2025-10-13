@@ -1,12 +1,15 @@
 "use client";
 
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { ParsedFilters } from "@/lib/api/server/utils";
 import { City } from "@/lib/types/cities";
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { FaMapMarkedAlt } from "react-icons/fa";
 import { Container } from "../../components/Container";
+import DialogMap from "./DialogMap";
 import { ListingCards } from "./ListingCards";
 import { NoListingsFound } from "./NoListingsFound";
 
@@ -29,6 +32,8 @@ export default function SearchContainer({
   const [filteredListings, setFilteredListings] = useState<Listing[]>(listings);
   const [searchTriggered, setSearchTriggered] = useState(false);
   const layoutKey = getLayoutCategory(filteredListings.length);
+  const isLargeScreen = useMediaQuery("(min-width: 1024px)");
+  const [openMap, setOpenMap] = useState(false);
 
   useEffect(() => {
     setFilteredListings(listings);
@@ -41,6 +46,10 @@ export default function SearchContainer({
 
   const handleSearchComplete = () => {
     setSearchTriggered(false);
+  };
+
+  const handleOpenMap = () => {
+    setOpenMap(true);
   };
 
   return (
@@ -64,18 +73,38 @@ export default function SearchContainer({
             </div>
 
             {/* Map Section */}
-            <div className="lg:col-span-4 xl:col-span-5 flex flex-col sticky top-10 h-[calc(100vh-177px)] flex-1 bg-white rounded-xl overflow-hidden shadow-lg">
-              <ListingsMapNoSSR
-                listings={filteredListings}
-                locateListing={locateListing}
-                setListings={setFilteredListings}
-                cityCenter={cityCenter}
-                searchTriggered={searchTriggered}
-                onSearchComplete={handleSearchComplete}
-              />
-            </div>
+            {isLargeScreen && (
+              <div className="lg:col-span-4 xl:col-span-5 flex flex-col sticky top-10 h-[calc(100vh-177px)] my-10 flex-1 bg-white rounded-xl overflow-hidden shadow-lg">
+                <ListingsMapNoSSR
+                  listings={filteredListings}
+                  locateListing={locateListing}
+                  setListings={setFilteredListings}
+                  cityCenter={cityCenter}
+                  searchTriggered={searchTriggered}
+                  onSearchComplete={handleSearchComplete}
+                />
+              </div>
+            )}
+            {!isLargeScreen && (
+              <button
+                className="flex items-center justify-center sticky bottom-6 left-1/2 transform -translate-x-1/2 w-15 h-15 text-2xl bg-myGreen rounded-full text-myGrayDark border-2 border-myGreenSemiBold cursor-pointer"
+                onClick={() => handleOpenMap()}
+              >
+                <FaMapMarkedAlt />
+              </button>
+            )}
           </div>
         </motion.div>
+        <DialogMap
+          open={openMap}
+          onClose={() => setOpenMap(false)}
+          listings={filteredListings}
+          locateListing={locateListing}
+          cityCenter={cityCenter}
+          setListings={setFilteredListings}
+          searchTriggered={searchTriggered}
+          onSearchComplete={handleSearchComplete}
+        />
       </div>
     </Container>
   );

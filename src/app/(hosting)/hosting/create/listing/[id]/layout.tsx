@@ -1,4 +1,5 @@
-import { getDraftListing } from "@/lib/api/server/api";
+import { getDraftListing } from "@/lib/api/server/endpoints/daft-listings";
+import { redirect } from "next/navigation";
 import CreateListingFormProvider from "./components/CreateListingFormProvider";
 
 export default async function CreateListingFormLayout({ params, children }: { params: Promise<{ id: string }>; children: React.ReactNode }) {
@@ -8,7 +9,7 @@ export default async function CreateListingFormLayout({ params, children }: { pa
     const draftListing = await getDraftListing(Number(id));
 
     if (!draftListing[0]) {
-      throw new Error("Draft listing not found");
+      redirect("/hosting");
     }
 
     return (
@@ -18,6 +19,6 @@ export default async function CreateListingFormLayout({ params, children }: { pa
     );
   } catch (error) {
     console.error("Error fetching draft listing", error);
-    return <div>Error fetching draft listing</div>;
+    redirect("/hosting");
   }
 }

@@ -27,36 +27,36 @@ export default function FilterButtons({ showFilters, filtersQuery, onOpenCalenda
         >
           <div className="flex gap-4">
             <RoundButton
-              className={`w-10 h-10 shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold`}
+              className={`w-10 h-10 shadow-md text-2xl text-myGrayDark border border-myGrayDark`}
               style={{
-                backgroundColor: `${filtersQuery.startDate ? "var(--color-myPurple)" : "var(--color-myGreenExtraLight)"}`,
-                borderColor: `${filtersQuery.startDate ? "var(--color-myGray)" : "var(--color-myGreenSemiBold)"}`,
+                backgroundColor: `${filtersQuery.startDate ? "var(--color-myGreenLight)" : "var(--color-background)"}`,
+                borderColor: "var(--color-myGrayDark)",
               }}
               onClick={() => onOpenCalendar(0)}
             >
               <IoCalendar className="text-myGrayDark" />
             </RoundButton>
             <RoundButton
-              className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold"
+              className="w-10 h-10 shadow-md text-2xl text-myGrayDark border border-myGrayDark"
               style={{
-                backgroundColor: `${filtersQuery.adults ? "var(--color-myPurple)" : "var(--color-myGreenExtraLight)"}`,
-                borderColor: `${filtersQuery.adults ? "var(--color-myGray)" : "var(--color-myGreenSemiBold)"}`,
+                backgroundColor: `${filtersQuery.adults ? "var(--color-myGreenLight)" : "var(--color-background)"}`,
+                borderColor: "var(--color-myGrayDark)",
               }}
               onClick={() => onOpenCalendar(1)}
             >
               <IoPeople className="text-myGrayDark" />
             </RoundButton>
             <RoundButton
-              className="w-10 h-10 bg-myGreenExtraLight shadow-md text-2xl text-myGrayDark border border-myGreenSemiBold"
+              className="w-10 h-10 shadow-md text-2xl text-myGrayDark border border-myGrayDark"
               style={{
-                backgroundColor: `${filtersQuery.amenities ? "var(--color-myPurple)" : "var(--color-myGreenExtraLight)"}`,
-                borderColor: `${filtersQuery.amenities ? "var(--color-myGray)" : "var(--color-myGreenSemiBold)"}`,
+                backgroundColor: `${filtersQuery.amenities ? "var(--color-myGreenLight)" : "var(--color-background)"}`,
+                borderColor: "var(--color-myGrayDark)",
               }}
               onClick={() => onOpenCalendar(2)}
             >
               <MdHomeWork className="text-myGrayDark" />
             </RoundButton>
-            <RoundButton className="w-10 h-10 bg-myGreenExtraLight shadow-md text-3xl text-myGrayDark" onClick={onCloseFilters}>
+            <RoundButton className="w-10 h-10 shadow-md text-3xl text-myGrayDark border-myGrayDark" onClick={onCloseFilters}>
               <IoIosClose />
             </RoundButton>
           </div>
