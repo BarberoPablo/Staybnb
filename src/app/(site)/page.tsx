@@ -1,6 +1,7 @@
 import { getPopularDestinations } from "@/lib/api/server/endpoints/cities";
 import { getFeaturedListings, getPopularListings } from "@/lib/api/server/endpoints/listings";
 import { generateOrganizationStructuredData, generateSEOMetadata, generateWebsiteStructuredData } from "@/lib/seo";
+import { SearchPageParams } from "@/lib/types";
 import FeaturedListings from "./components/FeaturedListings";
 import HomeBanner from "./components/HomeBanner";
 import PopularDestinations from "./components/PopularDestinations";
@@ -18,7 +19,21 @@ export const metadata = generateSEOMetadata({
   path: "/",
 });
 
-export default async function Home({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+export default async function Home({ searchParams }: { searchParams: Promise<SearchPageParams> }) {
+  const params = await searchParams;
+
+  // Format searchParams for client components (convert arrays to single values)
+  const formattedParams: Record<string, string> = {};
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined) {
+      if (Array.isArray(value)) {
+        formattedParams[key] = value[0] || "";
+      } else {
+        formattedParams[key] = value;
+      }
+    }
+  });
+
   const [featuredListings, popularListings, popularDestinations] = await Promise.all([
     getFeaturedListings(12),
     getPopularListings(12),
@@ -38,11 +53,11 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
       <div className="px-12 py-10 w-full space-y-4">
         <HomeBanner />
 
-        <FeaturedListings listings={featuredListings} searchParams={searchParams} />
+        <FeaturedListings listings={featuredListings} searchParams={formattedParams} />
 
         <PopularDestinations destinations={popularDestinations} />
 
-        <PopularListings listings={popularListings} searchParams={searchParams} />
+        <PopularListings listings={popularListings} searchParams={formattedParams} />
       </div>
     </>
   );

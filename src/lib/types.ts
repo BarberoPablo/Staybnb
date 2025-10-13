@@ -45,3 +45,5 @@ export type GetListingsParams = Partial<MapCoordinates> & {
   limit?: number;
   offset?: number;
 };
+
+export type SearchPageParams = Record<string, string | string[] | undefined>;

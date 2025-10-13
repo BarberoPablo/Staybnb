@@ -14,24 +14,11 @@ export default function HomeListingCard({
 }: {
   listing: Listing;
   setLocateListing?: (listingId: number) => void;
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams?: Record<string, string>;
 }) {
   const buildHrefWithParams = () => {
     const baseHref = `/listing/${listing.id}`;
-
-    // Convert server-side searchParams to the format expected by buildQueryStringFromParams
-    const params: Record<string, string> = {};
-    Object.entries(searchParams).forEach(([key, value]) => {
-      if (value !== undefined) {
-        if (Array.isArray(value)) {
-          params[key] = value[0] || "";
-        } else {
-          params[key] = value;
-        }
-      }
-    });
-
-    const queryString = buildQueryStringFromParams(params);
+    const queryString = searchParams ? buildQueryStringFromParams(searchParams) : "";
 
     return queryString ? `${baseHref}?${queryString}` : baseHref;
   };

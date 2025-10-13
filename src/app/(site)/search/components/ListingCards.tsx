@@ -4,7 +4,15 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Listing } from "@/lib/types/listing";
 import HomeListingCard from "../../components/HomeListingCard";
 
-export function ListingCards({ listings, setLocateListing }: { listings: Listing[]; setLocateListing: (listingId: number) => void }) {
+export function ListingCards({
+  listings,
+  setLocateListing,
+  searchParams,
+}: {
+  listings: Listing[];
+  setLocateListing: (listingId: number) => void;
+  searchParams: Record<string, string>;
+}) {
   const is2xl = useMediaQuery("(min-width: 1536px)");
   const isMd = useMediaQuery("(min-width: 768px)");
 
@@ -36,7 +44,7 @@ export function ListingCards({ listings, setLocateListing }: { listings: Listing
         }}
       >
         {listings.map((listing) => (
-          <HomeListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} />
+          <HomeListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} searchParams={searchParams} />
         ))}
       </div>
     </div>

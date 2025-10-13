@@ -4,13 +4,7 @@ import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import HomeListingCard from "./HomeListingCard";
 
-export default function FeaturedListings({
-  listings,
-  searchParams,
-}: {
-  listings: Listing[];
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+export default function FeaturedListings({ listings, searchParams }: { listings: Listing[]; searchParams: Record<string, string> }) {
   if (listings.length === 0) return null;
 
   return (

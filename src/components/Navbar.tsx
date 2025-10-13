@@ -88,12 +88,8 @@ export default function Navbar({ search = true }: { search?: boolean }) {
 
   const handleSearchCity = () => {
     if (searchCity) {
-      let query = `/search?city=${encodeURIComponent(searchCity.trim())}`;
-      if (filtersQuery && Object.keys(filtersQuery).length > 0) {
-        query += buildQueryStringFromParams(filtersQuery);
-      }
-
-      router.push(query);
+      const params = new URLSearchParams({ ...filtersQuery, city: searchCity.trim() });
+      router.push(`/search?${params.toString()}`);
     }
   };
 
@@ -113,10 +109,8 @@ export default function Navbar({ search = true }: { search?: boolean }) {
     let searchQuery = "";
     if (query) {
       if (searchCity) {
-        searchQuery = `/search?city=${encodeURIComponent(searchCity.trim())}`;
-        if (query && Object.keys(query).length > 0) {
-          searchQuery += buildQueryStringFromParams(query);
-        }
+        const params = new URLSearchParams({ ...query, city: searchCity.trim() });
+        searchQuery = `/search?${params.toString()}`;
       } else {
         setShowCityError(true);
         setTimeout(() => setShowCityError(false), 3000);

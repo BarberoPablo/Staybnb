@@ -21,12 +21,14 @@ export default function SearchContainer({
   cityCenter,
   cities,
   filters,
+  searchParams,
 }: {
   listings: Listing[];
   city: string | undefined;
   cityCenter: { lat: number; lng: number } | null;
   cities: City[];
   filters: ParsedFilters;
+  searchParams: Record<string, string>;
 }) {
   const [locateListing, setLocateListing] = useState(-1);
   const [filteredListings, setFilteredListings] = useState<Listing[]>(listings);
@@ -68,7 +70,7 @@ export default function SearchContainer({
               {filteredListings.length === 0 ? (
                 <NoListingsFound city={city} cities={cities} filters={filters} />
               ) : (
-                <ListingCards key={layoutKey} listings={filteredListings} setLocateListing={setLocateListing} />
+                <ListingCards key={layoutKey} listings={filteredListings} setLocateListing={setLocateListing} searchParams={searchParams} />
               )}
             </div>
 

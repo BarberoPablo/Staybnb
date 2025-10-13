@@ -2,10 +2,9 @@ import { getAllCities } from "@/lib/api/server/endpoints/cities";
 import { searchListings } from "@/lib/api/server/endpoints/listings";
 import { parseFilters } from "@/lib/api/server/utils";
 import { generateSEOMetadata } from "@/lib/seo";
+import { SearchPageParams } from "@/lib/types";
 import type { Metadata } from "next";
 import SearchContainer from "./components/SearchContainer";
-
-type SearchPageParams = Record<string, string | string[] | undefined>;
 
 // Generate dynamic metadata for search pages
 export async function generateMetadata({ searchParams }: { searchParams: Promise<SearchPageParams> }): Promise<Metadata> {
@@ -58,7 +57,19 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const city = typeof params.city === "string" ? params.city : undefined;
   const filters = parseFilters(params);
 
+  // Format searchParams for client components (convert arrays to single values)
+  const formattedParams: Record<string, string> = {};
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined) {
+      if (Array.isArray(value)) {
+        formattedParams[key] = value[0] || "";
+      } else {
+        formattedParams[key] = value;
+      }
+    }
+  });
+
   const [{ listings, cityCenter }, cities] = await Promise.all([searchListings(city, filters), getAllCities()]);
 
-  return <SearchContainer listings={listings} city={city} cityCenter={cityCenter} cities={cities} filters={filters} />;
+  return <SearchContainer listings={listings} city={city} cityCenter={cityCenter} cities={cities} filters={filters} searchParams={formattedParams} />;
 }
