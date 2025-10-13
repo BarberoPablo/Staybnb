@@ -1,15 +1,18 @@
 "use client";
 
-import ImageWithFallback from "@/components/ImageWithFallback";
-import { ListingFavoriteButton } from "@/components/ListingFavoriteButton";
-import { ListBadges } from "@/components/ListBadges";
+import { ReviewCard } from "@/app/(site)/listing/[id]/components/ReviewCard";
 import AmenityIcon from "@/components/icons/AmenityIcon";
+import ImageWithFallback from "@/components/ImageWithFallback";
+import { ListBadges } from "@/components/ListBadges";
+import { ListingFavoriteButton } from "@/components/ListingFavoriteButton";
 import { AMENITIES } from "@/lib/constants/amenities";
 import { Listing, ListingWithReservationsAndHost } from "@/lib/types/listing";
 import { Host } from "@/lib/types/profile";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { IoLocation, IoStar } from "react-icons/io5";
+import { ViewAllReviewsDialog } from "./ViewAllReviewsDialog";
 
 export default function ListingDetails({ listing }: { listing: ListingWithReservationsAndHost }) {
   return (
@@ -174,58 +177,43 @@ function AmenitiesSection({ amenities }: { amenities: number[] }) {
 }
 
 function ReviewsSection({ reviews }: { reviews: { score: number; message: string; userId: string }[] }) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const topReviews = reviews.sort((a, b) => b.score - a.score).slice(0, 3);
+
+  const handleOpenReviews = () => {
+    setIsDialogOpen(true);
+  };
 
   if (topReviews.length === 0) {
     return null;
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-2xl font-semibold text-myGrayDark">What guests are saying</h3>
-        <span className="text-sm text-myGray bg-myGrayLight px-3 py-1 rounded-full">
-          {reviews.length} review{reviews.length !== 1 ? "s" : ""}
-        </span>
+    <>
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <h3 className="text-2xl font-semibold text-myGrayDark">What guests are saying</h3>
+          <div className="flex items-center py-1 gap-2">
+            <span className="text-sm text-myGray bg-myGrayLight px-3 py-1 rounded-full">
+              {reviews.length} review{reviews.length !== 1 ? "s" : ""}
+            </span>
+            <button
+              className="text-sm text-myGray bg-myGrayLight px-3 py-1 rounded-full cursor-pointer hover:text-myGrayDark hover:bg-gray-200 transition-colors"
+              onClick={handleOpenReviews}
+            >
+              View all reviews
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {topReviews.map((review, index) => (
+            <ReviewCard key={`${review.userId}-${index}`} review={review} index={index} />
+          ))}
+        </div>
       </div>
 
-      <div className="space-y-4">
-        {topReviews.map((review, index) => (
-          <motion.div
-            key={`${review.userId}-${index}`}
-            className="bg-gradient-to-r from-myGreenExtraLight/20 to-myGreenLight/10 border border-myGreenLight/30 rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-200"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-            whileHover={{ scale: 1.01 }}
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-myGreenLight to-myGreenBold rounded-full flex items-center justify-center">
-                <CiUser className="w-6 h-6 text-white" />
-              </div>
-
-              <div className="flex-1 space-y-3">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <IoStar key={i} className={`w-4 h-4 ${i < review.score ? "text-yellow-500 fill-current" : "text-gray-300"}`} />
-                    ))}
-                  </div>
-                  <span className="text-sm font-semibold text-myGrayDark">{review.score}.0</span>
-                </div>
-
-                <p className="text-myGray leading-relaxed text-base">{review.message}</p>
-
-                <div className="flex items-center gap-2 text-sm text-myGray">
-                  <span className="font-medium">Guest</span>
-                  <span>•</span>
-                  <span>Verified stay</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
+      <ViewAllReviewsDialog isOpen={isDialogOpen} setIsOpen={setIsDialogOpen} reviews={reviews} />
+    </>
   );
 }
