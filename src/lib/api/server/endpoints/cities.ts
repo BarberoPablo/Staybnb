@@ -85,8 +85,8 @@ export async function getPopularDestinations(limit: number = 6, offset: number =
         location->>'city' as city,
         location->>'state' as state,
         location->>'country' as country,
-        CAST(location->>'lat' AS DECIMAL) as lat,
-        CAST(location->>'lng' AS DECIMAL) as lng,
+        AVG(CAST(location->>'lat' AS DECIMAL)) as lat,
+        AVG(CAST(location->>'lng' AS DECIMAL)) as lng,
         COUNT(*) as listing_count,
         (array_agg(images[1]))[1] as image_url
       FROM listings
@@ -96,9 +96,7 @@ export async function getPopularDestinations(limit: number = 6, offset: number =
       GROUP BY 
         location->>'city',
         location->>'state',
-        location->>'country',
-        location->>'lat',
-        location->>'lng'
+        location->>'country'
       ORDER BY listing_count DESC
       LIMIT ${limit} OFFSET ${offset}
     `;
