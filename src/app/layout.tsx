@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "react-hot-toast";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={roboto.variable}>
       <body>
+        <GoogleAnalytics />
         <NextTopLoader
           color="#7FB069"
           initialPosition={0.08}
