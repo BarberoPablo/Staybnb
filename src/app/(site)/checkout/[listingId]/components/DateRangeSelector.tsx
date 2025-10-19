@@ -5,7 +5,7 @@ import { excludeDate, getCustomDayContent } from "@/components/Booking/bookingFo
 import Tooltip from "@/components/Tooltip";
 import { getListingReservations } from "@/lib/api/server/endpoints/reservations";
 import { DateRangeKey, UnavailableDates } from "@/lib/types";
-import { calculateNights, createUTCDate, getDisabledDates, getListingPromotion, validateDateRange } from "@/lib/utils";
+import { calculateNights, getDisabledDates, getListingPromotion, normalizeDate, validateDateRange } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import { DateRange, RangeKeyDict } from "react-date-range";
@@ -38,11 +38,6 @@ export default function DateRangeSelector({
     unavailableCheckInDates: { filtered: [], all: [] },
     unavailableCheckOutDates: { filtered: [], all: [] },
   });
-  const [listingTimes, setListingTimes] = useState({
-    checkInTime: "",
-    checkOutTime: "",
-    timezone: "",
-  });
 
   const updateURLParams = (startDate: Date, endDate: Date) => {
     const params = new URLSearchParams(window.location.search);
@@ -57,7 +52,7 @@ export default function DateRangeSelector({
   useEffect(() => {
     const fetchReservedDates = async () => {
       try {
-        const { reservations, listing } = await getListingReservations(listingId);
+        const { reservations } = await getListingReservations(listingId);
 
         const { unavailableCheckInDates: disabledCheckInDates, unavailableCheckOutDates: disabledCheckOutDates } = getDisabledDates(reservations);
 
@@ -65,7 +60,6 @@ export default function DateRangeSelector({
           unavailableCheckInDates: { filtered: disabledCheckInDates, all: disabledCheckInDates },
           unavailableCheckOutDates: { filtered: disabledCheckOutDates, all: disabledCheckOutDates },
         });
-        setListingTimes(listing);
       } catch (error) {
         console.error("Error fetching reserved dates:", error);
       }
@@ -80,18 +74,18 @@ export default function DateRangeSelector({
     const userSelectedCheckOut = !isSelectingCheckOut;
 
     if (startDate && endDate) {
-      const timezoneStartDate = createUTCDate(startDate.toISOString().substring(0, 10), listingTimes.checkInTime, listingTimes.timezone);
-      const timezoneEndDate = createUTCDate(endDate.toISOString().substring(0, 10), listingTimes.checkOutTime, listingTimes.timezone);
+      const utcStartDate = normalizeDate(startDate);
+      const utcEndDate = normalizeDate(endDate);
 
-      setDateRange({ startDate: timezoneStartDate, endDate: timezoneEndDate, key });
+      setDateRange({ startDate: utcStartDate, endDate: utcEndDate, key });
 
       setDisabledDates((prevState) => {
         const filteredDates = { ...prevState };
 
         if (userSelectedCheckOut) {
-          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, timezoneStartDate);
+          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, utcStartDate);
         } else {
-          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, timezoneEndDate);
+          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, utcEndDate);
         }
         return filteredDates;
       });

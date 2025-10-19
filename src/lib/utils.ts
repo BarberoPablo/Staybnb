@@ -105,6 +105,18 @@ export function getDisabledDates(reservedDates: ReservedDate[]): { unavailableCh
   return { unavailableCheckInDates, unavailableCheckOutDates };
 }
 
+/**
+ * Normalizes a Date object by creating a new Date with only the date part (year, month, day) at midnight UTC.
+ * This effectively strips the time component and timezone information from the original date.
+ *
+ * @param date - The Date object to normalize
+ * @returns A new Date object representing the same calendar date at midnight UTC
+ *
+ * @example
+ * // Input: Mon Nov 10 2025 19:00:00 GMT-0300
+ * // Output: Nov 10, 2025 00:00:00 UTC
+ * const normalized = normalizeDate(new Date('2025-11-10T19:00:00-03:00'));
+ */
 export function normalizeDate(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
