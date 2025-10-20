@@ -12,6 +12,16 @@ import { DateRange, RangeKeyDict } from "react-date-range";
 import { IoCalendar, IoCheckmark, IoClose } from "react-icons/io5";
 import { ListingData } from "./Checkout";
 
+const updateURLParams = (startDate: Date, endDate: Date) => {
+  const params = new URLSearchParams(window.location.search);
+  params.set("startDate", startDate.toISOString());
+  params.set("endDate", endDate.toISOString());
+
+  const newURL = `${window.location.pathname}?${params.toString()}`;
+
+  window.history.replaceState(null, "", newURL);
+};
+
 export default function DateRangeSelector({
   isOpen,
   startDate,
@@ -38,16 +48,6 @@ export default function DateRangeSelector({
     unavailableCheckInDates: { filtered: [], all: [] },
     unavailableCheckOutDates: { filtered: [], all: [] },
   });
-
-  const updateURLParams = (startDate: Date, endDate: Date) => {
-    const params = new URLSearchParams(window.location.search);
-    params.set("startDate", startDate.toISOString());
-    params.set("endDate", endDate.toISOString());
-
-    const newURL = `${window.location.pathname}?${params.toString()}`;
-
-    window.history.replaceState(null, "", newURL);
-  };
 
   useEffect(() => {
     const fetchReservedDates = async () => {
