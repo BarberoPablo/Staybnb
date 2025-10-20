@@ -2,6 +2,8 @@
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Listing } from "@/lib/types/listing";
+import { buildQueryStringFromParams } from "@/lib/utils";
+import { useMemo } from "react";
 import HomeListingCard from "../../components/HomeListingCard";
 
 export function ListingCards({
@@ -24,6 +26,19 @@ export function ListingCards({
     columns = adaptiveColumns(listings.length, 2);
   }
 
+  const listingHrefs = useMemo(() => {
+    const queryString = searchParams ? buildQueryStringFromParams(searchParams) : "";
+    console.log("re-renmder");
+    return listings.reduce(
+      (acc, listing) => {
+        const baseHref = `/listing/${listing.id}`;
+        acc[listing.id] = queryString ? `${baseHref}?${queryString}` : baseHref;
+        return acc;
+      },
+      {} as Record<number, string>,
+    );
+  }, [listings, searchParams]);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 p-4 h-[90px] bg-myGreenExtraLight rounded-xl border border-myGreenSemiBold/20">
@@ -44,7 +59,7 @@ export function ListingCards({
         }}
       >
         {listings.map((listing) => (
-          <HomeListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} searchParams={searchParams} />
+          <HomeListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} href={listingHrefs[listing.id]} />
         ))}
       </div>
     </div>
