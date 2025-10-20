@@ -4,12 +4,13 @@ import MapEventsHandler from "@/app/(site)/search/components/MapEventsHandler";
 import { RoundButton } from "@/components/Button/RoundButton";
 import ImagesSlider from "@/components/ImagesSlider";
 import { searchListings } from "@/lib/api/server/endpoints/listings";
-import { parseFilters } from "@/lib/api/server/utils";
+import { ParsedFilters, parseFilters } from "@/lib/api/server/utils";
 import { MapCoordinates } from "@/lib/types";
 import { Listing } from "@/lib/types/listing";
+import { buildQueryStringFromParams } from "@/lib/utils";
 import L, { divIcon } from "leaflet";
-import { useRouter } from "nextjs-toploader/app";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useRef, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { MdArrowForward } from "react-icons/md";
@@ -141,7 +142,7 @@ export default function ListingsMap({ listings, locateListing, cityCenter, setLi
             />
           ))}
         </MarkerClusterGroup>
-        <MarkerPopup listing={listingPopup} onClose={() => setListingPopup(null)} enableMap={setMapEnabled} />
+        <MarkerPopup listing={listingPopup} onClose={() => setListingPopup(null)} enableMap={setMapEnabled} filters={filters} />
         <MapEventsHandler closeMarkerPopup={() => setListingPopup(null)} onMoveEnd={handleEndMapMove} />
         <MapController mapEnabled={mapEnabled} />
         <ChangeView center={center} shouldFlyTo={shouldFlyTo} onFlyComplete={() => setShouldFlyTo(false)} />
@@ -186,7 +187,17 @@ function MapController({ mapEnabled }: { mapEnabled: boolean }) {
   return null;
 }
 
-function MarkerPopup({ listing, onClose, enableMap }: { listing: Listing | null; onClose: () => void; enableMap: (hovered: boolean) => void }) {
+function MarkerPopup({
+  listing,
+  onClose,
+  enableMap,
+  filters,
+}: {
+  listing: Listing | null;
+  onClose: () => void;
+  enableMap: (hovered: boolean) => void;
+  filters: ParsedFilters;
+}) {
   const router = useRouter();
 
   if (!listing) return null;
@@ -197,7 +208,10 @@ function MarkerPopup({ listing, onClose, enableMap }: { listing: Listing | null;
   };
 
   const handleViewListing = () => {
-    router.push(`/listing/${listing.id}`);
+    const baseHref = `/listing/${listing.id}`;
+    const queryString = filters ? buildQueryStringFromParams(filters) : "";
+
+    router.push(`${baseHref}?${queryString}`);
   };
 
   const handleTouchStart = () => {

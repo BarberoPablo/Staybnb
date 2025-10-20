@@ -1,6 +1,7 @@
 import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import DOMPurify from "dompurify";
+import { SearchParams } from "next/dist/server/request/search-params";
 import { Guests, ListingSearchParams } from "./types";
 import { Listing, ListingDB, Location, Promotion, PromotionDB } from "./types/listing";
 import { CreateProfile, UpdateProfile } from "./types/profile";
@@ -262,4 +263,24 @@ export function verifyUpdateProfileData(profileData: UpdateProfile): UpdateProfi
   return {
     ...data,
   };
+}
+
+export function buildQueryStringFromParams(params: SearchParams | Record<string, string | number | Date | string[] | undefined>): string {
+  console.log("PARAMS", params);
+  const query = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+
+    if (Array.isArray(value)) {
+      query.append(key, value.join(","));
+    } else if (value instanceof Date) {
+      query.append(key, value.toISOString());
+    } else {
+      query.append(key, String(value));
+    }
+  });
+
+  const queryString = query.toString();
+  return queryString ? `&${queryString}` : "";
 }
