@@ -132,7 +132,7 @@ export default function ReservationsClient({ initialReservations }: { initialRes
             >
               <div className="flex flex-col lg:flex-row gap-6">
                 {/* Image */}
-                <div className="relative w-full lg:w-48 h-32 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                <div className="relative w-full h-48 md: lg:w-48 lg:h-32 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
                     priority
                     src={reservation.listing.images[0] + "&w=400"}
@@ -145,40 +145,44 @@ export default function ReservationsClient({ initialReservations }: { initialRes
 
                 {/* Content */}
                 <div className="flex-1 space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div>
+                  <div className="flex flex-col items-start justify-between">
+                    <div className="flex w-full items-center justify-between">
                       <h3 className="text-xl font-semibold text-myGrayDark mb-2">{reservation.listing.title}</h3>
-                      <div className="flex items-center gap-4 text-sm text-myGray">
-                        <div className="flex items-center gap-1">
-                          <IoLocation className="w-4 h-4" />
-                          <p>
-                            {reservation.listing.location.country}, {reservation.listing.location.city}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <IoPerson className="w-4 h-4" />
-                          {getTotalGuests(reservation.guests)} {getTotalGuests(reservation.guests) === 1 ? "guest" : "guests"}
-                        </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium border capitalize ${getStatusColor(reservation.status)}`}>
+                        {reservation.status}
+                      </span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-sm text-myGray">
+                      <div className="flex items-center gap-1">
+                        <IoLocation className="w-4 h-4" />
+                        <p>
+                          {reservation.listing.location.country}, {reservation.listing.location.city}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <IoPerson className="w-4 h-4" />
+                        {getTotalGuests(reservation.guests)} {getTotalGuests(reservation.guests) === 1 ? "guest" : "guests"}
                       </div>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium border capitalize ${getStatusColor(reservation.status)}`}>
-                      {reservation.status}
-                    </span>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div className="flex items-center gap-2">
                       <IoCalendar className="w-4 h-4 text-myGray" />
                       <div>
                         <p className="text-xs text-myGray">Check-in</p>
-                        <p className="font-medium text-myGrayDark">{new Date(reservation.startDate).toLocaleDateString()}</p>
+                        <p className="font-medium text-myGrayDark">
+                          {new Date(reservation.startDate).toLocaleDateString()} - {reservation.listing.checkInTime}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <IoTime className="w-4 h-4 text-myGray" />
                       <div>
                         <p className="text-xs text-myGray">Check-out</p>
-                        <p className="font-medium text-myGrayDark">{new Date(reservation.endDate).toLocaleDateString()}</p>
+                        <p className="font-medium text-myGrayDark">
+                          {new Date(reservation.endDate).toLocaleDateString()} - {reservation.listing.checkOutTime}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
