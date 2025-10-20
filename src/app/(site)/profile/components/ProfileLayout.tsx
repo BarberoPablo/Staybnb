@@ -27,7 +27,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   };
 
   return (
-    <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 py-4 sm:py-6 md:py-8 lg:py-10 min-h-screen bg-background max-w-7xl mx-auto pb-20 lg:pb-4 sm:pb-6 md:pb-8">
+    <div className="w-full sm:px-6 md:px-8 lg:px-12 py-4 sm:py-6 md:py-8 lg:py-10 min-h-screen bg-background max-w-7xl mx-auto pb-20 lg:pb-4 sm:pb-6 md:pb-8">
       <div className="flex gap-8 w-full">
         <motion.div
           className="hidden lg:block w-64 bg-myGreenExtraLight rounded-2xl p-6 shadow-sm border border-myGreenSemiBold/20 sticky top-10 self-start"
@@ -64,7 +64,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
         </motion.div>
 
         <motion.div
-          className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 md:p-8"
+          className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 py-4 px-2 sm:p-6 md:p-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
