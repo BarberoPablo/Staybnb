@@ -16,6 +16,19 @@ import { CalendarLegend } from "./CalendarLegend";
 import { PriceSummary } from "./PriceSummary";
 import PromotionsProgressBar from "./PromotionsProgressBar";
 
+const updateURLParams = (param: string, value: Date | string) => {
+  const params = new URLSearchParams(window.location.search);
+  if (value === "0") {
+    params.delete(param);
+  } else {
+    params.set(param, value instanceof Date ? value.toISOString() : value);
+  }
+
+  const newURL = `${window.location.pathname}?${params.toString()}`;
+
+  window.history.replaceState(null, "", newURL);
+};
+
 export default function BookingForm({ listing, children, onConfirm }: { listing: ListingWithReservations; children?: ReactNode; onConfirm?: () => void }) {
   const [dateRange, setDateRange] = useState<DateRangeKey>({
     startDate: new Date(),
@@ -95,6 +108,8 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
       const utcEndDate = normalizeDate(endDate);
 
       setDateRange({ startDate: utcStartDate, endDate: utcEndDate, key });
+      updateURLParams("startDate", utcStartDate);
+      updateURLParams("endDate", utcEndDate);
 
       setDisabledDates((prevState) => {
         const filteredDates = { ...prevState };
@@ -125,6 +140,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
     }
 
     setGuests(newGuests);
+    updateURLParams(type, guests[type] + amount + "");
     setErrors({});
   };
 
