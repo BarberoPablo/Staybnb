@@ -53,11 +53,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
       <div className="px-12 py-10 w-full space-y-4">
         <HomeBanner />
 
-        <FeaturedListings listings={featuredListings} searchParams={formattedParams} />
+        <FeaturedListings listings={featuredListings} />
 
         <PopularDestinations destinations={popularDestinations} />
 
-        <PopularListings listings={popularListings} searchParams={formattedParams} />
+        <PopularListings listings={popularListings} />
       </div>
     </>
   );

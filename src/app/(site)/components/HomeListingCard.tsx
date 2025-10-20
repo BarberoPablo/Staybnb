@@ -1,7 +1,6 @@
 "use client";
 
 import ImagesSlider from "@/components/ImagesSlider";
-import { buildQueryStringFromParams } from "@/components/Navbar";
 import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -10,19 +9,12 @@ import { IoLocation, IoStar } from "react-icons/io5";
 export default function HomeListingCard({
   listing,
   setLocateListing,
-  searchParams,
+  href,
 }: {
   listing: Listing;
   setLocateListing?: (listingId: number) => void;
-  searchParams?: Record<string, string>;
+  href: string;
 }) {
-  const buildHrefWithParams = () => {
-    const baseHref = `/listing/${listing.id}`;
-    const queryString = searchParams ? buildQueryStringFromParams(searchParams) : "";
-
-    return queryString ? `${baseHref}?${queryString}` : baseHref;
-  };
-
   return (
     <motion.div
       className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group"
@@ -34,7 +26,7 @@ export default function HomeListingCard({
       onMouseLeave={() => setLocateListing?.(-1)}
     >
       <div className="relative">
-        <ImagesSlider images={listing.images} href={buildHrefWithParams()} hoverEffect={true} containerClassName="rounded-t-xl" />
+        <ImagesSlider images={listing.images} href={href} hoverEffect={true} containerClassName="rounded-t-xl" />
 
         <div className="absolute bottom-3 left-3 bg-white px-3 py-1.5 rounded-full shadow-md border border-gray-100">
           <span className="font-semibold text-myGrayDark">${listing.nightPrice}</span>
@@ -42,7 +34,7 @@ export default function HomeListingCard({
         </div>
       </div>
 
-      <Link href={buildHrefWithParams()}>
+      <Link href={href}>
         <div className="p-4 space-y-3">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-semibold text-myGrayDark text-lg leading-tight line-clamp-2 flex-1">{listing.title}</h3>

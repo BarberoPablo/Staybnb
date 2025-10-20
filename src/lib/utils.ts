@@ -1,6 +1,7 @@
 import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import DOMPurify from "dompurify";
+import { SearchParams } from "next/dist/server/request/search-params";
 import { Guests, ListingSearchParams } from "./types";
 import { Listing, ListingDB, Location, Promotion, PromotionDB } from "./types/listing";
 import { CreateProfile, UpdateProfile } from "./types/profile";
@@ -105,6 +106,18 @@ export function getDisabledDates(reservedDates: ReservedDate[]): { unavailableCh
   return { unavailableCheckInDates, unavailableCheckOutDates };
 }
 
+/**
+ * Normalizes a Date object by creating a new Date with only the date part (year, month, day) at midnight UTC.
+ * This effectively strips the time component and timezone information from the original date.
+ *
+ * @param date - The Date object to normalize
+ * @returns A new Date object representing the same calendar date at midnight UTC
+ *
+ * @example
+ * // Input: Mon Nov 10 2025 19:00:00 GMT-0300
+ * // Output: Nov 10, 2025 00:00:00 UTC
+ * const normalized = normalizeDate(new Date('2025-11-10T19:00:00-03:00'));
+ */
 export function normalizeDate(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
@@ -250,4 +263,24 @@ export function verifyUpdateProfileData(profileData: UpdateProfile): UpdateProfi
   return {
     ...data,
   };
+}
+
+export function buildQueryStringFromParams(params: SearchParams | Record<string, string | number | Date | string[] | undefined>): string {
+  console.log("PARAMS", params);
+  const query = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+
+    if (Array.isArray(value)) {
+      query.append(key, value.join(","));
+    } else if (value instanceof Date) {
+      query.append(key, value.toISOString());
+    } else {
+      query.append(key, String(value));
+    }
+  });
+
+  const queryString = query.toString();
+  return queryString ? `&${queryString}` : "";
 }

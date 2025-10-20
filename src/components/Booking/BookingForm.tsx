@@ -5,7 +5,7 @@ import { useQueryParams } from "@/hooks/useQueryParams";
 import { parseFilters } from "@/lib/api/server/utils";
 import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
 import { ListingWithReservations } from "@/lib/types/listing";
-import { buildListingParams, calculateNights, createUTCDate, getDisabledDates, getListingPromotion, listingGuests } from "@/lib/utils";
+import { buildListingParams, calculateNights, getDisabledDates, getListingPromotion, listingGuests, normalizeDate } from "@/lib/utils";
 import { useRouter } from "nextjs-toploader/app";
 import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
@@ -15,6 +15,19 @@ import { excludeDate, getCustomDayContent, validateFormData } from "./bookingFor
 import { CalendarLegend } from "./CalendarLegend";
 import { PriceSummary } from "./PriceSummary";
 import PromotionsProgressBar from "./PromotionsProgressBar";
+
+const updateURLParams = (param: string, value: Date | string) => {
+  const params = new URLSearchParams(window.location.search);
+  if (value === "0") {
+    params.delete(param);
+  } else {
+    params.set(param, value instanceof Date ? value.toISOString() : value);
+  }
+
+  const newURL = `${window.location.pathname}?${params.toString()}`;
+
+  window.history.replaceState(null, "", newURL);
+};
 
 export default function BookingForm({ listing, children, onConfirm }: { listing: ListingWithReservations; children?: ReactNode; onConfirm?: () => void }) {
   const [dateRange, setDateRange] = useState<DateRangeKey>({
@@ -91,18 +104,20 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
       const { startDate, endDate, key } = selection;
       const userSelectedCheckOut = !isSelectingCheckOut;
 
-      const newStartDate = createUTCDate(startDate.toISOString().substring(0, 10), listing.checkInTime, listing.location.timezone);
-      const newEndDate = createUTCDate(endDate.toISOString().substring(0, 10), listing.checkOutTime, listing.location.timezone);
+      const utcStartDate = normalizeDate(startDate);
+      const utcEndDate = normalizeDate(endDate);
 
-      setDateRange({ startDate: newStartDate, endDate: newEndDate, key });
+      setDateRange({ startDate: utcStartDate, endDate: utcEndDate, key });
+      updateURLParams("startDate", utcStartDate);
+      updateURLParams("endDate", utcEndDate);
 
       setDisabledDates((prevState) => {
         const filteredDates = { ...prevState };
 
         if (userSelectedCheckOut) {
-          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, newStartDate);
+          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, utcStartDate);
         } else {
-          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, newEndDate);
+          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, utcEndDate);
         }
         return filteredDates;
       });
@@ -125,6 +140,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
     }
 
     setGuests(newGuests);
+    updateURLParams(type, guests[type] + amount + "");
     setErrors({});
   };
 
