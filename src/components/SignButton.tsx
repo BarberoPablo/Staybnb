@@ -36,7 +36,6 @@ export function SignButton({ hosting }: { hosting: boolean }) {
     return (
       <div className="flex items-center gap-2">
         <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse"></div>
-        <div className="w-16 h-8 rounded-lg bg-gray-200 animate-pulse"></div>
       </div>
     );
   }
