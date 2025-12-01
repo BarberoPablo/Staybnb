@@ -37,7 +37,7 @@ export function useUser() {
     });
 
     return () => {
-      subscription?.unsubscribe?.(); // si subscription tiene unsubscribe
+      subscription?.unsubscribe?.();
     };
   }, []);
 

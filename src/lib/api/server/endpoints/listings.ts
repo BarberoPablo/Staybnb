@@ -3,7 +3,7 @@
 import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
 import { prisma } from "@/lib/prisma";
 import { AmenityDB } from "@/lib/types/amenities";
-import { EditListing, ListingDB, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
+import { EditListing, ListingDB, ListingStatus, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../../parsers/listing";
 import { createClient } from "../../../supabase/server";
 import { NotFoundError } from "../errors";
@@ -427,5 +427,63 @@ export async function getFeaturedListings(limit: number = 12, offset: number = 0
   } catch (error) {
     console.error("Error fetching featured listings", error);
     throw new NotFoundError("Failed to fetch featured listings");
+  }
+}
+
+export async function getAllListingsWithHost() {
+  try {
+    const listings = await prisma.listings.findMany({
+      include: {
+        profiles: {
+          select: {
+            first_name: true,
+            last_name: true,
+            avatar_url: true,
+            users: {
+              select: {
+                email: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+
+    return listings.map((listing) => {
+      const parsedListing = parseListingFromDB(listing as unknown as ListingDB);
+      return {
+        ...parsedListing,
+        host: {
+          firstName: listing.profiles.first_name,
+          lastName: listing.profiles.last_name,
+          avatarUrl: listing.profiles.avatar_url || "",
+          email: listing.profiles.users?.email || undefined,
+        },
+      };
+    });
+  } catch (error) {
+    console.error("Error fetching all listings with host", error);
+    throw new NotFoundError("Failed to fetch listings");
+  }
+}
+
+export async function updateListingStatus(listingId: number, status: ListingStatus) {
+  try {
+    const updatedListing = await prisma.listings.update({
+      where: {
+        id: listingId,
+      },
+      data: {
+        status,
+      },
+    });
+
+    return { success: true, data: parseListingFromDB(updatedListing as unknown as ListingDB) };
+  } catch (error) {
+    console.error("Error updating listing status", error);
+    throw new Error("Failed to update listing status");
   }
 }

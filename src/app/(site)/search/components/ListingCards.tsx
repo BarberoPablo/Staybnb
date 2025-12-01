@@ -28,7 +28,6 @@ export function ListingCards({
 
   const listingHrefs = useMemo(() => {
     const queryString = searchParams ? buildQueryStringFromParams(searchParams) : "";
-    console.log("re-renmder");
     return listings.reduce(
       (acc, listing) => {
         const baseHref = `/listing/${listing.id}`;

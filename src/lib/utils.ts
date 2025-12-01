@@ -266,7 +266,6 @@ export function verifyUpdateProfileData(profileData: UpdateProfile): UpdateProfi
 }
 
 export function buildQueryStringFromParams(params: SearchParams | Record<string, string | number | Date | string[] | undefined>): string {
-  console.log("PARAMS", params);
   const query = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {
