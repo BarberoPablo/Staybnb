@@ -35,9 +35,8 @@ export default function ImageWithFallback({
 
   return (
     <>
-      {/* Loading overlay */}
       {loading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-100">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-100 pointer-events-none">
           <div className="flex flex-col items-center gap-2">
             <ImSpinner2 className="w-6 h-6 text-gray-400 animate-spin" />
             <span className="text-xs text-gray-400">Loading...</span>
@@ -47,15 +46,15 @@ export default function ImageWithFallback({
 
       <Image
         src={src}
-        alt={alt ?? "listing secondary image"}
+        alt={alt}
         fill={fill}
-        width={width}
-        height={height}
+        width={fill ? undefined : width}
+        height={fill ? undefined : height}
         className={`${className ?? "object-cover"} transition-opacity duration-300 ${loading ? "opacity-0" : "opacity-100"}`}
         priority={priority}
-        sizes={sizes ?? "(min-width: 640px) 25vw, (max-width: 639px) 0px"}
+        sizes={sizes ?? "(min-width: 640px) 25vw, (max-width: 639px) 100vw"}
         onError={() => setError(true)}
-        onLoad={() => setLoading(false)}
+        onLoadingComplete={() => setLoading(false)}
       />
     </>
   );
@@ -63,7 +62,7 @@ export default function ImageWithFallback({
 
 export function FallbackIcon({ fallbackIcon, className }: { fallbackIcon?: React.ReactNode; className?: string }) {
   return (
-    <div className={`${className ?? "flex items-center justify-center h-full w-full bg-myGrayLight"}`}>
+    <div className={`flex items-center justify-center w-full h-full bg-myGrayLight ${className ?? ""}`}>
       {fallbackIcon ?? <CiImageOn className="w-8 h-8 text-myGrayDark" />}
     </div>
   );
