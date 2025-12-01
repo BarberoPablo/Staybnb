@@ -37,6 +37,10 @@ export type Listing = {
   amenities: AmenityId[];
 };
 
+export type ListingWithHost = Listing & {
+  host: Host & { email?: string };
+};
+
 export type ListingWithAmenities = Listing & {
   amenities: Amenity[];
 };

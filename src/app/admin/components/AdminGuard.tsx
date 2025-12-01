@@ -8,7 +8,6 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
   const { user, profile, loading } = useUserProfile();
   const router = useRouter();
   const [ready, setReady] = useState(false);
-  console.log(user, profile, loading);
 
   useEffect(() => {
     if (loading) return;
