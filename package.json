@@ -18,6 +18,7 @@
     "normalize:images": "tsx scripts/normalize-listing-images.ts",
     "add:promotions": "tsx scripts/add-promotions.ts",
     "seed:reservations": "tsx scripts/seed-reservations.ts",
+    "seed:reservations:month": "tsx scripts/seed-reservations-with-month.ts",
     "populate:listing:scores": "tsx scripts/populate-listing-scores.ts",
     "fix:guest:capacity": "tsx scripts/fix-guest-capacity.ts",
     "populate:cities": "tsx scripts/populate-cities.ts",

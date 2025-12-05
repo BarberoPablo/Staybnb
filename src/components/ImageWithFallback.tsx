@@ -54,7 +54,7 @@ export default function ImageWithFallback({
         priority={priority}
         sizes={sizes ?? "(min-width: 640px) 25vw, (max-width: 639px) 100vw"}
         onError={() => setError(true)}
-        onLoadingComplete={() => setLoading(false)}
+        onLoad={() => setLoading(false)}
       />
     </>
   );

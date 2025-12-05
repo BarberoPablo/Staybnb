@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CiUser } from "react-icons/ci";
+import { FaUser } from "react-icons/fa";
 import { IoStar } from "react-icons/io5";
 
 interface ReviewCardProps {
@@ -22,8 +22,8 @@ export function ReviewCard({ review, index = 0, showFullDetails = true }: Review
       whileHover={{ scale: 1.01 }}
     >
       <div className="flex items-center gap-4">
-        <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-myGreenLight to-myGreenBold rounded-full flex items-center justify-center">
-          <CiUser className="w-6 h-6 text-white" />
+        <div className="flex-shrink-0 w-12 h-12 bg-myGreenLight rounded-full flex items-center justify-center">
+          <FaUser className="w-6 h-6 text-myGreenBold" />
         </div>
 
         <div className="flex-1 space-y-3">
