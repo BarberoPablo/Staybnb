@@ -1,6 +1,6 @@
 import NavbarWrapper from "@/components/NavbarWrapper";
 import { generateSEOMetadata } from "@/lib/seo";
-import AuthGuard from "../(site)/auth/components/AuthGuard";
+import { requireUserWithProfile } from "../(site)/auth/components/requireUserWithProfile";
 
 export const metadata = generateSEOMetadata({
   title: "Hosting Dashboard",
@@ -8,17 +8,19 @@ export const metadata = generateSEOMetadata({
   noIndex: true,
 });
 
-export default function HostingLayout({
+export default async function HostingLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await requireUserWithProfile("/hosting");
+
   return (
-    <AuthGuard>
+    <>
       <header>
         <NavbarWrapper search={false} />
       </header>
       <main className="w-full flex-grow min-h-[calc(100vh-177px)] max-w-7xl mx-auto">{children}</main>
-    </AuthGuard>
+    </>
   );
 }
