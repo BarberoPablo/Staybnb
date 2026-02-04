@@ -3,11 +3,17 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export async function requireUserWithProfile(redirectTo?: string) {
+  console.log("[AUTH] start");
   const supabase = await createClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  console.log("[AUTH] getUser result", {
+    hasUser: !!user,
+    userId: user?.id,
+  });
 
   if (!user) {
     redirect(`/auth${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`);

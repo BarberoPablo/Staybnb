@@ -1,6 +1,5 @@
 import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
-import DOMPurify from "dompurify";
 import { SearchParams } from "next/dist/server/request/search-params";
 import { Guests, ListingSearchParams } from "./types";
 import { Listing, ListingDB, Location, Promotion, PromotionDB } from "./types/listing";
@@ -227,7 +226,7 @@ export function showUTCDate(date: Date) {
 }
 
 export function cleanString(value?: unknown): string {
-  return typeof value === "string" ? DOMPurify.sanitize(value.trim(), { ALLOWED_TAGS: [] }) : "";
+  return typeof value === "string" ? value.trim() : "";
 }
 
 export function isValidUrl(url: string) {
