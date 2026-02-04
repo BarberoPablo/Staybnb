@@ -281,5 +281,5 @@ export function buildQueryStringFromParams(params: SearchParams | Record<string,
   });
 
   const queryString = query.toString();
-  return queryString ? `&${queryString}` : "";
+  return queryString ? `${queryString}` : "";
 }
