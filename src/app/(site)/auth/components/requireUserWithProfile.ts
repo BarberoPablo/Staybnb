@@ -26,3 +26,16 @@ export async function requireUserWithProfile(redirectTo?: string) {
     profile,
   };
 }
+
+export function buildRedirectQueryString(params: Record<string, string | undefined>): string {
+  const searchParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined) {
+      searchParams.set(key, value);
+    }
+  }
+
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}

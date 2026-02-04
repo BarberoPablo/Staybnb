@@ -1,8 +1,5 @@
 import React from "react";
-import { requireUserWithProfile } from "../../auth/components/requireUserWithProfile";
 
-export default async function CheckoutLayout({ children }: { children: React.ReactNode }) {
-  await requireUserWithProfile("/checkout");
-
+export default function CheckoutLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
