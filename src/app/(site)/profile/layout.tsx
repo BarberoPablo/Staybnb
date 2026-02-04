@@ -1,5 +1,5 @@
 import { generateSEOMetadata } from "@/lib/seo";
-import AuthGuard from "../auth/components/AuthGuard";
+import { requireUserWithProfile } from "../auth/components/requireUserWithProfile";
 import ProfileLayout from "./components/ProfileLayout";
 
 export const metadata = generateSEOMetadata({
@@ -8,10 +8,8 @@ export const metadata = generateSEOMetadata({
   noIndex: true,
 });
 
-export default function ReservationsLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <AuthGuard>
-      <ProfileLayout>{children}</ProfileLayout>
-    </AuthGuard>
-  );
+export default async function ReservationsLayout({ children }: { children: React.ReactNode }) {
+  await requireUserWithProfile("/profile");
+
+  return <ProfileLayout>{children}</ProfileLayout>;
 }
