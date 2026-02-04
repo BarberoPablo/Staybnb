@@ -1,13 +1,12 @@
-import createDOMPurify from "dompurify";
-import { JSDOM } from "jsdom";
 import { ReservationStatusDB } from "./types/reservation";
-
-// DOMPurify config for Node.js
-const window = new JSDOM("").window;
-const DOMPurify = createDOMPurify(window);
+import sanitizeHtml from "sanitize-html";
 
 export function cleanString(value?: unknown): string {
-  return typeof value === "string" ? DOMPurify.sanitize(value.trim(), { ALLOWED_TAGS: [] }) : "";
+  if (typeof value !== "string") return "";
+  return sanitizeHtml(value.trim(), {
+    allowedTags: [],
+    allowedAttributes: {},
+  });
 }
 
 export const PROFILE_PATCH_ALLOWED_FIELDS = ["first_name", "last_name", "avatar_url", "bio"] as const;
