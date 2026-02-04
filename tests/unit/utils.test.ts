@@ -40,7 +40,7 @@ describe("normalizeDate", () => {
   });
 });
 
-describe.only("calculateNights", () => {
+describe("calculateNights", () => {
   it("should ignore date hours, and only focus on the year-date-month", () => {
     const startDate = new Date("2025-08-10T06:00:00-03:00");
     const endDate = new Date("2025-08-20T03:00:00-03:00");
