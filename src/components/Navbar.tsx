@@ -94,9 +94,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
   };
 
   const handleFocusInput = (focus: boolean) => {
-    if (focus) {
-      setShowFilters(true);
-    }
+    setShowFilters(focus);
     setFocusInput(focus);
   };
 

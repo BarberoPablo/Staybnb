@@ -22,7 +22,7 @@ export const hostingStepsConfig: StepConfig[] = [
 ];
 
 // For backward compatibility
-export const hostingSteps = hostingStepsConfig.map((step) => step.path) as (keyof CreateListingForm | "checkInOut")[];
+export const hostingSteps = hostingStepsConfig.map((step) => step.path);
 
 export const getStepConfig = (stepPath: string): StepConfig | undefined => {
   return hostingStepsConfig.find((step) => step.path === stepPath);
@@ -31,4 +31,8 @@ export const getStepConfig = (stepPath: string): StepConfig | undefined => {
 export const getStepFields = (stepPath: string): (keyof CreateListingForm)[] => {
   const config = getStepConfig(stepPath);
   return config?.fields || [];
+};
+
+export const getStepData = (stepFields: (keyof CreateListingForm)[], formData: Partial<CreateListingForm>): Partial<CreateListingForm> => {
+  return Object.fromEntries(stepFields.filter((field) => field in formData).map((field) => [field, formData[field]]));
 };
