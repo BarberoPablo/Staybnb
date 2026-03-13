@@ -4,7 +4,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Listing } from "@/lib/types/listing";
 import { buildQueryStringFromParams } from "@/lib/utils";
 import { useMemo } from "react";
-import HomeListingCard from "../../components/HomeListingCard";
+import LegacyHomeListingCard from "../../components/LegacyHomeListingCard";
 
 export function ListingCards({
   listings,
@@ -58,7 +58,7 @@ export function ListingCards({
         }}
       >
         {listings.map((listing) => (
-          <HomeListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} href={listingHrefs[listing.id]} />
+          <LegacyHomeListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} href={listingHrefs[listing.id]} />
         ))}
       </div>
     </div>
