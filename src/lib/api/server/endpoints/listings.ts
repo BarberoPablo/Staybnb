@@ -6,9 +6,10 @@ import { AmenityDB } from "@/lib/types/amenities";
 import { EditListing, ListingDB, ListingStatus, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../../parsers/listing";
 import { createClient } from "../../../supabase/server";
+import { fetchFeaturedListingsHttp } from "../../listings/listings.http";
 import { NotFoundError } from "../errors";
 import { MapCoordinates } from "../types";
-import { buildSearchListingsWhereClause, ParsedFilters, sortByFeatured, sortByPopularity } from "../utils";
+import { buildSearchListingsWhereClause, ParsedFilters, sortByPopularity } from "../utils";
 import { searchCities } from "./cities";
 
 export async function getListingWithReservations(id: number) {
@@ -398,36 +399,7 @@ export async function getPopularListings(limit: number = 12, offset: number = 0)
  * @param offset - Number of listings to skip for pagination (default: 0)
  */
 export async function getFeaturedListings(limit: number = 12, offset: number = 0) {
-  try {
-    const listings = await prisma.listings.findMany({
-      where: {
-        status: "published",
-        score: {
-          path: ["value"],
-          gte: 4.0, // Minimum rating for featured
-        },
-      },
-      include: {
-        _count: {
-          select: {
-            favorites: true,
-            reservations: true,
-          },
-        },
-      },
-      take: 100,
-    });
-
-    // Apply scoring algorithm
-    const scoredListings = sortByFeatured(listings);
-
-    const paginatedListings = scoredListings.slice(offset, offset + limit);
-
-    return paginatedListings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
-  } catch (error) {
-    console.error("Error fetching featured listings", error);
-    throw new NotFoundError("Failed to fetch featured listings");
-  }
+  return fetchFeaturedListingsHttp(limit, offset);
 }
 
 export async function getAllListingsWithHost() {

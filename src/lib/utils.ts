@@ -282,3 +282,7 @@ export function buildQueryStringFromParams(params: SearchParams | Record<string,
   const queryString = query.toString();
   return queryString ? `${queryString}` : "";
 }
+
+export function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
