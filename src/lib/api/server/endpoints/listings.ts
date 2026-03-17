@@ -6,7 +6,7 @@ import { AmenityDB } from "@/lib/types/amenities";
 import { EditListing, ListingDB, ListingStatus, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../../parsers/listing";
 import { createClient } from "../../../supabase/server";
-import { fetchFeaturedListingsHttp } from "../../listings/listings.http";
+import { fetchFeaturedListings } from "../../listings/listings.http";
 import { NotFoundError } from "../errors";
 import { MapCoordinates } from "../types";
 import { buildSearchListingsWhereClause, ParsedFilters, sortByPopularity } from "../utils";
@@ -399,7 +399,7 @@ export async function getPopularListings(limit: number = 12, offset: number = 0)
  * @param offset - Number of listings to skip for pagination (default: 0)
  */
 export async function getFeaturedListings(limit: number = 12, offset: number = 0) {
-  return fetchFeaturedListingsHttp(limit, offset);
+  return fetchFeaturedListings(limit, offset);
 }
 
 export async function getAllListingsWithHost() {

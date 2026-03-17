@@ -1,7 +1,7 @@
 "use client";
 
 import ImageWithFallback from "@/components/ImageWithFallback";
-import { PopularDestination } from "@/lib/api/server/endpoints/cities";
+import { PopularDestination } from "@/lib/api/cities/cities.schema";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { IoLocation } from "react-icons/io5";
@@ -41,7 +41,7 @@ export default function DestinationCard({ destination }: { destination: PopularD
             <IoLocation className="w-5 h-5" />
             <h3 className="text-2xl font-bold">
               {destination.name}
-              {destination.state && `, ${destination.state}`}
+              {destination.country && `, ${destination.country}`}
             </h3>
           </div>
           <p className="text-white/90 text-sm">

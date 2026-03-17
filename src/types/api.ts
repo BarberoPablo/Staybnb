@@ -349,6 +349,15 @@ export interface components {
             location: components["schemas"]["FeaturedListingLocationDto"];
         };
         CreateReservationDto: Record<string, never>;
+        PopularDestinationDto: {
+            id: string;
+            name: string;
+            country: string;
+            lat: number;
+            lng: number;
+            listingCount: number;
+            imageUrl?: string | null;
+        };
     };
     responses: never;
     parameters: never;
@@ -782,7 +791,10 @@ export interface operations {
     };
     CitiesController_getPopularCities: {
         parameters: {
-            query?: never;
+            query?: {
+                offset?: number;
+                limit?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -793,7 +805,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["PopularDestinationDto"][];
+                };
             };
         };
     };
