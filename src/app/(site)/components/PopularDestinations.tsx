@@ -1,6 +1,6 @@
 "use client";
 
-import { PopularDestination } from "@/lib/api/server/endpoints/cities";
+import { PopularDestination } from "@/lib/api/cities/cities.schema";
 import { motion } from "framer-motion";
 import DestinationCard from "./DestinationCard";
 
@@ -16,8 +16,8 @@ export default function PopularDestinations({ destinations }: { destinations: Po
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {destinations.map((destination, index) => (
-            <DestinationCard key={`${destination.name}-${index}`} destination={destination} />
+          {destinations.map((destination) => (
+            <DestinationCard key={destination.id} destination={destination} />
           ))}
         </div>
       </motion.div>

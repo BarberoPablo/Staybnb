@@ -1,7 +1,7 @@
 import { apiClient } from "../client";
 import { FeaturedListingSchema } from "./listings.schema";
 
-export async function fetchFeaturedListingsHttp(limit = 12, offset = 0) {
+export async function fetchFeaturedListings(limit = 12, offset = 0) {
   const { data, error } = await apiClient.GET("/listings/featured", {
     params: {
       query: { limit, offset },
