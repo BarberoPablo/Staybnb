@@ -1,7 +1,7 @@
 "use client";
 
 import ImagesSlider from "@/components/ImagesSlider";
-import { FeaturedListing } from "@/lib/api/listings/listings.schema";
+import { HomeListing } from "@/lib/api/listings/listings.schema";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -12,7 +12,7 @@ export default function HomeListingCard({
   setLocateListing,
   href,
 }: {
-  listing: FeaturedListing;
+  listing: HomeListing;
   setLocateListing?: (listingId: string) => void;
   href: string;
 }) {

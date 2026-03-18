@@ -1,10 +1,10 @@
 "use client";
 
-import { FeaturedListing } from "@/lib/api/listings/listings.schema";
+import { HomeListing } from "@/lib/api/listings/listings.schema";
 import { motion } from "framer-motion";
 import HomeListingCard from "./HomeListingCard";
 
-export default function FeaturedListings({ listings }: { listings: FeaturedListing[] }) {
+export default function FeaturedListings({ listings }: { listings: HomeListing[] }) {
   if (listings.length === 0) return null;
 
   return (
