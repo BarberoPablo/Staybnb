@@ -6,10 +6,10 @@ import { AmenityDB } from "@/lib/types/amenities";
 import { EditListing, ListingDB, ListingStatus, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../../parsers/listing";
 import { createClient } from "../../../supabase/server";
-import { fetchFeaturedListings } from "../../listings/listings.http";
+import { fetchFeaturedListings, fetchPopularListings } from "../../listings/listings.http";
 import { NotFoundError } from "../errors";
 import { MapCoordinates } from "../types";
-import { buildSearchListingsWhereClause, ParsedFilters, sortByPopularity } from "../utils";
+import { buildSearchListingsWhereClause, ParsedFilters } from "../utils";
 import { searchCities } from "./cities";
 
 export async function getListingWithReservations(id: number) {
@@ -359,37 +359,7 @@ export async function addReviewToListing(listingId: number, score: number, messa
  * @param offset - Number of listings to skip for pagination (default: 0)
  */
 export async function getPopularListings(limit: number = 12, offset: number = 0) {
-  try {
-    const listings = await prisma.listings.findMany({
-      where: {
-        status: "published",
-      },
-      include: {
-        _count: {
-          select: {
-            favorites: true,
-            reservations: {
-              where: {
-                status: {
-                  in: ["upcoming", "completed"],
-                },
-              },
-            },
-          },
-        },
-      },
-      take: 100,
-    });
-
-    const scoredListings = sortByPopularity(listings);
-
-    const paginatedListings = scoredListings.slice(offset, offset + limit);
-
-    return paginatedListings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
-  } catch (error) {
-    console.error("Error fetching popular listings", error);
-    throw new NotFoundError("Failed to fetch popular listings");
-  }
+  return fetchPopularListings(limit, offset);
 }
 
 /**
