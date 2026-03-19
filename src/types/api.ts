@@ -292,22 +292,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/reservations/{listingId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ReservationsController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/cities/popular": {
         parameters: {
             query?: never;
@@ -318,6 +302,22 @@ export interface paths {
         get: operations["CitiesController_getPopularCities"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reservations/{listingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReservationsController_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -335,6 +335,8 @@ export interface components {
             city: string;
             state: string;
             country: string;
+            lat: number;
+            lng: number;
         };
         ListingCardDto: {
             id: string;
@@ -348,7 +350,14 @@ export interface components {
             privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
             location: components["schemas"]["ListingCardLocationDto"];
         };
-        CreateReservationDto: Record<string, never>;
+        CityCenterDto: {
+            lat: number;
+            lng: number;
+        };
+        SearchListingsResponseDto: {
+            listings: components["schemas"]["ListingCardDto"][];
+            cityCenter?: components["schemas"]["CityCenterDto"] | null;
+        };
         PopularDestinationDto: {
             id: string;
             name: string;
@@ -358,6 +367,7 @@ export interface components {
             listingCount: number;
             imageUrl?: string | null;
         };
+        CreateReservationDto: Record<string, never>;
     };
     responses: never;
     parameters: never;
@@ -690,7 +700,30 @@ export interface operations {
     };
     ListingsController_getListings: {
         parameters: {
-            query?: never;
+            query: {
+                offset?: number;
+                limit?: number;
+                city: string;
+                guests?: number | null;
+                bedrooms?: number | null;
+                beds?: number | null;
+                bathrooms?: number | null;
+                adults?: number | null;
+                children?: number | null;
+                infants?: number | null;
+                pets?: number | null;
+                minPrice?: number | null;
+                maxPrice?: number | null;
+                amenities?: string | null;
+                startDate?: string | null;
+                endDate?: string | null;
+                neLat?: number | null;
+                neLng?: number | null;
+                swLat?: number | null;
+                swLng?: number | null;
+                sortBy?: "createdAt" | "nightPrice" | "ratingAvg";
+                sortOrder?: "asc" | "desc";
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -701,7 +734,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["SearchListingsResponseDto"];
+                };
             };
         };
     };
@@ -768,6 +803,28 @@ export interface operations {
             };
         };
     };
+    CitiesController_getPopularCities: {
+        parameters: {
+            query?: {
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PopularDestinationDto"][];
+                };
+            };
+        };
+    };
     ReservationsController_create: {
         parameters: {
             query?: never;
@@ -788,28 +845,6 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-        };
-    };
-    CitiesController_getPopularCities: {
-        parameters: {
-            query?: {
-                offset?: number;
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PopularDestinationDto"][];
-                };
             };
         };
     };

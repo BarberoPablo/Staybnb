@@ -6,11 +6,11 @@ import { AmenityDB } from "@/lib/types/amenities";
 import { EditListing, ListingDB, ListingStatus, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../../parsers/listing";
 import { createClient } from "../../../supabase/server";
-import { fetchFeaturedListings, fetchPopularListings } from "../../listings/listings.http";
+import { fetchFeaturedListings, fetchPopularListings, fetchSearchListings } from "../../listings/listings.http";
 import { NotFoundError } from "../errors";
 import { MapCoordinates } from "../types";
-import { buildSearchListingsWhereClause, ParsedFilters } from "../utils";
-import { searchCities } from "./cities";
+import { ParsedFilters } from "../utils";
+import { CityCenter, ListingCardData } from "../../listings/listings.schema";
 
 export async function getListingWithReservations(id: number) {
   try {
@@ -67,61 +67,12 @@ export async function getListingWithReservations(id: number) {
   }
 }
 
-export async function searchListings(city: string | undefined, filters: ParsedFilters, mapCoordinates?: MapCoordinates) {
-  if (!city) {
-    return { listings: [], cityCenter: null };
-  }
-
-  try {
-    let cityCenter = null;
-    let actualCityName = city;
-
-    if (mapCoordinates) {
-      // Map movement search - search for listings within the visible area that match the city search term
-      const whereClause = buildSearchListingsWhereClause(city, filters, mapCoordinates);
-
-      const listings = await prisma.listings.findMany({
-        where: whereClause,
-      });
-
-      const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
-
-      return { listings: parsedListings, cityCenter };
-    } else {
-      // Initial city search - use database-first approach
-      const matchingCities = await searchCities(city);
-
-      if (matchingCities.length === 0) {
-        return { listings: [], cityCenter: null };
-      } else if (matchingCities.length === 1) {
-        cityCenter = {
-          lat: matchingCities[0].lat,
-          lng: matchingCities[0].lng,
-        };
-        actualCityName = matchingCities[0].name;
-      } else {
-        cityCenter = {
-          lat: matchingCities[0].lat,
-          lng: matchingCities[0].lng,
-        };
-        actualCityName = matchingCities[0].name;
-      }
-
-      // Search listings using the actual city name
-      const whereClause = buildSearchListingsWhereClause(actualCityName, filters);
-
-      const listings = await prisma.listings.findMany({
-        where: whereClause,
-      });
-
-      const parsedListings = listings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
-
-      return { listings: parsedListings, cityCenter };
-    }
-  } catch (error) {
-    console.error("Error fetching listings", error);
-    throw new NotFoundError();
-  }
+export async function searchListings(
+  filters: ParsedFilters,
+  city?: string,
+  mapCoordinates?: MapCoordinates,
+): Promise<{ listings: ListingCardData[]; cityCenter: CityCenter }> {
+  return fetchSearchListings(filters, city, mapCoordinates);
 }
 
 export async function getHostListings() {

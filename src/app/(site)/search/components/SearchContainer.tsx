@@ -1,9 +1,9 @@
 "use client";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { ListingCardData } from "@/lib/api/listings/listings.schema";
 import { ParsedFilters } from "@/lib/api/server/utils";
 import { City } from "@/lib/types/cities";
-import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -23,15 +23,15 @@ export default function SearchContainer({
   filters,
   searchParams,
 }: {
-  listings: Listing[];
+  listings: ListingCardData[];
   city: string | undefined;
   cityCenter: { lat: number; lng: number } | null;
   cities: City[];
   filters: ParsedFilters;
   searchParams: Record<string, string>;
 }) {
-  const [locateListing, setLocateListing] = useState(-1);
-  const [filteredListings, setFilteredListings] = useState<Listing[]>(listings);
+  const [locateListing, setLocateListing] = useState("");
+  const [filteredListings, setFilteredListings] = useState<ListingCardData[]>(listings);
   const [searchTriggered, setSearchTriggered] = useState(false);
   const layoutKey = getLayoutCategory(filteredListings.length);
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");

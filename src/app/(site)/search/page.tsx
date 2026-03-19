@@ -69,7 +69,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     }
   });
 
-  const [{ listings, cityCenter }, cities] = await Promise.all([searchListings(city, filters), getAllCities()]);
+  const [{ listings, cityCenter }, cities] = await Promise.all([searchListings(filters, city), getAllCities()]);
 
   return <SearchContainer listings={listings} city={city} cityCenter={cityCenter} cities={cities} filters={filters} searchParams={formattedParams} />;
 }
