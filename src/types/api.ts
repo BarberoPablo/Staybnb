@@ -331,12 +331,12 @@ export interface components {
         CreateProfileDto: Record<string, never>;
         PatchDraftListingBodyDto: Record<string, never>;
         RejectListingDto: Record<string, never>;
-        HomeListingLocationDto: {
+        ListingCardLocationDto: {
             city: string;
             state: string;
             country: string;
         };
-        HomeListingDto: {
+        ListingCardDto: {
             id: string;
             title: string;
             nightPrice: number;
@@ -346,7 +346,7 @@ export interface components {
             propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
             /** @enum {string} */
             privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
-            location: components["schemas"]["HomeListingLocationDto"];
+            location: components["schemas"]["ListingCardLocationDto"];
         };
         CreateReservationDto: Record<string, never>;
         PopularDestinationDto: {
@@ -722,7 +722,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HomeListingDto"][];
+                    "application/json": components["schemas"]["ListingCardDto"][];
                 };
             };
         };
@@ -744,7 +744,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HomeListingDto"][];
+                    "application/json": components["schemas"]["ListingCardDto"][];
                 };
             };
         };

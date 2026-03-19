@@ -1,5 +1,5 @@
 import { apiClient } from "../client";
-import { HomeListingSchema } from "./listings.schema";
+import { ListingCardSchema } from "./listings.schema";
 
 export async function fetchFeaturedListings(limit = 12, offset = 0) {
   const { data, error } = await apiClient.GET("/listings/featured", {
@@ -12,7 +12,7 @@ export async function fetchFeaturedListings(limit = 12, offset = 0) {
     throw new Error("Failed to fetch featured listings");
   }
 
-  return HomeListingSchema.parse(data);
+  return ListingCardSchema.parse(data);
 }
 
 export async function fetchPopularListings(limit = 12, offset = 0) {
@@ -26,5 +26,5 @@ export async function fetchPopularListings(limit = 12, offset = 0) {
     throw new Error("Failed to fetch popular listings");
   }
 
-  return HomeListingSchema.parse(data);
+  return ListingCardSchema.parse(data);
 }

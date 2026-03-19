@@ -1,16 +1,16 @@
 import { components } from "@/types/api";
 import { z } from "zod";
 
-export type HomeListing = components["schemas"]["HomeListingDto"];
+export type ListingCardData = components["schemas"]["ListingCardDto"];
 
-type PrivacyTypes = components["schemas"]["HomeListingDto"]["privacyType"];
-type PropertyTypes = components["schemas"]["HomeListingDto"]["propertyType"];
+type PrivacyTypes = components["schemas"]["ListingCardDto"]["privacyType"];
+type PropertyTypes = components["schemas"]["ListingCardDto"]["propertyType"];
 
 const PRIVACY_TYPES = ["ENTIRE", "PRIVATE", "SHARED"] as const satisfies readonly PrivacyTypes[];
 
 const PROPERTY_TYPES = ["HOUSE", "APARTMENT", "CABIN", "BOAT"] as const satisfies readonly PropertyTypes[];
 
-export const HomeListingSchema = z.array(
+export const ListingCardSchema = z.array(
   z.object({
     id: z.string(),
     title: z.string(),
