@@ -1,10 +1,10 @@
 "use client";
 
-import { HomeListing } from "@/lib/api/listings/listings.schema";
+import type { ListingCardData } from "@/lib/api/listings/listings.schema";
 import { motion } from "framer-motion";
-import HomeListingCard from "./HomeListingCard";
+import ListingCard from "./ListingCard";
 
-export default function PopularListings({ listings }: { listings: HomeListing[] }) {
+export default function PopularListings({ listings }: { listings: ListingCardData[] }) {
   if (listings.length === 0) return null;
 
   return (
@@ -17,7 +17,7 @@ export default function PopularListings({ listings }: { listings: HomeListing[] 
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {listings.map((listing) => (
-            <HomeListingCard key={listing.id} listing={listing} href={`/listing/${listing.id}`} />
+            <ListingCard key={listing.id} listing={listing} href={`/listing/${listing.id}`} />
           ))}
         </div>
       </motion.div>

@@ -1,18 +1,18 @@
 "use client";
 
 import ImagesSlider from "@/components/ImagesSlider";
-import { HomeListing } from "@/lib/api/listings/listings.schema";
+import type { ListingCardData } from "@/lib/api/listings/listings.schema";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { IoLocation, IoStar } from "react-icons/io5";
 
-export default function HomeListingCard({
+export default function ListingCard({
   listing,
   setLocateListing,
   href,
 }: {
-  listing: HomeListing;
+  listing: ListingCardData;
   setLocateListing?: (listingId: string) => void;
   href: string;
 }) {
