@@ -3,10 +3,10 @@
 import MapEventsHandler from "@/app/(site)/search/components/MapEventsHandler";
 import { RoundButton } from "@/components/Button/RoundButton";
 import ImagesSlider from "@/components/ImagesSlider";
+import { ListingCardData } from "@/lib/api/listings/listings.schema";
 import { searchListings } from "@/lib/api/server/endpoints/listings";
 import { ParsedFilters, parseFilters } from "@/lib/api/server/utils";
 import { MapCoordinates } from "@/lib/types";
-import { Listing } from "@/lib/types/listing";
 import { buildQueryStringFromParams } from "@/lib/utils";
 import L, { divIcon } from "leaflet";
 import { useSearchParams } from "next/navigation";
@@ -18,10 +18,10 @@ import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
 export type ListingsMapProps = {
-  listings: Listing[];
-  locateListing: number;
+  listings: ListingCardData[];
+  locateListing: string;
   cityCenter: { lat: number; lng: number } | null;
-  setListings: (listings: Listing[]) => void;
+  setListings: (listings: ListingCardData[]) => void;
   searchTriggered: boolean;
   onSearchComplete: () => void;
 };
@@ -36,7 +36,7 @@ export default function ListingsMap({ listings, locateListing, cityCenter, setLi
 
   const filters = parseFilters(paramsObject);
   const [center, setCenter] = useState<[number, number]>([cityCenter?.lat || 0, cityCenter?.lng || 0]);
-  const [listingPopup, setListingPopup] = useState<Listing | null>(null);
+  const [listingPopup, setListingPopup] = useState<ListingCardData | null>(null);
   const [mapEnabled, setMapEnabled] = useState(true);
   const [shouldFlyTo, setShouldFlyTo] = useState(false);
 
@@ -77,7 +77,7 @@ export default function ListingsMap({ listings, locateListing, cityCenter, setLi
         },
       };
 
-      const { listings: newListings } = await searchListings(city, filters, serializedMapCoordinates);
+      const { listings: newListings } = await searchListings(filters, city, serializedMapCoordinates);
 
       setListings(newListings);
     } catch (error) {
@@ -193,7 +193,7 @@ function MarkerPopup({
   enableMap,
   filters,
 }: {
-  listing: Listing | null;
+  listing: ListingCardData | null;
   onClose: () => void;
   enableMap: (hovered: boolean) => void;
   filters: ParsedFilters;
@@ -259,7 +259,7 @@ function MarkerPopup({
   );
 }
 
-function calculateBoundsFromListings(listings: Listing[]): { center: [number, number] } | null {
+function calculateBoundsFromListings(listings: ListingCardData[]): { center: [number, number] } | null {
   if (listings.length === 0) return null;
 
   const lats = listings.map((l) => l.location.lat);

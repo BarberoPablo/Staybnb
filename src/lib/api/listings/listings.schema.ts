@@ -3,6 +3,8 @@ import { z } from "zod";
 
 export type ListingCardData = components["schemas"]["ListingCardDto"];
 
+export type CityCenter = components["schemas"]["CityCenterDto"] | null;
+
 type PrivacyTypes = components["schemas"]["ListingCardDto"]["privacyType"];
 type PropertyTypes = components["schemas"]["ListingCardDto"]["propertyType"];
 
@@ -23,6 +25,8 @@ export const ListingCardSchema = z.array(
       city: z.string(),
       state: z.string(),
       country: z.string(),
+      lat: z.number(),
+      lng: z.number(),
     }),
   }),
 );

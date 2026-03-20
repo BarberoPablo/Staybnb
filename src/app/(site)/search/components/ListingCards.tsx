@@ -1,18 +1,18 @@
 "use client";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { Listing } from "@/lib/types/listing";
+import { ListingCardData } from "@/lib/api/listings/listings.schema";
 import { buildQueryStringFromParams } from "@/lib/utils";
 import { useMemo } from "react";
-import LegacyHomeListingCard from "../../components/LegacyHomeListingCard";
+import ListingCard from "../../components/ListingCard";
 
 export function ListingCards({
   listings,
   setLocateListing,
   searchParams,
 }: {
-  listings: Listing[];
-  setLocateListing: (listingId: number) => void;
+  listings: ListingCardData[];
+  setLocateListing: (listingId: string) => void;
   searchParams: Record<string, string>;
 }) {
   const is2xl = useMediaQuery("(min-width: 1536px)");
@@ -29,12 +29,12 @@ export function ListingCards({
   const listingHrefs = useMemo(() => {
     const queryString = searchParams ? buildQueryStringFromParams(searchParams) : "";
     return listings.reduce(
-      (acc, listing) => {
+      (acc, listing: ListingCardData) => {
         const baseHref = `/listing/${listing.id}`;
         acc[listing.id] = queryString ? `${baseHref}?${queryString}` : baseHref;
         return acc;
       },
-      {} as Record<number, string>,
+      {} as Record<string, string>,
     );
   }, [listings, searchParams]);
 
@@ -58,7 +58,7 @@ export function ListingCards({
         }}
       >
         {listings.map((listing) => (
-          <LegacyHomeListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} href={listingHrefs[listing.id]} />
+          <ListingCard key={listing.id} listing={listing} setLocateListing={setLocateListing} href={listingHrefs[listing.id]} />
         ))}
       </div>
     </div>
