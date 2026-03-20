@@ -1,6 +1,6 @@
 import { apiClient } from "../client";
 import { MapCoordinates } from "../server/types";
-import { ParsedFilters } from "../server/utils";
+import { ParsedFilters, parseFiltersToQuery } from "../server/utils";
 import { CityCenter, ListingCardData, ListingCardSchema } from "./listings.schema";
 
 export async function fetchFeaturedListings(limit = 12, offset = 0) {
@@ -38,9 +38,11 @@ export async function fetchSearchListings(
 ): Promise<{ listings: ListingCardData[]; cityCenter: CityCenter }> {
   if (!city) return { listings: [], cityCenter: null };
 
+  const query = parseFiltersToQuery(filters, city, mapCoordinates);
+
   const { data, error } = await apiClient.GET("/listings", {
     params: {
-      query: { ...filters, ...mapCoordinates, city },
+      query: { ...query },
     },
   });
 
