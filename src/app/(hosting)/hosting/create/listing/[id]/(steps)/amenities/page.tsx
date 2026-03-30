@@ -5,12 +5,11 @@ import { AMENITIES } from "@/lib/constants/amenities";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { motion } from "framer-motion";
 import { useFormContext } from "react-hook-form";
-import { HiOutlineDotsCircleHorizontal } from "react-icons/hi";
-import { MdOutlineBathroom, MdOutlineBedroomParent, MdOutlineLocalActivity, MdOutlineTableBar } from "react-icons/md";
-
 import { FaKitchenSet } from "react-icons/fa6";
+import { HiOutlineDotsCircleHorizontal } from "react-icons/hi";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { LuSiren } from "react-icons/lu";
+import { MdOutlineBathroom, MdOutlineBedroomParent, MdOutlineLocalActivity, MdOutlineTableBar } from "react-icons/md";
 
 type AmenityCategory = {
   name: string;
@@ -21,42 +20,42 @@ type AmenityCategory = {
 const amenityCategories: AmenityCategory[] = [
   {
     name: "General",
-    amenities: AMENITIES.filter((amenity) => amenity.category === "general"),
+    amenities: AMENITIES.filter((amenity) => amenity.category === "GENERAL"),
     icon: <HiOutlineDotsCircleHorizontal className="w-6 h-6 text-myGreenSemiBold" />,
   },
   {
     name: "Kitchen",
-    amenities: AMENITIES.filter((amenity) => amenity.category === "kitchen"),
+    amenities: AMENITIES.filter((amenity) => amenity.category === "KITCHEN"),
     icon: <FaKitchenSet className="w-6 h-6 text-myGreenSemiBold" />,
   },
   {
     name: "Dining",
-    amenities: AMENITIES.filter((amenity) => amenity.category === "dining"),
+    amenities: AMENITIES.filter((amenity) => amenity.category === "DINING"),
     icon: <MdOutlineTableBar className="w-6 h-6 text-myGreenSemiBold" />,
   },
   {
     name: "Bedroom",
-    amenities: AMENITIES.filter((amenity) => amenity.category === "bedroom"),
+    amenities: AMENITIES.filter((amenity) => amenity.category === "BEDROOM"),
     icon: <MdOutlineBedroomParent className="w-6 h-6 text-myGreenSemiBold" />,
   },
   {
     name: "Bathroom",
-    amenities: AMENITIES.filter((amenity) => amenity.category === "bathroom"),
+    amenities: AMENITIES.filter((amenity) => amenity.category === "BATHROOM"),
     icon: <MdOutlineBathroom className="w-6 h-6 text-myGreenSemiBold" />,
   },
   {
     name: "Entertainment",
-    amenities: AMENITIES.filter((amenity) => amenity.category === "entertainment"),
+    amenities: AMENITIES.filter((amenity) => amenity.category === "ENTERTAINMENT"),
     icon: <IoGameControllerOutline className="w-6 h-6 text-myGreenSemiBold" />,
   },
   {
     name: "Security",
-    amenities: AMENITIES.filter((amenity) => amenity.category === "security"),
+    amenities: AMENITIES.filter((amenity) => amenity.category === "SECURITY"),
     icon: <LuSiren className="w-6 h-6 text-myGreenSemiBold" />,
   },
   {
     name: "Activities",
-    amenities: AMENITIES.filter((amenity) => amenity.category === "activities"),
+    amenities: AMENITIES.filter((amenity) => amenity.category === "ACTIVITIES"),
     icon: <MdOutlineLocalActivity className="w-6 h-6 text-myGreenSemiBold" />,
   },
 ];
@@ -70,7 +69,7 @@ export default function AmenitiesStep() {
 
   const selectedAmenities = watch("amenities") || [];
 
-  const handleAmenityToggle = (amenityId: number) => {
+  const handleAmenityToggle = (amenityId: string) => {
     const isSelected = selectedAmenities.includes(amenityId);
     const newAmenities = isSelected ? selectedAmenities.filter((id) => id !== amenityId) : [...selectedAmenities, amenityId];
 
