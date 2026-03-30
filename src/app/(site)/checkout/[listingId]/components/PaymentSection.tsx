@@ -1,6 +1,6 @@
 "use client";
 
-import { PriceSummary } from "@/components/Booking/PriceSummary";
+import { LegacyPriceSummary } from "@/components/Booking/LegacyPriceSummary";
 import { createReservation } from "@/lib/api/server/endpoints/reservations";
 import { Guests } from "@/lib/types";
 import { CreateReservation } from "@/lib/types/reservation";
@@ -137,7 +137,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
             </span>
           </div>
         </div>
-        <PriceSummary
+        <LegacyPriceSummary
           nights={nights}
           listing={listingData.listing}
           discountPercentage={listingData.promo?.discountPercentage}

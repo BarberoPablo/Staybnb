@@ -6,7 +6,6 @@ interface ReviewCardProps {
   review: {
     score: number;
     message: string;
-    userId: string;
   };
   index?: number;
   showFullDetails?: boolean;

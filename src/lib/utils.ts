@@ -1,8 +1,9 @@
 import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { SearchParams } from "next/dist/server/request/search-params";
+import { LISTING_GUESTS, Promotion } from "./api/listings/listings.schema";
 import { Guests, ListingSearchParams } from "./types";
-import { Listing, ListingDB, Location, Promotion, PromotionDB } from "./types/listing";
+import { LegacyPromotion, Listing, ListingDB, Location, PromotionDB } from "./types/listing";
 import { CreateProfile, UpdateProfile } from "./types/profile";
 import { ReservedDate } from "./types/reservation";
 
@@ -18,8 +19,6 @@ export const windowWidth = {
 export function pluralize(count: number, singular: string, plural: string) {
   return count === 1 ? singular : plural;
 }
-
-export const listingGuests: Guests[] = ["adults", "children", "infant", "pets"];
 
 export const displayGuestLabel = (type: Guests, value: number) => {
   const singular = {
@@ -56,7 +55,7 @@ export const listingOptionalQueryParams = ["children", "infant", "pets"] as cons
 export function getGuestsFromParams(params: ListingSearchParams) {
   const guests = Object.fromEntries(
     Object.entries(params)
-      .filter(([key, value]) => listingGuests.includes(key as Guests) && value !== "0")
+      .filter(([key, value]) => LISTING_GUESTS.includes(key as Guests) && value !== "0")
       .map(([key, value]) => [key, Number(value)]),
   ) as Record<Guests, number>;
 
@@ -83,7 +82,34 @@ export function validateDateRange(startDate: Date, endDate: Date) {
   return "";
 }
 
-export function getDisabledDates(reservedDates: ReservedDate[]): { unavailableCheckInDates: Date[]; unavailableCheckOutDates: Date[] } {
+export function legacyGetDisabledDates(reservedDates: ReservedDate[]): { unavailableCheckInDates: Date[]; unavailableCheckOutDates: Date[] } {
+  // Block all days in between the dates
+  const unavailableCheckInDates: Date[] = [];
+  const unavailableCheckOutDates: Date[] = [];
+
+  reservedDates.forEach((reservation) => {
+    const start = normalizeDate(addDays(reservation.startDate, 1));
+    const end = normalizeDate(subDays(reservation.endDate, 1));
+
+    unavailableCheckInDates.push(normalizeDate(reservation.startDate));
+    unavailableCheckOutDates.push(normalizeDate(reservation.endDate));
+
+    if (start <= end) {
+      // Block all days in between the dates
+      unavailableCheckInDates.push(...eachDayOfInterval({ start, end }));
+      unavailableCheckOutDates.push(...eachDayOfInterval({ start, end }));
+    }
+  });
+
+  return { unavailableCheckInDates, unavailableCheckOutDates };
+}
+export function getDisabledDates(reservedDates?: { startDate: Date; endDate: Date }[]): {
+  unavailableCheckInDates: Date[];
+  unavailableCheckOutDates: Date[];
+} {
+  if (!reservedDates || reservedDates.length === 0) {
+    return { unavailableCheckInDates: [], unavailableCheckOutDates: [] };
+  }
   // Block all days in between the dates
   const unavailableCheckInDates: Date[] = [];
   const unavailableCheckOutDates: Date[] = [];
@@ -125,8 +151,15 @@ export function calculateNights(startDate: Date, endDate: Date) {
   return Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
-export function getListingPromotion(listing: Listing, nights: number): Promotion | null {
+export function legacyGetListingPromotion(listing: Listing, nights: number): LegacyPromotion | null {
   const sortedPromotions = [...listing.promotions].sort((a, b) => a.minNights - b.minNights);
+  const promos = sortedPromotions?.filter((promo) => promo.minNights <= nights);
+  return promos.length > 0 ? promos[promos.length - 1] : null;
+}
+
+export function getListingPromotion(nights: number, promotions?: Promotion[]): Promotion | null {
+  if (!promotions) return null;
+  const sortedPromotions = promotions.sort((a, b) => a.minNights - b.minNights);
   const promos = sortedPromotions?.filter((promo) => promo.minNights <= nights);
   return promos.length > 0 ? promos[promos.length - 1] : null;
 }
@@ -137,7 +170,7 @@ export function getListingPromotionDB(listing: ListingDB, nights: number): Promo
   return promos.length > 0 ? promos[promos.length - 1] : null;
 }
 
-export function getPromotion(promotions: Promotion[], nights: number): Promotion | null {
+export function getPromotion(promotions: LegacyPromotion[], nights: number): LegacyPromotion | null {
   const sortedPromotions = [...promotions].sort((a, b) => a.minNights - b.minNights);
   const promos = sortedPromotions?.filter((promo) => promo.minNights <= nights);
   return promos.length > 0 ? promos[promos.length - 1] : null;

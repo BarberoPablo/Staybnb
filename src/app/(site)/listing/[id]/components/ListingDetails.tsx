@@ -5,16 +5,15 @@ import AmenityIcon from "@/components/icons/AmenityIcon";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { ListBadges } from "@/components/ListBadges";
 import { ListingFavoriteButton } from "@/components/ListingFavoriteButton";
+import type { ListingDetails, ListingDetailsHost, ListingDetailsReview } from "@/lib/api/listings/listings.schema";
 import { AMENITIES } from "@/lib/constants/amenities";
-import { Listing, ListingWithReservationsAndHost } from "@/lib/types/listing";
-import { Host } from "@/lib/types/profile";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { IoLocation, IoStar } from "react-icons/io5";
 import { ViewAllReviewsDialog } from "./ViewAllReviewsDialog";
 
-export default function ListingDetails({ listing }: { listing: ListingWithReservationsAndHost }) {
+export default function ListingDetails({ listing }: { listing: ListingDetails }) {
   return (
     <motion.div
       className="relative lg:col-span-7 space-y-8 border border-gray-200 rounded-2xl shadow-lg p-6"
@@ -46,14 +45,14 @@ export default function ListingDetails({ listing }: { listing: ListingWithReserv
 
       <div className="border-t border-gray-200" />
 
-      <ReviewsSection reviews={listing.score.reviews} />
+      <ReviewsSection reviews={listing.reviews} />
 
       <div className="border-t border-gray-200" />
     </motion.div>
   );
 }
 
-function HostInformation({ host }: { host: Host }) {
+function HostInformation({ host }: { host: ListingDetailsHost }) {
   return (
     <div className="flex items-center">
       <ImageWithFallback
@@ -73,7 +72,7 @@ function HostInformation({ host }: { host: Host }) {
   );
 }
 
-function ListingSubtitle({ listingDetails }: { listingDetails: Listing }) {
+function ListingSubtitle({ listingDetails }: { listingDetails: ListingDetails }) {
   return (
     <div className="space-y-4">
       {/* Property Type and Location */}
@@ -93,15 +92,19 @@ function ListingSubtitle({ listingDetails }: { listingDetails: Listing }) {
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2 bg-myGreenExtraLight px-3 py-1.5 rounded-full">
           <IoStar className="w-4 h-4 text-myGreenBold fill-current" />
-          <span className="text-sm font-semibold text-myGrayDark">{listingDetails.score.value.toFixed(1)}</span>
+          <span className="text-sm font-semibold text-myGrayDark">{listingDetails.ratingAvg}</span>
         </div>
-        <span className="text-myGray font-medium underline">{listingDetails.score.reviews.length} reviews</span>
+        <span className="text-myGray font-medium underline">{listingDetails.ratingCount} reviews</span>
       </div>
     </div>
   );
 }
 
-function AmenitiesSection({ amenities }: { amenities: number[] }) {
+function AmenitiesSection({ amenities }: { amenities?: string[] }) {
+  if (!amenities || amenities.length === 0) {
+    return null;
+  }
+
   const amenityObjects = amenities
     .map((id) => AMENITIES.find((amenity) => amenity.id === id))
     .filter((amenity): amenity is NonNullable<typeof amenity> => amenity !== undefined);
@@ -176,17 +179,18 @@ function AmenitiesSection({ amenities }: { amenities: number[] }) {
   );
 }
 
-function ReviewsSection({ reviews }: { reviews: { score: number; message: string; userId: string }[] }) {
+function ReviewsSection({ reviews }: { reviews?: ListingDetailsReview[] }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  if (!reviews || reviews.length === 0) {
+    return null;
+  }
+
   const topReviews = reviews.sort((a, b) => b.score - a.score).slice(0, 3);
 
   const handleOpenReviews = () => {
     setIsDialogOpen(true);
   };
-
-  if (topReviews.length === 0) {
-    return null;
-  }
 
   return (
     <>
@@ -208,7 +212,7 @@ function ReviewsSection({ reviews }: { reviews: { score: number; message: string
 
         <div className="space-y-4">
           {topReviews.map((review, index) => (
-            <ReviewCard key={`${review.userId}-${index}`} review={review} index={index} />
+            <ReviewCard key={`user-review-${index}`} review={review} index={index} />
           ))}
         </div>
       </div>

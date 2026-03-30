@@ -1,4 +1,4 @@
-import { Promotion, PromotionDB } from "./listing";
+import { LegacyPromotion, PromotionDB } from "./listing";
 
 export type DraftListingDB = {
   id: number;
@@ -66,7 +66,7 @@ export type DraftListing = {
   title?: string;
   description?: string;
   nightPrice?: number;
-  promotions?: Promotion[];
+  promotions?: LegacyPromotion[];
   structure?: {
     guests: number;
     bedrooms: number;

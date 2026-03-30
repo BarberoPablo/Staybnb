@@ -116,6 +116,22 @@ export interface paths {
         patch: operations["DraftListingsController_autoCompleteListing"];
         trace?: never;
     };
+    "/amenities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AmenitiesController_getListings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/host/listings": {
         parameters: {
             query?: never;
@@ -283,7 +299,23 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["ListingsController_getListingById"];
+        get: operations["ListingsController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/listings/{id}/checkout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListingsController_getCheckoutInfo"];
         put?: never;
         post?: never;
         delete?: never;
@@ -330,6 +362,11 @@ export interface components {
     schemas: {
         CreateProfileDto: Record<string, never>;
         PatchDraftListingBodyDto: Record<string, never>;
+        AmenityResponseDto: {
+            id: string;
+            name: string;
+            category: string;
+        };
         RejectListingDto: Record<string, never>;
         ListingCardLocationDto: {
             city: string;
@@ -357,6 +394,87 @@ export interface components {
         SearchListingsResponseDto: {
             listings: components["schemas"]["ListingCardDto"][];
             cityCenter?: components["schemas"]["CityCenterDto"] | null;
+        };
+        ListingStructureDto: {
+            bedrooms: number;
+            beds: number;
+            bathrooms: number;
+            guests: number;
+        };
+        GuestLimitDto: {
+            min: number;
+            max: number;
+        };
+        ListingGuestLimitsDto: {
+            adults: components["schemas"]["GuestLimitDto"];
+            children: components["schemas"]["GuestLimitDto"];
+            infant: components["schemas"]["GuestLimitDto"];
+            pets: components["schemas"]["GuestLimitDto"];
+        };
+        ListingDetailsHostDto: {
+            id: string;
+            firstName: string;
+            avatarUrl?: string;
+        };
+        ListingDetailsReviewDto: {
+            id: string;
+            userId: string;
+            score: number;
+            message: string;
+            imageUrl: string;
+        };
+        ListingPromotionDto: {
+            minNights: number;
+            discountPercentage: number;
+            description: string;
+        };
+        ListingDetailsReservationDto: {
+            id: string;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+        };
+        ListingDetailsResponseDto: {
+            id: string;
+            title: string;
+            description: string;
+            nightPrice: number;
+            images: string[];
+            location: components["schemas"]["ListingCardLocationDto"];
+            structure: components["schemas"]["ListingStructureDto"];
+            guestLimits: components["schemas"]["ListingGuestLimitsDto"];
+            /** @enum {string} */
+            propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
+            host?: components["schemas"]["ListingDetailsHostDto"];
+            amenities?: string[];
+            reviews?: components["schemas"]["ListingDetailsReviewDto"][];
+            promotions: components["schemas"]["ListingPromotionDto"][];
+            reservations?: components["schemas"]["ListingDetailsReservationDto"][];
+            ratingAvg: number;
+            ratingCount: number;
+            /** @enum {string} */
+            status: "PUBLISHED" | "PAUSED" | "PENDING" | "REJECTED";
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ListingCheckoutResponseDto: {
+            id: string;
+            title: string;
+            ratingAvg: number;
+            ratingCount: number;
+            formattedLocation: string;
+            propertyType: string;
+            bedrooms: number;
+            beds: number;
+            bathrooms: number;
+            maxGuests: number;
+            minCancelDays: number;
+            nightPrice: number;
         };
         PopularDestinationDto: {
             id: string;
@@ -562,6 +680,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    AmenitiesController_getListings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AmenityResponseDto"];
+                };
             };
         };
     };
@@ -784,7 +921,7 @@ export interface operations {
             };
         };
     };
-    ListingsController_getListingById: {
+    ListingsController_findOne: {
         parameters: {
             query?: never;
             header?: never;
@@ -799,7 +936,30 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ListingDetailsResponseDto"];
+                };
+            };
+        };
+    };
+    ListingsController_getCheckoutInfo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingCheckoutResponseDto"];
+                };
             };
         };
     };

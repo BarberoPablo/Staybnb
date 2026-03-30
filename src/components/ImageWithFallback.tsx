@@ -16,7 +16,7 @@ export default function ImageWithFallback({
   height,
   fallbackIcon,
 }: {
-  src: string | null;
+  src: string | null | undefined;
   alt: string;
   priority?: boolean;
   fill?: boolean;

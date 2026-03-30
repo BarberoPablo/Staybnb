@@ -22,7 +22,7 @@ export type Listing = {
   checkInTime: string;
   checkOutTime: string;
   nightPrice: number;
-  promotions: Promotion[];
+  promotions: LegacyPromotion[];
   structure: Structure;
   guestLimits: {
     [key in Guests]: {
@@ -95,7 +95,7 @@ export type PromotionDB = {
   description: string;
 };
 
-export type Promotion = {
+export type LegacyPromotion = {
   minNights: number;
   discountPercentage: number;
   description: string;
@@ -181,7 +181,7 @@ export type EditListing = {
   title: string;
   description: string;
   nightPrice: number;
-  promotions: Promotion[];
+  promotions: LegacyPromotion[];
   propertyType: PropertyType;
   images: string[];
   structure: Structure;

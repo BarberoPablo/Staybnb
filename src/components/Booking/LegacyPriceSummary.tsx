@@ -1,14 +1,15 @@
+import { Listing, ListingWithReservations } from "@/lib/types/listing";
 import { getTotalPrice } from "@/lib/utils";
 import { IoPricetag } from "react-icons/io5";
 
-export function PriceSummary({
+export function LegacyPriceSummary({
   nights,
-  nightPrice,
+  listing,
   discountPercentage,
   className,
 }: {
   nights: number;
-  nightPrice: number;
+  listing: Listing | ListingWithReservations;
   discountPercentage?: number;
   className?: string;
 }) {
@@ -29,13 +30,13 @@ export function PriceSummary({
         </div>
         <div className="flex justify-between items-center">
           <span className="text-myGray">Price per night:</span>
-          <span className="font-semibold text-myGrayDark">${nightPrice}</span>
+          <span className="font-semibold text-myGrayDark">${listing.nightPrice}</span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-myGray">Discount:</span>
           {discountPercentage && discountPercentage > 0 ? (
             <span className="font-semibold text-myGreenSemiBold">
-              {(getTotalPrice(nights, nightPrice) * discountPercentage) / 100} USD ({discountPercentage}% off)
+              {(getTotalPrice(nights, listing.nightPrice) * discountPercentage) / 100} USD ({discountPercentage}% off)
             </span>
           ) : (
             <span className="font-semibold text-myGrayDark">-</span>
@@ -47,10 +48,10 @@ export function PriceSummary({
             <div className="flex items-center gap-2">
               {discountPercentage ? (
                 <span className="text-myGray text-lg font-medium line-through decoration-2 decoration-myGray/70">
-                  ${getTotalPrice(nights, nightPrice).toFixed(2)}
+                  ${getTotalPrice(nights, listing.nightPrice).toFixed(2)}
                 </span>
               ) : null}
-              <span className="text-myGrayDark text-xl font-bold">${getTotalPrice(nights, nightPrice, discountPercentage).toFixed(2)}</span>
+              <span className="text-myGrayDark text-xl font-bold">${getTotalPrice(nights, listing.nightPrice, discountPercentage).toFixed(2)}</span>
             </div>
           </div>
         </div>

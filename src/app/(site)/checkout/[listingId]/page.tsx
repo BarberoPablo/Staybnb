@@ -1,4 +1,4 @@
-import { getListingWithReservations } from "@/lib/api/server/endpoints/listings";
+import { legacyGetListingWithReservations } from "@/lib/api/server/endpoints/listings";
 import { generateSEOMetadata } from "@/lib/seo";
 import { ListingSearchParams } from "@/lib/types";
 import Link from "next/link";
@@ -32,7 +32,7 @@ export default async function CheckoutPage({
 
   let listing;
   try {
-    listing = await getListingWithReservations(parsedListingId);
+    listing = await legacyGetListingWithReservations(parsedListingId);
   } catch {
     redirect("/");
   }
