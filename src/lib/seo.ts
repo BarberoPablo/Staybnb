@@ -115,7 +115,7 @@ export function generateSEOMetadata({
  * Generate JSON-LD structured data for a listing
  */
 export function generateListingStructuredData(listing: {
-  id: number;
+  id: string;
   title: string;
   description: string;
   nightPrice: number;

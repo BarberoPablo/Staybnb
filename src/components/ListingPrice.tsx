@@ -1,4 +1,4 @@
-import { Promotion } from "@/lib/types/listing";
+import { LegacyPromotion } from "@/lib/types/listing";
 import { twoDecimals } from "@/lib/utils";
 
 export default function ListingPrice({
@@ -10,7 +10,7 @@ export default function ListingPrice({
   nights: number;
   nightPrice: number;
   discountPercentage?: number;
-  promotions?: Promotion[];
+  promotions?: LegacyPromotion[];
 }) {
   const discount = discountPercentage ? twoDecimals((discountPercentage / 100) * nights * nightPrice) : 0;
   const total = twoDecimals(nights * nightPrice - discount);

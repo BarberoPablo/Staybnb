@@ -1,5 +1,5 @@
 import { AmenityId } from "@/lib/constants/amenities";
-import { Listing, Location, PrivacyType, Promotion, PropertyType, Score, Structure } from "@/lib/types/listing";
+import { Listing, Location, PrivacyType, LegacyPromotion, PropertyType, Score, Structure } from "@/lib/types/listing";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -12,7 +12,7 @@ export type ListingForm = {
   title: string;
   description: string;
   nightPrice: number;
-  promotions: Promotion[];
+  promotions: LegacyPromotion[];
   structure: Structure;
   guestLimits: Listing["guestLimits"];
   amenities: AmenityId[];
@@ -78,6 +78,6 @@ export const useListingForm = create<ListingFormState>()(
     }),
     {
       name: "listing-form-storage",
-    }
-  )
+    },
+  ),
 );

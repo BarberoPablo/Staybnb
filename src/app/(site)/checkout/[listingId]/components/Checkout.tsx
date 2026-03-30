@@ -5,8 +5,8 @@ import PaymentSection from "@/app/(site)/checkout/[listingId]/components/Payment
 import { Container } from "@/app/(site)/components/Container";
 import ListingStatusBanner from "@/components/ListingStatusBanner";
 import { Guests, ListingSearchParams } from "@/lib/types";
-import { Listing, Promotion } from "@/lib/types/listing";
-import { calculateNights, getGuestsFromParams, getListingPromotion } from "@/lib/utils";
+import { LegacyPromotion, Listing } from "@/lib/types/listing";
+import { calculateNights, getGuestsFromParams, legacyGetListingPromotion } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
@@ -16,7 +16,7 @@ export type ListingData = {
   startDate: Date;
   endDate: Date;
   nights: number;
-  promo: Promotion | null;
+  promo: LegacyPromotion | null;
 };
 
 export default function Checkout({ listing, searchParams }: { listing: Listing; searchParams: ListingSearchParams }) {
@@ -29,7 +29,7 @@ export default function Checkout({ listing, searchParams }: { listing: Listing; 
     startDate,
     endDate,
     nights,
-    promo: getListingPromotion(listing, nights),
+    promo: legacyGetListingPromotion(listing, nights),
   });
 
   return (

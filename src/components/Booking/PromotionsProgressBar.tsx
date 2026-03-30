@@ -1,10 +1,10 @@
-import { Promotion } from "@/lib/types/listing";
+import { LegacyPromotion } from "@/lib/types/listing";
 import { getPromotion } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { IoSparkles } from "react-icons/io5";
 
 interface PromotionsProgressBarProps {
-  promotions: Promotion[];
+  promotions: LegacyPromotion[];
   currentNights: number;
 }
 

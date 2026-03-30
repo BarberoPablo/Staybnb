@@ -32,21 +32,21 @@ export default function FiltersDialog({
     (dates: Dates) => {
       setFilters((prev) => ({ ...prev, dates }));
     },
-    [setFilters]
+    [setFilters],
   );
 
   const setGuests = useCallback(
     (guests: Record<Guests, number>) => {
       setFilters((prev) => ({ ...prev, guests }));
     },
-    [setFilters]
+    [setFilters],
   );
 
   const setAmenities = useCallback(
     (amenities: AmenityId[]) => {
       setFilters((prev) => ({ ...prev, amenities }));
     },
-    [setFilters]
+    [setFilters],
   );
 
   const filtersMenu = useMemo(
@@ -67,7 +67,7 @@ export default function FiltersDialog({
         content: <SelectAmenities selectedAmenities={filters.amenities || []} setSelectedAmenities={setAmenities} />,
       },
     ],
-    [filters.dates, filters.guests, filters.amenities, setDates, setGuests, setAmenities]
+    [filters.dates, filters.guests, filters.amenities, setDates, setGuests, setAmenities],
   );
 
   useEffect(() => {

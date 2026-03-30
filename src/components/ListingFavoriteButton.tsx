@@ -6,7 +6,7 @@ import { IoHeart } from "react-icons/io5";
 import { useState, useEffect } from "react";
 
 interface ListingFavoriteButtonProps {
-  listingId: number;
+  listingId: string;
   className?: string;
 }
 

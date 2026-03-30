@@ -1,21 +1,16 @@
 "use client";
 
 import { ReviewCard } from "@/app/(site)/listing/[id]/components/ReviewCard";
+import { ListingDetailsReview } from "@/lib/api/listings/listings.schema";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { IoClose, IoStar } from "react-icons/io5";
 
-interface Review {
-  score: number;
-  message: string;
-  userId: string;
-}
-
 interface ViewAllReviewsDialogProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  reviews: Review[];
+  reviews: ListingDetailsReview[];
 }
 
 export function ViewAllReviewsDialog({ isOpen, setIsOpen, reviews }: ViewAllReviewsDialogProps) {

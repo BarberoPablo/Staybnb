@@ -26,7 +26,7 @@ export const createListingSchema = z.object({
     beds: z.number().min(0),
     bathrooms: z.number().min(0),
   }),
-  amenities: z.array(z.number()),
+  amenities: z.array(z.string()),
   images: z.array(z.string()).min(3, "At least three images are required"),
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),

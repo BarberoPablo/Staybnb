@@ -1,11 +1,11 @@
 "use client";
 
-import { ListingWithReservations } from "@/lib/types/listing";
+import { ListingDetails } from "@/lib/api/listings/listings.schema";
 import { motion } from "framer-motion";
 import { IoCalendar } from "react-icons/io5";
 import BookingForm from "./BookingForm";
 
-export default function BookingCalendarContainer({ listing }: { listing: ListingWithReservations }) {
+export default function BookingCalendarContainer({ listing }: { listing: ListingDetails }) {
   return (
     <motion.div
       className="bg-background border border-gray-200 rounded-2xl shadow-lg p-6 sticky top-8"

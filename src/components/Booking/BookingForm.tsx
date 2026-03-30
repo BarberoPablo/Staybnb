@@ -2,10 +2,10 @@
 
 import Tooltip from "@/components/Tooltip";
 import { useQueryParams } from "@/hooks/useQueryParams";
+import { LISTING_GUESTS, ListingDetails } from "@/lib/api/listings/listings.schema";
 import { parseFilters } from "@/lib/api/server/utils";
 import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
-import { ListingWithReservations } from "@/lib/types/listing";
-import { buildListingParams, calculateNights, getDisabledDates, getListingPromotion, listingGuests, normalizeDate } from "@/lib/utils";
+import { buildListingParams, calculateNights, getDisabledDates, getListingPromotion, normalizeDate } from "@/lib/utils";
 import { useRouter } from "nextjs-toploader/app";
 import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
@@ -29,14 +29,14 @@ const updateURLParams = (param: string, value: Date | string) => {
   window.history.replaceState(null, "", newURL);
 };
 
-export default function BookingForm({ listing, children, onConfirm }: { listing: ListingWithReservations; children?: ReactNode; onConfirm?: () => void }) {
+export default function BookingForm({ listing, children, onConfirm }: { listing: ListingDetails; children?: ReactNode; onConfirm?: () => void }) {
   const [dateRange, setDateRange] = useState<DateRangeKey>({
     startDate: new Date(),
     endDate: new Date(),
     key: "selection",
   });
   const nights = calculateNights(dateRange.startDate, dateRange.endDate);
-  const discountPercentage = getListingPromotion(listing, nights)?.discountPercentage || 0;
+  const discountPercentage = getListingPromotion(nights, listing.promotions)?.discountPercentage || 0;
   const [disabledDates, setDisabledDates] = useState<UnavailableDates>({
     unavailableCheckInDates: { filtered: [], all: [] },
     unavailableCheckOutDates: { filtered: [], all: [] },
@@ -179,7 +179,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
         <p className="text-xs text-myGray">Note: Pets do not count toward the guest limit</p>
 
         <div className="space-y-3">
-          {listingGuests.map((type) => (
+          {LISTING_GUESTS.map((type) => (
             <div key={type} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
               <div className="flex items-center gap-3">
                 <label className="capitalize font-medium text-myGrayDark min-w-[60px]">{type}</label>
@@ -246,7 +246,7 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
         </div>
       )}
 
-      <PriceSummary nights={nights} listing={listing} discountPercentage={discountPercentage} />
+      <PriceSummary nights={nights} nightPrice={listing.nightPrice} discountPercentage={discountPercentage} />
 
       {/* Submit Button */}
       <div className="pt-4">

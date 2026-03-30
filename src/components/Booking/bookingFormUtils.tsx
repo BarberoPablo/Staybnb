@@ -1,6 +1,6 @@
+import { LISTING_GUESTS, ListingDetails } from "@/lib/api/listings/listings.schema";
 import { Guests, UnavailableDates } from "@/lib/types";
-import { Listing } from "@/lib/types/listing";
-import { listingGuests, validateDateRange } from "@/lib/utils";
+import { validateDateRange } from "@/lib/utils";
 import { format, isSameDay } from "date-fns";
 
 export const bookingColors = {
@@ -14,7 +14,7 @@ export function excludeDate(dates: Date[], dateToExclude: Date): Date[] {
   return dates.filter((date) => date.getTime() !== dateToExclude.getTime());
 }
 
-export function validateFormData(startDate: Date, endDate: Date, guests: Record<Guests, number>, listing: Listing): FormErrors {
+export function validateFormData(startDate: Date, endDate: Date, guests: Record<Guests, number>, listing: ListingDetails): FormErrors {
   const errors: FormErrors = {};
   const dateError = validateDateRange(startDate, endDate);
 
@@ -22,7 +22,7 @@ export function validateFormData(startDate: Date, endDate: Date, guests: Record<
     errors.dateRange = dateError;
   }
 
-  for (const key of listingGuests) {
+  for (const key of LISTING_GUESTS) {
     const value = guests[key];
     const { max, min } = listing.guestLimits[key];
     if (value > max || value < min) {

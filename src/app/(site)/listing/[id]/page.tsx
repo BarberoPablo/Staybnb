@@ -1,9 +1,8 @@
 import BookingCalendarContainer from "@/components/Booking/BookingCalendarContainer";
 import { ImagesLayout } from "@/components/ImagesLayout";
 import ImagesSlider from "@/components/ImagesSlider";
-import { getListingWithReservations } from "@/lib/api/server/endpoints/listings";
+import { getListingDetails } from "@/lib/api/server/endpoints/listings";
 import { AuthError, NotFoundError } from "@/lib/api/server/errors";
-import { AMENITIES } from "@/lib/constants/amenities";
 import { generateBreadcrumbStructuredData, generateListingStructuredData, generateSEOMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
@@ -19,7 +18,7 @@ export async function generateMetadata({ params }: ListingDetailsProps): Promise
   const { id } = await params;
 
   try {
-    const listing = await getListingWithReservations(Number(id));
+    const listing = await getListingDetails(id);
 
     const description = listing.description
       ? `${listing.description.substring(0, 155)}...`
@@ -35,7 +34,6 @@ export async function generateMetadata({ params }: ListingDetailsProps): Promise
         `${listing.structure.guests} guests`,
         listing.privacyType,
         "book now",
-        ...listing.amenities.map((a) => AMENITIES[a].name),
       ],
       path: `/listing/${id}`,
       images: listing.images.slice(0, 4),
@@ -58,7 +56,7 @@ export default async function ListingDetailsPage({ params }: ListingDetailsProps
 
   let listing;
   try {
-    listing = await getListingWithReservations(Number(id));
+    listing = await getListingDetails(id);
   } catch (error) {
     if (error instanceof AuthError) {
       console.error(error.message);

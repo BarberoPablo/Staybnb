@@ -6,13 +6,13 @@ import { AmenityDB } from "@/lib/types/amenities";
 import { EditListing, ListingDB, ListingStatus, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
 import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../../parsers/listing";
 import { createClient } from "../../../supabase/server";
-import { fetchFeaturedListings, fetchPopularListings, fetchSearchListings } from "../../listings/listings.http";
+import { fetchFeaturedListings, fetchListingDetails, fetchPopularListings, fetchSearchListings } from "../../listings/listings.http";
+import { CityCenter, ListingCardData } from "../../listings/listings.schema";
 import { NotFoundError } from "../errors";
 import { MapCoordinates } from "../types";
 import { ParsedFilters } from "../utils";
-import { CityCenter, ListingCardData } from "../../listings/listings.schema";
 
-export async function getListingWithReservations(id: number) {
+export async function legacyGetListingWithReservations(id: number) {
   try {
     const listing = await prisma.listings.findUnique({
       where: {
@@ -65,6 +65,10 @@ export async function getListingWithReservations(id: number) {
     console.error("Error fetching listing with reservations", error);
     throw new NotFoundError();
   }
+}
+
+export async function getListingDetails(id: string) {
+  return fetchListingDetails(id);
 }
 
 export async function searchListings(
@@ -162,7 +166,7 @@ export async function editListing(id: number, props: EditListing) {
     let validAmenities: number[] = [];
     if (amenities && amenities.length > 0) {
       const existingAmenities = await prisma.amenities.findMany({
-        where: { id: { in: amenities } },
+        where: { id: { in: amenities.map(Number) } },
         select: { id: true },
       });
       validAmenities = existingAmenities.map((a) => a.id);
