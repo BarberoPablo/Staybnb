@@ -356,6 +356,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/favorites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["FavoritesController_getFavorites"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/favorites/{listingId}/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["FavoritesController_isFavorite"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/favorites/{listingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["FavoritesController_addFavorite"];
+        delete: operations["FavoritesController_deleteFavorite"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -486,6 +534,28 @@ export interface components {
             imageUrl?: string | null;
         };
         CreateReservationDto: Record<string, never>;
+        FavoriteListingLocationDto: {
+            city: string;
+            state: string;
+        };
+        FavoriteListingDto: {
+            id: string;
+            title: string;
+            images: string[];
+            nightPrice: number;
+            location: components["schemas"]["FavoriteListingLocationDto"];
+            ratingAvg: number;
+            ratingCount: number;
+        };
+        FavoriteListingResponseDto: {
+            listing: components["schemas"]["FavoriteListingDto"];
+        };
+        IsFavoriteResponseDto: {
+            isFavorite: boolean;
+        };
+        FavoriteActionResponseDto: {
+            success: boolean;
+        };
     };
     responses: never;
     parameters: never;
@@ -1005,6 +1075,88 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    FavoritesController_getFavorites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FavoriteListingResponseDto"][];
+                };
+            };
+        };
+    };
+    FavoritesController_isFavorite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IsFavoriteResponseDto"];
+                };
+            };
+        };
+    };
+    FavoritesController_addFavorite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FavoriteActionResponseDto"];
+                };
+            };
+        };
+    };
+    FavoritesController_deleteFavorite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FavoriteActionResponseDto"];
+                };
             };
         };
     };

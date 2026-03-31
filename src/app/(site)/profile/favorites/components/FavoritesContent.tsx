@@ -1,7 +1,7 @@
 "use client";
 
+import { FavoriteListings } from "@/lib/api/favorites/favorites.schema";
 import { deleteFavorite } from "@/lib/api/server/endpoints/favorites";
-import { FavoriteWithListing } from "@/lib/types/favorites";
 import { useRouter } from "nextjs-toploader/app";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -10,10 +10,10 @@ import { EmptyState } from "../../components/EmptyState";
 import { SearchBar } from "../../components/SearchBar";
 import { FavoriteCard } from "./FavoriteCard";
 
-export function FavoritesContent({ favorites }: { favorites: FavoriteWithListing[] }) {
+export function FavoritesContent({ favorites }: { favorites: FavoriteListings }) {
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
-  const [optimisticFavorites, setOptimisticFavorites] = useState<FavoriteWithListing[]>([]);
+  const [optimisticFavorites, setOptimisticFavorites] = useState<FavoriteListings>([]);
 
   useEffect(() => {
     setOptimisticFavorites(
@@ -21,12 +21,12 @@ export function FavoritesContent({ favorites }: { favorites: FavoriteWithListing
         (favorite) =>
           favorite.listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           favorite.listing.location?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          favorite.listing.location?.formatted?.toLowerCase().includes(searchTerm.toLowerCase()),
+          favorite.listing.location?.state?.toLowerCase().includes(searchTerm.toLowerCase()),
       ),
     );
   }, [searchTerm, favorites]);
 
-  const handleRemoveFavorite = async (listingId: number) => {
+  const handleRemoveFavorite = async (listingId: string) => {
     const backupFavorites = optimisticFavorites;
     setOptimisticFavorites(optimisticFavorites.filter((favorite) => favorite.listing.id !== listingId));
     try {
@@ -41,7 +41,7 @@ export function FavoritesContent({ favorites }: { favorites: FavoriteWithListing
     }
   };
 
-  const handleViewListing = (listingId: number) => {
+  const handleViewListing = (listingId: string) => {
     router.push(`/listing/${listingId}`);
   };
 
@@ -55,7 +55,7 @@ export function FavoritesContent({ favorites }: { favorites: FavoriteWithListing
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {optimisticFavorites.map((favorite) => (
-            <FavoriteCard key={favorite.id} favorite={favorite} onViewListing={handleViewListing} onRemoveFavorite={handleRemoveFavorite} />
+            <FavoriteCard key={favorite.listing.id} favorite={favorite} onViewListing={handleViewListing} onRemoveFavorite={handleRemoveFavorite} />
           ))}
         </div>
       )}

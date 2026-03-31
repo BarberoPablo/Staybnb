@@ -1,3 +1,5 @@
+"use server";
+
 import { apiClient } from "../client";
 import { MapCoordinates } from "../server/types";
 import { ParsedFilters, parseFiltersToQuery } from "../server/utils";
