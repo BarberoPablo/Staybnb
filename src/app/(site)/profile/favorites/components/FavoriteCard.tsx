@@ -1,12 +1,12 @@
+import { FavoriteListing } from "@/lib/api/favorites/favorites.schema";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { IoEye, IoLocation, IoStar, IoTrash } from "react-icons/io5";
-import { FavoriteWithListing } from "@/lib/types/favorites";
 
 interface FavoriteCardProps {
-  favorite: FavoriteWithListing;
-  onViewListing: (listingId: number) => void;
-  onRemoveFavorite: (listingId: number) => void;
+  favorite: FavoriteListing;
+  onViewListing: (listingId: string) => void;
+  onRemoveFavorite: (listingId: string) => void;
 }
 
 export function FavoriteCard({ favorite, onViewListing, onRemoveFavorite }: FavoriteCardProps) {
@@ -41,7 +41,7 @@ export function FavoriteCard({ favorite, onViewListing, onRemoveFavorite }: Favo
           <h3 className="font-semibold text-myGrayDark text-lg mb-1 line-clamp-1">{favorite.listing.title}</h3>
           <div className="flex items-center gap-1 text-myGray text-sm">
             <IoLocation className="w-4 h-4" />
-            {favorite.listing.location?.city || favorite.listing.location?.formatted || "Location not available"}
+            {`${favorite.listing.location?.city}, ${favorite.listing.location?.state}` || "Location not available"}
           </div>
         </div>
 
@@ -49,9 +49,9 @@ export function FavoriteCard({ favorite, onViewListing, onRemoveFavorite }: Favo
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <IoStar className="w-4 h-4 text-yellow-400 fill-current" />
-            <span className="font-medium text-myGrayDark">{favorite.listing.score?.value ? Number(favorite.listing.score.value).toFixed(1) : "N/A"}</span>
+            <span className="font-medium text-myGrayDark">{favorite.listing.ratingAvg ?? "N/A"}</span>
           </div>
-          <span className="text-sm text-myGray">({favorite.listing.score?.reviews?.length || 0} reviews)</span>
+          <span className="text-sm text-myGray">({favorite.listing.ratingCount ?? 0} reviews)</span>
         </div>
 
         {/* Actions */}

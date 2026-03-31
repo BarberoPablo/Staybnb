@@ -13,15 +13,9 @@ export const metadata = generateSEOMetadata({
 
 export default async function FavoritesSection() {
   try {
-    const result = await getFavorites();
+    const favorites = await getFavorites();
 
-    if (!result.success || !result.data) {
-      throw new Error(result.message || "Failed to load favorites");
-    }
-
-    const favorites = result.data;
-
-    if (favorites.length === 0) {
+    if (favorites && favorites.length === 0) {
       return (
         <div className="space-y-6">
           <PageHeader title="My Favorites" description="Your saved places and dream destinations" />

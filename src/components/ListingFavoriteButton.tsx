@@ -1,9 +1,9 @@
 "use client";
 
-import { createFavorite, deleteFavorite, getFavorites } from "@/lib/api/server/endpoints/favorites";
 import { useUser } from "@/hooks/useUser";
+import { createFavorite, deleteFavorite, isFavorite as fetchIsFavorite } from "@/lib/api/server/endpoints/favorites";
+import { useEffect, useState } from "react";
 import { IoHeart } from "react-icons/io5";
-import { useState, useEffect } from "react";
 
 interface ListingFavoriteButtonProps {
   listingId: string;
@@ -24,11 +24,8 @@ export function ListingFavoriteButton({ listingId, className = "" }: ListingFavo
 
     const checkFavorite = async () => {
       try {
-        const { success, data } = await getFavorites();
-        if (success && data) {
-          const isFav = data.some((fav) => fav.listingId === listingId);
-          setIsFavorited(isFav);
-        }
+        const { isFavorite } = await fetchIsFavorite(listingId);
+        setIsFavorited(isFavorite);
       } catch (error) {
         console.error("Error checking favorite:", error);
       } finally {
@@ -51,8 +48,8 @@ export function ListingFavoriteButton({ listingId, className = "" }: ListingFavo
       if (previousState) {
         await deleteFavorite(listingId);
       } else {
-        const { success, data } = await createFavorite(listingId);
-        if (!success || !data) {
+        const { success } = await createFavorite(listingId);
+        if (!success) {
           throw new Error("Failed to create favorite");
         }
       }

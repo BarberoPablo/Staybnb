@@ -1,3 +1,5 @@
+"use server";
+
 import { apiClient } from "../client";
 import { Amenity, AmenitySchema } from "./amenities.schema";
 

@@ -10,18 +10,11 @@ import { NotFoundError } from "../errors";
 
 export async function getProfile() {
   try {
-    console.log("[AUTH] start");
     const supabase = await createClient();
-
     const {
       data: { user },
       error: authErr,
     } = await supabase.auth.getUser();
-
-    console.log("[AUTH] getUser result", {
-      hasUser: !!user,
-      userId: user?.id,
-    });
 
     if (authErr || !user) {
       console.error("Auth error:", authErr, user);
@@ -32,10 +25,6 @@ export async function getProfile() {
       where: {
         id: user.id,
       },
-    });
-
-    console.log("[AUTH] getProfile result", {
-      profile,
     });
 
     if (!profile) {

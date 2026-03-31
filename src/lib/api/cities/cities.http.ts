@@ -1,3 +1,5 @@
+"use server";
+
 import { apiClient } from "../client";
 import { PopularDestinationSchema } from "./cities.schema";
 
