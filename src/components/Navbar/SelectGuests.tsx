@@ -1,7 +1,7 @@
 "use client";
 
+import { LISTING_GUESTS } from "@/lib/api/listings/listings.schema";
 import { Guests } from "@/lib/types";
-import { listingGuests } from "@/lib/utils";
 import React from "react";
 
 interface SelectGuestsProps {
@@ -21,7 +21,7 @@ export default function SelectGuests({ guests, setGuests }: SelectGuestsProps) {
   return (
     <div className="flex flex-col flex-1 w-full">
       <div className="space-y-3 w-full overflow-y-auto max-h-72">
-        {listingGuests.map((type) => (
+        {LISTING_GUESTS.map((type) => (
           <div key={type} className="flex items-center justify-between w-full p-3 bg-white rounded-lg border border-gray-200">
             <div className="flex items-center gap-3">
               <label className="capitalize font-medium text-myGrayDark min-w-[60px]">{type}</label>

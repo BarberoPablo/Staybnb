@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import * as fs from "fs";
 import * as path from "path";
 import { AMENITY_ICON_MAPPINGS } from "./amenity-icon-mappings";
+import { getAmenities } from "../src/lib/api/server/endpoints/amenities";
 
 const prisma = new PrismaClient();
 
@@ -9,9 +10,7 @@ async function generateAmenitiesConstants() {
   try {
     console.log("Fetching amenities from database...");
 
-    const amenities = await prisma.amenities.findMany({
-      orderBy: { id: "asc" },
-    });
+    const amenities = await getAmenities();
 
     console.log(`Found ${amenities.length} amenities`);
 

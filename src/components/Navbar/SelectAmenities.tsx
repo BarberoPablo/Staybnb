@@ -20,19 +20,22 @@ export default function SelectAmenities({ displaySelected = true, selectedAmenit
         setSelectedAmenities([...selectedAmenities, amenityId]);
       }
     },
-    [selectedAmenities, setSelectedAmenities]
+    [selectedAmenities, setSelectedAmenities],
   );
 
   // Memoize the grouped amenities to prevent recalculation on every render
   const amenitiesByCategory = useMemo(() => {
-    return AMENITIES.reduce((acc, amenity) => {
-      const category = amenity.category;
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(amenity);
-      return acc;
-    }, {} as Record<string, Array<(typeof AMENITIES)[number]>>);
+    return AMENITIES.reduce(
+      (acc, amenity) => {
+        const category = amenity.category;
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(amenity);
+        return acc;
+      },
+      {} as Record<string, Array<(typeof AMENITIES)[number]>>,
+    );
   }, []);
 
   // Memoize category labels to prevent object recreation
@@ -47,8 +50,8 @@ export default function SelectAmenities({ displaySelected = true, selectedAmenit
         entertainment: "Entertainment",
         security: "Security",
         activities: "Activities",
-      } as Record<string, string>),
-    []
+      }) as Record<string, string>,
+    [],
   );
 
   return (

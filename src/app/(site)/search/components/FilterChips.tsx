@@ -58,7 +58,7 @@ export function FilterChips({ city, filters, onRemoveFilter }: FilterChipsProps)
   // Amenities chips
   if (filters.amenities && filters.amenities.length > 0) {
     filters.amenities.forEach((amenityId) => {
-      const amenity = AMENITIES.find((a) => a.id === parseInt(amenityId));
+      const amenity = AMENITIES.find((a) => a.id === amenityId);
       if (amenity) {
         chips.push({
           type: "amenity",
