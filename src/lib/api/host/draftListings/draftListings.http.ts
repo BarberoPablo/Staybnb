@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { apiClient } from "../../client";
-import { DraftListing, DraftListingSchema } from "./draftListings.schema";
+import { DraftListing, DraftListings, DraftListingSchema, DraftListingsSchema } from "./draftListings.schema";
 
 export async function fetchDraftListing(listingId: string): Promise<DraftListing> {
   const cookieStore = await cookies();
@@ -22,7 +22,7 @@ export async function fetchDraftListing(listingId: string): Promise<DraftListing
 
   return DraftListingSchema.parse(data);
 }
-export async function fetchDraftListings() {
+export async function fetchDraftListings(): Promise<DraftListings> {
   const cookieStore = await cookies();
 
   const { data, error } = await apiClient.GET("/host/draft-listings", {
@@ -35,5 +35,5 @@ export async function fetchDraftListings() {
     throw new Error("Failed to fetch featured listings");
   }
 
-  return data;
+  return DraftListingsSchema.parse(data);
 }

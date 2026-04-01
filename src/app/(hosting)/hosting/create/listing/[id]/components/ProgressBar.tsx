@@ -1,6 +1,6 @@
 "use client";
 
-import { updateDraftListing } from "@/lib/api/server/endpoints/daft-listings";
+import { legacyUpdateDraftListing } from "@/lib/api/server/endpoints/daft-listings";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { getStepFields, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
@@ -85,7 +85,7 @@ export default function ProgressBar({ listingId }: { listingId: string }) {
   const handleSaveAndExit = async () => {
     try {
       const formData = getCurrentFormData();
-      const { success } = await updateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
+      const { success } = await legacyUpdateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
       if (success) {
         toast.success("Draft saved successfully!");
         router.push("/hosting/create");

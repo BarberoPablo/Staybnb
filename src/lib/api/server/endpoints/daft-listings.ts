@@ -1,6 +1,6 @@
 "use server";
 
-import { parseCreateListingToDB, parseDraftListingFromDB, parseDraftListingToCreateListingDB } from "@/lib/parsers/draftListings";
+import { parseCreateListingToDB, parseDraftListingToCreateListingDB } from "@/lib/parsers/draftListings";
 import { prisma } from "@/lib/prisma";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { DraftListingDB } from "@/lib/types/draftListing";
@@ -87,7 +87,7 @@ export async function createDraftListing() {
   }
 }
 
-export async function updateDraftListing(id: number, data: Partial<CreateListingForm>) {
+export async function legacyUpdateDraftListing(id: number, data: Partial<CreateListingForm>) {
   const supabase = await createClient();
 
   const {
@@ -119,53 +119,6 @@ export async function updateDraftListing(id: number, data: Partial<CreateListing
   } catch (error) {
     console.error("Error updating draft listing", error);
     throw new NotFoundError("Failed to update draft listing");
-  }
-}
-
-export async function legacyGetDraftListing(id?: number) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-    error: authErr,
-  } = await supabase.auth.getUser();
-
-  if (authErr || !user) {
-    console.error("Auth error:", authErr, user);
-    throw new NotFoundError();
-  }
-
-  try {
-    if (id) {
-      const draftListing = await prisma.draft_listings.findFirst({
-        where: {
-          id: id,
-          host_id: user.id,
-        },
-      });
-
-      if (!draftListing) {
-        throw new NotFoundError("Draft listing not found");
-      }
-
-      return [parseDraftListingFromDB(draftListing as unknown as DraftListingDB)];
-    } else {
-      const draftListings = await prisma.draft_listings.findMany({
-        where: {
-          id: id,
-          host_id: user.id,
-        },
-      });
-
-      if (!draftListings || draftListings.length === 0) {
-        return [];
-      }
-
-      return draftListings.map((draft) => parseDraftListingFromDB(draft as unknown as DraftListingDB));
-    }
-  } catch (error) {
-    console.error("Error fetching draft listing", error);
-    throw new NotFoundError("Failed to fetch draft listing");
   }
 }
 
@@ -241,7 +194,7 @@ export async function completeDraftListing(id: number) {
   }
 }
 
-export async function deleteDraftListing(id: number) {
+export async function deleteDraftListing(id: string) {
   const supabase = await createClient();
 
   const {

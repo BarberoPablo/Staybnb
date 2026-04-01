@@ -1,6 +1,6 @@
 "use client";
 
-import { completeDraftListing, updateDraftListing } from "@/lib/api/server/endpoints/daft-listings";
+import { completeDraftListing, legacyUpdateDraftListing } from "@/lib/api/server/endpoints/daft-listings";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { getStepFields, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
@@ -34,7 +34,7 @@ export default function NavigationButtons({ listingId }: { listingId: string }) 
 
       try {
         const formData = getCurrentFormData();
-        await updateDraftListing(listingId, { ...formData, currentStep: nextStepIndex });
+        await legacyUpdateDraftListing(listingId, { ...formData, currentStep: nextStepIndex });
         router.push(`/hosting/create/listing/${listingId}/${hostingSteps[nextStepIndex]}`);
       } catch (error) {
         console.error("Error saving draft:", error);
@@ -55,7 +55,7 @@ export default function NavigationButtons({ listingId }: { listingId: string }) 
         markStepAsVisited(currentStepIndex);
         const formData = getCurrentFormData();
         const nextStepIndex = currentStepIndex + 1;
-        const { success } = await updateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
+        const { success } = await legacyUpdateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
         if (success) {
           router.push(`/hosting/create/listing/${listingId}/${hostingSteps[nextStepIndex]}`);
         }
@@ -70,7 +70,7 @@ export default function NavigationButtons({ listingId }: { listingId: string }) 
     setIsCompleting(true);
     try {
       const formData = getCurrentFormData();
-      await updateDraftListing(listingId, formData);
+      await legacyUpdateDraftListing(listingId, formData);
 
       const isValid = await trigger();
       if (!isValid) {
