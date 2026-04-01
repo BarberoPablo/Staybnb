@@ -1,4 +1,5 @@
-import { LISTING_GUESTS, ListingDetails } from "@/lib/api/listings/listings.schema";
+import { ListingDetails } from "@/lib/api/listings/listings.schema";
+import { LISTING_GUESTS } from "@/lib/api/shared/listing/listing.fragments.schema";
 import { Guests, UnavailableDates } from "@/lib/types";
 import { validateDateRange } from "@/lib/utils";
 import { format, isSameDay } from "date-fns";

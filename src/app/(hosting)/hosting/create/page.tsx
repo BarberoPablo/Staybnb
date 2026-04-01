@@ -1,4 +1,4 @@
-import { getDraftListing } from "@/lib/api/server/endpoints/daft-listings";
+import { legacyGetDraftListing } from "@/lib/api/server/endpoints/daft-listings";
 import { generateSEOMetadata } from "@/lib/seo";
 import CreateListingsMenu from "./components/CreateListingsMenu";
 
@@ -9,7 +9,7 @@ export const metadata = generateSEOMetadata({
 });
 
 export default async function CreateLitingPage() {
-  const draftListings = await getDraftListing();
+  const draftListings = await legacyGetDraftListing();
 
   return <CreateListingsMenu draftListings={draftListings} />;
 }

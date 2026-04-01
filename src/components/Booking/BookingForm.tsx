@@ -2,8 +2,9 @@
 
 import Tooltip from "@/components/Tooltip";
 import { useQueryParams } from "@/hooks/useQueryParams";
-import { LISTING_GUESTS, ListingDetails } from "@/lib/api/listings/listings.schema";
+import { ListingDetails } from "@/lib/api/listings/listings.schema";
 import { parseFilters } from "@/lib/api/server/utils";
+import { LISTING_GUESTS } from "@/lib/api/shared/listing/listing.fragments.schema";
 import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
 import { buildListingParams, calculateNights, getDisabledDates, getListingPromotion, normalizeDate } from "@/lib/utils";
 import { useRouter } from "nextjs-toploader/app";

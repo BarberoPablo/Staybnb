@@ -1,7 +1,7 @@
 import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { SearchParams } from "next/dist/server/request/search-params";
-import { LISTING_GUESTS, Promotion } from "./api/listings/listings.schema";
+import { LISTING_GUESTS, Promotion } from "./api/shared/listing/listing.fragments.schema";
 import { Guests, ListingSearchParams } from "./types";
 import { LegacyPromotion, Listing, ListingDB, Location, PromotionDB } from "./types/listing";
 import { CreateProfile, UpdateProfile } from "./types/profile";

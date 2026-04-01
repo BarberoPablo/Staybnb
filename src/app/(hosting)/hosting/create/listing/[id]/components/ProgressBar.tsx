@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { FaCheck, FaSave, FaTimes } from "react-icons/fa";
 import { useListingFormContext } from "./CreateListingFormProvider";
 
-export default function ProgressBar({ listingId }: { listingId: number }) {
+export default function ProgressBar({ listingId }: { listingId: string }) {
   const pathname = usePathname();
   const router = useRouter();
   const { getValues } = useFormContext<CreateListingForm>();

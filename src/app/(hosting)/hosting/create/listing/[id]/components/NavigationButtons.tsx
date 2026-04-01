@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { FaArrowLeft, FaArrowRight, FaSpinner } from "react-icons/fa";
 import { useListingFormContext } from "./CreateListingFormProvider";
 
-export default function NavigationButtons({ listingId }: { listingId: number }) {
+export default function NavigationButtons({ listingId }: { listingId: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const { trigger, getValues } = useFormContext<CreateListingForm>();

@@ -15,7 +15,7 @@ import ProgressBar from "./ProgressBar";
 interface CreateListingFormProviderProps {
   children: React.ReactNode;
   defaultValues: Partial<CreateListingForm>;
-  listingId: number;
+  listingId: string;
 }
 
 interface ListingFormContextType {
