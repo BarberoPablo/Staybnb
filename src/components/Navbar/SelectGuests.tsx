@@ -1,8 +1,7 @@
 "use client";
 
-import { LISTING_GUESTS } from "@/lib/api/listings/listings.schema";
+import { LISTING_GUESTS } from "@/lib/api/shared/listing/listing.fragments.schema";
 import { Guests } from "@/lib/types";
-import React from "react";
 
 interface SelectGuestsProps {
   guests: Record<Guests, number>;

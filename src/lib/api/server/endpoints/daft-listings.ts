@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { DraftListingDB } from "@/lib/types/draftListing";
 import { createClient } from "../../../supabase/server";
+import { fetchDraftListing, fetchDraftListings } from "../../host/draftListings/draftListings.http";
 import { NotFoundError } from "../errors";
 
 export async function createDraftListing() {
@@ -121,7 +122,7 @@ export async function updateDraftListing(id: number, data: Partial<CreateListing
   }
 }
 
-export async function getDraftListing(id?: number) {
+export async function legacyGetDraftListing(id?: number) {
   const supabase = await createClient();
 
   const {
@@ -166,6 +167,14 @@ export async function getDraftListing(id?: number) {
     console.error("Error fetching draft listing", error);
     throw new NotFoundError("Failed to fetch draft listing");
   }
+}
+
+export async function getDraftListing(listingId: string) {
+  return fetchDraftListing(listingId);
+}
+
+export async function getDraftListings() {
+  return fetchDraftListings();
 }
 
 export async function completeDraftListing(id: number) {

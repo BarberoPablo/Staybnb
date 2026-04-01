@@ -1,11 +1,12 @@
 import { z } from "zod";
+import { PRIVACY_TYPES, PROPERTY_TYPES } from "../api/shared/listing/listing.fragments.schema";
 
 // Main schema with required fields for validation
 export const createListingSchema = z.object({
-  propertyType: z.enum(["House", "Apartment", "Cabin", "Boat"], {
+  propertyType: z.enum(PROPERTY_TYPES, {
     message: "Please select a property type to continue",
   }),
-  privacyType: z.enum(["Entire", "Private", "Shared"], {
+  privacyType: z.enum(PRIVACY_TYPES, {
     message: "Please select a privacy type to continue",
   }),
   location: z.object({

@@ -6,14 +6,14 @@ export default async function CreateListingFormLayout({ params, children }: { pa
   const { id } = await params;
 
   try {
-    const draftListing = await getDraftListing(Number(id));
+    const draftListing = await getDraftListing(id);
 
-    if (!draftListing[0]) {
+    if (!draftListing) {
       redirect("/hosting");
     }
 
     return (
-      <CreateListingFormProvider listingId={Number(id)} defaultValues={draftListing[0]}>
+      <CreateListingFormProvider listingId={id} defaultValues={draftListing}>
         {children}
       </CreateListingFormProvider>
     );
