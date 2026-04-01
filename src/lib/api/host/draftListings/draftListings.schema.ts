@@ -43,4 +43,7 @@ export const DraftListingSchema = z.object({
     .optional(),
 });
 
+export const DraftListingsSchema = z.array(DraftListingSchema);
+
 export type DraftListing = z.infer<typeof DraftListingSchema>;
+export type DraftListings = z.infer<typeof DraftListingsSchema>;

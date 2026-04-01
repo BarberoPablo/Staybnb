@@ -1,7 +1,7 @@
 "use client";
 
+import { DraftListing, DraftListings } from "@/lib/api/host/draftListings/draftListings.schema";
 import { createDraftListing, deleteDraftListing } from "@/lib/api/server/endpoints/daft-listings";
-import { DraftListing } from "@/lib/types/draftListing";
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -10,9 +10,9 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaCalendarAlt, FaDollarSign, FaHome, FaMapMarkerAlt, FaPlus, FaTrash } from "react-icons/fa";
 
-export default function CreateListingsMenu({ draftListings: initialDraftListings }: { draftListings: DraftListing[] }) {
+export default function CreateListingsMenu({ draftListings: initialDraftListings }: { draftListings: DraftListings }) {
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const [draftListings, setDraftListings] = useState<DraftListing[]>(initialDraftListings);
+  const [draftListings, setDraftListings] = useState<DraftListings>(initialDraftListings);
   const router = useRouter();
 
   const handleCreateNewListing = async () => {
@@ -34,7 +34,7 @@ export default function CreateListingsMenu({ draftListings: initialDraftListings
     }
   };
 
-  const handleDeleteDraft = async (draftId: number) => {
+  const handleDeleteDraft = async (draftId: string) => {
     const originalDraftListings = [...draftListings];
     setDraftListings((prev) => prev.filter((draft) => draft.id !== draftId));
 
@@ -116,7 +116,7 @@ function DraftListingCard({
   index: number;
   isRedirecting: boolean;
   setIsRedirecting: (isRedirecting: boolean) => void;
-  onDelete: (draftId: number) => void;
+  onDelete: (draftId: string) => void;
 }) {
   const router = useRouter();
 
