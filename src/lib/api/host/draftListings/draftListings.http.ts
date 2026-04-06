@@ -17,7 +17,7 @@ export async function fetchDraftListing(listingId: string): Promise<DraftListing
   });
 
   if (error) {
-    throw new Error("Failed to fetch featured listings");
+    throw new Error("Failed to fetch draft listing");
   }
 
   return DraftListingSchema.parse(data);
@@ -32,8 +32,27 @@ export async function fetchDraftListings(): Promise<DraftListings> {
   });
 
   if (error) {
-    throw new Error("Failed to fetch featured listings");
+    throw new Error("Failed to fetch draft listings");
   }
 
   return DraftListingsSchema.parse(data);
+}
+
+export async function fetchDeleteDraftListing(id: string) {
+  const cookieStore = await cookies();
+
+  const { data, error } = await apiClient.DELETE("/host/draft-listings/{id}", {
+    params: {
+      path: { id: id },
+    },
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+  });
+
+  if (error) {
+    throw new Error("Failed to delete draft listing");
+  }
+
+  return data;
 }
