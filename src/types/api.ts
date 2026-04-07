@@ -409,7 +409,96 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         CreateProfileDto: Record<string, never>;
-        PatchDraftListingBodyDto: Record<string, never>;
+        ListingLocationDto: {
+            country: string;
+            city: string;
+            lat: number;
+            lng: number;
+            formatted: string;
+            housenumber: string;
+            street: string;
+            state: string;
+            postcode: string;
+            timezone: string;
+        };
+        ListingPromotionDto: {
+            minNights: number;
+            discountPercentage: number;
+            description: string;
+        };
+        ListingStructureDto: {
+            bedrooms: number;
+            beds: number;
+            bathrooms: number;
+            guests: number;
+        };
+        GuestLimitDto: {
+            min: number;
+            max: number;
+        };
+        ListingGuestLimitsDto: {
+            adults: components["schemas"]["GuestLimitDto"];
+            children: components["schemas"]["GuestLimitDto"];
+            infant: components["schemas"]["GuestLimitDto"];
+            pets: components["schemas"]["GuestLimitDto"];
+        };
+        DraftListingResponseDto: {
+            id: string;
+            hostId: string;
+            /** @enum {string} */
+            propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
+            location: components["schemas"]["ListingLocationDto"];
+            checkInTime: string;
+            checkOutTime: string;
+            title: string;
+            description: string;
+            nightPrice: number;
+            promotions: components["schemas"]["ListingPromotionDto"][];
+            structure: components["schemas"]["ListingStructureDto"];
+            guestLimits: components["schemas"]["ListingGuestLimitsDto"];
+            amenities: string[];
+            images: string[];
+            minCancelDays: number;
+            currentStep: number;
+            visitedSteps: number[];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        SuccessWithListingIdResponseDto: {
+            success: boolean;
+            listingId: string;
+        };
+        UpdateDraftListingDto: {
+            amenities?: string[];
+            images?: string[];
+            title?: string;
+            description?: string;
+            nightPrice?: number;
+            checkInTime?: string;
+            checkOutTime?: string;
+            minCancelDays?: number;
+            currentStep?: number;
+            visitedSteps?: number[];
+            /** @enum {string} */
+            propertyType?: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType?: "ENTIRE" | "PRIVATE" | "SHARED";
+            promotions?: components["schemas"]["ListingPromotionDto"][];
+            location?: components["schemas"]["ListingLocationDto"];
+            structure?: components["schemas"]["ListingStructureDto"];
+            guestLimits?: components["schemas"]["ListingGuestLimitsDto"];
+        };
+        PatchDraftListingBodyDto: {
+            step: number;
+            data: components["schemas"]["UpdateDraftListingDto"];
+        };
+        SuccessResponseDto: {
+            success: boolean;
+        };
         AmenityResponseDto: {
             id: string;
             name: string;
@@ -443,22 +532,6 @@ export interface components {
             listings: components["schemas"]["ListingCardDto"][];
             cityCenter?: components["schemas"]["CityCenterDto"] | null;
         };
-        ListingStructureDto: {
-            bedrooms: number;
-            beds: number;
-            bathrooms: number;
-            guests: number;
-        };
-        GuestLimitDto: {
-            min: number;
-            max: number;
-        };
-        ListingGuestLimitsDto: {
-            adults: components["schemas"]["GuestLimitDto"];
-            children: components["schemas"]["GuestLimitDto"];
-            infant: components["schemas"]["GuestLimitDto"];
-            pets: components["schemas"]["GuestLimitDto"];
-        };
         ListingDetailsHostDto: {
             id: string;
             firstName: string;
@@ -470,11 +543,6 @@ export interface components {
             score: number;
             message: string;
             imageUrl: string;
-        };
-        ListingPromotionDto: {
-            minNights: number;
-            discountPercentage: number;
-            description: string;
         };
         ListingDetailsReservationDto: {
             id: string;
@@ -633,7 +701,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["DraftListingResponseDto"][];
+                };
             };
         };
     };
@@ -646,11 +716,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            201: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["SuccessWithListingIdResponseDto"];
+                };
             };
         };
     };
@@ -669,7 +741,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["DraftListingResponseDto"];
+                };
             };
         };
     };
@@ -688,7 +762,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["SuccessResponseDto"];
+                };
             };
         };
     };
@@ -711,7 +787,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["SuccessResponseDto"];
+                };
             };
         };
     };
@@ -726,11 +804,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            201: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["SuccessWithListingIdResponseDto"];
+                };
             };
         };
     };
@@ -749,7 +829,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["SuccessResponseDto"];
+                };
             };
         };
     };

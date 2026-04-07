@@ -56,3 +56,19 @@ export async function fetchDeleteDraftListing(id: string) {
 
   return data;
 }
+
+export async function fetchCreateDraftListing() {
+  const cookieStore = await cookies();
+
+  const { data, error } = await apiClient.POST("/host/draft-listings", {
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+  });
+
+  if (error) {
+    throw new Error("Failed to create draft listing");
+  }
+
+  return data;
+}
