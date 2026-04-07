@@ -18,9 +18,9 @@ export default function CreateListingsMenu({ draftListings: initialDraftListings
   const handleCreateNewListing = async () => {
     try {
       setIsRedirecting(true);
-      const { success, id } = await createDraftListing();
+      const { success, listingId } = await createDraftListing();
       if (success) {
-        router.push(`/hosting/create/listing/${id}/${hostingSteps[0]}`);
+        router.push(`/hosting/create/listing/${listingId}/${hostingSteps[0]}`);
       } else {
         toast.error("Failed to create a new draft listing.");
       }

@@ -5,10 +5,10 @@ import { prisma } from "@/lib/prisma";
 import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { DraftListingDB } from "@/lib/types/draftListing";
 import { createClient } from "../../../supabase/server";
-import { fetchDeleteDraftListing, fetchDraftListing, fetchDraftListings } from "../../host/draftListings/draftListings.http";
+import { fetchCreateDraftListing, fetchDeleteDraftListing, fetchDraftListing, fetchDraftListings } from "../../host/draftListings/draftListings.http";
 import { NotFoundError } from "../errors";
 
-export async function createDraftListing() {
+export async function legacyCreateDraftListing() {
   const supabase = await createClient();
 
   const {
@@ -85,6 +85,10 @@ export async function createDraftListing() {
     }
     throw new NotFoundError("Failed to create draft listing");
   }
+}
+
+export async function createDraftListing() {
+  return fetchCreateDraftListing();
 }
 
 export async function legacyUpdateDraftListing(id: number, data: Partial<CreateListingForm>) {
