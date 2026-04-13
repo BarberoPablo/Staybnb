@@ -472,7 +472,7 @@ export interface components {
             success: boolean;
             listingId: string;
         };
-        UpdateDraftListingDto: {
+        PartialUpdateDraftListingDto: {
             amenities?: string[];
             images?: string[];
             title?: string;
@@ -491,10 +491,6 @@ export interface components {
             location?: components["schemas"]["ListingLocationDto"];
             structure?: components["schemas"]["ListingStructureDto"];
             guestLimits?: components["schemas"]["ListingGuestLimitsDto"];
-        };
-        PatchDraftListingBodyDto: {
-            step: number;
-            data: components["schemas"]["UpdateDraftListingDto"];
         };
         SuccessResponseDto: {
             success: boolean;
@@ -779,7 +775,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PatchDraftListingBodyDto"];
+                "application/json": components["schemas"]["PartialUpdateDraftListingDto"];
             };
         };
         responses: {

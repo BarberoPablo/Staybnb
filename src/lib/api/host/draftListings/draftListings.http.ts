@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { apiClient } from "../../client";
 import { DraftListing, DraftListings, DraftListingSchema, DraftListingsSchema } from "./draftListings.schema";
+import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 
 export async function fetchDraftListing(listingId: string): Promise<DraftListing> {
   const cookieStore = await cookies();
@@ -71,4 +72,24 @@ export async function fetchCreateDraftListing() {
   }
 
   return data;
+}
+
+export async function fetchUpdateDraftListing(id: string, data: Partial<CreateListingForm>) {
+  const cookieStore = await cookies();
+
+  const { data: responseData, error } = await apiClient.PATCH("/host/draft-listings/{id}", {
+    params: {
+      path: { id: id },
+    },
+    body: data,
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+  });
+
+  if (error) {
+    throw new Error("Failed to update draft listing");
+  }
+
+  return responseData;
 }

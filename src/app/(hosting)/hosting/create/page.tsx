@@ -1,4 +1,4 @@
-import { getDraftListings } from "@/lib/api/server/endpoints/daft-listings";
+import { getDraftListings } from "@/lib/api/server/endpoints/host/daft-listings";
 import { generateSEOMetadata } from "@/lib/seo";
 import CreateListingsMenu from "./components/CreateListingsMenu";
 

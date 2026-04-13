@@ -1,7 +1,7 @@
 "use client";
 
 import { DraftListing, DraftListings } from "@/lib/api/host/draftListings/draftListings.schema";
-import { createDraftListing, deleteDraftListing } from "@/lib/api/server/endpoints/daft-listings";
+import { createDraftListing, deleteDraftListing } from "@/lib/api/server/endpoints/host/daft-listings";
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
 import Image from "next/image";

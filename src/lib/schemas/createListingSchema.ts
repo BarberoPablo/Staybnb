@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { PRIVACY_TYPES, PROPERTY_TYPES } from "../api/shared/listing/listing.fragments.schema";
 
-// Main schema with required fields for validation
+// Schema for completing a Draft Listing before creating a Listing.
 export const createListingSchema = z.object({
   propertyType: z.enum(PROPERTY_TYPES, {
     message: "Please select a property type to continue",
@@ -43,7 +43,7 @@ export const createListingSchema = z.object({
     pets: z.object({ min: z.number().min(0), max: z.number().min(0) }),
   }),
   currentStep: z.number().min(0),
-  visitedSteps: z.array(z.number()).optional(),
+  visitedSteps: z.array(z.number()),
 });
 
 // Partial schema for initialization (everything optional)

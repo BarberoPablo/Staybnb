@@ -1,11 +1,13 @@
 import { z } from "zod";
+import { PRIVACY_TYPES, PROPERTY_TYPES } from "../api/shared/listing/listing.fragments.schema";
 
+// Schema for editing an existing Listing. All fields are required for validation when saving changes.
 export const editListingSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   nightPrice: z.number().min(0, "Price must be positive"),
-  propertyType: z.enum(["House", "Apartment", "Cabin", "Boat"]),
-  privacyType: z.enum(["Entire", "Private", "Shared"]),
+  propertyType: z.enum(PROPERTY_TYPES),
+  privacyType: z.enum(PRIVACY_TYPES),
   checkInTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid check-in time (use HH:MM)"),
   checkOutTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Invalid check-in time (use HH:MM)"),
   minCancelDays: z.number().min(0, "Must be 0 or greater"),
