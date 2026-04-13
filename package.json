@@ -24,7 +24,13 @@
     "populate:cities": "tsx scripts/populate-cities.ts",
     "fix:reservation:times": "tsx scripts/fix-reservation-times.ts",
     "test:email": "tsx scripts/test-email.ts",
-    "generate:api": "openapi-typescript http://localhost:3001/docs-json -o src/types/api.ts"
+    "generate:api": "openapi-typescript http://localhost:3001/docs-json -o src/types/api.ts",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "@dnd-kit/core": "6.3.1",
@@ -84,6 +90,7 @@
     "dotenv-cli": "10.0.0",
     "eslint": "9.0.0",
     "eslint-config-next": "15.3.4",
+    "husky": "^9.1.7",
     "prisma": "6.15.0",
     "supabase": "2.30.4",
     "tsx": "^4.20.5",

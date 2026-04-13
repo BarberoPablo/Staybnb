@@ -14,22 +14,22 @@ const propertyTypes: {
 }[] = [
   {
     icon: <PiHouseLineLight className="w-12 h-12" />,
-    name: "House",
+    name: "HOUSE",
     description: "A standalone house",
   },
   {
     icon: <PiBuildingApartmentLight className="w-12 h-12" />,
-    name: "Apartment",
+    name: "APARTMENT",
     description: "A unit in a building",
   },
   {
     icon: <PiSailboatLight className="w-12 h-12" />,
-    name: "Boat",
+    name: "BOAT",
     description: "A boat or yacht",
   },
   {
     icon: <MdCabin className="w-12 h-12" />,
-    name: "Cabin",
+    name: "CABIN",
     description: "A cabin or cottage",
   },
 ];

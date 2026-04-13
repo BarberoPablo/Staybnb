@@ -1,0 +1,2 @@
+To avoid pre-commit:
+git commit --no-verify

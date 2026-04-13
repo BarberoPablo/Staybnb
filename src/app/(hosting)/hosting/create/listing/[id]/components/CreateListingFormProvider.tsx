@@ -1,6 +1,6 @@
 "use client";
 
-import { legacyUpdateDraftListing } from "@/lib/api/server/endpoints/daft-listings";
+import { updateDraftListing } from "@/lib/api/server/endpoints/host/daft-listings";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
 import { hostingSteps } from "@/lib/types/hostingSteps";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -84,7 +84,7 @@ export default function CreateListingFormProvider({ children, defaultValues, lis
         setValue("currentStep", stepIndex);
 
         const formData = getCurrentFormData();
-        await legacyUpdateDraftListing(listingId, {
+        await updateDraftListing(listingId, {
           ...formData,
           currentStep: stepIndex,
         });

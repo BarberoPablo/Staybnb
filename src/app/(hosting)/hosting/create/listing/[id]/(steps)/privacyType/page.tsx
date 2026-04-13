@@ -14,19 +14,19 @@ const privacyTypes: {
 }[] = [
   {
     icon: <PiHouseLineLight className="w-12 h-12" />,
-    name: "Entire",
+    name: "ENTIRE",
     title: "An entire place",
     description: "Guests have the whole place to themselves.",
   },
   {
     icon: <PiDoorOpenLight className="w-12 h-12" />,
-    name: "Private",
+    name: "PRIVATE",
     title: "A room",
     description: "Guests have their own room in a home, plus access to shared spaces.",
   },
   {
     icon: <FaPeopleRoof className="w-12 h-12" />,
-    name: "Shared",
+    name: "SHARED",
     title: "A shared room in a hostel",
     description: "Guests sleep in a shared room in a professionally managed hostel with staff onsite 24/7.",
   },

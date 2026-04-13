@@ -11,11 +11,6 @@ export async function createClient() {
         return cookieStore.getAll();
       },
       setAll(cookiesToSet) {
-        if (typeof window !== "undefined") {
-          // In the client, do not modify cookies
-          console.warn("Tried to set cookies from client — ignoring.");
-          return;
-        }
         try {
           cookiesToSet.forEach(({ name, value, options }) => {
             cookieStore.set(name, value, {
@@ -26,8 +21,9 @@ export async function createClient() {
               sameSite: "lax",
             });
           });
-        } catch (err) {
-          console.error("Error setting cookies:", err);
+        } catch {
+          // expected in Server Components
+          // middleware will handle session refresh
         }
       },
     },

@@ -1,4 +1,4 @@
-import { getDraftListing } from "@/lib/api/server/endpoints/daft-listings";
+import { getDraftListing } from "@/lib/api/server/endpoints/host/daft-listings";
 import { redirect } from "next/navigation";
 import CreateListingFormProvider from "./components/CreateListingFormProvider";
 
