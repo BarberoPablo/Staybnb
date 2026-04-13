@@ -2,7 +2,7 @@
 
 import { completeDraftListing, updateDraftListing } from "@/lib/api/server/endpoints/host/daft-listings";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
-import { getStepFields, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
+import { getStepFields, getStepPayload, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
@@ -16,7 +16,7 @@ export default function NavigationButtons({ listingId }: { listingId: string }) 
   const router = useRouter();
   const pathname = usePathname();
   const { trigger, getValues } = useFormContext<CreateListingForm>();
-  const { markStepAsVisited, getCurrentFormData, isRedirecting } = useListingFormContext();
+  const { markStepAsVisited, isRedirecting } = useListingFormContext();
   const [isCompleting, setIsCompleting] = useState(false);
 
   const currentStepIndex = hostingSteps.findIndex((step) => pathname.includes(step));
@@ -33,8 +33,13 @@ export default function NavigationButtons({ listingId }: { listingId: string }) 
       const nextStepIndex = currentStepIndex - 1;
 
       try {
-        const formData = getCurrentFormData();
-        await updateDraftListing(listingId, { ...formData, currentStep: nextStepIndex });
+        const stepData = getStepPayload(currentStepIndex, getValues);
+        const { success } = await updateDraftListing(listingId, stepData);
+
+        if (!success) {
+          throw new Error("Update failed");
+        }
+
         router.push(`/hosting/create/listing/${listingId}/${hostingSteps[nextStepIndex]}`);
       } catch (error) {
         console.error("Error saving draft:", error);
@@ -53,11 +58,14 @@ export default function NavigationButtons({ listingId }: { listingId: string }) 
     if (isValid) {
       try {
         markStepAsVisited(currentStepIndex);
-        const formData = getCurrentFormData();
         const nextStepIndex = currentStepIndex + 1;
-        const { success } = await updateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
+        const stepData = getStepPayload(currentStepIndex, getValues);
+        const { success } = await updateDraftListing(listingId, stepData);
+
         if (success) {
           router.push(`/hosting/create/listing/${listingId}/${hostingSteps[nextStepIndex]}`);
+        } else {
+          throw new Error("Update failed");
         }
       } catch (error) {
         console.error("Error saving draft:", error);
@@ -69,9 +77,12 @@ export default function NavigationButtons({ listingId }: { listingId: string }) 
   const handleComplete = async () => {
     setIsCompleting(true);
     try {
-      const formData = getCurrentFormData();
-      await updateDraftListing(listingId, formData);
+      const stepData = getStepPayload(currentStepIndex, getValues);
+      const { success } = await updateDraftListing(listingId, stepData);
 
+      if (!success) {
+        throw new Error("Update failed");
+      }
       const isValid = await trigger();
       if (!isValid) {
         const formValues = getValues();

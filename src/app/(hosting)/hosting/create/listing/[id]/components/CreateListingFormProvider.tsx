@@ -2,7 +2,7 @@
 
 import { updateDraftListing } from "@/lib/api/server/endpoints/host/daft-listings";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
-import { hostingSteps } from "@/lib/types/hostingSteps";
+import { getStepPayload, hostingSteps } from "@/lib/types/hostingSteps";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
@@ -20,7 +20,6 @@ interface CreateListingFormProviderProps {
 
 interface ListingFormContextType {
   markStepAsVisited: (stepIndex: number) => void;
-  getCurrentFormData: () => Partial<CreateListingForm>;
   handleStepClick: (stepIndex: number) => Promise<void>;
   isRedirecting: boolean;
 }
@@ -64,16 +63,6 @@ export default function CreateListingFormProvider({ children, defaultValues, lis
     [getValues, setValue],
   );
 
-  const getCurrentFormData = useCallback((): Partial<CreateListingForm> => {
-    const allValues = getValues();
-    const schemaFields = createListingSchema.keyof().options as (keyof CreateListingForm)[];
-    const formFields = schemaFields.filter((field) => !["id", "hostId", "createdAt", "updatedAt"].includes(field as string));
-
-    return Object.fromEntries(
-      formFields.filter((field) => allValues[field] !== undefined).map((field) => [field, allValues[field]]),
-    ) as Partial<CreateListingForm>;
-  }, [getValues]);
-
   const handleStepClick = useCallback(
     async (stepIndex: number) => {
       try {
@@ -83,11 +72,12 @@ export default function CreateListingFormProvider({ children, defaultValues, lis
         markStepAsVisited(currentStepIndex);
         setValue("currentStep", stepIndex);
 
-        const formData = getCurrentFormData();
-        await updateDraftListing(listingId, {
-          ...formData,
-          currentStep: stepIndex,
-        });
+        const stepData = getStepPayload(currentStepIndex, getValues);
+        const response = await updateDraftListing(listingId, stepData);
+
+        if (!response?.success) {
+          throw new Error("Update failed");
+        }
 
         const stepPath = hostingSteps[stepIndex];
         router.push(`/hosting/create/listing/${listingId}/${stepPath}`);
@@ -97,12 +87,11 @@ export default function CreateListingFormProvider({ children, defaultValues, lis
         setIsRedirecting(false); // Reset immediately on error since navigation won't happen
       }
     },
-    [markStepAsVisited, getCurrentFormData, listingId, router, setValue, pathname],
+    [markStepAsVisited, listingId, router, setValue, pathname, getValues],
   );
 
   const contextValue: ListingFormContextType = {
     markStepAsVisited,
-    getCurrentFormData,
     handleStepClick,
     isRedirecting,
   };
