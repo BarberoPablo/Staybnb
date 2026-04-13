@@ -1,8 +1,8 @@
 "use server";
 
+import { PartialUpdateDraftListing } from "@/lib/api/host/draftListings/draftListings.schema";
 import { parseDraftListingToCreateListingDB } from "@/lib/parsers/draftListings";
 import { prisma } from "@/lib/prisma";
-import { CreateListingForm } from "@/lib/schemas/createListingSchema";
 import { DraftListingDB } from "@/lib/types/draftListing";
 import { createClient } from "../../../../supabase/server";
 import {
@@ -18,7 +18,7 @@ export async function createDraftListing() {
   return fetchCreateDraftListing();
 }
 
-export async function updateDraftListing(id: string, data: Partial<CreateListingForm>) {
+export async function updateDraftListing(id: string, data: PartialUpdateDraftListing) {
   return fetchUpdateDraftListing(id, data);
 }
 

@@ -2,8 +2,7 @@
 
 import { cookies } from "next/headers";
 import { apiClient } from "../../client";
-import { DraftListing, DraftListings, DraftListingSchema, DraftListingsSchema } from "./draftListings.schema";
-import { CreateListingForm } from "@/lib/schemas/createListingSchema";
+import { DraftListing, DraftListings, DraftListingSchema, DraftListingsSchema, PartialUpdateDraftListing } from "./draftListings.schema";
 
 export async function fetchDraftListing(listingId: string): Promise<DraftListing> {
   const cookieStore = await cookies();
@@ -74,7 +73,7 @@ export async function fetchCreateDraftListing() {
   return data;
 }
 
-export async function fetchUpdateDraftListing(id: string, data: Partial<CreateListingForm>) {
+export async function fetchUpdateDraftListing(id: string, data: PartialUpdateDraftListing) {
   const cookieStore = await cookies();
 
   const { data: responseData, error } = await apiClient.PATCH("/host/draft-listings/{id}", {

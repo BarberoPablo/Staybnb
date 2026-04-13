@@ -2,7 +2,7 @@
 
 import { updateDraftListing } from "@/lib/api/server/endpoints/host/daft-listings";
 import { CreateListingForm, createListingSchema } from "@/lib/schemas/createListingSchema";
-import { getStepFields, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
+import { getStepFields, getStepPayload, hostingSteps, hostingStepsConfig } from "@/lib/types/hostingSteps";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useRouter } from "nextjs-toploader/app";
@@ -16,7 +16,7 @@ export default function ProgressBar({ listingId }: { listingId: string }) {
   const pathname = usePathname();
   const router = useRouter();
   const { getValues } = useFormContext<CreateListingForm>();
-  const { markStepAsVisited, getCurrentFormData, handleStepClick, isRedirecting } = useListingFormContext();
+  const { markStepAsVisited, handleStepClick, isRedirecting } = useListingFormContext();
   const currentStepIndex = hostingSteps.findIndex((step) => pathname.includes(step));
   const progress = (currentStepIndex / (hostingSteps.length - 1)) * 99;
   const [isFormLoaded, setIsFormLoaded] = useState(false);
@@ -84,8 +84,9 @@ export default function ProgressBar({ listingId }: { listingId: string }) {
 
   const handleSaveAndExit = async () => {
     try {
-      const formData = getCurrentFormData();
-      const { success } = await updateDraftListing(listingId, { ...formData, currentStep: currentStepIndex });
+      const stepData = getStepPayload(currentStepIndex, getValues);
+      const { success } = await updateDraftListing(listingId, stepData);
+
       if (success) {
         toast.success("Draft saved successfully!");
         router.push("/hosting/create");
