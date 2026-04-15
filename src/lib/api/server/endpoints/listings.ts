@@ -79,39 +79,6 @@ export async function searchListings(
   return fetchSearchListings(filters, city, mapCoordinates);
 }
 
-export async function getHostListings() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-    error: authErr,
-  } = await supabase.auth.getUser();
-
-  if (authErr || !user) {
-    console.error("Auth error:", authErr, user);
-    throw new NotFoundError();
-  }
-
-  try {
-    const listings = await prisma.listings.findMany({
-      where: {
-        host_id: user.id,
-      },
-      include: { listing_amenities: { include: { amenities: true } } },
-    });
-
-    const parsedListings = listings.map((listing) => ({
-      ...listing,
-      amenities: parseAmenitiesFromDB(listing.listing_amenities as unknown as AmenityDB[]),
-    }));
-
-    return parsedListings.map((listing) => parseListingFromDB(listing as unknown as ListingDB));
-  } catch (error) {
-    console.error("Error fetching host listings", error);
-    throw new NotFoundError();
-  }
-}
-
 export async function getHostListing(id: number) {
   const supabase = await createClient();
 
