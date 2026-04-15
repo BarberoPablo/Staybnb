@@ -1,6 +1,6 @@
 "use client";
 
-import { Listing } from "@/lib/types/listing";
+import { HostListings } from "@/lib/api/host/listings/listings.schema";
 import { motion } from "framer-motion";
 
 interface StatusItem {
@@ -9,7 +9,7 @@ interface StatusItem {
   color: string;
 }
 
-export default function HostListingsStatus({ listings }: { listings: Listing[] }) {
+export default function HostListingsStatus({ listings }: { listings: HostListings }) {
   const statusItems: StatusItem[] = [
     {
       label: "Total Listings",
@@ -18,22 +18,22 @@ export default function HostListingsStatus({ listings }: { listings: Listing[] }
     },
     {
       label: "Published",
-      count: listings.filter((l) => l.status === "published").length,
+      count: listings.filter((l) => l.status === "PUBLISHED").length,
       color: "text-myGrayDark",
     },
     {
-      label: "Drafts",
-      count: listings.filter((l) => l.status === "draft").length,
-      color: "text-myPurple",
-    },
-    {
       label: "Paused",
-      count: listings.filter((l) => l.status === "paused").length,
+      count: listings.filter((l) => l.status === "PAUSED").length,
       color: "text-myPurple",
     },
     {
       label: "Pending",
-      count: listings.filter((l) => l.status === "pending").length,
+      count: listings.filter((l) => l.status === "PENDING").length,
+      color: "text-myPurple",
+    },
+    {
+      label: "Rejected",
+      count: listings.filter((l) => l.status === "REJECTED").length,
       color: "text-myPurple",
     },
   ];

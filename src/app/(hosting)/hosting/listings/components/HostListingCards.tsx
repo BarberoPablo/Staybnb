@@ -1,8 +1,8 @@
 "use client";
 
 import ImageWithFallback from "@/components/ImageWithFallback";
+import { HostListing, HostListings } from "@/lib/api/host/listings/listings.schema";
 import { pauseListing } from "@/lib/api/server/endpoints/listings";
-import { Listing } from "@/lib/types/listing";
 import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import { FaCheckCircle, FaMapMarkerAlt, FaPause, FaPlus } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
-export default function HostListingCards({ listings }: { listings: Listing[] }) {
+export default function HostListingCards({ listings }: { listings: HostListings }) {
   const router = useRouter();
 
   const handleCreateListing = () => {
@@ -67,9 +67,9 @@ export default function HostListingCards({ listings }: { listings: Listing[] }) 
   );
 }
 
-export function HostListingCard({ listing }: { listing: Listing }) {
+export function HostListingCard({ listing }: { listing: HostListing }) {
   const router = useRouter();
-  const [listingStatus, setListingStatus] = useState<string>(listing.status);
+  const [listingStatus, setListingStatus] = useState(listing.status);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -100,7 +100,7 @@ export function HostListingCard({ listing }: { listing: Listing }) {
 
   const handlePauseListing = async () => {
     try {
-      setListingStatus("paused");
+      setListingStatus("PAUSED");
       await pauseListing(listing.id);
       toast.success("Listing paused");
     } catch (error) {
@@ -162,15 +162,14 @@ export function HostListingCard({ listing }: { listing: Listing }) {
             <span className="text-myGray text-sm">/night</span>
           </div>
           <div className="text-right">
-            <div className="text-sm font-medium text-myGrayDark capitalize">{listing.propertyType.replace("_", " ")}</div>
-            <div className="text-xs text-myGray capitalize">{listing.privacyType.replace("_", " ")}</div>
+            <div className="text-sm font-medium text-myGrayDark capitalize">{listing.propertyType.toLowerCase()}</div>
+            <div className="text-xs text-myGray capitalize">{listing.privacyType.toLowerCase()}</div>
           </div>
         </div>
 
         {/* Edit Action */}
-        {/* "published""draft""paused""pending"*/}
         <div className="flex gap-2 mt-4">
-          {["published", "paused", "pending"].includes(listingStatus) && (
+          {["PUBLISHED", "PAUSED", "PENDING"].includes(listingStatus) && (
             <button
               onClick={handleEdit}
               className="w-full px-4 py-3 text-sm font-medium text-white bg-myGreenSemiBold rounded-lg hover:bg-myGreenBold transition-colors duration-200 flex items-center justify-center gap-2 hover:cursor-pointer"
@@ -180,7 +179,7 @@ export function HostListingCard({ listing }: { listing: Listing }) {
             </button>
           )}
 
-          {listingStatus === "draft" && (
+          {listingStatus === "PENDING" && (
             <button
               className="w-full px-4 py-3 text-sm font-medium text-white bg-myGreenSemiBold rounded-lg hover:bg-myGreenBold transition-colors duration-200 flex items-center justify-center gap-2 hover:cursor-pointer"
               onClick={handleCompleteListing}
@@ -190,7 +189,7 @@ export function HostListingCard({ listing }: { listing: Listing }) {
             </button>
           )}
 
-          {listingStatus === "published" && (
+          {listingStatus === "PUBLISHED" && (
             <button
               className="w-full px-4 py-3 text-sm font-medium text-white bg-[#E0C04F] rounded-lg hover:bg-myGreenBold transition-colors duration-200 flex items-center justify-center gap-2 hover:cursor-pointer"
               onClick={handlePauseListing}
