@@ -1,4 +1,4 @@
-import { getHostListing } from "@/lib/api/server/endpoints/listings";
+import { getHostListing } from "@/lib/api/server/endpoints/host/listings";
 import { generateSEOMetadata } from "@/lib/seo";
 import { notFound, redirect } from "next/navigation";
 import EditListingForm from "./components/EditListingForm";
@@ -12,7 +12,7 @@ export const metadata = generateSEOMetadata({
 export default async function EditListingPage({ params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const listing = await getHostListing(Number(id));
+    const listing = await getHostListing(id);
 
     if (!listing) {
       notFound();

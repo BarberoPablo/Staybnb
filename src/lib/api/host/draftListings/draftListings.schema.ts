@@ -23,8 +23,14 @@ export const DraftListingSchema = z.object({
       housenumber: z.string(),
     })
     .optional(),
-  checkInTime: z.string().optional(),
-  checkOutTime: z.string().optional(),
+  checkInTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/)
+    .optional(),
+  checkOutTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/)
+    .optional(),
   title: z.string().optional(),
   description: z.string().optional(),
   nightPrice: z.number().optional(),

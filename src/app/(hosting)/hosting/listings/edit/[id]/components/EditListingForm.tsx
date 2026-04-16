@@ -1,8 +1,8 @@
 "use client";
 
+import { HostListingDetails } from "@/lib/api/host/listings/listings.schema";
 import { editListing } from "@/lib/api/server/endpoints/listings";
-import { editListingSchema } from "@/lib/schemas/editListingSchema";
-import { EditListing, Listing } from "@/lib/types/listing";
+import { EditListingFormValues, editListingSchema } from "@/lib/schemas/editListingSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";
@@ -28,28 +28,17 @@ const sections = [
   <AmenitiesSection key="amenities" />,
 ];
 
-export default function EditListingForm({ listing }: { listing: Listing }) {
+export default function EditListingForm({ listing }: { listing: HostListingDetails }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
-  const methods = useForm<EditListing>({
+  const { id, ...formValues } = listing;
+
+  const methods = useForm<EditListingFormValues>({
     mode: "onChange",
     resolver: zodResolver(editListingSchema),
     shouldUnregister: false,
     defaultValues: {
-      title: listing.title,
-      description: listing.description,
-      nightPrice: listing.nightPrice,
-      propertyType: listing.propertyType,
-      privacyType: listing.privacyType,
-      checkInTime: listing.checkInTime,
-      checkOutTime: listing.checkOutTime,
-      minCancelDays: listing.minCancelDays,
-      promotions: listing.promotions,
-      images: listing.images,
-      structure: listing.structure,
-      guestLimits: listing.guestLimits,
-      location: listing.location,
-      amenities: listing.amenities,
+      ...formValues,
     },
   });
 
@@ -74,16 +63,16 @@ export default function EditListingForm({ listing }: { listing: Listing }) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const onSubmit = async (data: EditListing) => {
+  const onSubmit = async (data: EditListingFormValues) => {
     if (!isValid) {
-      const firstErrorField = Object.keys(errors)[0] as keyof EditListing;
+      const firstErrorField = Object.keys(errors)[0] as keyof EditListingFormValues;
       setFocus(firstErrorField);
       return;
     }
 
     setSaving(true);
     try {
-      await editListing(listing.id, data);
+      await editListing(id, data);
       toast.success("Listing updated successfully!");
       setTimeout(() => {
         router.push("/hosting/listings");
