@@ -1,4 +1,4 @@
-import { getHostListings } from "@/lib/api/server/endpoints/host/listing";
+import { getHostListings } from "@/lib/api/server/endpoints/host/listings";
 import { generateSEOMetadata } from "@/lib/seo";
 import HostListingCards from "./components/HostListingCards";
 import HostListingsHeader from "./components/HostListingsHeader";
