@@ -2,7 +2,7 @@
 
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { HostListing, HostListings } from "@/lib/api/host/listings/listings.schema";
-import { pauseListing } from "@/lib/api/server/endpoints/listings";
+import { pauseHostListing } from "@/lib/api/server/endpoints/host/listings";
 import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
@@ -101,7 +101,7 @@ export function HostListingCard({ listing }: { listing: HostListing }) {
   const handlePauseListing = async () => {
     try {
       setListingStatus("PAUSED");
-      await pauseListing(listing.id);
+      await pauseHostListing(listing.id);
       toast.success("Listing paused");
     } catch (error) {
       setListingStatus(listing.status);

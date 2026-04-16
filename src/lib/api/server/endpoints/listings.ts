@@ -171,37 +171,6 @@ export async function editListing(id: number, props: EditListing) {
   }
 }
 
-export async function pauseListing(id: number) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-    error: authErr,
-  } = await supabase.auth.getUser();
-
-  if (authErr || !user) {
-    console.error("Auth error:", authErr, user);
-    throw new NotFoundError();
-  }
-
-  const { data, error } = await supabase
-    .from("listings")
-    .update({ status: "paused" })
-    .eq("host_id", user.id)
-    .eq("id", id)
-    .eq("status", "published")
-    .select();
-
-  if (error) {
-    console.error("Error pausing listing", error);
-    throw new NotFoundError("Error pausing listing");
-  }
-
-  if (!data || data.length === 0) {
-    throw new NotFoundError("Could not pause listing");
-  }
-}
-
 export async function addReviewToListing(listingId: number, score: number, message: string) {
   const supabase = await createClient();
 
@@ -274,22 +243,10 @@ export async function addReviewToListing(listingId: number, score: number, messa
   }
 }
 
-/**
- * Get popular listings based on sophisticated scoring algorithm
- * Factors: favorites (40%), reservations (35%), rating (25%)
- * @param limit - Number of listings to return (default: 12)
- * @param offset - Number of listings to skip for pagination (default: 0)
- */
 export async function getPopularListings(limit: number = 12, offset: number = 0) {
   return fetchPopularListings(limit, offset);
 }
 
-/**
- * Get featured listings based on sophisticated scoring algorithm
- * Factors: rating (50%), review count (30%), image quality/count (15%)
- * @param limit - Number of listings to return (default: 12)
- * @param offset - Number of listings to skip for pagination (default: 0)
- */
 export async function getFeaturedListings(limit: number = 12, offset: number = 0) {
   return fetchFeaturedListings(limit, offset);
 }

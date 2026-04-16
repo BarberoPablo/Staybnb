@@ -148,22 +148,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/host/listings/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["HostListingsController_find"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/host/listings/{id}/resubmit": {
         parameters: {
             query?: never;
@@ -174,6 +158,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["HostListingsController_resubmitListing"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/host/listings/{id}/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["HostListingsController_pauseListing"];
         delete?: never;
         options?: never;
         head?: never;
@@ -517,61 +517,6 @@ export interface components {
             propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
             /** @enum {string} */
             privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
-        };
-        ListingHostDto: {
-            id: string;
-            firstName: string;
-            lastName: string;
-            avatarUrl?: string;
-            bio?: string;
-        };
-        ListingReservationDto: {
-            id: string;
-            /** Format: date-time */
-            startDate: string;
-            /** Format: date-time */
-            endDate: string;
-        };
-        ListingReviewDto: {
-            id: string;
-            score: number;
-            message: string;
-            /** Format: date-time */
-            createdAt: string;
-            profile: components["schemas"]["ListingHostDto"];
-        };
-        ListingCountsDto: {
-            reservations?: number;
-            favorites?: number;
-            reviews?: number;
-        };
-        ListingResponseDto: {
-            id: string;
-            title: string;
-            description: string;
-            nightPrice: number;
-            /** @enum {string} */
-            propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
-            /** @enum {string} */
-            privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
-            location: components["schemas"]["ListingLocationDto"];
-            images: string[];
-            promotions: components["schemas"]["ListingPromotionDto"][];
-            structure: components["schemas"]["ListingStructureDto"];
-            guestLimits: components["schemas"]["ListingGuestLimitsDto"];
-            /** @enum {string} */
-            status: "PUBLISHED" | "PAUSED" | "PENDING" | "REJECTED";
-            ratingAvg: number;
-            ratingCount: number;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            amenities?: string[];
-            host?: components["schemas"]["ListingHostDto"];
-            reservations?: components["schemas"]["ListingReservationDto"][];
-            reviews?: components["schemas"]["ListingReviewDto"][];
-            counts?: components["schemas"]["ListingCountsDto"];
         };
         ResubmitResponseDto: {
             success: boolean;
@@ -945,34 +890,6 @@ export interface operations {
             };
         };
     };
-    HostListingsController_find: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListingResponseDto"];
-                };
-            };
-            /** @description Listing not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     HostListingsController_resubmitListing: {
         parameters: {
             query?: never;
@@ -993,6 +910,48 @@ export interface operations {
                 };
             };
             /** @description Only rejected listings can be resubmitted */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description You do not own this listing */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Listing not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    HostListingsController_pauseListing: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResubmitResponseDto"];
+                };
+            };
+            /** @description Only published listings can be paused */
             400: {
                 headers: {
                     [name: string]: unknown;
