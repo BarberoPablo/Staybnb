@@ -1,7 +1,7 @@
 "use client";
 
+import { EditListingFormValues } from "@/lib/schemas/editListingSchema";
 import { errorClass, inputClass, labelClass } from "@/lib/styles";
-import { EditListing } from "@/lib/types/listing";
 import dynamic from "next/dynamic";
 import { memo, useEffect, useMemo } from "react";
 import { Control, Controller, useFormContext, useWatch } from "react-hook-form";
@@ -13,12 +13,12 @@ const MapLocationNoSSR = dynamic(() => import("@/app/(hosting)/hosting/create/co
 });
 
 type LocationField = {
-  key: keyof EditListing["location"];
+  key: keyof EditListingFormValues["location"];
   label: string;
   placeholder?: string;
 };
 
-const buildFormattedAddress = (locationData: EditListing["location"]) => {
+const buildFormattedAddress = (locationData: EditListingFormValues["location"]) => {
   const parts = [];
 
   if (locationData.housenumber) parts.push(locationData.housenumber);
@@ -31,7 +31,7 @@ const buildFormattedAddress = (locationData: EditListing["location"]) => {
   return parts.join(", ");
 };
 
-const MapField = memo(({ control }: { control: Control<EditListing> }) => (
+const MapField = memo(({ control }: { control: Control<EditListingFormValues> }) => (
   <Controller
     control={control}
     name="location"
@@ -54,7 +54,7 @@ export default function LocationSection() {
     formState: { errors },
     control,
     setValue,
-  } = useFormContext<EditListing>();
+  } = useFormContext<EditListingFormValues>();
 
   const location = useWatch({ control, name: "location" });
 

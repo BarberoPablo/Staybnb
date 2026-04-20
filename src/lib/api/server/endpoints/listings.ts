@@ -3,8 +3,8 @@
 import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
 import { prisma } from "@/lib/prisma";
 import { AmenityDB } from "@/lib/types/amenities";
-import { EditListing, ListingDB, ListingStatus, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
-import { parseEditListingToDB, parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../../parsers/listing";
+import { ListingDB, ListingStatus, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
+import { parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../../parsers/listing";
 import { createClient } from "../../../supabase/server";
 import { fetchFeaturedListings, fetchListingDetails, fetchPopularListings, fetchSearchListings } from "../../listings/listings.http";
 import { CityCenter, ListingCardData } from "../../listings/listings.schema";
@@ -77,64 +77,6 @@ export async function searchListings(
   mapCoordinates?: MapCoordinates,
 ): Promise<{ listings: ListingCardData[]; cityCenter: CityCenter }> {
   return fetchSearchListings(filters, city, mapCoordinates);
-}
-
-export async function editListing(id: number, props: EditListing) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-    error: authErr,
-  } = await supabase.auth.getUser();
-
-  if (authErr || !user) {
-    console.error("Auth error:", authErr, user);
-    throw new NotFoundError();
-  }
-
-  try {
-    const dbData = parseEditListingToDB(props);
-    const { amenities, ...listingData } = dbData;
-
-    let validAmenities: number[] = [];
-    if (amenities && amenities.length > 0) {
-      const existingAmenities = await prisma.amenities.findMany({
-        where: { id: { in: amenities.map(Number) } },
-        select: { id: true },
-      });
-      validAmenities = existingAmenities.map((a) => a.id);
-    }
-
-    await prisma.$transaction([
-      prisma.listings.update({
-        where: {
-          id,
-          host_id: user.id,
-        },
-        data: listingData,
-      }),
-
-      prisma.listingAmenities.deleteMany({
-        where: { listing_id: id },
-      }),
-
-      ...(validAmenities.length > 0
-        ? [
-            prisma.listingAmenities.createMany({
-              data: validAmenities.map((amenityId) => ({
-                listing_id: id,
-                amenity_id: amenityId,
-              })),
-            }),
-          ]
-        : []),
-    ]);
-
-    return;
-  } catch (error) {
-    console.error("Error updating listing", error);
-    throw new NotFoundError();
-  }
 }
 
 export async function addReviewToListing(listingId: number, score: number, message: string) {

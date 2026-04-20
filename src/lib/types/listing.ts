@@ -176,25 +176,3 @@ export type HostListingsWithReservationsDB = ListingDB & {
 export type HostListingsWithReservations = Listing & {
   reservations: Reservation[] | [];
 };
-
-export type EditListing = {
-  title: string;
-  description: string;
-  nightPrice: number;
-  promotions: LegacyPromotion[];
-  propertyType: PropertyType;
-  images: string[];
-  structure: Structure;
-  guestLimits: {
-    [key in Guests]: {
-      min: number;
-      max: number;
-    };
-  };
-  location: Location;
-  checkInTime: string;
-  checkOutTime: string;
-  minCancelDays: number;
-  privacyType: PrivacyType;
-  amenities: AmenityId[];
-};

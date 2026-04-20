@@ -1,3 +1,4 @@
+import { components } from "@/types/api";
 import { z } from "zod";
 import {
   GuestLimitsSchema,
@@ -7,6 +8,8 @@ import {
   PROPERTY_TYPES,
   StructureSchema,
 } from "../../shared/listing/listing.fragments.schema";
+
+export type PartialUpdateListing = components["schemas"]["PartialUpdateListingDto"];
 
 export const HostListingSchema = z.object({
   id: z.string(),
