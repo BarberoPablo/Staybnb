@@ -1,8 +1,8 @@
 "use client";
 
-import { HostListingDetails } from "@/lib/api/host/listings/listings.schema";
-import { editListing } from "@/lib/api/server/endpoints/listings";
-import { EditListingFormValues, editListingSchema } from "@/lib/schemas/editListingSchema";
+import { HostListingDetails, PartialUpdateListing } from "@/lib/api/host/listings/listings.schema";
+import { editListing } from "@/lib/api/server/endpoints/host/listings";
+import { EditListingFormValues, editListingPatchSchema, editListingSchema } from "@/lib/schemas/editListingSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { useRouter } from "nextjs-toploader/app";
@@ -17,6 +17,31 @@ import ImagesSection from "./ImagesSection";
 import LocationSection from "./LocationSection";
 import PromotionsSection from "./PromotionsSection";
 import StructureSection from "./StructureSection";
+
+type DirtyFields<T> = {
+  [K in keyof T]?: T[K] extends object ? DirtyFields<T[K]> | boolean : boolean;
+};
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function getDirtyValues<T extends Record<string, any>>(values: T, dirty: DirtyFields<T>): Partial<T> {
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+  const result: Partial<T> = {};
+
+  for (const key in dirty) {
+    const dirtyValue = dirty[key];
+    const value = values[key];
+
+    if (dirtyValue === true || Array.isArray(dirtyValue)) {
+      result[key] = value;
+    }
+
+    if (typeof dirtyValue === "object" && dirtyValue !== null) {
+      result[key] = value;
+    }
+  }
+
+  return result;
+}
 
 const sections = [
   <BasicInfoSection key="basic-info" />,
@@ -45,7 +70,7 @@ export default function EditListingForm({ listing }: { listing: HostListingDetai
   const {
     handleSubmit,
     setFocus,
-    formState: { errors, isValid },
+    formState: { errors, isValid, dirtyFields },
   } = methods;
 
   // Prevent Enter key from triggering form submission
@@ -70,13 +95,27 @@ export default function EditListingForm({ listing }: { listing: HostListingDetai
       return;
     }
 
+    const dirtyData = getDirtyValues(data, dirtyFields);
+
+    if (Object.keys(dirtyData).length === 0) {
+      toast("No changes to save");
+      return;
+    }
+
+    const parsed = editListingPatchSchema.parse(dirtyData);
+
     setSaving(true);
     try {
-      await editListing(id, data);
-      toast.success("Listing updated successfully!");
-      setTimeout(() => {
-        router.push("/hosting/listings");
-      }, 2000);
+      const data = await editListing(id, parsed as PartialUpdateListing);
+
+      if (data && data.success) {
+        toast.success("Listing updated successfully!");
+        setTimeout(() => {
+          router.push("/hosting/listings");
+        }, 2000);
+      } else {
+        throw new Error("Update failed");
+      }
     } catch (error) {
       console.error("Error updating listing:", error);
       toast.error("Failed to update listing");

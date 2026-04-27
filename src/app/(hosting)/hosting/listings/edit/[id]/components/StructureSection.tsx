@@ -1,15 +1,15 @@
 "use client";
 
-import { useFormContext } from "react-hook-form";
+import { EditListingFormValues } from "@/lib/schemas/editListingSchema";
 import { errorClass, inputClass, labelClass } from "@/lib/styles";
-import { EditListing } from "@/lib/types/listing";
+import { useFormContext } from "react-hook-form";
 import { FaBuilding } from "react-icons/fa";
 
 export default function StructureSection() {
   const {
     register,
     formState: { errors },
-  } = useFormContext<EditListing>();
+  } = useFormContext<EditListingFormValues>();
 
   return (
     <div className="space-y-6">

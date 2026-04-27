@@ -1,7 +1,6 @@
 import { ListingForm } from "@/store/useListingForm";
 import {
   CreateListingDB,
-  EditListing,
   HostListingsWithReservations,
   HostListingsWithReservationsDB,
   Listing,
@@ -121,27 +120,4 @@ export function parseHostListingsWithReservations(listings: HostListingsWithRese
   }));
 
   return parsedListings;
-}
-
-export function parseEditListingToDB(listingProps: EditListing) {
-  return {
-    title: listingProps.title,
-    description: listingProps.description,
-    night_price: listingProps.nightPrice,
-    promotions: listingProps.promotions?.map((p) => ({
-      min_nights: p.minNights,
-      discount_percentage: Number(p.discountPercentage),
-      description: p.description,
-    })),
-    property_type: listingProps.propertyType,
-    images: listingProps.images,
-    structure: listingProps.structure,
-    guest_limits: listingProps.guestLimits,
-    location: listingProps.location,
-    check_in_time: listingProps.checkInTime,
-    check_out_time: listingProps.checkOutTime,
-    min_cancel_days: listingProps.minCancelDays,
-    privacy_type: listingProps.privacyType,
-    amenities: listingProps.amenities,
-  };
 }

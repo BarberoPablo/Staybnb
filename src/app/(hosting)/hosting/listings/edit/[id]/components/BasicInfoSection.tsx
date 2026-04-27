@@ -1,7 +1,8 @@
 "use client";
 
+import { PRIVACY_TYPES, PROPERTY_TYPES } from "@/lib/api/shared/listing/listing.fragments.schema";
+import { EditListingFormValues } from "@/lib/schemas/editListingSchema";
 import { errorClass, inputClass, labelClass } from "@/lib/styles";
-import { EditListing, privacyTypes, propertyTypes } from "@/lib/types/listing";
 import { useFormContext } from "react-hook-form";
 import { FaInfoCircle } from "react-icons/fa";
 
@@ -9,7 +10,7 @@ export default function BasicInfoSection() {
   const {
     register,
     formState: { errors },
-  } = useFormContext<EditListing>();
+  } = useFormContext<EditListingFormValues>();
 
   return (
     <div className="space-y-6">
@@ -51,9 +52,8 @@ export default function BasicInfoSection() {
             })}
             type="number"
             min="0"
-            step="0.01"
             className={inputClass}
-            placeholder="0.00"
+            placeholder="0"
           />
           {errors.nightPrice && <p className={errorClass}>{errors.nightPrice.message}</p>}
         </div>
@@ -62,7 +62,7 @@ export default function BasicInfoSection() {
         <div>
           <label className={labelClass}>Property Type *</label>
           <select {...register("propertyType", { required: "Property type is required" })} className={inputClass}>
-            {propertyTypes.map((propertyType) => (
+            {PROPERTY_TYPES.map((propertyType) => (
               <option key={propertyType} value={propertyType}>
                 {propertyType}
               </option>
@@ -75,7 +75,7 @@ export default function BasicInfoSection() {
         <div>
           <label className={labelClass}>Privacy Type *</label>
           <select {...register("privacyType", { required: "Privacy type is required" })} className={inputClass}>
-            {privacyTypes.map((privacyType) => (
+            {PRIVACY_TYPES.map((privacyType) => (
               <option key={privacyType} value={privacyType}>
                 {privacyType}
               </option>

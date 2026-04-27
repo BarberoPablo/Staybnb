@@ -4,1382 +4,1443 @@
  */
 
 export interface paths {
-  "/auth/onboard": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/auth/onboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AuthController_onboardProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["AuthController_onboardProfile"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/health": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["HealthController_check"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["HealthController_check"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/users/me": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["UsersController_getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["UsersController_getMe"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/host/draft-listings": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/host/draft-listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DraftListingsController_findAll"];
+        put?: never;
+        post: operations["DraftListingsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["DraftListingsController_findAll"];
-    put?: never;
-    post: operations["DraftListingsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/host/draft-listings/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/host/draft-listings/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DraftListingsController_find"];
+        put?: never;
+        post?: never;
+        delete: operations["DraftListingsController_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["DraftListingsController_update"];
+        trace?: never;
     };
-    get: operations["DraftListingsController_find"];
-    put?: never;
-    post?: never;
-    delete: operations["DraftListingsController_remove"];
-    options?: never;
-    head?: never;
-    patch: operations["DraftListingsController_update"];
-    trace?: never;
-  };
-  "/host/draft-listings/{id}/publish": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/host/draft-listings/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DraftListingsController_complete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["DraftListingsController_complete"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/host/draft-listings/{id}/auto-complete": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/host/draft-listings/{id}/auto-complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["DraftListingsController_autoCompleteListing"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch: operations["DraftListingsController_autoCompleteListing"];
-    trace?: never;
-  };
-  "/amenities": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/amenities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AmenitiesController_getListings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["AmenitiesController_getListings"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/host/listings": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/host/listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["HostListingsController_findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["HostListingsController_findAll"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/host/listings/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/host/listings/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["HostListingsController_find"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["HostListingsController_update"];
+        trace?: never;
     };
-    get: operations["HostListingsController_find"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/host/listings/{id}/resubmit": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/host/listings/{id}/resubmit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["HostListingsController_resubmitListing"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["HostListingsController_resubmitListing"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/host/listings/{id}/pause": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/host/listings/{id}/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["HostListingsController_pauseListing"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["HostListingsController_pauseListing"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/listings": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/admin/listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminListingsController_findPendings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["AdminListingsController_findPendings"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/listings/{id}/moderation-history": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/admin/listings/{id}/moderation-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AdminListingsController_getModerationHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["AdminListingsController_getModerationHistory"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/listings/{id}/approve": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/admin/listings/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminListingsController_approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["AdminListingsController_approve"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/admin/listings/{id}/reject": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/admin/listings/{id}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AdminListingsController_reject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["AdminListingsController_reject"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/listings": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListingsController_getListings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ListingsController_getListings"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/listings/featured": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/listings/featured": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListingsController_getFeaturedListings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ListingsController_getFeaturedListings"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/listings/popular": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/listings/popular": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListingsController_getPopularListings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ListingsController_getPopularListings"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/listings/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/listings/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListingsController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ListingsController_findOne"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/listings/{id}/checkout": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/listings/{id}/checkout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListingsController_getCheckoutInfo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ListingsController_getCheckoutInfo"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cities/popular": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/cities/popular": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CitiesController_getPopularCities"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["CitiesController_getPopularCities"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/reservations/{listingId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/reservations/{listingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReservationsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["ReservationsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/favorites": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/favorites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["FavoritesController_getFavorites"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["FavoritesController_getFavorites"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/favorites/{listingId}/check": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/favorites/{listingId}/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["FavoritesController_isFavorite"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["FavoritesController_isFavorite"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/favorites/{listingId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/favorites/{listingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["FavoritesController_addFavorite"];
+        delete: operations["FavoritesController_deleteFavorite"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["FavoritesController_addFavorite"];
-    delete: operations["FavoritesController_deleteFavorite"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    CreateProfileDto: Record<string, never>;
-    ListingLocationDto: {
-      country: string;
-      city: string;
-      lat: number;
-      lng: number;
-      formatted: string;
-      housenumber: string;
-      street: string;
-      state: string;
-      postcode: string;
-      timezone: string;
+    schemas: {
+        CreateProfileDto: Record<string, never>;
+        ListingLocationDto: {
+            country: string;
+            city: string;
+            lat: number;
+            lng: number;
+            formatted: string;
+            housenumber: string;
+            street: string;
+            state: string;
+            postcode: string;
+            timezone: string;
+        };
+        ListingPromotionDto: {
+            minNights: number;
+            discountPercentage: number;
+            description: string;
+        };
+        ListingStructureDto: {
+            bedrooms: number;
+            beds: number;
+            bathrooms: number;
+            guests: number;
+        };
+        GuestLimitDto: {
+            min: number;
+            max: number;
+        };
+        ListingGuestLimitsDto: {
+            adults: components["schemas"]["GuestLimitDto"];
+            children: components["schemas"]["GuestLimitDto"];
+            infant: components["schemas"]["GuestLimitDto"];
+            pets: components["schemas"]["GuestLimitDto"];
+        };
+        DraftListingResponseDto: {
+            id: string;
+            hostId: string;
+            /** @enum {string} */
+            propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
+            location: components["schemas"]["ListingLocationDto"];
+            checkInTime: string;
+            checkOutTime: string;
+            title: string;
+            description: string;
+            nightPrice: number;
+            promotions: components["schemas"]["ListingPromotionDto"][];
+            structure: components["schemas"]["ListingStructureDto"];
+            guestLimits: components["schemas"]["ListingGuestLimitsDto"];
+            amenities: string[];
+            images: string[];
+            minCancelDays: number;
+            currentStep: number;
+            visitedSteps: number[];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        SuccessWithListingIdResponseDto: {
+            success: boolean;
+            listingId: string;
+        };
+        PartialUpdateDraftListingDto: {
+            amenities?: string[];
+            images?: string[];
+            title?: string;
+            description?: string;
+            nightPrice?: number;
+            checkInTime?: string;
+            checkOutTime?: string;
+            minCancelDays?: number;
+            visitedSteps?: number[];
+            /** @enum {string} */
+            propertyType?: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType?: "ENTIRE" | "PRIVATE" | "SHARED";
+            promotions?: components["schemas"]["ListingPromotionDto"][];
+            location?: components["schemas"]["ListingLocationDto"];
+            structure?: components["schemas"]["ListingStructureDto"];
+            guestLimits?: components["schemas"]["ListingGuestLimitsDto"];
+            currentStep: number;
+        };
+        SuccessResponseDto: {
+            success: boolean;
+        };
+        AmenityResponseDto: {
+            id: string;
+            name: string;
+            category: string;
+        };
+        HostListingLocationDto: {
+            country: string;
+            city: string;
+        };
+        HostListingResponseDto: {
+            id: string;
+            /** @enum {string} */
+            status: "PUBLISHED" | "PAUSED" | "PENDING" | "REJECTED";
+            images: string[];
+            title: string;
+            description: string;
+            location: components["schemas"]["HostListingLocationDto"];
+            nightPrice: number;
+            /** @enum {string} */
+            propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
+        };
+        HostListingDetailsLocationDto: {
+            lat: number;
+            lng: number;
+            country: string;
+            city: string;
+            state: string;
+            street: string;
+            housenumber: string;
+            postcode: string;
+            formatted: string;
+            timezone: string;
+        };
+        HostListingDetailsResponseDto: {
+            id: string;
+            title: string;
+            description: string;
+            nightPrice: number;
+            /** @enum {string} */
+            propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
+            checkInTime: string;
+            checkOutTime: string;
+            minCancelDays: number;
+            promotions: components["schemas"]["ListingPromotionDto"][];
+            images: string[];
+            structure: components["schemas"]["ListingStructureDto"];
+            guestLimits: components["schemas"]["ListingGuestLimitsDto"];
+            location: components["schemas"]["HostListingDetailsLocationDto"];
+            amenities: string[];
+        };
+        StructureInputDto: Record<string, never>;
+        GuestLimitsInputDto: Record<string, never>;
+        PromotionInputDto: Record<string, never>;
+        LocationInputDto: Record<string, never>;
+        PartialUpdateListingDto: {
+            title?: string;
+            description?: string;
+            nightPrice?: number;
+            /** @enum {string} */
+            propertyType?: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType?: "ENTIRE" | "PRIVATE" | "SHARED";
+            checkInTime?: string;
+            checkOutTime?: string;
+            minCancelDays?: number;
+            structure?: components["schemas"]["StructureInputDto"];
+            guestLimits?: components["schemas"]["GuestLimitsInputDto"];
+            images?: string[];
+            promotions?: components["schemas"]["PromotionInputDto"][];
+            location?: components["schemas"]["LocationInputDto"];
+            amenities?: string[];
+        };
+        ResubmitResponseDto: {
+            success: boolean;
+        };
+        RejectListingDto: Record<string, never>;
+        ListingCardLocationDto: {
+            city: string;
+            state: string;
+            country: string;
+            lat: number;
+            lng: number;
+        };
+        ListingCardDto: {
+            id: string;
+            title: string;
+            nightPrice: number;
+            images: string[];
+            ratingAvg: number;
+            /** @enum {string} */
+            propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
+            location: components["schemas"]["ListingCardLocationDto"];
+        };
+        CityCenterDto: {
+            lat: number;
+            lng: number;
+        };
+        SearchListingsResponseDto: {
+            listings: components["schemas"]["ListingCardDto"][];
+            cityCenter?: components["schemas"]["CityCenterDto"] | null;
+        };
+        ListingDetailsHostDto: {
+            id: string;
+            firstName: string;
+            avatarUrl?: string;
+        };
+        ListingDetailsReviewDto: {
+            id: string;
+            userId: string;
+            score: number;
+            message: string;
+            imageUrl: string;
+        };
+        ListingDetailsReservationDto: {
+            id: string;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+        };
+        ListingDetailsResponseDto: {
+            id: string;
+            title: string;
+            description: string;
+            nightPrice: number;
+            images: string[];
+            location: components["schemas"]["ListingCardLocationDto"];
+            structure: components["schemas"]["ListingStructureDto"];
+            guestLimits: components["schemas"]["ListingGuestLimitsDto"];
+            /** @enum {string} */
+            propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
+            host?: components["schemas"]["ListingDetailsHostDto"];
+            amenities?: string[];
+            reviews?: components["schemas"]["ListingDetailsReviewDto"][];
+            promotions: components["schemas"]["ListingPromotionDto"][];
+            reservations?: components["schemas"]["ListingDetailsReservationDto"][];
+            ratingAvg: number;
+            ratingCount: number;
+            /** @enum {string} */
+            status: "PUBLISHED" | "PAUSED" | "PENDING" | "REJECTED";
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ListingCheckoutResponseDto: {
+            id: string;
+            title: string;
+            ratingAvg: number;
+            ratingCount: number;
+            formattedLocation: string;
+            propertyType: string;
+            bedrooms: number;
+            beds: number;
+            bathrooms: number;
+            maxGuests: number;
+            minCancelDays: number;
+            nightPrice: number;
+        };
+        PopularDestinationDto: {
+            id: string;
+            name: string;
+            country: string;
+            lat: number;
+            lng: number;
+            listingCount: number;
+            imageUrl?: string | null;
+        };
+        CreateReservationDto: Record<string, never>;
+        FavoriteListingLocationDto: {
+            city: string;
+            state: string;
+        };
+        FavoriteListingDto: {
+            id: string;
+            title: string;
+            images: string[];
+            nightPrice: number;
+            location: components["schemas"]["FavoriteListingLocationDto"];
+            ratingAvg: number;
+            ratingCount: number;
+        };
+        FavoriteListingResponseDto: {
+            listing: components["schemas"]["FavoriteListingDto"];
+        };
+        IsFavoriteResponseDto: {
+            isFavorite: boolean;
+        };
+        FavoriteActionResponseDto: {
+            success: boolean;
+        };
     };
-    ListingPromotionDto: {
-      minNights: number;
-      discountPercentage: number;
-      description: string;
-    };
-    ListingStructureDto: {
-      bedrooms: number;
-      beds: number;
-      bathrooms: number;
-      guests: number;
-    };
-    GuestLimitDto: {
-      min: number;
-      max: number;
-    };
-    ListingGuestLimitsDto: {
-      adults: components["schemas"]["GuestLimitDto"];
-      children: components["schemas"]["GuestLimitDto"];
-      infant: components["schemas"]["GuestLimitDto"];
-      pets: components["schemas"]["GuestLimitDto"];
-    };
-    DraftListingResponseDto: {
-      id: string;
-      hostId: string;
-      /** @enum {string} */
-      propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
-      /** @enum {string} */
-      privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
-      location: components["schemas"]["ListingLocationDto"];
-      checkInTime: string;
-      checkOutTime: string;
-      title: string;
-      description: string;
-      nightPrice: number;
-      promotions: components["schemas"]["ListingPromotionDto"][];
-      structure: components["schemas"]["ListingStructureDto"];
-      guestLimits: components["schemas"]["ListingGuestLimitsDto"];
-      amenities: string[];
-      images: string[];
-      minCancelDays: number;
-      currentStep: number;
-      visitedSteps: number[];
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    SuccessWithListingIdResponseDto: {
-      success: boolean;
-      listingId: string;
-    };
-    PartialUpdateDraftListingDto: {
-      amenities?: string[];
-      images?: string[];
-      title?: string;
-      description?: string;
-      nightPrice?: number;
-      checkInTime?: string;
-      checkOutTime?: string;
-      minCancelDays?: number;
-      visitedSteps?: number[];
-      /** @enum {string} */
-      propertyType?: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
-      /** @enum {string} */
-      privacyType?: "ENTIRE" | "PRIVATE" | "SHARED";
-      promotions?: components["schemas"]["ListingPromotionDto"][];
-      location?: components["schemas"]["ListingLocationDto"];
-      structure?: components["schemas"]["ListingStructureDto"];
-      guestLimits?: components["schemas"]["ListingGuestLimitsDto"];
-      currentStep: number;
-    };
-    SuccessResponseDto: {
-      success: boolean;
-    };
-    AmenityResponseDto: {
-      id: string;
-      name: string;
-      category: string;
-    };
-    HostListingLocationDto: {
-      country: string;
-      city: string;
-    };
-    HostListingResponseDto: {
-      id: string;
-      /** @enum {string} */
-      status: "PUBLISHED" | "PAUSED" | "PENDING" | "REJECTED";
-      images: string[];
-      title: string;
-      description: string;
-      location: components["schemas"]["HostListingLocationDto"];
-      nightPrice: number;
-      /** @enum {string} */
-      propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
-      /** @enum {string} */
-      privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
-    };
-    HostListingDetailsLocationDto: {
-      lat: number;
-      lng: number;
-      country: string;
-      city: string;
-      state: string;
-      street: string;
-      housenumber: string;
-      postcode: string;
-      formatted: string;
-      timezone: string;
-    };
-    HostListingDetailsResponseDto: {
-      id: string;
-      title: string;
-      description: string;
-      nightPrice: number;
-      /** @enum {string} */
-      propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
-      /** @enum {string} */
-      privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
-      checkInTime: string;
-      checkOutTime: string;
-      minCancelDays: number;
-      promotions: components["schemas"]["ListingPromotionDto"][];
-      images: string[];
-      structure: components["schemas"]["ListingStructureDto"];
-      guestLimits: components["schemas"]["ListingGuestLimitsDto"];
-      location: components["schemas"]["HostListingDetailsLocationDto"];
-      amenities: string[];
-    };
-    ResubmitResponseDto: {
-      success: boolean;
-    };
-    RejectListingDto: Record<string, never>;
-    ListingCardLocationDto: {
-      city: string;
-      state: string;
-      country: string;
-      lat: number;
-      lng: number;
-    };
-    ListingCardDto: {
-      id: string;
-      title: string;
-      nightPrice: number;
-      images: string[];
-      ratingAvg: number;
-      /** @enum {string} */
-      propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
-      /** @enum {string} */
-      privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
-      location: components["schemas"]["ListingCardLocationDto"];
-    };
-    CityCenterDto: {
-      lat: number;
-      lng: number;
-    };
-    SearchListingsResponseDto: {
-      listings: components["schemas"]["ListingCardDto"][];
-      cityCenter?: components["schemas"]["CityCenterDto"] | null;
-    };
-    ListingDetailsHostDto: {
-      id: string;
-      firstName: string;
-      avatarUrl?: string;
-    };
-    ListingDetailsReviewDto: {
-      id: string;
-      userId: string;
-      score: number;
-      message: string;
-      imageUrl: string;
-    };
-    ListingDetailsReservationDto: {
-      id: string;
-      /** Format: date-time */
-      startDate: string;
-      /** Format: date-time */
-      endDate: string;
-    };
-    ListingDetailsResponseDto: {
-      id: string;
-      title: string;
-      description: string;
-      nightPrice: number;
-      images: string[];
-      location: components["schemas"]["ListingCardLocationDto"];
-      structure: components["schemas"]["ListingStructureDto"];
-      guestLimits: components["schemas"]["ListingGuestLimitsDto"];
-      /** @enum {string} */
-      propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
-      /** @enum {string} */
-      privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
-      host?: components["schemas"]["ListingDetailsHostDto"];
-      amenities?: string[];
-      reviews?: components["schemas"]["ListingDetailsReviewDto"][];
-      promotions: components["schemas"]["ListingPromotionDto"][];
-      reservations?: components["schemas"]["ListingDetailsReservationDto"][];
-      ratingAvg: number;
-      ratingCount: number;
-      /** @enum {string} */
-      status: "PUBLISHED" | "PAUSED" | "PENDING" | "REJECTED";
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    ListingCheckoutResponseDto: {
-      id: string;
-      title: string;
-      ratingAvg: number;
-      ratingCount: number;
-      formattedLocation: string;
-      propertyType: string;
-      bedrooms: number;
-      beds: number;
-      bathrooms: number;
-      maxGuests: number;
-      minCancelDays: number;
-      nightPrice: number;
-    };
-    PopularDestinationDto: {
-      id: string;
-      name: string;
-      country: string;
-      lat: number;
-      lng: number;
-      listingCount: number;
-      imageUrl?: string | null;
-    };
-    CreateReservationDto: Record<string, never>;
-    FavoriteListingLocationDto: {
-      city: string;
-      state: string;
-    };
-    FavoriteListingDto: {
-      id: string;
-      title: string;
-      images: string[];
-      nightPrice: number;
-      location: components["schemas"]["FavoriteListingLocationDto"];
-      ratingAvg: number;
-      ratingCount: number;
-    };
-    FavoriteListingResponseDto: {
-      listing: components["schemas"]["FavoriteListingDto"];
-    };
-    IsFavoriteResponseDto: {
-      isFavorite: boolean;
-    };
-    FavoriteActionResponseDto: {
-      success: boolean;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  AuthController_onboardProfile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateProfileDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_onboardProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  HealthController_check: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProfileDto"];
+            };
         };
-        content?: never;
-      };
-    };
-  };
-  UsersController_getMe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  DraftListingsController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    HealthController_check: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["DraftListingResponseDto"][];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
     };
-  };
-  DraftListingsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    UsersController_getMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["SuccessWithListingIdResponseDto"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
     };
-  };
-  DraftListingsController_find: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    DraftListingsController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["DraftListingResponseDto"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DraftListingResponseDto"][];
+                };
+            };
         };
-      };
     };
-  };
-  DraftListingsController_remove: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    DraftListingsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["SuccessResponseDto"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuccessWithListingIdResponseDto"];
+                };
+            };
         };
-      };
     };
-  };
-  DraftListingsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PartialUpdateDraftListingDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    DraftListingsController_find: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["SuccessResponseDto"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DraftListingResponseDto"];
+                };
+            };
         };
-      };
     };
-  };
-  DraftListingsController_complete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    DraftListingsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["SuccessWithListingIdResponseDto"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuccessResponseDto"];
+                };
+            };
         };
-      };
     };
-  };
-  DraftListingsController_autoCompleteListing: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    DraftListingsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["SuccessResponseDto"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartialUpdateDraftListingDto"];
+            };
         };
-      };
-    };
-  };
-  AmenitiesController_getListings: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuccessResponseDto"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["AmenityResponseDto"];
-        };
-      };
     };
-  };
-  HostListingsController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    DraftListingsController_complete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["HostListingResponseDto"][];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuccessWithListingIdResponseDto"];
+                };
+            };
         };
-      };
     };
-  };
-  HostListingsController_find: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    DraftListingsController_autoCompleteListing: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["HostListingDetailsResponseDto"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuccessResponseDto"];
+                };
+            };
         };
-      };
-      /** @description Listing not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+    };
+    AmenitiesController_getListings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  HostListingsController_resubmitListing: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AmenityResponseDto"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ResubmitResponseDto"];
+    };
+    HostListingsController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-      /** @description Only rejected listings can be resubmitted */
-      400: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HostListingResponseDto"][];
+                };
+            };
         };
-        content?: never;
-      };
-      /** @description You do not own this listing */
-      403: {
-        headers: {
-          [name: string]: unknown;
+    };
+    HostListingsController_find: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Listing not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HostListingDetailsResponseDto"];
+                };
+            };
+            /** @description Listing not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  HostListingsController_pauseListing: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    HostListingsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["ResubmitResponseDto"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartialUpdateListingDto"];
+            };
         };
-      };
-      /** @description Only published listings can be paused */
-      400: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuccessResponseDto"];
+                };
+            };
+            /** @description You do not own this listing */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Listing not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
-      /** @description You do not own this listing */
-      403: {
-        headers: {
-          [name: string]: unknown;
+    };
+    HostListingsController_resubmitListing: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Listing not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResubmitResponseDto"];
+                };
+            };
+            /** @description Only rejected listings can be resubmitted */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description You do not own this listing */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Listing not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  AdminListingsController_findPendings: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    HostListingsController_pauseListing: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  AdminListingsController_getModerationHistory: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResubmitResponseDto"];
+                };
+            };
+            /** @description Only published listings can be paused */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description You do not own this listing */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Listing not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  AdminListingsController_approve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+    AdminListingsController_findPendings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  AdminListingsController_reject: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RejectListingDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  ListingsController_getListings: {
-    parameters: {
-      query: {
-        offset?: number;
-        limit?: number;
-        city: string;
-        guests?: number | null;
-        bedrooms?: number | null;
-        beds?: number | null;
-        bathrooms?: number | null;
-        adults?: number | null;
-        children?: number | null;
-        infants?: number | null;
-        pets?: number | null;
-        minPrice?: number | null;
-        maxPrice?: number | null;
-        amenities?: string | null;
-        startDate?: string | null;
-        endDate?: string | null;
-        neLat?: number | null;
-        neLng?: number | null;
-        swLat?: number | null;
-        swLng?: number | null;
-        sortBy?: "createdAt" | "nightPrice" | "ratingAvg";
-        sortOrder?: "asc" | "desc";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AdminListingsController_getModerationHistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["SearchListingsResponseDto"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
     };
-  };
-  ListingsController_getFeaturedListings: {
-    parameters: {
-      query?: {
-        offset?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AdminListingsController_approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["ListingCardDto"][];
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
     };
-  };
-  ListingsController_getPopularListings: {
-    parameters: {
-      query?: {
-        offset?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AdminListingsController_reject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["ListingCardDto"][];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RejectListingDto"];
+            };
         };
-      };
-    };
-  };
-  ListingsController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ListingDetailsResponseDto"];
+    };
+    ListingsController_getListings: {
+        parameters: {
+            query: {
+                offset?: number;
+                limit?: number;
+                city: string;
+                guests?: number | null;
+                bedrooms?: number | null;
+                beds?: number | null;
+                bathrooms?: number | null;
+                adults?: number | null;
+                children?: number | null;
+                infants?: number | null;
+                pets?: number | null;
+                minPrice?: number | null;
+                maxPrice?: number | null;
+                amenities?: string | null;
+                startDate?: string | null;
+                endDate?: string | null;
+                neLat?: number | null;
+                neLng?: number | null;
+                swLat?: number | null;
+                swLng?: number | null;
+                sortBy?: "createdAt" | "nightPrice" | "ratingAvg";
+                sortOrder?: "asc" | "desc";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-  };
-  ListingsController_getCheckoutInfo: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchListingsResponseDto"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ListingCheckoutResponseDto"];
+    };
+    ListingsController_getFeaturedListings: {
+        parameters: {
+            query?: {
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-  };
-  CitiesController_getPopularCities: {
-    parameters: {
-      query?: {
-        offset?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingCardDto"][];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["PopularDestinationDto"][];
+    };
+    ListingsController_getPopularListings: {
+        parameters: {
+            query?: {
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-  };
-  ReservationsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        listingId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateReservationDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingCardDto"][];
+                };
+            };
         };
-        content?: never;
-      };
     };
-  };
-  FavoritesController_getFavorites: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    ListingsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["FavoriteListingResponseDto"][];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingDetailsResponseDto"];
+                };
+            };
         };
-      };
     };
-  };
-  FavoritesController_isFavorite: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        listingId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    ListingsController_getCheckoutInfo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["IsFavoriteResponseDto"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingCheckoutResponseDto"];
+                };
+            };
         };
-      };
     };
-  };
-  FavoritesController_addFavorite: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        listingId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    CitiesController_getPopularCities: {
+        parameters: {
+            query?: {
+                offset?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["FavoriteActionResponseDto"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PopularDestinationDto"][];
+                };
+            };
         };
-      };
     };
-  };
-  FavoritesController_deleteFavorite: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        listingId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    ReservationsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listingId: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["FavoriteActionResponseDto"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReservationDto"];
+            };
         };
-      };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
     };
-  };
+    FavoritesController_getFavorites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FavoriteListingResponseDto"][];
+                };
+            };
+        };
+    };
+    FavoritesController_isFavorite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IsFavoriteResponseDto"];
+                };
+            };
+        };
+    };
+    FavoritesController_addFavorite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FavoriteActionResponseDto"];
+                };
+            };
+        };
+    };
+    FavoritesController_deleteFavorite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FavoriteActionResponseDto"];
+                };
+            };
+        };
+    };
 }

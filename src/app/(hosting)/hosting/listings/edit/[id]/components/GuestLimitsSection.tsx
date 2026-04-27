@@ -1,8 +1,8 @@
 "use client";
 
+import { EditListingFormValues } from "@/lib/schemas/editListingSchema";
 import { errorClass, inputClass, labelClass } from "@/lib/styles";
 import { guests } from "@/lib/types";
-import { EditListing } from "@/lib/types/listing";
 import { useFormContext } from "react-hook-form";
 import { FaUsers } from "react-icons/fa";
 
@@ -11,7 +11,7 @@ export default function GuestLimitsSection() {
     register,
     trigger,
     formState: { errors },
-  } = useFormContext<EditListing>();
+  } = useFormContext<EditListingFormValues>();
 
   return (
     <div className="space-y-6">

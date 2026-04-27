@@ -1,7 +1,7 @@
 "use client";
 
+import { EditListingFormValues } from "@/lib/schemas/editListingSchema";
 import { errorClass, inputClass, labelClass } from "@/lib/styles";
-import { EditListing } from "@/lib/types/listing";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { FaPercent, FaPlus, FaTrashAlt } from "react-icons/fa";
 
@@ -10,7 +10,7 @@ export default function PromotionsSection() {
     control,
     register,
     formState: { errors },
-  } = useFormContext<EditListing>();
+  } = useFormContext<EditListingFormValues>();
 
   const { fields, append, remove } = useFieldArray({
     control,
