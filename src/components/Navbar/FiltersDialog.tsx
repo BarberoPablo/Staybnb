@@ -1,6 +1,5 @@
 "use client";
 
-import { AmenityId } from "@/lib/constants/amenities";
 import { Dates, Guests } from "@/lib/types";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -43,7 +42,7 @@ export default function FiltersDialog({
   );
 
   const setAmenities = useCallback(
-    (amenities: AmenityId[]) => {
+    (amenities: string[]) => {
       setFilters((prev) => ({ ...prev, amenities }));
     },
     [setFilters],

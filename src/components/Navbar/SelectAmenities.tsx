@@ -1,19 +1,19 @@
 "use client";
 
-import { AMENITIES, AmenityId } from "@/lib/constants/amenities";
+import { AMENITIES } from "@/lib/constants/amenities";
 import { useCallback, useMemo } from "react";
 import AmenityButton from "./AmenityButton";
 
 interface SelectAmenitiesProps {
-  selectedAmenities: AmenityId[];
-  setSelectedAmenities: (amenities: AmenityId[]) => void;
+  selectedAmenities: string[];
+  setSelectedAmenities: (amenities: string[]) => void;
   displaySelected?: boolean;
 }
 
 export default function SelectAmenities({ displaySelected = true, selectedAmenities, setSelectedAmenities }: SelectAmenitiesProps) {
   // Memoize the toggle function to prevent unnecessary re-renders
   const toggleAmenity = useCallback(
-    (amenityId: AmenityId) => {
+    (amenityId: string) => {
       if (selectedAmenities.includes(amenityId)) {
         setSelectedAmenities(selectedAmenities.filter((id) => id !== amenityId));
       } else {
