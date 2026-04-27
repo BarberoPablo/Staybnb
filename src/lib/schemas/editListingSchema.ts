@@ -49,5 +49,7 @@ export const editListingSchema = z.object({
     formatted: z.string().min(1, "Formatted address is required"),
     housenumber: z.string().min(1, "House number is required"),
   }),
-  amenities: z.array(z.number()),
+  amenities: z.array(z.string()),
 });
+
+export type EditListingFormValues = z.infer<typeof editListingSchema>;
