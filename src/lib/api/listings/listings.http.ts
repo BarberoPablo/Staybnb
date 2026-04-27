@@ -3,7 +3,15 @@
 import { apiClient } from "../client";
 import { MapCoordinates } from "../server/types";
 import { ParsedFilters, parseFiltersToQuery } from "../server/utils";
-import { CityCenter, ListingCardData, ListingCardSchema, ListingDetails, ListingDetailsSchema } from "./listings.schema";
+import {
+  CityCenter,
+  ListingCardData,
+  ListingCardSchema,
+  ListingCheckout,
+  ListingCheckoutSchema,
+  ListingDetails,
+  ListingDetailsSchema,
+} from "./listings.schema";
 
 export async function fetchFeaturedListings(limit = 12, offset = 0) {
   const { data, error } = await apiClient.GET("/listings/featured", {
@@ -67,4 +75,18 @@ export async function fetchListingDetails(id: string): Promise<ListingDetails> {
   }
 
   return ListingDetailsSchema.parse(data);
+}
+
+export async function fetchListingCheckout(id: string): Promise<ListingCheckout> {
+  const { data, error } = await apiClient.GET("/listings/{id}/checkout", {
+    params: {
+      path: { id },
+    },
+  });
+
+  if (error) {
+    throw new Error("Failed to search listings");
+  }
+
+  return ListingCheckoutSchema.parse(data);
 }

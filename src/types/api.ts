@@ -650,11 +650,11 @@ export interface components {
             propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
             /** @enum {string} */
             privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
-            host?: components["schemas"]["ListingDetailsHostDto"];
-            amenities?: string[];
-            reviews?: components["schemas"]["ListingDetailsReviewDto"][];
+            host: components["schemas"]["ListingDetailsHostDto"];
+            amenities: string[];
+            reviews: components["schemas"]["ListingDetailsReviewDto"][];
             promotions: components["schemas"]["ListingPromotionDto"][];
-            reservations?: components["schemas"]["ListingDetailsReservationDto"][];
+            reservations: components["schemas"]["ListingDetailsReservationDto"][];
             ratingAvg: number;
             ratingCount: number;
             /** @enum {string} */
@@ -667,14 +667,18 @@ export interface components {
         ListingCheckoutResponseDto: {
             id: string;
             title: string;
+            status: string;
             ratingAvg: number;
             ratingCount: number;
             formattedLocation: string;
-            propertyType: string;
-            bedrooms: number;
-            beds: number;
-            bathrooms: number;
-            maxGuests: number;
+            /** @enum {string} */
+            propertyType: "HOUSE" | "APARTMENT" | "CABIN" | "BOAT";
+            /** @enum {string} */
+            privacyType: "ENTIRE" | "PRIVATE" | "SHARED";
+            image: string;
+            checkInTime: string;
+            checkOutTime: string;
+            promotions: components["schemas"]["ListingPromotionDto"][];
             minCancelDays: number;
             nightPrice: number;
         };
