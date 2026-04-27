@@ -3,7 +3,6 @@
 import { Container } from "@/app/(site)/components/Container";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { parseFilters } from "@/lib/api/server/utils";
-import { AmenityId } from "@/lib/constants/amenities";
 import { Dates, Guests } from "@/lib/types";
 import { logoUrl, logoUrlReduced } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -21,7 +20,7 @@ const FilterButtons = lazy(() => import("./Navbar/FilterButtons"));
 export type FilterState = {
   dates: Dates;
   guests: Record<Guests, number>;
-  amenities?: AmenityId[];
+  amenities?: string[];
 };
 
 export default function Navbar({ search = true }: { search?: boolean }) {
@@ -74,7 +73,7 @@ export default function Navbar({ search = true }: { search?: boolean }) {
           infant: parsedFilters.infant ?? prevFilters.guests.infant,
           pets: parsedFilters.pets ?? prevFilters.guests.pets,
         },
-        amenities: parsedFilters.amenities?.map((amenity) => Number(amenity)) ?? prevFilters.amenities,
+        amenities: parsedFilters.amenities?.map((amenity) => amenity) ?? prevFilters.amenities,
       }));
     }
   }, [searchParams, pathname]);
