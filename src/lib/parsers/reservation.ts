@@ -1,8 +1,6 @@
 import {
   CreateReservation,
   CreateReservationDB,
-  ListingReservedDates,
-  ListingReservedDatesDB,
   Reservation,
   ReservationDB,
   ReservationStatus,
@@ -78,23 +76,4 @@ export function parseCreateReservationToDB(reservation: CreateReservation): Crea
   };
 
   return reservationDB;
-}
-
-export function parseListingReservedDatesDB(listingReservedDatesDB: ListingReservedDatesDB): ListingReservedDates {
-  const reservedDates: ListingReservedDates = {
-    reservations: [],
-    listing: {
-      checkInTime: listingReservedDatesDB.listing.check_in_time,
-      checkOutTime: listingReservedDatesDB.listing.check_out_time,
-      timezone: listingReservedDatesDB.listing.timezone,
-    },
-  };
-  if (listingReservedDatesDB.reservations.length !== 0) {
-    reservedDates.reservations = listingReservedDatesDB.reservations.map((reservation) => ({
-      startDate: new Date(reservation.start_date),
-      endDate: new Date(reservation.end_date),
-    }));
-  }
-
-  return reservedDates;
 }

@@ -5,7 +5,7 @@ import { excludeDate, getCustomDayContent } from "@/components/Booking/bookingFo
 import Tooltip from "@/components/Tooltip";
 import { getListingReservations } from "@/lib/api/server/endpoints/reservations";
 import { DateRangeKey, UnavailableDates } from "@/lib/types";
-import { calculateNights, legacyGetDisabledDates, legacyGetListingPromotion, normalizeDate, validateDateRange } from "@/lib/utils";
+import { calculateNights, getDisabledDates, getListingPromotion, normalizeDate, validateDateRange } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import { DateRange, RangeKeyDict } from "react-date-range";
@@ -33,7 +33,7 @@ export default function DateRangeSelector({
   isOpen: boolean;
   startDate: Date;
   endDate: Date;
-  listingId: number;
+  listingId: string;
   setListingData: React.Dispatch<React.SetStateAction<ListingData>>;
   onClose: () => void;
 }) {
@@ -54,7 +54,7 @@ export default function DateRangeSelector({
       try {
         const { reservations } = await getListingReservations(listingId);
 
-        const { unavailableCheckInDates: disabledCheckInDates, unavailableCheckOutDates: disabledCheckOutDates } = legacyGetDisabledDates(reservations);
+        const { unavailableCheckInDates: disabledCheckInDates, unavailableCheckOutDates: disabledCheckOutDates } = getDisabledDates(reservations);
 
         setDisabledDates({
           unavailableCheckInDates: { filtered: disabledCheckInDates, all: disabledCheckInDates },
@@ -110,7 +110,7 @@ export default function DateRangeSelector({
       startDate: dateRange.startDate,
       endDate: dateRange.endDate,
       nights,
-      promo: legacyGetListingPromotion(prevState.listing, nights),
+      promo: getListingPromotion(nights, prevState.listing.promotions),
     }));
 
     onClose();

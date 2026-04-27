@@ -1,17 +1,4 @@
-import { ListingForm } from "@/store/useListingForm";
-import {
-  CreateListingDB,
-  HostListingsWithReservations,
-  HostListingsWithReservationsDB,
-  Listing,
-  ListingDB,
-  ListingWithReservations,
-  ListingWithReservationsAndHost,
-  ListingWithReservationsAndHostDB,
-  ListingWithReservationsDB,
-} from "../types/listing";
-import { ReservedDate } from "../types/reservation";
-import { parseReservationsFromDB } from "./reservation";
+import { Listing, ListingDB } from "../types/listing";
 
 export function parseListingFromDB(listingDB: ListingDB): Listing {
   return {
@@ -46,78 +33,4 @@ export function parseListingFromDB(listingDB: ListingDB): Listing {
     status: listingDB.status,
     amenities: listingDB.amenities,
   };
-}
-
-export function parseListingWithReservationsFromDB(listingWithReservationDB: ListingWithReservationsDB): ListingWithReservations {
-  const listing = parseListingFromDB(listingWithReservationDB);
-  let reservations: ReservedDate[] = [];
-
-  if (listingWithReservationDB.reservations?.length > 0) {
-    reservations = listingWithReservationDB.reservations.map((reservation) => ({
-      startDate: new Date(reservation.start_date),
-      endDate: new Date(reservation.end_date),
-    }));
-  }
-
-  const listingWithReservation = {
-    ...listing,
-    reservations,
-  };
-
-  return listingWithReservation;
-}
-
-export function parseListingWithReservationsAndHostFromDB(listing: ListingWithReservationsAndHostDB): ListingWithReservationsAndHost {
-  const parsedListing = parseListingWithReservationsFromDB(listing);
-
-  return {
-    ...parsedListing,
-    host: {
-      firstName: listing.host.first_name,
-      lastName: listing.host.last_name,
-      avatarUrl: listing.host.avatar_url,
-    },
-  };
-}
-
-export function parseListingFormData(listingForm: ListingForm): CreateListingDB {
-  return {
-    property_type: listingForm.propertyType,
-    privacy_type: listingForm.privacyType,
-    location: listingForm.location,
-    check_in_time: listingForm.checkInTime,
-    check_out_time: listingForm.checkOutTime,
-    title: listingForm.title,
-    description: listingForm.description,
-    night_price: listingForm.nightPrice,
-    promotions: listingForm.promotions.map((p) => ({
-      min_nights: p.minNights,
-      discount_percentage: Number(p.discountPercentage),
-      description: p.description,
-    })),
-    images: listingForm.images,
-    structure: listingForm.structure,
-    guest_limits: listingForm.guestLimits,
-    amenities: listingForm.amenities,
-    safety_items: listingForm.safetyItems,
-    score: {
-      value: listingForm.score.value,
-      reviews: listingForm.score.reviews.map((review) => ({
-        score: review.score,
-        message: review.message,
-        user_id: review.userId,
-      })),
-    },
-    min_cancel_days: listingForm.minCancelDays,
-    status: "pending",
-  };
-}
-
-export function parseHostListingsWithReservations(listings: HostListingsWithReservationsDB[]): HostListingsWithReservations[] {
-  const parsedListings = listings.map((listing) => ({
-    ...parseListingFromDB(listing),
-    reservations: [...parseReservationsFromDB(listing.reservations)],
-  }));
-
-  return parsedListings;
 }

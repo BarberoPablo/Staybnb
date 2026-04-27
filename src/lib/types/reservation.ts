@@ -1,5 +1,5 @@
 import { Guests } from "../types";
-import { Listing, ListingDB, ResumedListing, ResumedListingDB } from "./listing";
+import { ResumedListing, ResumedListingDB } from "./listing";
 
 export type ReservationDB = {
   id: string;
@@ -58,32 +58,4 @@ export type ResumedReservationWithListingDB = Omit<ReservationDB, "listingId"> &
 
 export type ResumedReservationWithListing = Reservation & {
   listing: ResumedListing;
-};
-export type ReservationWithListingDB = Omit<Reservation, "listingId"> &
-  ReservationDB & {
-    listing: ListingDB;
-  };
-
-export type ReservationWithListing = Reservation & {
-  listing: Listing;
-};
-
-export type ReservedDateDB = {
-  start_date: string;
-  end_date: string;
-};
-
-export type ReservedDate = {
-  startDate: Date;
-  endDate: Date;
-};
-
-export type ListingReservedDatesDB = {
-  reservations: { start_date: Date; end_date: Date }[] | [];
-  listing: { check_in_time: string; check_out_time: string; timezone: string };
-};
-
-export type ListingReservedDates = {
-  reservations: { startDate: Date; endDate: Date }[] | [];
-  listing: { checkInTime: string; checkOutTime: string; timezone: string };
 };

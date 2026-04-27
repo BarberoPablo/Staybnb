@@ -41,7 +41,7 @@ export default function ListingResume({
         {/* Listing Image and Basic Info */}
         <div className="relative">
           <ImageWithFallback
-            src={listingData.listing.images[0] + "&w=480"}
+            src={listingData.listing.image + "&w=480"}
             alt="listing main image"
             priority
             className="object-cover w-full h-48"
@@ -75,14 +75,14 @@ export default function ListingResume({
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 bg-myGreenExtraLight px-2 py-1 rounded-full">
                 <IoStar className="w-4 h-4 text-yellow-400 fill-current" />
-                <span className="text-sm font-semibold text-myGrayDark">{listingData.listing.score.value.toFixed(1)}</span>
+                <span className="text-sm font-semibold text-myGrayDark">{listingData.listing.ratingAvg}</span>
               </div>
-              <span className="text-sm text-myGray">({listingData.listing.score.reviews.length} reviews)</span>
+              <span className="text-sm text-myGray">({listingData.listing.ratingCount} reviews)</span>
             </div>
 
             <div className="flex items-center gap-2 text-myGray text-sm">
               <IoLocation className="w-4 h-4" />
-              <span className="line-clamp-1">{listingData.listing.location.formatted}</span>
+              <span className="line-clamp-1">{listingData.listing.formattedLocation}</span>
             </div>
           </div>
 

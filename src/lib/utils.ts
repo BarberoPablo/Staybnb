@@ -3,9 +3,8 @@ import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { SearchParams } from "next/dist/server/request/search-params";
 import { LISTING_GUESTS, Promotion } from "./api/shared/listing/listing.fragments.schema";
 import { Guests, ListingSearchParams } from "./types";
-import { LegacyPromotion, Listing, ListingDB, Location, PromotionDB } from "./types/listing";
+import { ListingDB, Location, PromotionDB } from "./types/listing";
 import { CreateProfile, UpdateProfile } from "./types/profile";
-import { ReservedDate } from "./types/reservation";
 
 export const logoUrl = "https://i.postimg.cc/65bvWcTY/logo.png";
 export const logoUrlReduced = "https://i.postimg.cc/WbfM7qCZ/logo-reduced.png";
@@ -82,27 +81,6 @@ export function validateDateRange(startDate: Date, endDate: Date) {
   return "";
 }
 
-export function legacyGetDisabledDates(reservedDates: ReservedDate[]): { unavailableCheckInDates: Date[]; unavailableCheckOutDates: Date[] } {
-  // Block all days in between the dates
-  const unavailableCheckInDates: Date[] = [];
-  const unavailableCheckOutDates: Date[] = [];
-
-  reservedDates.forEach((reservation) => {
-    const start = normalizeDate(addDays(reservation.startDate, 1));
-    const end = normalizeDate(subDays(reservation.endDate, 1));
-
-    unavailableCheckInDates.push(normalizeDate(reservation.startDate));
-    unavailableCheckOutDates.push(normalizeDate(reservation.endDate));
-
-    if (start <= end) {
-      // Block all days in between the dates
-      unavailableCheckInDates.push(...eachDayOfInterval({ start, end }));
-      unavailableCheckOutDates.push(...eachDayOfInterval({ start, end }));
-    }
-  });
-
-  return { unavailableCheckInDates, unavailableCheckOutDates };
-}
 export function getDisabledDates(reservedDates?: { startDate: Date; endDate: Date }[]): {
   unavailableCheckInDates: Date[];
   unavailableCheckOutDates: Date[];
@@ -151,12 +129,6 @@ export function calculateNights(startDate: Date, endDate: Date) {
   return Math.max(1, Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
-export function legacyGetListingPromotion(listing: Listing, nights: number): LegacyPromotion | null {
-  const sortedPromotions = [...listing.promotions].sort((a, b) => a.minNights - b.minNights);
-  const promos = sortedPromotions?.filter((promo) => promo.minNights <= nights);
-  return promos.length > 0 ? promos[promos.length - 1] : null;
-}
-
 export function getListingPromotion(nights: number, promotions?: Promotion[]): Promotion | null {
   if (!promotions) return null;
   const sortedPromotions = promotions.sort((a, b) => a.minNights - b.minNights);
@@ -170,7 +142,7 @@ export function getListingPromotionDB(listing: ListingDB, nights: number): Promo
   return promos.length > 0 ? promos[promos.length - 1] : null;
 }
 
-export function getPromotion(promotions: LegacyPromotion[], nights: number): LegacyPromotion | null {
+export function getPromotion(promotions: Promotion[], nights: number): Promotion | null {
   const sortedPromotions = [...promotions].sort((a, b) => a.minNights - b.minNights);
   const promos = sortedPromotions?.filter((promo) => promo.minNights <= nights);
   return promos.length > 0 ? promos[promos.length - 1] : null;

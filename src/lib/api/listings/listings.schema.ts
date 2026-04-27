@@ -77,10 +77,10 @@ export const ListingDetailsSchema = z.object({
   propertyType: z.enum(PROPERTY_TYPES),
   privacyType: z.enum(PRIVACY_TYPES),
   host: HostSchema,
-  amenities: z.array(z.string()).optional(),
-  reviews: z.array(ReviewSchema).optional(),
-  promotions: z.array(PromotionSchema).optional(),
-  reservations: z.array(ReservationSchema).optional(),
+  amenities: z.array(z.string()),
+  reviews: z.array(ReviewSchema),
+  promotions: z.array(PromotionSchema),
+  reservations: z.array(ReservationSchema),
   ratingAvg: z.number(),
   ratingCount: z.number(),
   status: z.enum(LISTING_STATUS),
@@ -88,7 +88,26 @@ export const ListingDetailsSchema = z.object({
   updatedAt: z.string(),
 });
 
+// --- Listing Checkout Schema ---
+export const ListingCheckoutSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  status: z.enum(LISTING_STATUS),
+  ratingAvg: z.number(),
+  ratingCount: z.number(),
+  formattedLocation: z.string(),
+  propertyType: z.enum(PROPERTY_TYPES),
+  privacyType: z.enum(PRIVACY_TYPES),
+  image: z.string(),
+  checkInTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/),
+  checkOutTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/),
+  promotions: z.array(PromotionSchema),
+  minCancelDays: z.number(),
+  nightPrice: z.number(),
+});
+
 // Type inference
+export type ListingCheckout = z.infer<typeof ListingCheckoutSchema>;
 export type ListingDetails = z.infer<typeof ListingDetailsSchema>;
 export type ListingDetailsHost = z.infer<typeof HostSchema>;
 export type ListingDetailsReview = z.infer<typeof ReviewSchema>;

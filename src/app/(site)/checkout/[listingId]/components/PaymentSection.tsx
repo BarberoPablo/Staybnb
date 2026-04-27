@@ -1,10 +1,10 @@
 "use client";
 
-import { LegacyPriceSummary } from "@/components/Booking/LegacyPriceSummary";
+import { PriceSummary } from "@/components/Booking/PriceSummary";
 import { createReservation } from "@/lib/api/server/endpoints/reservations";
 import { Guests } from "@/lib/types";
 import { CreateReservation } from "@/lib/types/reservation";
-import { calculateNights, displayGuestLabel } from "@/lib/utils";
+import { displayGuestLabel } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRouter } from "nextjs-toploader/app";
 import { useState } from "react";
@@ -36,7 +36,6 @@ const reserve = {
 export default function PaymentSection({ listingData }: { listingData: ListingData }) {
   const [isOpen, setIsOpen] = useState(false);
   const [confirmationState, setConfirmationState] = useState<ConfirmationState>("loading");
-  const nights = calculateNights(listingData.startDate, listingData.endDate);
   const [errorMessage, setErrorMessage] = useState<string | null>("");
   const [reservationId, setReservationId] = useState<string>("");
 
@@ -137,9 +136,9 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
             </span>
           </div>
         </div>
-        <LegacyPriceSummary
-          nights={nights}
-          listing={listingData.listing}
+        <PriceSummary
+          nights={listingData.nights}
+          nightPrice={listingData.listing.nightPrice}
           discountPercentage={listingData.promo?.discountPercentage}
           className="flex flex-col mt-4"
         />

@@ -1,8 +1,6 @@
 import { AmenityId } from "../constants/amenities";
 import { Guests } from "../types";
-import { Amenity } from "./amenities";
-import { Host, HostDB } from "./profile";
-import { Reservation, ReservationDB, ReservedDate, ReservedDateDB } from "./reservation";
+import { Host } from "./profile";
 
 export type ListingDB = CreateListingDB & {
   id: number;
@@ -41,27 +39,7 @@ export type ListingWithHost = Listing & {
   host: Host & { email?: string };
 };
 
-export type ListingWithAmenities = Listing & {
-  amenities: Amenity[];
-};
-
 export type ListingStatus = "draft" | "published" | "paused" | "pending";
-
-export type ListingWithReservationsDB = ListingDB & {
-  reservations: ReservedDateDB[] | [];
-};
-
-export type ListingWithReservations = Listing & {
-  reservations: ReservedDate[] | [];
-};
-
-export type ListingWithReservationsAndHostDB = ListingWithReservationsDB & {
-  host: HostDB;
-};
-
-export type ListingWithReservationsAndHost = ListingWithReservations & {
-  host: Host;
-};
 
 export type ResumedListingDB = Pick<
   ListingDB,
@@ -167,12 +145,4 @@ export type Location = {
   lat: number;
   lng: number;
   timezone: string;
-};
-
-export type HostListingsWithReservationsDB = ListingDB & {
-  reservations: ReservationDB[] | [];
-};
-
-export type HostListingsWithReservations = Listing & {
-  reservations: Reservation[] | [];
 };

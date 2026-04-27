@@ -4,22 +4,23 @@ import ListingResume from "@/app/(site)/checkout/[listingId]/components/ListingR
 import PaymentSection from "@/app/(site)/checkout/[listingId]/components/PaymentSection";
 import { Container } from "@/app/(site)/components/Container";
 import ListingStatusBanner from "@/components/ListingStatusBanner";
+import { ListingCheckout } from "@/lib/api/listings/listings.schema";
+import { Promotion } from "@/lib/api/shared/listing/listing.fragments.schema";
 import { Guests, ListingSearchParams } from "@/lib/types";
-import { LegacyPromotion, Listing } from "@/lib/types/listing";
-import { calculateNights, getGuestsFromParams, legacyGetListingPromotion } from "@/lib/utils";
+import { calculateNights, getGuestsFromParams, getListingPromotion } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
 export type ListingData = {
-  listing: Listing;
+  listing: ListingCheckout;
   guests: Record<Guests, number>;
   startDate: Date;
   endDate: Date;
   nights: number;
-  promo: LegacyPromotion | null;
+  promo: Promotion | null;
 };
 
-export default function Checkout({ listing, searchParams }: { listing: Listing; searchParams: ListingSearchParams }) {
+export default function Checkout({ listing, searchParams }: { listing: ListingCheckout; searchParams: ListingSearchParams }) {
   const startDate = new Date(searchParams.startDate);
   const endDate = new Date(searchParams.endDate);
   const nights = calculateNights(startDate, endDate);
@@ -29,7 +30,7 @@ export default function Checkout({ listing, searchParams }: { listing: Listing; 
     startDate,
     endDate,
     nights,
-    promo: legacyGetListingPromotion(listing, nights),
+    promo: getListingPromotion(nights, listing.promotions),
   });
 
   return (

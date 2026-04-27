@@ -1,70 +1,17 @@
 "use server";
 
-import { parseAmenitiesFromDB } from "@/lib/parsers/amenities";
 import { prisma } from "@/lib/prisma";
-import { AmenityDB } from "@/lib/types/amenities";
-import { ListingDB, ListingStatus, ListingWithReservationsAndHostDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
-import { parseListingFromDB, parseListingWithReservationsAndHostFromDB } from "../../../parsers/listing";
+import { ListingDB, ListingStatus, ReviewDB, ScoreDB } from "@/lib/types/listing";
+import { parseListingFromDB } from "../../../parsers/listing";
 import { createClient } from "../../../supabase/server";
-import { fetchFeaturedListings, fetchListingDetails, fetchPopularListings, fetchSearchListings } from "../../listings/listings.http";
+import { fetchFeaturedListings, fetchListingCheckout, fetchListingDetails, fetchPopularListings, fetchSearchListings } from "../../listings/listings.http";
 import { CityCenter, ListingCardData } from "../../listings/listings.schema";
 import { NotFoundError } from "../errors";
 import { MapCoordinates } from "../types";
 import { ParsedFilters } from "../utils";
 
-export async function legacyGetListingWithReservations(id: number) {
-  try {
-    const listing = await prisma.listings.findUnique({
-      where: {
-        id: Number(id),
-      },
-      include: {
-        listing_amenities: {
-          include: {
-            amenities: true,
-          },
-        },
-        reservations: {
-          where: {
-            status: "upcoming",
-            end_date: {
-              gte: new Date(),
-            },
-          },
-          select: {
-            start_date: true,
-            end_date: true,
-          },
-        },
-      },
-    });
-
-    if (!listing) {
-      throw new NotFoundError();
-    }
-
-    const host = await prisma.profiles.findUnique({
-      where: {
-        id: listing.host_id,
-      },
-      select: {
-        first_name: true,
-        last_name: true,
-        avatar_url: true,
-      },
-    });
-
-    const rawData = {
-      ...listing,
-      host,
-      amenities: parseAmenitiesFromDB(listing.listing_amenities as unknown as AmenityDB[]),
-    };
-
-    return parseListingWithReservationsAndHostFromDB(rawData as unknown as ListingWithReservationsAndHostDB);
-  } catch (error) {
-    console.error("Error fetching listing with reservations", error);
-    throw new NotFoundError();
-  }
+export async function getListingCheckout(id: string) {
+  return fetchListingCheckout(id);
 }
 
 export async function getListingDetails(id: string) {

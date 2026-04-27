@@ -1,4 +1,4 @@
-import { legacyGetListingWithReservations } from "@/lib/api/server/endpoints/listings";
+import { fetchListingCheckout } from "@/lib/api/listings/listings.http";
 import { generateSEOMetadata } from "@/lib/seo";
 import { ListingSearchParams } from "@/lib/types";
 import Link from "next/link";
@@ -27,17 +27,17 @@ export default async function CheckoutPage({
 
   await requireUserWithProfile(redirectTo);
 
-  const parsedListingId = parseInt(listingId ?? "");
   const { startDate, endDate, adults } = resolvedSearchParams as ListingSearchParams;
 
   let listing;
   try {
-    listing = await legacyGetListingWithReservations(parsedListingId);
-  } catch {
+    listing = await fetchListingCheckout(listingId);
+  } catch (error) {
+    console.error(error);
     redirect("/");
   }
 
-  const isInvalid = !parsedListingId || !startDate || !endDate || !adults || !listing;
+  const isInvalid = !listingId || !startDate || !endDate || !adults || !listing;
 
   if (isInvalid) {
     return (
