@@ -92,3 +92,22 @@ export async function fetchUpdateDraftListing(id: string, data: PartialUpdateDra
 
   return responseData;
 }
+
+export async function fetchCompleteDraftListing(listingId: string) {
+  const cookieStore = await cookies();
+
+  const { data: responseData, error } = await apiClient.POST("/host/draft-listings/{id}/publish", {
+    params: {
+      path: { id: listingId },
+    },
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+  });
+
+  if (error) {
+    throw new Error("Failed to complete draft listing");
+  }
+
+  return responseData;
+}
