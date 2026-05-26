@@ -11,68 +11,11 @@ import { parseReservationsFromDB, parseResumedReservationWithListingFromDB } fro
 import { createClient } from "../../../supabase/server";
 import { CreateReservation, ReservationDB, ResumedReservationWithListingDB } from "../../../types/reservation";
 import { calculateNights, getListingPromotionDB, getTotalGuests, twoDecimals } from "../../../utils";
+import { fetchListingUnavailableDates } from "../../reservations/reservations.http";
 import { NotFoundError } from "../errors";
 
-export async function getListingReservations(listingId: number) {
-  try {
-    if (!listingId || isNaN(Number(listingId))) {
-      throw new Error("Invalid listing ID");
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const listing = await prisma.listings.findUnique({
-      where: {
-        id: Number(listingId),
-      },
-      select: {
-        id: true,
-        location: true,
-        check_in_time: true,
-        check_out_time: true,
-        reservations: {
-          where: {
-            status: "upcoming",
-            end_date: {
-              gte: today,
-            },
-          },
-          select: {
-            start_date: true,
-            end_date: true,
-          },
-          orderBy: {
-            start_date: "desc",
-          },
-        },
-      },
-    });
-
-    if (!listing) {
-      throw new NotFoundError("Listing not found");
-    }
-
-    const location = listing.location as Location;
-
-    return {
-      reservations: listing.reservations.map((reservation) => ({
-        startDate: reservation.start_date,
-        endDate: reservation.end_date,
-      })),
-      listing: {
-        timezone: location.timezone,
-        checkInTime: listing.check_in_time,
-        checkOutTime: listing.check_out_time,
-      },
-    };
-  } catch (err) {
-    console.error("Server error:", err);
-    if (err instanceof Error) {
-      throw new Error(err.message);
-    }
-    throw new NotFoundError("Unexpected error occurred");
-  }
+export async function getListingUnavailableDates(listingId: string) {
+  return fetchListingUnavailableDates(listingId);
 }
 
 export async function getHostReservationsGroupedByListing() {

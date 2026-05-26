@@ -42,14 +42,8 @@ export const DraftListingSchema = z.object({
   minCancelDays: z.number().optional(),
   currentStep: z.number().optional(),
   visitedSteps: z.array(z.number()).optional(),
-  createdAt: z
-    .string()
-    .transform((val) => new Date(val))
-    .optional(),
-  updatedAt: z
-    .string()
-    .transform((val) => new Date(val))
-    .optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
 });
 
 export const DraftListingsSchema = z.array(DraftListingSchema);

@@ -1,5 +1,6 @@
 import { SearchParams } from "next/dist/server/request/search-params";
 import { MapCoordinates } from "./types";
+import { parseCalendarDate } from "../reservations/utils";
 
 type StructureFilters = { guests?: number; bedrooms?: number; beds?: number; bathrooms?: number };
 type GuestFilters = { adults?: number; children?: number; infant?: number; pets?: number };
@@ -62,8 +63,8 @@ export function parseFilters(params: SearchParams): ParsedFilters {
 
   // Date parameters
   const dateFilters: DateFilters = {
-    ...(params.startDate ? { startDate: new Date(params.startDate as string) } : {}),
-    ...(params.endDate ? { endDate: new Date(params.endDate as string) } : {}),
+    ...(params.startDate && typeof params.startDate === "string" ? { startDate: parseCalendarDate(params.startDate) } : {}),
+    ...(params.endDate && typeof params.endDate === "string" ? { endDate: parseCalendarDate(params.endDate) } : {}),
   };
 
   Object.assign(filters, dateFilters);

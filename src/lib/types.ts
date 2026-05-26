@@ -16,12 +16,12 @@ export type DateRangeKey = {
 
 export type UnavailableDates = {
   unavailableCheckInDates: {
-    filtered: Date[];
-    all: Date[];
+    filtered: string[];
+    all: string[];
   };
   unavailableCheckOutDates: {
-    filtered: Date[];
-    all: Date[];
+    filtered: string[];
+    all: string[];
   };
 };
 

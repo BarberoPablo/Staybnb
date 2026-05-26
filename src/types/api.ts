@@ -36,14 +36,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/users/me": {
+    "/profiles/me": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["UsersController_getMe"];
+        get: operations["ProfilesController_findMe"];
         put?: never;
         post?: never;
         delete?: never;
@@ -356,7 +356,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/reservations/{listingId}": {
+    "/reservations/{id}/unavailable-dates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ReservationsController_getUnavailableDates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reservations/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -425,6 +441,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         CreateProfileDto: Record<string, never>;
+        MeResponseDto: Record<string, never>;
         ListingLocationDto: {
             country: string;
             city: string;
@@ -691,7 +708,37 @@ export interface components {
             listingCount: number;
             imageUrl?: string | null;
         };
+        ListingUnavailableDatesDto: {
+            /**
+             * @example [
+             *       "2026-05-25"
+             *     ]
+             */
+            unavailableCheckInDates: string[];
+            /**
+             * @example [
+             *       "2026-05-27"
+             *     ]
+             */
+            unavailableCheckOutDates: string[];
+        };
         CreateReservationDto: Record<string, never>;
+        ReservationResponseDto: {
+            id: string;
+            listingId: string;
+            startDate: string;
+            endDate: string;
+            guests: Record<string, never>;
+            totalPrice: number;
+            totalNights: number;
+            nightPrice: number;
+            discount: Record<string, never> | null;
+            discountPercentage: Record<string, never> | null;
+            /** @enum {string} */
+            status: "UPCOMING" | "COMPLETED" | "CANCELED" | "CANCELED_BY_HOST";
+            /** Format: date-time */
+            createdAt: string;
+        };
         FavoriteListingLocationDto: {
             city: string;
             state: string;
@@ -761,7 +808,7 @@ export interface operations {
             };
         };
     };
-    UsersController_getMe: {
+    ProfilesController_findMe: {
         parameters: {
             query?: never;
             header?: never;
@@ -774,7 +821,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["MeResponseDto"];
+                };
             };
         };
     };
@@ -1342,12 +1391,33 @@ export interface operations {
             };
         };
     };
+    ReservationsController_getUnavailableDates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListingUnavailableDatesDto"];
+                };
+            };
+        };
+    };
     ReservationsController_create: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                listingId: string;
+                id: string;
             };
             cookie?: never;
         };
@@ -1357,11 +1427,13 @@ export interface operations {
             };
         };
         responses: {
-            201: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ReservationResponseDto"];
+                };
             };
         };
     };
