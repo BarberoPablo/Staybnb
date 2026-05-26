@@ -3,16 +3,18 @@
 import Tooltip from "@/components/Tooltip";
 import { useQueryParams } from "@/hooks/useQueryParams";
 import { ListingDetails } from "@/lib/api/listings/listings.schema";
+import { excludeDate, formatDate, parseCalendarDate, parseStringsToCalendarDates, unavailableDateRange } from "@/lib/api/reservations/utils";
+import { getListingUnavailableDates } from "@/lib/api/server/endpoints/reservations";
 import { parseFilters } from "@/lib/api/server/utils";
 import { LISTING_GUESTS } from "@/lib/api/shared/listing/listing.fragments.schema";
 import { DateRangeKey, Guests, UnavailableDates } from "@/lib/types";
-import { buildListingParams, calculateNights, getDisabledDates, getListingPromotion, normalizeDate } from "@/lib/utils";
+import { buildListingParams, calculateNights, getListingPromotion } from "@/lib/utils";
 import { useRouter } from "nextjs-toploader/app";
 import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
 import { DateRange } from "react-date-range";
 import { IoCalendar, IoCheckmarkCircle, IoPeople } from "react-icons/io5";
-import { excludeDate, getCustomDayContent, validateFormData } from "./bookingFormUtils";
+import { getCustomDayContent, validateFormData } from "./bookingFormUtils";
 import { CalendarLegend } from "./CalendarLegend";
 import { PriceSummary } from "./PriceSummary";
 import PromotionsProgressBar from "./PromotionsProgressBar";
@@ -22,7 +24,7 @@ const updateURLParams = (param: string, value: Date | string) => {
   if (value === "0") {
     params.delete(param);
   } else {
-    params.set(param, value instanceof Date ? value.toISOString() : value);
+    params.set(param, value instanceof Date ? formatDate(value) : value);
   }
 
   const newURL = `${window.location.pathname}?${params.toString()}`;
@@ -85,10 +87,11 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
   useEffect(() => {
     const fetchReservedDates = async () => {
       try {
-        const { unavailableCheckInDates: disabledCheckInDates, unavailableCheckOutDates: disabledCheckOutDates } = getDisabledDates(listing.reservations);
+        const { unavailableCheckInDates, unavailableCheckOutDates } = await getListingUnavailableDates(listing.id);
+
         setDisabledDates({
-          unavailableCheckInDates: { filtered: disabledCheckInDates, all: disabledCheckInDates },
-          unavailableCheckOutDates: { filtered: disabledCheckOutDates, all: disabledCheckOutDates },
+          unavailableCheckInDates: { filtered: unavailableCheckInDates, all: unavailableCheckInDates },
+          unavailableCheckOutDates: { filtered: unavailableCheckOutDates, all: unavailableCheckOutDates },
         });
       } catch (error) {
         console.error("Error fetching reserved dates:", error);
@@ -103,26 +106,36 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
 
     if (selection?.startDate && selection?.endDate) {
       const { startDate, endDate, key } = selection;
-      const userSelectedCheckOut = !isSelectingCheckOut;
 
-      const utcStartDate = normalizeDate(startDate);
-      const utcEndDate = normalizeDate(endDate);
+      const userIsSelectingCheckOut = startDate.getTime() === endDate.getTime();
+      const unavailableDates = unavailableDateRange(startDate, endDate, disabledDates.unavailableCheckInDates.all, userIsSelectingCheckOut);
 
-      setDateRange({ startDate: utcStartDate, endDate: utcEndDate, key });
-      updateURLParams("startDate", utcStartDate);
-      updateURLParams("endDate", utcEndDate);
+      if (unavailableDates) {
+        return;
+      }
+
+      const normalizedStartDate = formatDate(startDate);
+      const normalizedEndDate = formatDate(endDate);
+
+      updateURLParams("startDate", normalizedStartDate);
+      updateURLParams("endDate", normalizedEndDate);
+
+      setDateRange({ startDate: parseCalendarDate(normalizedStartDate), endDate: parseCalendarDate(normalizedEndDate), key });
 
       setDisabledDates((prevState) => {
         const filteredDates = { ...prevState };
 
-        if (userSelectedCheckOut) {
-          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, utcStartDate);
+        if (userIsSelectingCheckOut) {
+          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, normalizedStartDate);
         } else {
-          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, utcEndDate);
+          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, normalizedEndDate);
         }
+
         return filteredDates;
       });
-      setIsSelectingCheckOut(userSelectedCheckOut);
+
+      setIsSelectingCheckOut(userIsSelectingCheckOut);
+
       setErrors({});
     }
   };
@@ -232,7 +245,11 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
               minDate={new Date()}
               rangeColors={[errors.dateRange ? "#fb2c36" : "#3ecf8e"]}
               showDateDisplay={true}
-              disabledDates={isSelectingCheckOut ? disabledDates.unavailableCheckOutDates.filtered : disabledDates.unavailableCheckInDates.filtered}
+              disabledDates={
+                isSelectingCheckOut
+                  ? parseStringsToCalendarDates(disabledDates.unavailableCheckOutDates.filtered)
+                  : parseStringsToCalendarDates(disabledDates.unavailableCheckInDates.filtered)
+              }
               dayContentRenderer={getCustomDayContent(disabledDates)}
             />
           </div>
