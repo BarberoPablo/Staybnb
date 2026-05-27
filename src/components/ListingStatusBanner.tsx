@@ -1,5 +1,6 @@
 "use client";
 
+import { LISTING_STATUS_MAP } from "@/lib/api/shared/listing/listing.fragments.schema";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FiAlertTriangle, FiX } from "react-icons/fi";
@@ -14,11 +15,11 @@ export default function ListingStatusBanner({ status, className = "" }: ListingS
 
   const getStatusMessage = (status: string) => {
     switch (status) {
-      case "draft":
-        return "This listing is still being prepared and is not available for booking.";
-      case "paused":
+      case LISTING_STATUS_MAP.REJECTED:
+        return "This listing is not ready for booking.";
+      case LISTING_STATUS_MAP.PAUSED:
         return "This listing is currently paused and not accepting new reservations.";
-      case "pending":
+      case LISTING_STATUS_MAP.PENDING:
         return "This listing is under review and not yet available for booking.";
       default:
         return "This listing is not available for booking.";
@@ -27,18 +28,18 @@ export default function ListingStatusBanner({ status, className = "" }: ListingS
 
   const getStatusTitle = (status: string) => {
     switch (status) {
-      case "draft":
+      case LISTING_STATUS_MAP.REJECTED:
         return "Listing Not Ready";
-      case "paused":
+      case LISTING_STATUS_MAP.PAUSED:
         return "Listing Paused";
-      case "pending":
+      case LISTING_STATUS_MAP.PENDING:
         return "Under Review";
       default:
         return "Not Available";
     }
   };
 
-  const isListingUnavailable = status !== "published";
+  const isListingUnavailable = status !== LISTING_STATUS_MAP.PUBLISHED;
 
   if (!isListingUnavailable || !showBanner) {
     return null;

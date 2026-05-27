@@ -1,9 +1,9 @@
 "use client";
 
 import { PriceSummary } from "@/components/Booking/PriceSummary";
+import { parseCalendarDate } from "@/lib/api/reservations/utils";
 import { createReservation } from "@/lib/api/server/endpoints/reservations";
 import { Guests } from "@/lib/types";
-import { CreateReservation } from "@/lib/types/reservation";
 import { displayGuestLabel } from "@/lib/utils";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRouter } from "nextjs-toploader/app";
@@ -44,21 +44,18 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
   const handleConfirmPayment = async () => {
     setIsOpen(true);
 
-    const reservationData: CreateReservation = {
-      listingId: listingData.listing.id,
+    const reservationData = {
       startDate: listingData.startDate,
       endDate: listingData.endDate,
       guests: listingData.guests,
     };
 
     try {
-      const response = await createReservation(reservationData);
+      const response = await createReservation(listingData.listing.id, reservationData);
 
       if (response.success) {
         setConfirmationState("confirmed");
         setReservationId(response.reservationId);
-      } else {
-        throw new Error(response.message);
       }
     } catch (error) {
       const errorMessage = (error as Error).message;
@@ -105,7 +102,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
           <div className="flex items-center justify-between p-3 bg-white rounded-lg">
             <span className="text-myGray font-medium">Check-in:</span>
             <span className="font-semibold text-myGrayDark text-sm sm:text-base">
-              {listingData.startDate.toLocaleDateString("en-US", {
+              {parseCalendarDate(listingData.startDate).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
@@ -116,7 +113,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
           <div className="flex items-center justify-between p-3 bg-white rounded-lg">
             <span className="text-myGray font-medium">Check-out:</span>
             <span className="font-semibold text-myGrayDark text-sm sm:text-base">
-              {listingData.endDate.toLocaleDateString("en-US", {
+              {parseCalendarDate(listingData.endDate).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
                 day: "numeric",
@@ -146,7 +143,7 @@ export default function PaymentSection({ listingData }: { listingData: ListingDa
 
       {/* Payment Button */}
       <button
-        disabled={listingData.startDate.getTime() >= listingData.endDate.getTime()}
+        disabled={listingData.startDate >= listingData.endDate}
         className="w-full bg-myGreen hover:bg-myGreenSemiBold text-myGrayDark font-semibold py-4 px-6 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:scale-[1.02] hover:cursor-pointer"
         onClick={handleConfirmPayment}
       >

@@ -1,4 +1,5 @@
 import { fetchListingCheckout } from "@/lib/api/listings/listings.http";
+import { ListingCheckout } from "@/lib/api/listings/listings.schema";
 import { generateSEOMetadata } from "@/lib/seo";
 import { ListingSearchParams } from "@/lib/types";
 import Link from "next/link";
@@ -29,7 +30,7 @@ export default async function CheckoutPage({
 
   const { startDate, endDate, adults } = resolvedSearchParams as ListingSearchParams;
 
-  let listing;
+  let listing: ListingCheckout | null = null;
   try {
     listing = await fetchListingCheckout(listingId);
   } catch (error) {

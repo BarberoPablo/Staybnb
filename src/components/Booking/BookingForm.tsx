@@ -3,7 +3,7 @@
 import Tooltip from "@/components/Tooltip";
 import { useQueryParams } from "@/hooks/useQueryParams";
 import { ListingDetails } from "@/lib/api/listings/listings.schema";
-import { excludeDate, formatDate, parseCalendarDate, parseStringsToCalendarDates, unavailableDateRange } from "@/lib/api/reservations/utils";
+import { excludeStringDate, formatDate, parseCalendarDate, parseStringsToCalendarDates, unavailableDateRange } from "@/lib/api/reservations/utils";
 import { getListingUnavailableDates } from "@/lib/api/server/endpoints/reservations";
 import { parseFilters } from "@/lib/api/server/utils";
 import { LISTING_GUESTS } from "@/lib/api/shared/listing/listing.fragments.schema";
@@ -14,23 +14,10 @@ import { ReactNode, useEffect, useState } from "react";
 import type { RangeKeyDict } from "react-date-range";
 import { DateRange } from "react-date-range";
 import { IoCalendar, IoCheckmarkCircle, IoPeople } from "react-icons/io5";
-import { getCustomDayContent, validateFormData } from "./bookingFormUtils";
+import { getCustomDayContent, updateURLParams, validateFormData } from "./bookingFormUtils";
 import { CalendarLegend } from "./CalendarLegend";
 import { PriceSummary } from "./PriceSummary";
 import PromotionsProgressBar from "./PromotionsProgressBar";
-
-const updateURLParams = (param: string, value: Date | string) => {
-  const params = new URLSearchParams(window.location.search);
-  if (value === "0") {
-    params.delete(param);
-  } else {
-    params.set(param, value instanceof Date ? formatDate(value) : value);
-  }
-
-  const newURL = `${window.location.pathname}?${params.toString()}`;
-
-  window.history.replaceState(null, "", newURL);
-};
 
 export default function BookingForm({ listing, children, onConfirm }: { listing: ListingDetails; children?: ReactNode; onConfirm?: () => void }) {
   const [dateRange, setDateRange] = useState<DateRangeKey>({
@@ -126,9 +113,9 @@ export default function BookingForm({ listing, children, onConfirm }: { listing:
         const filteredDates = { ...prevState };
 
         if (userIsSelectingCheckOut) {
-          filteredDates.unavailableCheckOutDates.filtered = excludeDate(filteredDates.unavailableCheckOutDates.all, normalizedStartDate);
+          filteredDates.unavailableCheckOutDates.filtered = excludeStringDate(filteredDates.unavailableCheckOutDates.all, normalizedStartDate);
         } else {
-          filteredDates.unavailableCheckInDates.filtered = excludeDate(filteredDates.unavailableCheckInDates.all, normalizedEndDate);
+          filteredDates.unavailableCheckInDates.filtered = excludeStringDate(filteredDates.unavailableCheckInDates.all, normalizedEndDate);
         }
 
         return filteredDates;

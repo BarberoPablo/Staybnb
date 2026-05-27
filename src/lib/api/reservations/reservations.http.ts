@@ -1,7 +1,8 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { apiClient } from "../client";
-import { UnavailableDates, UnavailableDatesSchema } from "./reservations.schema";
+import { CreateReservation, UnavailableDates, UnavailableDatesSchema } from "./reservations.schema";
 
 export async function fetchListingUnavailableDates(id: string): Promise<UnavailableDates> {
   const { data, error } = await apiClient.GET("/reservations/{id}/unavailable-dates", {
@@ -15,4 +16,24 @@ export async function fetchListingUnavailableDates(id: string): Promise<Unavaila
   }
 
   return UnavailableDatesSchema.parse(data);
+}
+
+export async function fetchCreateReservation(id: string, data: CreateReservation) {
+  const cookieStore = await cookies();
+
+  const { data: responseData, error } = await apiClient.POST("/reservations/{id}", {
+    params: {
+      path: { id },
+    },
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+    body: data,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return responseData;
 }

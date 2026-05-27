@@ -14,16 +14,16 @@ import { useState } from "react";
 export type ListingData = {
   listing: ListingCheckout;
   guests: Record<Guests, number>;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   nights: number;
   promo: Promotion | null;
 };
 
 export default function Checkout({ listing, searchParams }: { listing: ListingCheckout; searchParams: ListingSearchParams }) {
-  const startDate = new Date(searchParams.startDate);
-  const endDate = new Date(searchParams.endDate);
-  const nights = calculateNights(startDate, endDate);
+  const startDate = searchParams.startDate;
+  const endDate = searchParams.endDate;
+  const nights = calculateNights(new Date(startDate), new Date(endDate));
   const [listingData, setListingData] = useState<ListingData>({
     listing,
     guests: getGuestsFromParams(searchParams),

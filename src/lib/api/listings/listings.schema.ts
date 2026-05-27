@@ -51,8 +51,8 @@ const HostSchema = z.object({
 
 const ReservationSchema = z.object({
   id: z.string(),
-  startDate: z.string().transform((val) => new Date(val)),
-  endDate: z.string().transform((val) => new Date(val)),
+  startDate: z.string(),
+  endDate: z.string(),
 });
 
 //ok
@@ -80,7 +80,7 @@ export const ListingDetailsSchema = z.object({
   amenities: z.array(z.string()),
   reviews: z.array(ReviewSchema),
   promotions: z.array(PromotionSchema),
-  reservations: z.array(ReservationSchema),
+  reservations: z.array(ReservationSchema), //@flag should not be here
   ratingAvg: z.number(),
   ratingCount: z.number(),
   status: z.enum(LISTING_STATUS),
