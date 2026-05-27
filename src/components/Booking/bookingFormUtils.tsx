@@ -1,5 +1,5 @@
 import { ListingDetails } from "@/lib/api/listings/listings.schema";
-import { dateToString } from "@/lib/api/reservations/utils";
+import { formatDate } from "@/lib/api/reservations/utils";
 import { LISTING_GUESTS } from "@/lib/api/shared/listing/listing.fragments.schema";
 import { Guests, UnavailableDates } from "@/lib/types";
 import { validateDateRange } from "@/lib/utils";
@@ -48,7 +48,7 @@ export function validateFormData(startDate: Date, endDate: Date, guests: Record<
 
 export function getCustomDayContent(disabledDates: UnavailableDates) {
   return function customDayContent(day: Date) {
-    const dayString = dateToString(day);
+    const dayString = formatDate(day);
     const allUnavailableCheckInDates = disabledDates.unavailableCheckInDates.all;
     const allUnavailableCheckOutDates = disabledDates.unavailableCheckOutDates.all;
 
@@ -76,3 +76,16 @@ export function getCustomDayContent(disabledDates: UnavailableDates) {
     );
   };
 }
+
+export const updateURLParams = (param: string, value: Date | string) => {
+  const params = new URLSearchParams(window.location.search);
+  if (value === "0") {
+    params.delete(param);
+  } else {
+    params.set(param, value instanceof Date ? formatDate(value) : value);
+  }
+
+  const newURL = `${window.location.pathname}?${params.toString()}`;
+
+  window.history.replaceState(null, "", newURL);
+};

@@ -8,7 +8,7 @@ export function toDateKey(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
-export function excludeDate(dates: string[], dateToExclude: string): string[] {
+export function excludeStringDate(dates: string[], dateToExclude: string): string[] {
   return dates.filter((date) => date !== dateToExclude);
 }
 
@@ -69,9 +69,4 @@ export function formatDate(date: Date): string {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
-}
-
-// Remove and replace its usage with formatDate
-export function dateToString(date: Date): string {
-  return date.toISOString().split("T")[0];
 }

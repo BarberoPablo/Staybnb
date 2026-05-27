@@ -10,6 +10,13 @@ export const PROPERTY_TYPES = ["HOUSE", "APARTMENT", "CABIN", "BOAT"] as const s
 export const LISTING_STATUS = ["PUBLISHED", "PAUSED", "PENDING", "REJECTED"] as const satisfies readonly ListingStatuses[];
 export const LISTING_GUESTS = ["adults", "children", "infant", "pets"] as const;
 
+export const LISTING_STATUS_MAP = {
+  PUBLISHED: "PUBLISHED",
+  PAUSED: "PAUSED",
+  PENDING: "PENDING",
+  REJECTED: "REJECTED",
+} as const satisfies Record<string, ListingStatuses>;
+
 export const StructureSchema = z.object({
   bedrooms: z.number(),
   beds: z.number(),

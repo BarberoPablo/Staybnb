@@ -527,6 +527,7 @@ export interface components {
         };
         SuccessResponseDto: {
             success: boolean;
+            reservationId: string;
         };
         AmenityResponseDto: {
             id: string;
@@ -722,22 +723,23 @@ export interface components {
              */
             unavailableCheckOutDates: string[];
         };
-        CreateReservationDto: Record<string, never>;
-        ReservationResponseDto: {
-            id: string;
-            listingId: string;
+        ReservationGuestsDto: {
+            adults: number;
+            children: number;
+            infant: number;
+            pets: number;
+        };
+        CreateReservationDto: {
+            /** @example 2026-05-20 */
             startDate: string;
+            /** @example 2026-05-25 */
             endDate: string;
-            guests: Record<string, never>;
-            totalPrice: number;
-            totalNights: number;
-            nightPrice: number;
-            discount: Record<string, never> | null;
-            discountPercentage: Record<string, never> | null;
-            /** @enum {string} */
-            status: "UPCOMING" | "COMPLETED" | "CANCELED" | "CANCELED_BY_HOST";
-            /** Format: date-time */
-            createdAt: string;
+            guests: components["schemas"]["ReservationGuestsDto"];
+        };
+        ErrorResponseDto: {
+            statusCode: number;
+            message: string;
+            error: string;
         };
         FavoriteListingLocationDto: {
             city: string;
@@ -1432,7 +1434,15 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReservationResponseDto"];
+                    "application/json": components["schemas"]["SuccessResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
                 };
             };
         };

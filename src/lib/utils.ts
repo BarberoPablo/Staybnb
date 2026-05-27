@@ -1,6 +1,7 @@
 import { addDays, eachDayOfInterval, format, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import { SearchParams } from "next/dist/server/request/search-params";
+import { formatDate } from "./api/reservations/utils";
 import { LISTING_GUESTS, Promotion } from "./api/shared/listing/listing.fragments.schema";
 import { Guests, ListingSearchParams } from "./types";
 import { ListingDB, Location, PromotionDB } from "./types/listing";
@@ -36,7 +37,7 @@ export const displayGuestLabel = (type: Guests, value: number) => {
 };
 
 export function buildListingParams(guests: Record<Guests, number>, startDate: Date, endDate: Date) {
-  let query = `startDate=${encodeURIComponent(startDate.toISOString())}&endDate=${encodeURIComponent(endDate.toISOString())}`;
+  let query = `startDate=${encodeURIComponent(formatDate(startDate))}&endDate=${encodeURIComponent(formatDate(endDate))}`;
 
   for (const [guest, count] of Object.entries(guests)) {
     if (count > 0) {
