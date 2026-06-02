@@ -1,9 +1,9 @@
 "use client";
 
 import { useUser } from "@/hooks/useUser";
-import { useEffect, useState } from "react";
+import { Profile } from "@/lib/api/profile/profile.schema";
 import { getProfile } from "@/lib/api/server/endpoints/profile";
-import { Profile } from "@/lib/types/profile";
+import { useEffect, useState } from "react";
 
 export function useUserProfile() {
   const { user, loading: loadingUser } = useUser();
