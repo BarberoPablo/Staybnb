@@ -441,7 +441,21 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         CreateProfileDto: Record<string, never>;
-        MeResponseDto: Record<string, never>;
+        MeResponseDto: {
+            id: string;
+            /** @enum {string} */
+            role: "USER" | "ADMIN";
+            /** Format: email */
+            email: string;
+            firstName: string;
+            lastName: string;
+            avatarUrl?: string | null;
+            bio?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
         ListingLocationDto: {
             country: string;
             city: string;

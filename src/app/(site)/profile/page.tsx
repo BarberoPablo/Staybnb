@@ -1,9 +1,10 @@
 "use client";
 
 import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
+import { Profile } from "@/lib/api/profile/profile.schema";
 import { getProfile, updateProfile } from "@/lib/api/server/endpoints/profile";
 import { parseUpdateProfile } from "@/lib/parsers/profile";
-import type { Profile, UpdateProfile } from "@/lib/types/profile";
+import type { UpdateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";
 import { checkImageUrl, verifyUpdateProfileData } from "@/lib/utils";
 import { motion } from "framer-motion";
