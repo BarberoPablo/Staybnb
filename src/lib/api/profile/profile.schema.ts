@@ -2,6 +2,7 @@ import { components } from "@/types/api";
 import { z } from "zod";
 
 type ProfileRole = components["schemas"]["MeResponseDto"]["role"];
+export type UpdateProfile = components["schemas"]["UpdateProfileDto"];
 
 export const USER_ROLES = ["USER", "ADMIN"] as const satisfies readonly ProfileRole[];
 

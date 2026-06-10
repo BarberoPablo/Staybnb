@@ -3,10 +3,11 @@
 import { parseCreateProfile } from "@/lib/parsers/profile";
 import { prisma } from "@/lib/prisma";
 import { cleanString } from "@/lib/server-utils";
-import { CreateProfile, UpdateProfileDB } from "@/lib/types/profile";
+import { CreateProfile } from "@/lib/types/profile";
 import { isValidUrl } from "@/lib/utils";
 import { createClient } from "../../../supabase/server";
-import { fetchUserProfile } from "../../profile/profile.http";
+import { fetchUpdateUserProfile, fetchUserProfile } from "../../profile/profile.http";
+import { UpdateProfile } from "../../profile/profile.schema";
 
 export async function getProfile() {
   return fetchUserProfile();
@@ -60,51 +61,6 @@ export async function signUp(userData: CreateProfile) {
   }
 }
 
-export async function updateProfile(profileData: Partial<UpdateProfileDB>) {
-  try {
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-      error: authErr,
-    } = await supabase.auth.getUser();
-
-    if (authErr || !user) {
-      throw new Error("Not authenticated");
-    }
-
-    const allowedKeys: (keyof UpdateProfileDB)[] = ["first_name", "last_name", "avatar_url", "bio"];
-    const body: Partial<UpdateProfileDB> = {};
-
-    for (const key of allowedKeys) {
-      const value = profileData[key];
-
-      if (typeof value === "string") {
-        if (key === "avatar_url") {
-          const clean_avatar_url = isValidUrl(value.trim()) ? value.trim() : "";
-          if (clean_avatar_url) {
-            body.avatar_url = clean_avatar_url;
-          }
-        } else {
-          if (value.trim().length > 0) {
-            body[key] = cleanString(value);
-          }
-        }
-      }
-    }
-
-    const profile = await prisma.profiles.update({
-      where: {
-        id: user.id,
-      },
-      data: body,
-    });
-
-    return { success: true, data: profile };
-  } catch (error) {
-    if (error instanceof Error) {
-      return { success: false, message: error.message };
-    }
-    return { success: false, message: "Error updating profile" };
-  }
+export async function updateProfile(profileData: UpdateProfile) {
+  return fetchUpdateUserProfile(profileData);
 }
