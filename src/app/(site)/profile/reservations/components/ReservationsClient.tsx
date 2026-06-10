@@ -1,7 +1,7 @@
 "use client";
 
-import { ResumedReservationWithListing } from "@/lib/types/reservation";
-import { getTotalGuests } from "@/lib/utils";
+import { UserReservation } from "@/lib/api/reservations/reservations.schema";
+import { getTotalGuests } from "@/lib/api/reservations/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -30,34 +30,34 @@ const getStatusColor = (status: string) => {
   }
 };
 
-export default function ReservationsClient({ initialReservations }: { initialReservations: ResumedReservationWithListing[] }) {
+export default function ReservationsClient({ initialReservations }: { initialReservations: UserReservation[] }) {
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get("id") || "");
   const [statusFilter, setStatusFilter] = useState<ReservationStatus>("all");
   const [openCancelResevationDialog, setOpenCancelResevationDialog] = useState(false);
   const [openAddReviewDialog, setOpenAddReviewDialog] = useState(false);
-  const [selectedReservation, setSelectedReservation] = useState<ResumedReservationWithListing | null>(null);
+  const [selectedReservation, setSelectedReservation] = useState<UserReservation | null>(null);
   const [selectedReservationForCancel, setSelectedReservationForCancel] = useState<string | null>(null);
-  const [reservations, setReservations] = useState<ResumedReservationWithListing[]>(initialReservations);
+  const [reservations, setReservations] = useState<UserReservation[]>(initialReservations);
   const router = useRouter();
 
   const filteredReservations = reservations.filter((reservation) => {
     const matchesSearch =
       reservation.listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       reservation.id.toLowerCase() === searchTerm.toLowerCase() ||
-      reservation.startDate.toLocaleDateString().includes(searchTerm.toLowerCase()) ||
-      reservation.endDate.toLocaleDateString().includes(searchTerm.toLowerCase()) ||
+      reservation.startDate.includes(searchTerm.toLowerCase()) ||
+      reservation.endDate.includes(searchTerm.toLowerCase()) ||
       `${reservation.listing.location.country} ${reservation.listing.location.city}`.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || reservation.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const handleReviewAction = (reservation: ResumedReservationWithListing) => {
+  const handleReviewAction = (reservation: UserReservation) => {
     setSelectedReservation(reservation);
     setOpenAddReviewDialog(true);
   };
 
-  const handleReviewAdded = (listingId: number, newScore: number, newMessage: string) => {
+  const handleReviewAdded = (listingId: string, newScore: number, newMessage: string) => {
     setReservations((prevReservations) =>
       prevReservations.map((reservation) => {
         if (reservation.listing.id === listingId) {

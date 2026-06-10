@@ -11,10 +11,10 @@ import { IoClose, IoStar } from "react-icons/io5";
 interface AddReviewDialogProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  listingId: number;
+  listingId: string;
   listingTitle: string;
   existingReview?: Review | null;
-  onReviewAdded?: (listingId: number, score: number, message: string) => void;
+  onReviewAdded?: (listingId: string, score: number, message: string) => void;
 }
 
 export function AddReviewDialog({ isOpen, setIsOpen, listingId, listingTitle, existingReview, onReviewAdded }: AddReviewDialogProps) {

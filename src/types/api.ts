@@ -388,6 +388,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/reservations/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ReservationsController_findMy"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/favorites": {
         parameters: {
             query?: never;
@@ -762,6 +778,56 @@ export interface components {
             statusCode: number;
             message: string;
             error: string;
+        };
+        UserReservationGuestsDto: {
+            adults?: number;
+            children?: number;
+            infant?: number;
+            pets?: number;
+        };
+        UserReservationListingLocationDto: {
+            city: string;
+            state: string;
+            country: string;
+            lat: number;
+            lng: number;
+            formatted: string;
+        };
+        UserReviewDto: {
+            score: number;
+            message: string;
+            userId: string;
+        };
+        UserReservationListingScoreDto: {
+            value: number;
+            userReview: components["schemas"]["UserReviewDto"] | null;
+        };
+        UserReservationListingDto: {
+            id: string;
+            title: string;
+            images: string[];
+            location: components["schemas"]["UserReservationListingLocationDto"];
+            nightPrice: number;
+            propertyType: string;
+            privacyType: string;
+            checkInTime: string;
+            checkOutTime: string;
+            score: components["schemas"]["UserReservationListingScoreDto"];
+        };
+        UserReservationResponseDto: {
+            id: string;
+            userId: string;
+            listingId: string;
+            startDate: string;
+            endDate: string;
+            guests: components["schemas"]["UserReservationGuestsDto"];
+            totalPrice: number;
+            totalNights: number;
+            nightPrice: number;
+            discount?: Record<string, never> | null;
+            discountPercentage?: Record<string, never> | null;
+            status: string;
+            listing: components["schemas"]["UserReservationListingDto"];
         };
         FavoriteListingLocationDto: {
             city: string;
@@ -1492,6 +1558,25 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    ReservationsController_findMy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserReservationResponseDto"][];
                 };
             };
         };

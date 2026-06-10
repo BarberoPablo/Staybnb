@@ -1,3 +1,5 @@
+import { OptionalGuests } from "../shared/listing/listing.fragments.schema";
+
 /* Transforms a date string to a UTC Date for Calendar purposes */
 export function toUTCDate(dateString: string): Date {
   const [y, m, d] = dateString.split("-").map(Number);
@@ -69,4 +71,8 @@ export function formatDate(date: Date): string {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+}
+
+export function getTotalGuests(guests: OptionalGuests): number {
+  return Object.values(guests).reduce((total, count) => total + count, 0);
 }
