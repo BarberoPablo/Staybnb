@@ -4,6 +4,8 @@ import { z } from "zod";
 type PrivacyTypes = components["schemas"]["ListingCardDto"]["privacyType"];
 type PropertyTypes = components["schemas"]["ListingCardDto"]["propertyType"];
 type ListingStatuses = components["schemas"]["ListingDetailsResponseDto"]["status"];
+type Guests = components["schemas"]["CreateReservationDto"]["guests"];
+export type OptionalGuests = Partial<Guests>;
 
 export const PRIVACY_TYPES = ["ENTIRE", "PRIVATE", "SHARED"] as const satisfies readonly PrivacyTypes[];
 export const PROPERTY_TYPES = ["HOUSE", "APARTMENT", "CABIN", "BOAT"] as const satisfies readonly PropertyTypes[];

@@ -2,12 +2,12 @@
 
 import { prisma } from "@/lib/prisma";
 import { getEffectiveStatus } from "@/lib/server-utils";
-import { ListingDB, ReviewDB, ScoreDB } from "@/lib/types/listing";
+import { ListingDB } from "@/lib/types/listing";
 import { parseListingFromDB } from "../../../parsers/listing";
-import { parseReservationsFromDB, parseResumedReservationWithListingFromDB } from "../../../parsers/reservation";
+import { parseReservationsFromDB } from "../../../parsers/reservation";
 import { createClient } from "../../../supabase/server";
-import { ReservationDB, ResumedReservationWithListingDB } from "../../../types/reservation";
-import { fetchCreateReservation, fetchListingUnavailableDates } from "../../reservations/reservations.http";
+import { ReservationDB } from "../../../types/reservation";
+import { fetchCreateReservation, fetchListingUnavailableDates, fetchUserReservations } from "../../reservations/reservations.http";
 import { CreateReservation } from "../../reservations/reservations.schema";
 import { NotFoundError } from "../errors";
 
@@ -65,68 +65,7 @@ export async function getHostReservationsGroupedByListing() {
 }
 
 export async function getUserReservations() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-    error: authErr,
-  } = await supabase.auth.getUser();
-
-  if (authErr || !user) {
-    console.error("Auth error:", authErr, user);
-    throw new NotFoundError();
-  }
-
-  try {
-    const reservations = await prisma.reservations.findMany({
-      where: {
-        user_id: user.id,
-      },
-      include: {
-        listings: {
-          select: {
-            id: true,
-            title: true,
-            location: true,
-            night_price: true,
-            images: true,
-            property_type: true,
-            privacy_type: true,
-            check_in_time: true,
-            check_out_time: true,
-            score: true,
-          },
-        },
-      },
-      orderBy: {
-        start_date: "asc",
-      },
-    });
-
-    const validatedReservations = reservations.map((reservation) => {
-      const { listings, ...reservationWithoutListings } = reservation;
-
-      const scoreData = listings.score as ScoreDB;
-      const userReview = scoreData?.reviews?.find((review: ReviewDB) => review.user_id === user.id) || null;
-
-      return {
-        ...reservationWithoutListings,
-        listing: {
-          ...listings,
-          score: {
-            value: scoreData?.value || 0,
-            user_review: userReview,
-          },
-        },
-        status: getEffectiveStatus(reservation.status, reservation.start_date.toISOString(), reservation.end_date.toISOString()),
-      };
-    });
-
-    return parseResumedReservationWithListingFromDB(validatedReservations as unknown as ResumedReservationWithListingDB[]);
-  } catch (error) {
-    console.error("Error fetching user reservations", error);
-    throw new NotFoundError("Failed to fetch user reservations");
-  }
+  return fetchUserReservations();
 }
 
 export async function createReservation(id: string, reservationData: CreateReservation) {
