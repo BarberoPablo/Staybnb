@@ -3,7 +3,6 @@
 import { PreviewImage } from "@/app/(hosting)/hosting/create/components/PhotosUploadModal";
 import { Profile } from "@/lib/api/profile/profile.schema";
 import { getProfile, updateProfile } from "@/lib/api/server/endpoints/profile";
-import { parseUpdateProfile } from "@/lib/parsers/profile";
 import type { UpdateProfile } from "@/lib/types/profile";
 import { uploadFiles } from "@/lib/uploadthing";
 import { checkImageUrl, verifyUpdateProfileData } from "@/lib/utils";
@@ -95,14 +94,13 @@ export default function ProfileInfo() {
     });
 
     try {
-      const parsedData = parseUpdateProfile(data);
-      const updateResponse = await updateProfile(parsedData);
+      const updateResponse = await updateProfile(data);
 
       if (updateResponse.success) {
         toast.success("Profile information updated", { duration: 2000 });
       } else {
         setUserProfile(originalProfile);
-        toast.error(updateResponse.message || "Error");
+        toast.error("Error");
       }
     } catch (error) {
       setUserProfile(originalProfile);

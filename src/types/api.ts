@@ -49,7 +49,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        patch: operations["ProfilesController_updateMe"];
         trace?: never;
     };
     "/host/draft-listings": {
@@ -456,6 +456,17 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        UpdateProfileDto: {
+            /** @example John */
+            firstName?: string;
+            /** @example Doe */
+            lastName?: string;
+            avatarUrl?: string | null;
+            bio?: string | null;
+        };
+        SuccessResponseDto: {
+            success: boolean;
+        };
         ListingLocationDto: {
             country: string;
             city: string;
@@ -539,10 +550,6 @@ export interface components {
             guestLimits?: components["schemas"]["ListingGuestLimitsDto"];
             currentStep: number;
         };
-        SuccessResponseDto: {
-            success: boolean;
-            reservationId: string;
-        };
         AmenityResponseDto: {
             id: string;
             name: string;
@@ -618,9 +625,6 @@ export interface components {
             promotions?: components["schemas"]["PromotionInputDto"][];
             location?: components["schemas"]["LocationInputDto"];
             amenities?: string[];
-        };
-        ResubmitResponseDto: {
-            success: boolean;
         };
         RejectListingDto: Record<string, never>;
         ListingCardLocationDto: {
@@ -750,6 +754,10 @@ export interface components {
             endDate: string;
             guests: components["schemas"]["ReservationGuestsDto"];
         };
+        SuccessReservationResponseDto: {
+            success: boolean;
+            reservationId: string;
+        };
         ErrorResponseDto: {
             statusCode: number;
             message: string;
@@ -773,9 +781,6 @@ export interface components {
         };
         IsFavoriteResponseDto: {
             isFavorite: boolean;
-        };
-        FavoriteActionResponseDto: {
-            success: boolean;
         };
     };
     responses: never;
@@ -840,6 +845,36 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["MeResponseDto"];
                 };
+            };
+        };
+    };
+    ProfilesController_updateMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfileDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuccessResponseDto"];
+                };
+            };
+            /** @description Profile not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -1111,7 +1146,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ResubmitResponseDto"];
+                    "application/json": components["schemas"]["SuccessResponseDto"];
                 };
             };
             /** @description Only rejected listings can be resubmitted */
@@ -1153,7 +1188,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ResubmitResponseDto"];
+                    "application/json": components["schemas"]["SuccessResponseDto"];
                 };
             };
             /** @description Only published listings can be paused */
@@ -1448,7 +1483,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SuccessResponseDto"];
+                    "application/json": components["schemas"]["SuccessReservationResponseDto"];
                 };
             };
             400: {
@@ -1517,7 +1552,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FavoriteActionResponseDto"];
+                    "application/json": components["schemas"]["SuccessResponseDto"];
                 };
             };
         };
@@ -1538,7 +1573,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FavoriteActionResponseDto"];
+                    "application/json": components["schemas"]["SuccessResponseDto"];
                 };
             };
         };
