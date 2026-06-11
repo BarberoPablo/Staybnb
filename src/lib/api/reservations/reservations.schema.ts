@@ -2,6 +2,9 @@ import { components } from "@/types/api";
 import { z } from "zod";
 
 export type CreateReservation = components["schemas"]["CreateReservationDto"];
+export type ReservationStatus = components["schemas"]["ReservationStatus"];
+
+export const RESERVATION_STATUS = ["UPCOMING", "COMPLETED", "CANCELED", "CANCELED_BY_HOST"] satisfies ReservationStatus[];
 
 export const UnavailableDatesSchema = z.object({
   unavailableCheckInDates: z.array(z.string()),
@@ -71,7 +74,7 @@ export const UserReservationsSchema = z.array(
       .nullable()
       .default(0)
       .transform(() => 0),
-    status: z.string(),
+    status: z.enum(RESERVATION_STATUS),
     listing: UserReservationListingSchema,
   }),
 );

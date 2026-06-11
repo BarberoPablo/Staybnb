@@ -785,6 +785,8 @@ export interface components {
             infant?: number;
             pets?: number;
         };
+        /** @enum {string} */
+        ReservationStatus: "UPCOMING" | "COMPLETED" | "CANCELED" | "CANCELED_BY_HOST";
         UserReservationListingLocationDto: {
             city: string;
             state: string;
@@ -826,7 +828,7 @@ export interface components {
             nightPrice: number;
             discount?: Record<string, never> | null;
             discountPercentage?: Record<string, never> | null;
-            status: string;
+            status: components["schemas"]["ReservationStatus"];
             listing: components["schemas"]["UserReservationListingDto"];
         };
         FavoriteListingLocationDto: {

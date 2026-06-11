@@ -1,6 +1,6 @@
 "use client";
 
-import { UserReservation } from "@/lib/api/reservations/reservations.schema";
+import { RESERVATION_STATUS, ReservationStatus, UserReservation } from "@/lib/api/reservations/reservations.schema";
 import { getTotalGuests } from "@/lib/api/reservations/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -12,8 +12,6 @@ import { CancelReservationDialog } from "../../../../../components/Reservations/
 import { PageHeader } from "../../components/PageHeader";
 import { SearchBar } from "../../components/SearchBar";
 import { AddReviewDialog } from "./AddReviewDialog";
-
-type ReservationStatus = "all" | "upcoming" | "completed" | "canceled" | "canceledByHost";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -33,7 +31,7 @@ const getStatusColor = (status: string) => {
 export default function ReservationsClient({ initialReservations }: { initialReservations: UserReservation[] }) {
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(searchParams.get("id") || "");
-  const [statusFilter, setStatusFilter] = useState<ReservationStatus>("all");
+  const [statusFilter, setStatusFilter] = useState<ReservationStatus | "all">("all");
   const [openCancelResevationDialog, setOpenCancelResevationDialog] = useState(false);
   const [openAddReviewDialog, setOpenAddReviewDialog] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<UserReservation | null>(null);
@@ -105,10 +103,11 @@ export default function ReservationsClient({ initialReservations }: { initialRes
             className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-myGreenSemiBold focus:border-transparent"
           >
             <option value="all">All Status</option>
-            <option value="upcoming">Upcoming</option>
-            <option value="completed">Completed</option>
-            <option value="canceled">Canceled</option>
-            <option value="canceledByHost">Canceled by Host</option>
+            {RESERVATION_STATUS.map((status) => (
+              <option key={status} value={status}>
+                {status.charAt(0) + status.slice(1).toLowerCase().replace(/_/g, " ")}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -202,7 +201,7 @@ export default function ReservationsClient({ initialReservations }: { initialRes
                       Visit Listing
                     </button>
 
-                    {reservation.status === "upcoming" && (
+                    {reservation.status === "UPCOMING" && (
                       <button
                         className="px-4 py-2 border border-red-300 text-red-600 bg-red-100 rounded-lg hover:bg-red-50 hover:cursor-pointer transition-colors text-sm"
                         onClick={() => handleCancelReservation(reservation.id)}
@@ -211,7 +210,7 @@ export default function ReservationsClient({ initialReservations }: { initialRes
                       </button>
                     )}
 
-                    {reservation.status === "completed" && !reservation.listing.score?.userReview && (
+                    {reservation.status === "COMPLETED" && !reservation.listing.score?.userReview && (
                       <button
                         className="flex items-center gap-2 px-4 py-2 bg-myGreenLight text-myGrayDark rounded-lg hover:bg-myGreen hover:cursor-pointer transition-colors text-sm border border-myGreenSemiBold"
                         onClick={() => handleReviewAction(reservation)}
@@ -221,7 +220,7 @@ export default function ReservationsClient({ initialReservations }: { initialRes
                       </button>
                     )}
 
-                    {reservation.status === "completed" && reservation.listing.score?.userReview && (
+                    {reservation.status === "COMPLETED" && reservation.listing.score?.userReview && (
                       <button
                         className="flex items-center gap-2 px-4 py-2 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg hover:bg-yellow-100 hover:cursor-pointer transition-colors text-sm"
                         onClick={() => handleReviewAction(reservation)}
